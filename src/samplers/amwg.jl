@@ -15,40 +15,31 @@ type VariateAMWG <: VariateVector
   data::Vector{VariateType}
   tune::TuneAMWG
 
-  function VariateAMWG(x::Vector, tune::TuneAMWG)
-    new(VariateType[x...], tune)
-  end
-end
-
-function VariateAMWG(x::Vector, sigma::Vector; batch::Integer=50,
-                     target::Real=0.44)
-  n = length(x)
-  length(sigma) == n || error("x and sigma dimensions must match")
-  tune = TuneAMWG(
-    false,
-    Integer[zeros(n)...],
-    batch,
-    0,
-    Float64[sigma...],
-    target
-  )
-  VariateAMWG(x, tune)
+  VariateAMWG(x::Vector, tune::TuneAMWG) = new(VariateType[x...], tune)
 end
 
 function VariateAMWG(x::Vector, tune=nothing)
-  VariateAMWG(x, ones(length(x)))
+  tune = TuneAMWG(
+    false,
+    zeros(Integer, length(x)),
+    50,
+    0,
+    Array(Float64, 0),
+    0.44
+  )
+  VariateAMWG(x, tune)
 end
 
 
 #################### Sampling Functions ####################
 
-function amwg(x::Vector, sigma::Vector, logf::Function, args...;
+function amwg(x::Vector, sigma::Vector{Float64}, logf::Function, args...;
               adapt::Bool=false, batch::Integer=50, target::Real=0.44)
   amwg!(VariateAMWG(x), sigma, logf, args..., adapt=adapt, batch=batch,
         target=target)
 end
 
-function amwg!(v::VariateAMWG, sigma::Vector, logf::Function, args...;
+function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function, args...;
                adapt::Bool=false, batch::Integer=50, target::Real=0.44)
   tune = v.tune
 
@@ -58,7 +49,7 @@ function amwg!(v::VariateAMWG, sigma::Vector, logf::Function, args...;
       tune.accept[:] = 0
       tune.batch = batch
       tune.m = 0
-      tune.sigma[:] = sigma
+      tune.sigma = sigma
       tune.target = target
     end
     tune.m += 1
@@ -72,7 +63,7 @@ function amwg!(v::VariateAMWG, sigma::Vector, logf::Function, args...;
     end
   else
     if !tune.adapt
-      tune.sigma[:] = sigma
+      tune.sigma = sigma
     end
     amwg_sub!(v, tune.sigma, logf, args...)
   end
@@ -80,7 +71,8 @@ function amwg!(v::VariateAMWG, sigma::Vector, logf::Function, args...;
   v
 end
 
-function amwg_sub!(v::VariateAMWG, sigma::Vector, logf::Function, args...)
+function amwg_sub!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function,
+                   args...)
   logf0 = logf(v.data, args...)
   d = length(v)
   z = randn(d) .* sigma
