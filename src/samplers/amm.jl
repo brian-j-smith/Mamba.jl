@@ -16,44 +16,31 @@ type VariateAMM <: VariateVector
   data::Vector{VariateType}
   tune::TuneAMM
 
-  function VariateAMM(x::Vector, tune::TuneAMM)
-    new(VariateType[x...], tune)
-  end
+  VariateAMM(x::Vector, tune::TuneAMM) = new(VariateType[x...], tune)
 end
 
-function VariateAMM(x::Vector, Sigma::Cholesky)
-  n = length(x)
-  size(Sigma)[1] == n || error("x and Sigma dimensions must match")
+function VariateAMM(x::Vector, tune=nothing)
   tune = TuneAMM(
     false,
     0.05,
     0,
-    zeros(n),
+    Array(Float64, 0),
     2.38^2,
-    Sigma,
-    zeros(n,n)
+    Cholesky(Array(Float64, 0, 0), 'U'),
+    Array(Float64, 0, 0)
   )
   VariateAMM(x, tune)
-end
-
-function VariateAMM(x::Vector, tune=nothing)
-  VariateAMM(x, Cholesky(eye(length(x)), 'U'))
 end
 
 
 #################### Sampling Functions ####################
 
-function amm(x::Vector, Sigma::Union(Matrix, Cholesky), logf::Function, args...;
+function amm(x::Vector, Sigma::Cholesky{Float64}, logf::Function, args...;
              adapt::Bool=false)
   amm!(VariateAMM(x), Sigma, logf, args...)
 end
 
-function amm!(v::VariateAMM, Sigma::Matrix, logf::Function, args...;
-              adapt::Bool=false)
-  amm!(v, cholfact(Sigma), logf, args...)
-end
-
-function amm!(v::VariateAMM, Sigma::Cholesky, logf::Function, args...;
+function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function, args...;
               adapt::Bool=false)
   tune = v.tune
 
@@ -62,7 +49,7 @@ function amm!(v::VariateAMM, Sigma::Cholesky, logf::Function, args...;
     if !tune.adapt
       tune.adapt = true
       tune.m = 0
-      tune.mu[:] = 0
+      tune.mu = zeros(d)
       tune.Sigma = Sigma
       tune.SigmaLm = zeros(d,d)
     end
@@ -80,7 +67,7 @@ function amm!(v::VariateAMM, Sigma::Cholesky, logf::Function, args...;
     Sigma = (1 - 1 / tune.m) * tune.SigmaLm * tune.SigmaLm' +
             sd * tune.mu * tune.mu' - sd * (1 + 1 / tune.m) * mu * mu' +
             sd / tune.m * v * v'
-    tune.mu[:] = mu
+    tune.mu = mu
     F = cholpfact(Sigma)
     tune.SigmaLm = F[:P] * F[:L]
   else
