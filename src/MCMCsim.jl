@@ -2,7 +2,8 @@ module MCMCsim
 
 #################### Imports ####################
 
-import Base
+import Base: Base, cor
+import Calculus: gradient
 import Distributions: Distribution, Distributions, FDist, insupport, logpdf, quantile
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
@@ -96,6 +97,7 @@ include("variate.jl")
 
 include("samplers/amm.jl")
 include("samplers/amwg.jl")
+include("samplers/nuts.jl")
 include("samplers/slice.jl")
 
 
@@ -116,13 +118,15 @@ export
   describe,
   dic,
   gelmandiag,
+  gradient,
+  gradient!,
   graph,
   graph2dot,
   hpd,
   initchain!,
   insupport,
   logpdf,
-  logpdfxm!,
+  logpdf!,
   mcmc,
   plot,
   relist,
@@ -135,10 +139,12 @@ export
 export
   SamplerAMM,
   SamplerAMWG,
+  SamplerNUTS,
   SamplerSlice,
   SamplerSliceWG,
   VariateAMM,
   VariateAMWG,
+  VariateNUTS,
   VariateSlice
 
 export
@@ -146,6 +152,10 @@ export
   amm!,
   amwg,
   amwg!,
+  nuts,
+  nuts!,
+  nutseps,
+  nutsfx!,
   slice,
   slice!,
   slicewg,
