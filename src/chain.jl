@@ -53,26 +53,6 @@ function Base.keys(c::MCMCChain)
   c.names
 end
 
-function Base.map(f::Function, c::MCMCChain)
-  x = []
-  iter, p, chains = size(c.data)
-  for k in 1:chains
-    print("\nPROCESSING MCMCChain $(k)/$(chains)\n")
-    global pct = 0
-    g = function(i)
-      if floor(100 * i / iter) >= pct
-        print(string("Row: ", lpad(i, length(string(iter)), ' '),
-          "/$(iter) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
-        pct += 10
-      end
-      f(c.data[i,:,k][:])
-    end
-    x = [x, map(g, 1:iter)]
-  end
-  print("\n")
-  x
-end
-
 function Base.ndims(c::MCMCChain)
   ndims(c.data)
 end
@@ -115,11 +95,6 @@ end
 
 #################### MCMCChain Summary Methods ####################
 
-function Base.cor(c::MCMCChain)
-  vals = cor(combine(c))
-  annotate(vals, c.names, c.names, "Node")
-end
-
 function autocor(c::MCMCChain; lags::Vector=[1,5,10,50], relative::Bool=true)
   if relative
     lags *= c.thin
@@ -135,6 +110,11 @@ function batchSE(x::Vector, size::Integer=100)
   m >= 2 || error("2 or more batches needed to compute SE")
   mbar = [mean(x[i*size+(1:size)]) for i in 0:m-1]
   sem(mbar)
+end
+
+function cor(c::MCMCChain)
+  vals = cor(combine(c))
+  annotate(vals, c.names, c.names, "Node")
 end
 
 function describe(c::MCMCChain; batchsize::Integer=100,
@@ -214,10 +194,7 @@ function logpdf(c::MCMCChain)
           "/$(iter) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
         pct += 10
       end
-      x = c.data[i,idx,k][:]
-      relist!(m, x, keys)
-      update!(m)
-      values[i,1,k] = logpdf(m)
+      values[i,1,k] = logpdf!(m, c.data[i,idx,k][:])
     end
   end
   print("\n")
