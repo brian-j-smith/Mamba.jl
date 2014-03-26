@@ -12,7 +12,9 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=0,
   m.links = intersect(tsort(g), paramkeys(m))
   V = vertices(g)
   lookup = Dict{String,Integer}()
-  map(v -> setindex!(lookup, v.index, v.label), V)
+  for v in V
+    setindex!(lookup, v.index, v.label)
+  end
   for i in 1:length(samplers)
     sampler = samplers[i]
     links = String[]
@@ -47,7 +49,9 @@ function Base.keys(m::MCMCModel, monitoronly::Bool=false)
 end
 
 function Base.setindex!{T<:String}(m::MCMCModel, values::Dict, keys::Vector{T})
-  map(key -> m[key][:] = values[key], keys)
+  for key in keys
+    m[key][:] = values[key]
+  end
 end
 
 function Base.setindex!{T<:String}(m::MCMCModel, value, keys::Vector{T})
@@ -92,7 +96,7 @@ function initchain!(m::MCMCModel, chain::Integer)
   m
 end
 
-function labels(m::MCMCModel, keys::Vector)
+function labels{T<:String}(m::MCMCModel, keys::Vector{T})
   values = String[]
   for key in keys
     node = m[key]
@@ -174,8 +178,10 @@ end
 function graph(m::MCMCModel)
   g = graph(ExVertex[], Edge{ExVertex}[])
   lookup = (String=>Integer)[]
-  map(key -> lookup[key] = length(lookup) + 1, nodekeys(m))
-  map(key -> add_vertex!(g, ExVertex(lookup[key], key)), keys(lookup))
+  for key in nodekeys(m)
+    lookup[key] = length(lookup) + 1
+    add_vertex!(g, ExVertex(lookup[key], key))
+  end
   for key in datakeys(m)
     v = vertices(g)[lookup[key]]
     v.attributes["shape"] = "box"
@@ -194,7 +200,9 @@ function graph(m::MCMCModel)
       v.attributes["style"] = "filled"
       v.attributes["fillcolor"] = "gray85"
     end
-    map(key -> add_edge!(g, vertices(g)[lookup[key]], v), node.deps)
+    for key in node.deps
+      add_edge!(g, vertices(g)[lookup[key]], v)
+    end
   end
   g
 end
@@ -257,6 +265,33 @@ function blocktune(m::MCMCModel, block::Integer=0)
   end
 end
 
+function gradient(m::MCMCModel, block::Integer=0)
+  keys = blockkeys(m, block)
+  x0 = unlist(m, keys)
+  value = gradient!(m, x0, block)
+  relist!(m, x0, keys)
+  value
+end
+
+function gradient(m::MCMCModel, x::Vector, block::Integer=0)
+  keys = blockkeys(m, block)
+  x0 = unlist(m, keys)
+  value = gradient!(m, x, block)
+  relist!(m, x0, keys)
+  update!(m, block)
+  value
+end
+
+function gradient!(m::MCMCModel, x::Vector, block::Integer=0)
+  keys = blockkeys(m, block)
+  f = function(x)
+    relist!(m, x, keys)
+    update!(m, block)
+    logpdf(m, block)
+  end
+  gradient(f, x)
+end
+
 function logpdf(m::MCMCModel, block::Integer=0)
   blocks = block > 0 ? block : 1:length(m.samplers)
   keys = String[]
@@ -267,7 +302,28 @@ function logpdf(m::MCMCModel, block::Integer=0)
   mapreduce(key -> logpdf(m[key]), +, unique(keys))
 end
 
-function relist(m::MCMCModel, values::Vector, keys::Vector)
+
+function logpdf(m::MCMCModel, x::Vector, block::Integer=0)
+  keys = blockkeys(m, block)
+  x0 = unlist(m, keys)
+  value = logpdf!(m, x, block)
+  relist!(m, x0, keys)
+  update!(m, block)
+  value
+end
+
+function logpdf!(m::MCMCModel, x::Vector, block::Integer=0)
+  keys = blockkeys(m, block)
+  relist!(m, x, keys)
+  if all(map(key -> insupport(m[key]), keys))
+    update!(m, block)
+    logpdf(m, block)
+  else
+    -Inf
+  end
+end
+
+function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T})
   x = Dict{String,Any}()
   j = 0
   for key in keys
@@ -279,12 +335,13 @@ function relist(m::MCMCModel, values::Vector, keys::Vector)
   x
 end
 
-function relist!(m::MCMCModel, values::Vector, keys::Vector)
+function relist!{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T})
   j = 0
   for key in keys
-    n = length(m[key])
-    m[key] = values[j+(1:n)]
-    j += n
+    for i in 1:length(m[key])
+      j += 1
+      m[key][i] = values[j]
+    end
   end
   j == length(values) || throw(ErrorException("argument dimensions must match"))
   m
@@ -300,15 +357,16 @@ function simulate!(m::MCMCModel, block::Integer=0)
   m
 end
 
-function unlist(m::MCMCModel, keys::Vector)
+function unlist{T<:String}(m::MCMCModel, keys::Vector{T})
   N = map(key -> length(m[key]), keys)
   values = Array(VariateType, sum(N))
   i = 0
   for k in 1:length(keys)
     node = m[keys[k]]
-    n = N[k]
-    values[i+(1:n)] = node[1:n]
-    i += n
+    for j in 1:N[k]
+      i += 1
+      values[i] = node[j]
+    end
   end
   values
 end
