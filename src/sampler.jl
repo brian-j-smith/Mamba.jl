@@ -29,14 +29,19 @@ end
 #################### Adaptive Metropolis within Gibbs ####################
 
 function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
-                               adapt::Bool=false)
+                               adapt::Symbol=:none)
+  any(adapt .== [:all, :burnin, :none]) ||
+    error("adapt argument must be one of :all, :burnin, or :none")
+
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
       x = unlist(model, keys)
       tunepar = blocktune(model, block)
       v = VariateAMM(x, tunepar["sampler"])
-      amm!(v, tunepar["Sigma"], logpdfxm!, model, block)
+      adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
+              tunepar["adapt"] == :all ? true : false
+      amm!(v, tunepar["Sigma"], logpdf!, model, block, adapt=adapt)
       tunepar["sampler"] = v.tune
       relist(model, v.data, keys)
     end,
@@ -48,23 +53,55 @@ end
 #################### Adaptive Metropolis within Gibbs ####################
 
 function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
-                                adapt::Bool=false, batch::Integer=50,
+                                adapt::Symbol=:none, batch::Integer=50,
                                 target::Real=0.44)
+  any(adapt .== [:all, :burnin, :none]) ||
+    error("adapt argument must be one of :all, :burnin, or :none")
+
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
       x = unlist(model, keys)
       tunepar = blocktune(model, block)
       v = VariateAMWG(x, tunepar["sampler"])
-      amwg!(v, tunepar["sigma"], logpdfxm!, model, block,
-            adapt=tunepar["adapt"], batch=tunepar["batch"],
-            target=tunepar["target"])
+      adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
+              tunepar["adapt"] == :all ? true : false
+      amwg!(v, tunepar["sigma"], logpdf!, model, block, adapt=adapt,
+            batch=tunepar["batch"], target=tunepar["target"])
       tunepar["sampler"] = v.tune
       relist(model, v.data, keys)
     end,
     ["sigma" => sigma, "adapt" => adapt, "batch" => batch, "target" => target,
      "sampler" => nothing]
   )
+end
+
+
+#################### No-U-Turn Sampler ####################
+
+function SamplerNUTS{T<:String}(params::Vector{T}, target::Real=0.6)
+  MCMCSampler(params,
+    quote
+      keys = blockkeys(model, block)
+      x = unlist(model, keys)
+      tunepar = blocktune(model, block)
+      v = VariateNUTS(x, tunepar["sampler"])
+      if model.iter == 1
+        tunepar["eps"] = nutseps(x, nutsfx!, model, block)
+      end
+      nuts!(v, tunepar["eps"], nutsfx!, model, block,
+            adapt=model.iter <= model.burnin, target=tunepar["target"])
+      tunepar["sampler"] = v.tune
+      relist(model, v.data, keys)
+    end,
+    ["eps" => 1.0, "target" => target, "sampler" => nothing]
+  )
+end
+
+function nutsfx!(x::Vector, m::MCMCModel, block::Integer)
+  f = logpdf!(m, x, block)
+  g = gradient!(m, x, block)
+  f, g
 end
 
 
@@ -75,7 +112,7 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector)
     quote
       keys = blockkeys(model, block)
       x = unlist(model, keys)
-      v = slice(x, blocktune(model, block)["width"], logpdfxm!, model, block)
+      v = slice(x, blocktune(model, block)["width"], logpdf!, model, block)
       relist(model, v.data, keys)
     end,
     ["width" => width]
@@ -90,7 +127,7 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector)
     quote
       keys = blockkeys(model, block)
       x = unlist(model, keys)
-      v = slicewg(x, blocktune(model, block)["width"], logpdfxm!, model, block)
+      v = slicewg(x, blocktune(model, block)["width"], logpdf!, model, block)
       relist(model, v.data, keys)
     end,
     ["width" => width]
@@ -100,15 +137,8 @@ end
 
 #################### Utility Functions ####################
 
-function logpdfxm!(x::Vector, m::MCMCModel, block::Integer)
-  keys = blockkeys(m, block)
-  relist!(m, x, keys)
-  if all(map(key -> insupport(m[key]), keys))
-    update!(m, block)
-    logpdf(m, block)
-  else
-    -Inf
-  end
+function logpdf!(x::Vector, m::MCMCModel, block::Integer)
+  logpdf!(m, x, block)
 end
 
 function samplerfx(expr::Expr)
