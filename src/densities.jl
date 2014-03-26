@@ -5,9 +5,12 @@ type NullDistribution <: Distribution end
 
 #################### Flat Distribution ####################
 
-type Flat <: Distribution end
+immutable Flat <: Distribution
+  length::Integer
+  Flat(length::Real) = new(integer(length))
+end
 
-insupport(d::Flat, x::Real) = true
-insupport{T<:Real}(d::Flat, x::VecOrMat{T}) = true
-logpdf(d::Flat, x::Real) = 0
-logpdf{T<:Real}(d::Flat, x::VecOrMat{T}) = 0
+insupport{T<:Real}(d::Flat, x::Union(T, Vector{T})) = d.length == length(x)
+function logpdf{T<:Real}(d::Flat, x::Union(T, Vector{T}))
+  d.length == length(x) ? 0 : throw(BoundsError())
+end
