@@ -10,29 +10,25 @@ type VariateSlice <: VariateVector
   data::Vector{VariateType}
   tune::TuneSlice
 
-  function VariateSlice(x::Vector, tune::TuneSlice)
-    new(VariateType[x...], tune)
-  end
-end
-
-function VariateSlice(x::Vector, width::Vector)
-  length(x) == length(width) || error("x and width dimensions must match")
-  tune = TuneSlice(Float64[width...])
-  VariateSlice(x, tune)
+  VariateSlice(x::Vector, tune::TuneSlice) = new(VariateType[x...], tune)
 end
 
 function VariateSlice(x::Vector, tune=nothing)
-  VariateSlice(x, ones(length(x)))
+  tune = TuneSlice(
+    Array(Float64, 0)
+  )
+  VariateSlice(x, tune)
 end
 
 
 #################### Sampling Functions ####################
 
-function slice(x::Vector, width::Vector, logf::Function, args...)
+function slice(x::Vector, width::Vector{Float64}, logf::Function, args...)
   slice!(VariateSlice(x), width, logf, args...)
 end
 
-function slice!(v::VariateSlice, width::Vector, logf::Function, args...)
+function slice!(v::VariateSlice, width::Vector{Float64}, logf::Function,
+                args...)
   p0 = logf(v.data, args...) + log(rand())
 
   n = length(v)
@@ -52,7 +48,7 @@ function slice!(v::VariateSlice, width::Vector, logf::Function, args...)
     end
   end
   v[:] = x
-  v.tune.width[:] = width
+  v.tune.width = width
 
   v
 end
@@ -62,11 +58,12 @@ end
 
 #################### Sampling Functions ####################
 
-function slicewg(x::Vector, width::Vector, logf::Function, args...)
+function slicewg(x::Vector, width::Vector{Float64}, logf::Function, args...)
   slicewg!(VariateSlice(x), width, logf, args...)
 end
 
-function slicewg!(v::VariateSlice, width::Vector, logf::Function, args...)
+function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function,
+                  args...)
   logf0 = logf(v.data, args...)
   for i in 1:length(v)
     p0 = logf0 + log(rand())
@@ -88,6 +85,6 @@ function slicewg!(v::VariateSlice, width::Vector, logf::Function, args...)
       v[i] = (upper - lower) * rand() + lower
     end
   end
-  v.tune.width[:] = width
+  v.tune.width = width
   v
 end
