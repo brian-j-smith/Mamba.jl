@@ -260,7 +260,7 @@ function transform_support(c::MCMCChain)
     b = maximum(x[:,i,:])
     if a > 0
       if b < 1
-        x[:,i,:] = -log(1 / x[:,i,:] - 1)
+        x[:,i,:] = logit(x[:,i,:])
       else
         x[:,i,:] = log(x[:,i,:])
       end
