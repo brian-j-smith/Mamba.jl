@@ -144,14 +144,12 @@ function dic(c::MCMCChain)
   x0 = unlist(m, keys)
 
   xbar = map(i -> mean(c.data[:,i,:]), idx)
-  relist!(m, xbar, keys)
-  update!(m)
+  relist!(m, xbar)
   D = -2 * logpdf(m)
   Dbar = -2 * mean(logpdf(c))
   pD = Dbar - D
 
-  relist!(m, x0, keys)
-  update!(m)
+  relist!(m, x0)
 
   annotate([D + 2 * pD pD], ["DIC", "pD"], ["Model"])
 end
@@ -199,8 +197,7 @@ function logpdf(c::MCMCChain)
   end
   print("\n")
 
-  relist!(m, x0, keys)
-  update!(m)
+  relist!(m, x0)
 
   values
 end
