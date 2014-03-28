@@ -35,15 +35,14 @@ function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
 
   MCMCSampler(params,
     quote
-      keys = blockkeys(model, block)
-      x = unlist(model, keys, true)
+      x = unlist(model, block, true)
       tunepar = blocktune(model, block)
       v = VariateAMM(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
       amm!(v, tunepar["Sigma"], logpdf!, model, block, true, adapt=adapt)
       tunepar["sampler"] = v.tune
-      relist(model, v.data, keys, true)
+      relist(model, v.data, block, true)
     end,
     ["Sigma" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
   )
@@ -60,8 +59,7 @@ function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
 
   MCMCSampler(params,
     quote
-      keys = blockkeys(model, block)
-      x = unlist(model, keys, true)
+      x = unlist(model, block, true)
       tunepar = blocktune(model, block)
       v = VariateAMWG(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
@@ -69,7 +67,7 @@ function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
       amwg!(v, tunepar["sigma"], logpdf!, model, block, true, adapt=adapt,
             batch=tunepar["batch"], target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.data, keys, true)
+      relist(model, v.data, block, true)
     end,
     ["sigma" => sigma, "adapt" => adapt, "batch" => batch, "target" => target,
      "sampler" => nothing]
@@ -82,8 +80,7 @@ end
 function SamplerNUTS{T<:String}(params::Vector{T}, target::Real=0.6)
   MCMCSampler(params,
     quote
-      keys = blockkeys(model, block)
-      x = unlist(model, keys, true)
+      x = unlist(model, block, true)
       tunepar = blocktune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
       if model.iter == 1
@@ -92,7 +89,7 @@ function SamplerNUTS{T<:String}(params::Vector{T}, target::Real=0.6)
       nuts!(v, tunepar["eps"], nutsfx!, model, block, true,
             adapt=model.iter <= model.burnin, target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.data, keys, true)
+      relist(model, v.data, block, true)
     end,
     ["eps" => 1.0, "target" => target, "sampler" => nothing]
   )
@@ -110,11 +107,10 @@ end
 function SamplerSlice{T<:String}(params::Vector{T}, width::Vector)
   MCMCSampler(params,
     quote
-      keys = blockkeys(model, block)
-      x = unlist(model, keys, true)
+      x = unlist(model, block, true)
       v = slice(x, blocktune(model, block)["width"], logpdf!, model, block,
                 true)
-      relist(model, v.data, keys, true)
+      relist(model, v.data, block, true)
     end,
     ["width" => width]
   )
@@ -126,11 +122,10 @@ end
 function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector)
   MCMCSampler(params,
     quote
-      keys = blockkeys(model, block)
-      x = unlist(model, keys, true)
+      x = unlist(model, block, true)
       v = slicewg(x, blocktune(model, block)["width"], logpdf!, model, block,
                   true)
-      relist(model, v.data, keys, true)
+      relist(model, v.data, block, true)
     end,
     ["width" => width]
   )
