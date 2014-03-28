@@ -266,21 +266,17 @@ function blocktune(m::MCMCModel, block::Integer=0)
 end
 
 function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false)
-  keys = blockkeys(m, block)
-  x0 = unlist(m, keys, transform)
+  x0 = unlist(m, block, transform)
   value = gradient!(m, x0, block, transform)
-  relist!(m, x0, keys, transform)
-  update!(m, block)
+  relist!(m, x0, block, transform)
   value
 end
 
 function gradient(m::MCMCModel, x::Vector, block::Integer=0,
                   transform::Bool=false)
-  keys = blockkeys(m, block)
-  x0 = unlist(m, keys)
+  x0 = unlist(m, block)
   value = gradient!(m, x, block, transform)
-  relist!(m, x0, keys)
-  update!(m, block)
+  relist!(m, x0, block)
   value
 end
 
@@ -301,18 +297,16 @@ end
 
 function logpdf(m::MCMCModel, x::Vector, block::Integer=0,
                 transform::Bool=false)
-  keys = blockkeys(m, block)
-  x0 = unlist(m, keys)
+  x0 = unlist(m, block)
   value = logpdf!(m, x, block, transform)
-  relist!(m, x0, keys)
-  update!(m, block)
+  relist!(m, x0, block)
   value
 end
 
 function logpdf!(m::MCMCModel, x::Vector, block::Integer=0,
                  transform::Bool=false)
   keys = blockkeys(m, block)
-  relist!(m, x, keys, transform)
+  m[keys] = relist(m, x, keys, transform)
   if all(map(key -> insupport(m[key]), keys))
     update!(m, block)
     logpdf(m, block, transform)
@@ -324,6 +318,11 @@ end
 function logpdf!(x::Vector, m::MCMCModel, block::Integer=0,
                  transform::Bool=false)
   logpdf!(m, x, block, transform)
+end
+
+function relist(m::MCMCModel, values::Vector, block::Integer=0,
+                transform::Bool=false)
+  relist(m, values, blockkeys(m, block), transform)
 end
 
 function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
@@ -341,10 +340,17 @@ function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
   x
 end
 
+function relist!(m::MCMCModel, values::Vector, block::Integer=0,
+                 transform::Bool=false)
+  keys = blockkeys(m, block)
+  m[keys] = relist(m, values, keys, transform)
+  update!(m, block)
+end
+
 function relist!{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
                             transform::Bool=false)
   m[keys] = relist(m, values, keys, transform)
-  m
+  update!(m)
 end
 
 function simulate!(m::MCMCModel, block::Integer=0)
@@ -357,8 +363,11 @@ function simulate!(m::MCMCModel, block::Integer=0)
   m
 end
 
-function unlist{T<:String}(m::MCMCModel, keys::Vector{T},
-                           transform::Bool=false)
+function unlist(m::MCMCModel, block::Integer=0, transform::Bool=false)
+  unlist(m, blockkeys(m, block), transform)
+end
+
+function unlist{T<:String}(m::MCMCModel, keys::Vector{T}, transform::Bool=false)
   f = transform ? link : identity
   N = map(key -> length(m[key]), keys)
   values = Array(VariateType, sum(N))
