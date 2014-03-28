@@ -265,85 +265,85 @@ function blocktune(m::MCMCModel, block::Integer=0)
   end
 end
 
-function gradient(m::MCMCModel, block::Integer=0)
+function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false)
   keys = blockkeys(m, block)
-  x0 = unlist(m, keys)
-  value = gradient!(m, x0, block)
-  relist!(m, x0, keys)
+  x0 = unlist(m, keys, transform)
+  value = gradient!(m, x0, block, transform)
+  relist!(m, x0, keys, transform)
+  update!(m, block)
   value
 end
 
-function gradient(m::MCMCModel, x::Vector, block::Integer=0)
+function gradient(m::MCMCModel, x::Vector, block::Integer=0,
+                  transform::Bool=false)
   keys = blockkeys(m, block)
   x0 = unlist(m, keys)
-  value = gradient!(m, x, block)
+  value = gradient!(m, x, block, transform)
   relist!(m, x0, keys)
   update!(m, block)
   value
 end
 
-function gradient!(m::MCMCModel, x::Vector, block::Integer=0)
-  keys = blockkeys(m, block)
-  f = function(x)
-    relist!(m, x, keys)
-    update!(m, block)
-    logpdf(m, block)
-  end
-  gradient(f, x)
+function gradient!(m::MCMCModel, x::Vector, block::Integer=0,
+                   transform::Bool=false)
+  gradient(logpdf!, x, m, block, transform)
 end
 
-function logpdf(m::MCMCModel, block::Integer=0)
+function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
   blocks = block > 0 ? block : 1:length(m.samplers)
   keys = String[]
   for b in blocks
     append!(keys, m.samplers[b].params)
     append!(keys, m.samplers[b].links)
   end
-  mapreduce(key -> logpdf(m[key]), +, unique(keys))
+  mapreduce(key -> logpdf(m[key], transform), +, unique(keys))
 end
 
-
-function logpdf(m::MCMCModel, x::Vector, block::Integer=0)
+function logpdf(m::MCMCModel, x::Vector, block::Integer=0,
+                transform::Bool=false)
   keys = blockkeys(m, block)
   x0 = unlist(m, keys)
-  value = logpdf!(m, x, block)
+  value = logpdf!(m, x, block, transform)
   relist!(m, x0, keys)
   update!(m, block)
   value
 end
 
-function logpdf!(m::MCMCModel, x::Vector, block::Integer=0)
+function logpdf!(m::MCMCModel, x::Vector, block::Integer=0,
+                 transform::Bool=false)
   keys = blockkeys(m, block)
-  relist!(m, x, keys)
+  relist!(m, x, keys, transform)
   if all(map(key -> insupport(m[key]), keys))
     update!(m, block)
-    logpdf(m, block)
+    logpdf(m, block, transform)
   else
     -Inf
   end
 end
 
-function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T})
+function logpdf!(x::Vector, m::MCMCModel, block::Integer=0,
+                 transform::Bool=false)
+  logpdf!(m, x, block, transform)
+end
+
+function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
+                           transform::Bool=false)
+  f =  transform ? invlink : identity
   x = Dict{String,Any}()
   j = 0
   for key in keys
-    n = length(m[key])
-    x[key] = values[j+(1:n)]
+    node = m[key]
+    n = length(node)
+    x[key] = f(node, values[j+(1:n)])
     j += n
   end
   j == length(values) || throw(ErrorException("argument dimensions must match"))
   x
 end
 
-function relist!{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T})
-  j = 0
-  for key in keys
-    for i in 1:length(m[key])
-      j += 1
-      m[key][i] = values[j]
-    end
-  end
-  j == length(values) || throw(ErrorException("argument dimensions must match"))
+function relist!{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
+                            transform::Bool=false)
+  m[keys] = relist(m, values, keys, transform)
   m
 end
 
@@ -357,16 +357,17 @@ function simulate!(m::MCMCModel, block::Integer=0)
   m
 end
 
-function unlist{T<:String}(m::MCMCModel, keys::Vector{T})
+function unlist{T<:String}(m::MCMCModel, keys::Vector{T},
+                           transform::Bool=false)
+  f = transform ? link : identity
   N = map(key -> length(m[key]), keys)
   values = Array(VariateType, sum(N))
   i = 0
   for k in 1:length(keys)
     node = m[keys[k]]
-    for j in 1:N[k]
-      i += 1
-      values[i] = node[j]
-    end
+    n = N[k]
+    values[i+(1:n)] = f(node, node.data)
+    i += n
   end
   values
 end
