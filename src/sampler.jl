@@ -36,14 +36,14 @@ function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
-      x = unlist(model, keys)
+      x = unlist(model, keys, true)
       tunepar = blocktune(model, block)
       v = VariateAMM(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      amm!(v, tunepar["Sigma"], logpdf!, model, block, adapt=adapt)
+      amm!(v, tunepar["Sigma"], logpdf!, model, block, true, adapt=adapt)
       tunepar["sampler"] = v.tune
-      relist(model, v.data, keys)
+      relist(model, v.data, keys, true)
     end,
     ["Sigma" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
   )
@@ -61,15 +61,15 @@ function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
-      x = unlist(model, keys)
+      x = unlist(model, keys, true)
       tunepar = blocktune(model, block)
       v = VariateAMWG(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      amwg!(v, tunepar["sigma"], logpdf!, model, block, adapt=adapt,
+      amwg!(v, tunepar["sigma"], logpdf!, model, block, true, adapt=adapt,
             batch=tunepar["batch"], target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.data, keys)
+      relist(model, v.data, keys, true)
     end,
     ["sigma" => sigma, "adapt" => adapt, "batch" => batch, "target" => target,
      "sampler" => nothing]
@@ -83,25 +83,25 @@ function SamplerNUTS{T<:String}(params::Vector{T}, target::Real=0.6)
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
-      x = unlist(model, keys)
+      x = unlist(model, keys, true)
       tunepar = blocktune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
       if model.iter == 1
         tunepar["eps"] = nutseps(x, nutsfx!, model, block)
       end
-      nuts!(v, tunepar["eps"], nutsfx!, model, block,
+      nuts!(v, tunepar["eps"], nutsfx!, model, block, true,
             adapt=model.iter <= model.burnin, target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.data, keys)
+      relist(model, v.data, keys, true)
     end,
     ["eps" => 1.0, "target" => target, "sampler" => nothing]
   )
 end
 
-function nutsfx!(x::Vector, m::MCMCModel, block::Integer)
-  f = logpdf!(m, x, block)
-  g = gradient!(m, x, block)
-  f, g
+function nutsfx!(x::Vector, m::MCMCModel, block::Integer, transform::Bool=false)
+  a = logpdf!(m, x, block, transform)
+  b = gradient!(m, x, block, transform)
+  a, b
 end
 
 
@@ -111,9 +111,10 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector)
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
-      x = unlist(model, keys)
-      v = slice(x, blocktune(model, block)["width"], logpdf!, model, block)
-      relist(model, v.data, keys)
+      x = unlist(model, keys, true)
+      v = slice(x, blocktune(model, block)["width"], logpdf!, model, block,
+                true)
+      relist(model, v.data, keys, true)
     end,
     ["width" => width]
   )
@@ -126,9 +127,10 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector)
   MCMCSampler(params,
     quote
       keys = blockkeys(model, block)
-      x = unlist(model, keys)
-      v = slicewg(x, blocktune(model, block)["width"], logpdf!, model, block)
-      relist(model, v.data, keys)
+      x = unlist(model, keys, true)
+      v = slicewg(x, blocktune(model, block)["width"], logpdf!, model, block,
+                  true)
+      relist(model, v.data, keys, true)
     end,
     ["width" => width]
   )
@@ -136,10 +138,6 @@ end
 
 
 #################### Utility Functions ####################
-
-function logpdf!(x::Vector, m::MCMCModel, block::Integer)
-  logpdf!(m, x, block)
-end
 
 function samplerfx(expr::Expr)
   eval(Main, Expr(:function, :(model::MCMCModel, block::Integer), expr))
