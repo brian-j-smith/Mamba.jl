@@ -44,13 +44,15 @@ end
 
 #################### MCMCLogical Methods ####################
 
-function initchain!(l::MCMCLogical, m::MCMCModel, chain::Integer)
-  update!(l, m)
-end
+identity(l::MCMCLogical, x) = x
 
-function logpdf(l::MCMCLogical)
-  0
-end
+initchain!(l::MCMCLogical, m::MCMCModel, chain::Integer) = update!(l, m)
+
+invlink(l::MCMCLogical, x) = x
+
+link(l::MCMCLogical, x) = x
+
+logpdf(l::MCMCLogical, transform::Bool=false) = 0.0
 
 function update!(l::MCMCLogical, m::MCMCModel)
   l[:] = l.eval(m)
@@ -106,19 +108,23 @@ function initchain!(s::MCMCStochastic, m::MCMCModel, chain::Integer)
   s
 end
 
-function insupport(s::MCMCStochastic)
-  if isa(s.distr, Array)
-    all(map(i -> insupport(s.distr[i], s.data[i]), 1:length(s)))
-  else
-    insupport(s.distr, s.data)
-  end
+identity(s::MCMCStochastic, x) = x
+
+insupport(s::MCMCStochastic) = all(mapdistr(insupport, s, s.data))
+
+invlink(s::MCMCStochastic, x) = mapdistr(invlink, s, x)
+
+link(s::MCMCStochastic, x) =  mapdistr(link, s, x)
+
+function logpdf(s::MCMCStochastic, transform::Bool=false)
+  +(mapdistr(logpdf, s, s.data, transform))
 end
 
-function logpdf(s::MCMCStochastic)
+function mapdistr(f::Function, s::MCMCStochastic, x, args...)
   if isa(s.distr, Array)
-    mapreduce(i -> logpdf(s.distr[i], s.data[i]), +, 1:length(s))
+    map(i -> f(s.distr[i], x[i], args...), 1:length(s))
   else
-    logpdf(s.distr, s.data)
+    f(s.distr, x, args...)
   end
 end
 
