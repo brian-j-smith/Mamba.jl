@@ -1,10 +1,12 @@
 module MCMCsim
 
+using Distributions
+
+
 #################### Imports ####################
 
 import Base: Base, cor
-import Calculus: gradient
-import Distributions: Distribution, Distributions, FDist, insupport, logpdf, quantile
+import Distributions: insupport, logpdf, quantile
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase
@@ -93,6 +95,7 @@ include("mcmc.jl")
 include("model.jl")
 include("nodes.jl")
 include("sampler.jl")
+include("utils.jl")
 include("variate.jl")
 
 include("samplers/amm.jl")
@@ -125,6 +128,8 @@ export
   hpd,
   initchain!,
   insupport,
+  invlink,
+  link,
   logpdf,
   logpdf!,
   mcmc,
