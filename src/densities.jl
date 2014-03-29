@@ -79,7 +79,7 @@ typealias RangeDistribution Union(KSDist, TriangularDist, Uniform)
 
 function link(d::RangeDistribution, x)
   a, b = minimum(d), maximum(d)
-  logit((x - a) / (b - a))
+  logit((x - a) ./ (b - a))
 end
 
 function invlink(d::RangeDistribution, x)
