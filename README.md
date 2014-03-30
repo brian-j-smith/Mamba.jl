@@ -17,4 +17,4 @@
 * Allow the arbitrary blocking of model parameters and designation of block-specific samplers.
 * Provide samplers that can be used with the included simulation engine or apart from it.
 * Give command-line access to all package functionality, including its simulation API.
-* Produce run-time performance on-par with or better than established MCMC software.
+* Produce run-time performance on-par with established MCMC software.
