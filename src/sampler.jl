@@ -77,27 +77,30 @@ end
 
 #################### No-U-Turn Sampler ####################
 
-function SamplerNUTS{T<:String}(params::Vector{T}, target::Real=0.6)
+function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
+                                target::Real=0.6)
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
       tunepar = blocktune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
       if model.iter == 1
-        tunepar["eps"] = nutseps(x, nutsfx!, model, block)
+        tunepar["eps"] = nutseps(x, nutsfx!, model, block, true,
+                                 tunepar["dtype"])
       end
-      nuts!(v, tunepar["eps"], nutsfx!, model, block, true,
+      nuts!(v, tunepar["eps"], nutsfx!, model, block, true, tunepar["dtype"],
             adapt=model.iter <= model.burnin, target=tunepar["target"])
       tunepar["sampler"] = v.tune
       relist(model, v.data, block, true)
     end,
-    ["eps" => 1.0, "target" => target, "sampler" => nothing]
+    ["eps" => 1.0, "target" => target, "dtype" => dtype, "sampler" => nothing]
   )
 end
 
-function nutsfx!(x::Vector, m::MCMCModel, block::Integer, transform::Bool=false)
+function nutsfx!(x::Vector, m::MCMCModel, block::Integer, transform::Bool,
+                 dtype::Symbol)
   a = logpdf!(m, x, block, transform)
-  b = gradient!(m, x, block, transform)
+  b = gradient!(m, x, block, transform, dtype)
   a, b
 end
 
