@@ -56,16 +56,16 @@ function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function, args...;
     tune.m += 1
     x = v + tune.Sigma[:L] * randn(d)
     if tune.m > 2 * d
-      x = tune.beta * x + (1 - tune.beta) * (v + tune.SigmaLm * randn(d))
+      x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(d))
     end
     if rand() < exp(logf(x, args...) - logf(v.data, args...))
       v[:] = x
     end
     sd = tune.scale / d
-    p = 1 / (tune.m + 1)
-    mu = (1 - p) * tune.mu + p * v
-    Sigma = (1 - 1 / tune.m) * tune.SigmaLm * tune.SigmaLm' +
-            sd * tune.mu * tune.mu' - sd * (1 + 1 / tune.m) * mu * mu' +
+    p = 1.0 / (tune.m + 1)
+    mu = (1.0 - p) * tune.mu + p * v
+    Sigma = (1.0 - 1.0 / tune.m) * tune.SigmaLm * tune.SigmaLm' +
+            sd * tune.mu * tune.mu' - sd * (1.0 + 1.0 / tune.m) * mu * mu' +
             sd / tune.m * v * v'
     tune.mu = mu
     F = cholpfact(Sigma)
