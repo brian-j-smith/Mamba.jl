@@ -6,6 +6,7 @@ using Distributions
 #################### Imports ####################
 
 import Base: Base, cor
+import Calculus: gradient
 import Distributions: insupport, logpdf, quantile
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
@@ -118,6 +119,7 @@ export
   autocor,
   blockkeys,
   blocktune,
+  cor,
   describe,
   dic,
   gelmandiag,
