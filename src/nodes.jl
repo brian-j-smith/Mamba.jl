@@ -63,7 +63,8 @@ end
 #################### MCMCStochastic Constructors ####################
 
 function MCMCStochastic{T}(data::T, expr::Expr, monitor::Bool)
-  MCMCStochastic(data, monitor, paramfx(expr), paramdeps(expr), NullDistribution(), Array(T,0))
+  MCMCStochastic(data, monitor, paramfx(expr), paramdeps(expr),
+                 NullDistribution(), Array(T,0))
 end
 
 function MCMCStochastic(expr::Expr, monitor::Bool=true)
