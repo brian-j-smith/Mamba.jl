@@ -265,24 +265,26 @@ function blocktune(m::MCMCModel, block::Integer=0)
   end
 end
 
-function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false)
+function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false,
+                  dtype::Symbol=:central)
   x0 = unlist(m, block, transform)
-  value = gradient!(m, x0, block, transform)
+  value = gradient!(m, x0, block, transform, dtype)
   relist!(m, x0, block, transform)
   value
 end
 
 function gradient(m::MCMCModel, x::Vector, block::Integer=0,
-                  transform::Bool=false)
+                  transform::Bool=false, dtype::Symbol=:central)
   x0 = unlist(m, block)
-  value = gradient!(m, x, block, transform)
+  value = gradient!(m, x, block, transform, dtype)
   relist!(m, x0, block)
   value
 end
 
 function gradient!(m::MCMCModel, x::Vector, block::Integer=0,
-                   transform::Bool=false)
-  gradient(logpdf!, x, m, block, transform)
+                   transform::Bool=false, dtype::Symbol=:central)
+  f = x -> logpdf!(m, x, block, transform)
+  gradient(f, x, dtype)
 end
 
 function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
