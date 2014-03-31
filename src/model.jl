@@ -317,11 +317,6 @@ function logpdf!(m::MCMCModel, x::Vector, block::Integer=0,
   end
 end
 
-function logpdf!(x::Vector, m::MCMCModel, block::Integer=0,
-                 transform::Bool=false)
-  logpdf!(m, x, block, transform)
-end
-
 function relist(m::MCMCModel, values::Vector, block::Integer=0,
                 transform::Bool=false)
   relist(m, values, blockkeys(m, block), transform)
