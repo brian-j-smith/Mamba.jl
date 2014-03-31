@@ -40,7 +40,8 @@ function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
       v = VariateAMM(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      amm!(v, tunepar["Sigma"], logpdf!, model, block, true, adapt=adapt)
+      f = x -> logpdf(model, x, block, true)
+      amm!(v, tunepar["Sigma"], f, adapt=adapt)
       tunepar["sampler"] = v.tune
       relist(model, v.data, block, true)
     end,
@@ -64,8 +65,9 @@ function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
       v = VariateAMWG(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      amwg!(v, tunepar["sigma"], logpdf!, model, block, true, adapt=adapt,
-            batch=tunepar["batch"], target=tunepar["target"])
+      f = x -> logpdf(model, x, block, true)
+      amwg!(v, tunepar["sigma"], f, adapt=adapt, batch=tunepar["batch"],
+            target=tunepar["target"])
       tunepar["sampler"] = v.tune
       relist(model, v.data, block, true)
     end,
@@ -84,12 +86,12 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       x = unlist(model, block, true)
       tunepar = blocktune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
+      f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
       if model.iter == 1
-        tunepar["eps"] = nutseps(x, nutsfx!, model, block, true,
-                                 tunepar["dtype"])
+        tunepar["eps"] = nutseps(x, f)
       end
-      nuts!(v, tunepar["eps"], nutsfx!, model, block, true, tunepar["dtype"],
-            adapt=model.iter <= model.burnin, target=tunepar["target"])
+      nuts!(v, tunepar["eps"], f, adapt=model.iter <= model.burnin,
+            target=tunepar["target"])
       tunepar["sampler"] = v.tune
       relist(model, v.data, block, true)
     end,
@@ -97,7 +99,7 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
   )
 end
 
-function nutsfx!(x::Vector, m::MCMCModel, block::Integer, transform::Bool,
+function nutsfx!(m::MCMCModel, x::Vector, block::Integer, transform::Bool,
                  dtype::Symbol)
   a = logpdf!(m, x, block, transform)
   b = gradient!(m, x, block, transform, dtype)
@@ -111,8 +113,8 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector)
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      v = slice(x, blocktune(model, block)["width"], logpdf!, model, block,
-                true)
+      f = x -> logpdf(model, x, block, true)
+      v = slice(x, blocktune(model, block)["width"], f)
       relist(model, v.data, block, true)
     end,
     ["width" => width]
@@ -126,8 +128,8 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector)
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      v = slicewg(x, blocktune(model, block)["width"], logpdf!, model, block,
-                  true)
+      f = x -> logpdf(model, x, block, true)
+      v = slicewg(x, blocktune(model, block)["width"], f)
       relist(model, v.data, block, true)
     end,
     ["width" => width]
