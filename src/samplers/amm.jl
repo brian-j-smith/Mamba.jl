@@ -35,12 +35,12 @@ end
 
 #################### Sampling Functions ####################
 
-function amm(x::Vector, Sigma::Cholesky{Float64}, logf::Function, args...;
+function amm(x::Vector, Sigma::Cholesky{Float64}, logf::Function;
              adapt::Bool=false)
-  amm!(VariateAMM(x), Sigma, logf, args...)
+  amm!(VariateAMM(x), Sigma, logf)
 end
 
-function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function, args...;
+function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function;
               adapt::Bool=false)
   tune = v.tune
 
@@ -58,7 +58,7 @@ function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function, args...;
     if tune.m > 2 * d
       x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(d))
     end
-    if rand() < exp(logf(x, args...) - logf(v.data, args...))
+    if rand() < exp(logf(x) - logf(v.data))
       v[:] = x
     end
     sd = tune.scale / d
@@ -78,7 +78,7 @@ function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function, args...;
       tune.Sigma = Sigma
       x = v + tune.Sigma[:L] * randn(d)
     end
-    if rand() < exp(logf(x, args...) - logf(v.data, args...))
+    if rand() < exp(logf(x) - logf(v.data))
       v[:] = x
     end
   end

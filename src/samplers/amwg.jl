@@ -33,13 +33,13 @@ end
 
 #################### Sampling Functions ####################
 
-function amwg(x::Vector, sigma::Vector{Float64}, logf::Function, args...;
+function amwg(x::Vector, sigma::Vector{Float64}, logf::Function;
               adapt::Bool=false, batch::Integer=50, target::Real=0.44)
-  amwg!(VariateAMWG(x), sigma, logf, args..., adapt=adapt, batch=batch,
+  amwg!(VariateAMWG(x), sigma, logf, adapt=adapt, batch=batch,
         target=target)
 end
 
-function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function, args...;
+function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function;
                adapt::Bool=false, batch::Integer=50, target::Real=0.44)
   tune = v.tune
 
@@ -53,7 +53,7 @@ function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function, args...;
       tune.target = target
     end
     tune.m += 1
-    amwg_sub!(v, tune.sigma, logf, args...)
+    amwg_sub!(v, tune.sigma, logf)
     if tune.m % tune.batch == 0
       delta = min(0.01, (tune.m / tune.batch)^-0.5)
       for i in 1:length(tune.sigma)
@@ -65,21 +65,20 @@ function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function, args...;
     if !tune.adapt
       tune.sigma = sigma
     end
-    amwg_sub!(v, tune.sigma, logf, args...)
+    amwg_sub!(v, tune.sigma, logf)
   end
 
   v
 end
 
-function amwg_sub!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function,
-                   args...)
-  logf0 = logf(v.data, args...)
+function amwg_sub!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function)
+  logf0 = logf(v.data)
   d = length(v)
   z = randn(d) .* sigma
   for i in 1:d
     x = v[i]
     v[i] += z[i]
-    logfprime = logf(v.data, args...)
+    logfprime = logf(v.data)
     if rand() < exp(logfprime - logf0)
       logf0 = logfprime
       v.tune.accept[i] += 1

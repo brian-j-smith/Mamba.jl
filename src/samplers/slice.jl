@@ -23,20 +23,19 @@ end
 
 #################### Sampling Functions ####################
 
-function slice(x::Vector, width::Vector{Float64}, logf::Function, args...)
-  slice!(VariateSlice(x), width, logf, args...)
+function slice(x::Vector, width::Vector{Float64}, logf::Function)
+  slice!(VariateSlice(x), width, logf)
 end
 
-function slice!(v::VariateSlice, width::Vector{Float64}, logf::Function,
-                args...)
-  p0 = logf(v.data, args...) + log(rand())
+function slice!(v::VariateSlice, width::Vector{Float64}, logf::Function)
+  p0 = logf(v.data) + log(rand())
 
   n = length(v)
   lower = v - width .* rand(n)
   upper = lower + width
 
   x = width .* rand(n) + lower
-  while logf(x, args...) < p0
+  while logf(x) < p0
     for i in 1:n
       value = x[i]
       if value < v[i]
@@ -58,13 +57,12 @@ end
 
 #################### Sampling Functions ####################
 
-function slicewg(x::Vector, width::Vector{Float64}, logf::Function, args...)
-  slicewg!(VariateSlice(x), width, logf, args...)
+function slicewg(x::Vector, width::Vector{Float64}, logf::Function)
+  slicewg!(VariateSlice(x), width, logf)
 end
 
-function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function,
-                  args...)
-  logf0 = logf(v.data, args...)
+function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
+  logf0 = logf(v.data)
   for i in 1:length(v)
     p0 = logf0 + log(rand())
 
@@ -74,7 +72,7 @@ function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function,
     x = v[i]
     v[i] = width[i] * rand() + lower
     while true
-      logf0 = logf(v.data, args...)
+      logf0 = logf(v.data)
       logf0 < p0 || break
       value = v[i]
       if value < x
