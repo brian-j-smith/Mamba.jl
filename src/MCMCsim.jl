@@ -91,18 +91,23 @@ end
 
 #################### Includes ####################
 
-include("chain.jl")
-include("densities.jl")
-include("mcmc.jl")
-include("model.jl")
-include("nodes.jl")
-include("sampler.jl")
 include("utils.jl")
 include("variate.jl")
+
+include("model/densities.jl")
+include("model/mcmc.jl")
+include("model/model.jl")
+include("model/nodes.jl")
+
+include("output/chain.jl")
+include("output/chainsummary.jl")
+include("output/gelmandiag.jl")
+include("output/stats.jl")
 
 include("samplers/amm.jl")
 include("samplers/amwg.jl")
 include("samplers/nuts.jl")
+include("samplers/sampler.jl")
 include("samplers/slice.jl")
 
 
