@@ -10,7 +10,8 @@ import Calculus: gradient
 import Distributions: insupport, logpdf, quantile
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
-import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase
+import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase,
+       summarystats
 
 
 #################### Variate Types ####################
@@ -136,11 +137,13 @@ export
   logpdf!,
   mcmc,
   plot,
+  quantile,
   relist,
   relist!,
   setdata!,
   setinits!,
   simulate!,
+  summarystats,
   unlist
 
 export
