@@ -1,3 +1,54 @@
+#################### ChainSummary Type ####################
+
+type ChainSummary
+  data::Array{Float64,3}
+  rownames::Vector{String}
+  colnames::Vector{String}
+  header::String
+
+  function ChainSummary(data::Array{Float64,3}, rownames::Vector{String},
+                        colnames::Vector{String}, header::String)
+    dim = size(data)
+    length(rownames) == dim[1] ||
+      error("length of rownames not equal to number of rows")
+    length(colnames) == dim[2] ||
+      error("length of colnames not equal to number of columns")
+    new(data, rownames, colnames, header)
+  end
+end
+
+function ChainSummary{T<:String,U<:String}(data::Array{Float64,3},
+           rownames::Vector{T}, colnames::Vector{U}, header::String)
+  ChainSummary(deepcopy(data), String[rownames...], String[colnames...], header)
+end
+
+function ChainSummary{T<:String,U<:String}(data::Matrix{Float64},
+           rownames::Vector{T}, colnames::Vector{U}, header::String)
+  dim = size(data)
+  ChainSummary(reshape(data, dim[1], dim[2], 1), String[rownames...],
+               String[colnames...], header)
+end
+
+function annotate(x::Matrix, rownames::Vector, colnames::Vector)
+  hcat(["", rownames], vcat(colnames', x))
+end
+
+function Base.show(io::IO, s::ChainSummary)
+  if size(s.data)[3] == 1
+    x = annotate(s.data[:,:,1], s.rownames, s.colnames)
+  else
+    x = mapslices(x -> annotate(x, s.rownames, s.colnames), s.data, [1,2])
+  end
+  showall(io, x)
+  print("\n")
+end
+
+function Base.showall(io::IO, s::ChainSummary)
+  println(io, s.header)
+  show(io, s)
+end
+
+
 #################### MCMCChain Constructor ####################
 
 function MCMCChain(params::Vector, iter::Integer; start::Integer=1,
@@ -58,20 +109,9 @@ function Base.ndims(c::MCMCChain)
 end
 
 function Base.show(io::IO, c::MCMCChain)
-  dim = size(c.data)
-  n = c.start + (dim[1] - 1) * c.thin
   print(io, "Object of type \"$(summary(c))\"\n\n")
-  print(io, string(
-    "Iterations = $(c.start):$n\n",
-    "Thinning interval = $(c.thin)\n",
-    "Number of chains = $(dim[3])\n",
-    "Samples per chain = $(dim[1])\n"
-  ))
-  stats, quants = describe(c)
-  print(io, "\nEmpirical Posterior Estimates:\n")
-  show(io, stats)
-  print(io, "\n\nQuantiles:\n")
-  show(io, quants)
+  println(io, header(c))
+  show(io, c.data)
   print(io, "\n")
 end
 
@@ -84,12 +124,19 @@ function Base.size(c::MCMCChain, ind)
   size(c)[ind]
 end
 
-function annotate(x::Matrix, colnames::Vector, rownames::Vector, index="")
-  hcat([index, rownames], vcat(colnames', x))
-end
-
 function combine(c::MCMCChain)
   mapreduce(i -> c.data[:,:,i], vcat, 1:size(c.data)[3])
+end
+
+function header(c::MCMCChain)
+  dim = size(c.data)
+  n = c.start + (dim[1] - 1) * c.thin
+  string(
+    "Iterations = $(c.start):$n\n",
+    "Thinning interval = $(c.thin)\n",
+    "Number of chains = $(dim[3])\n",
+    "Samples per chain = $(dim[1])\n"
+  )
 end
 
 
@@ -102,10 +149,11 @@ function autocor(c::MCMCChain; lags::Vector=[1,5,10,50], relative::Bool=true)
     error("lags do not correspond to thinning interval")
   end
   labels = map(x -> "Lag " * string(x), lags)
-  mapslices(x -> annotate(autocor(x, lags)', labels, c.names, "Node"), c.data, [1,2])
+  vals = mapslices(x -> autocor(x, lags)', c.data, [1,2])
+  ChainSummary(vals, c.names, labels, header(c))
 end
 
-function batchSE(x::Vector, size::Integer=100)
+function batchSE(x::Vector; size::Integer=100)
   m = div(length(x), size)
   m >= 2 || error("2 or more batches needed to compute SE")
   mbar = [mean(x[i*size+(1:size)]) for i in 0:m-1]
@@ -113,26 +161,16 @@ function batchSE(x::Vector, size::Integer=100)
 end
 
 function cor(c::MCMCChain)
-  vals = cor(combine(c))
-  annotate(vals, c.names, c.names, "Node")
+  ChainSummary(cor(combine(c)), c.names, c.names, header(c))
 end
 
 function describe(c::MCMCChain; batchsize::Integer=100,
                   q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
-  X = combine(c)
-  n, p = size(X)
-
-  f = (x)->[mean(x), sqrt(var(x)), sem(x), batchSE(x, batchsize)]
-  labels =["Mean", "SD", "Naive SE", "Batch SE", "ESS"]
-  vals = mapreduce(i -> f(X[:,i]), hcat, 1:p)'
-  vals = [vals (n * min(vals[:,3] ./ vals[:,4], 1))]
-  stats = annotate(vals, labels, c.names, "Node")
-
-  labels = map(x -> string(100 * x) * "%", q)
-  vals = mapreduce(i -> quantile(X[:,i], q), hcat, 1:p)'
-  quants = annotate(vals, labels, c.names, "Node")
-
-  stats, quants
+  println(header(c))
+  print("Empirical Posterior Estimates:\n")
+  show(summarystats(c, batchsize=batchsize))
+  print("\nQuantiles:\n")
+  show(quantile(c, q=q))
 end
 
 function dic(c::MCMCChain)
@@ -151,10 +189,10 @@ function dic(c::MCMCChain)
 
   relist!(m, x0)
 
-  annotate([D + 2 * pD pD], ["DIC", "pD"], ["Model"])
+  ChainSummary([D + 2 * pD pD], ["Model"], ["DIC", "pD"], header(c))
 end
 
-function hpd(x::Vector, alpha::Real=0.05)
+function hpd(x::Vector; alpha::Real=0.05)
   n = length(x)
   m = max(1, ceil(alpha * n))
 
@@ -166,11 +204,11 @@ function hpd(x::Vector, alpha::Real=0.05)
   [a[i], b[i]]
 end
 
-function hpd(c::MCMCChain, alpha::Real=0.05)
+function hpd(c::MCMCChain; alpha::Real=0.05)
   X = combine(c)
   labels = [string(100 * alpha / 2) * "%", string(100 * (1 - alpha / 2)) * "%"]
-  vals = mapreduce(i -> hpd(X[:,i], alpha), hcat, 1:size(X)[2])
-  annotate(vals', labels, c.names, "Node")
+  vals = mapreduce(i -> hpd(X[:,i], alpha=alpha), hcat, 1:size(X)[2])
+  ChainSummary(vals', c.names, labels, header(c))
 end
 
 function logpdf(c::MCMCChain)
@@ -202,10 +240,29 @@ function logpdf(c::MCMCChain)
   values
 end
 
+function quantile(c::MCMCChain; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+  X = combine(c)
+  dim = size(X)
+  labels = map(x -> string(100 * x) * "%", q)
+  vals = mapreduce(i -> quantile(X[:,i], q), hcat, 1:dim[2])'
+  ChainSummary(vals, c.names, labels, header(c))
+end
+
+function summarystats(c::MCMCChain; batchsize::Integer=100)
+  X = combine(c)
+  n, p = size(X)
+  f = (x)->[mean(x), sqrt(var(x)), sem(x), batchSE(x, size=batchsize)]
+  labels =["Mean", "SD", "Naive SE", "Batch SE", "ESS"]
+  vals = mapreduce(i -> f(X[:,i]), hcat, 1:p)'
+  vals = [vals (n * min(vals[:,3] ./ vals[:,4], 1))]
+  ChainSummary(vals, c.names, labels, header(c))
+end
+
 
 #################### MCMCChain Diagnostic Methods ####################
 
-function gelmandiag(c::MCMCChain; alpha::Real=0.05, transform::Bool=false)
+function gelmandiag(c::MCMCChain; alpha::Real=0.05, mpsrf::Bool=false,
+                    transform::Bool=false)
   n, p, m = size(c.data)
   m >= 2 || error("2 or more chains needed to run gelman diagnostic")
 
@@ -243,11 +300,15 @@ function gelmandiag(c::MCMCChain; alpha::Real=0.05, transform::Bool=false)
 
   psrf = sqrt((df + 3) / (df + 1) * [R_est R_upper])
   psrf_labels = ["PSRF", string(100 * q) * "%"]
+  psrf_names = c.names
 
-  mpsrf = (n - 1) / n + (m + 1) / m * eigmax(inv(cholfact(W)) * B) / n
+  if mpsrf
+    x = [(n - 1) / n + (m + 1) / m * eigmax(inv(cholfact(W)) * B) / n NaN]
+    psrf = vcat(psrf, x)
+    psrf_names = [psrf_names, "Multivariate"]
+  end
 
-  annotate(psrf, psrf_labels, c.names, "Node"),
-  ["" "MPSRF"; "All Nodes" mpsrf]
+  ChainSummary(psrf, psrf_names, psrf_labels, header(c))
 end
 
 function transform_support(c::MCMCChain)
