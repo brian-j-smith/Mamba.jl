@@ -123,7 +123,10 @@ end
 
 function mapdistr(f::Function, s::MCMCStochastic, x, args...)
   if isa(s.distr, Array)
-    map(i -> f(s.distr[i], x[i], args...), 1:length(s))
+    n = length(s.distr)
+    length(x) == n ||
+      error("dimension of stochastic distribution and argument must match")
+    map(i -> f(s.distr[i], x[i], args...), 1:n)
   else
     f(s.distr, x, args...)
   end
