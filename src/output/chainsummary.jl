@@ -36,7 +36,7 @@ end
 #################### ChainSummary Base Methods ####################
 
 function Base.show(io::IO, s::ChainSummary)
-  if size(s.data)[3] == 1
+  if size(s.data, 3) == 1
     x = annotate(s.data[:,:,1], s.rownames, s.colnames)
   else
     x = mapslices(x -> annotate(x, s.rownames, s.colnames), s.data, [1,2])
@@ -50,4 +50,6 @@ function Base.showall(io::IO, s::ChainSummary)
   show(io, s)
 end
 
-
+function annotate(x::Matrix, rownames::Vector, colnames::Vector)
+  hcat(["", rownames], vcat(colnames', x))
+end
