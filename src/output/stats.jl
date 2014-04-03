@@ -65,7 +65,7 @@ end
 function hpd(c::MCMCChain; alpha::Real=0.05)
   X = combine(c)
   labels = [string(100 * alpha / 2) * "%", string(100 * (1 - alpha / 2)) * "%"]
-  vals = mapreduce(i -> hpd(X[:,i], alpha=alpha), hcat, 1:size(X)[2])
+  vals = mapreduce(i -> hpd(X[:,i], alpha=alpha), hcat, 1:size(X, 2))
   ChainSummary(vals', c.names, labels, header(c))
 end
 
