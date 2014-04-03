@@ -5,7 +5,7 @@ function gelmandiag(c::MCMCChain; alpha::Real=0.05, mpsrf::Bool=false,
   n, p, m = size(c.data)
   m >= 2 || error("2 or more chains needed to run gelman diagnostic")
 
-  psi = transform ? transform_support(c) : c.data
+  psi = transform ? link(c) : c.data
 
   S2 = mapslices(x -> reshape(crosscov(x, x, [0]), p, p), psi, [1,2])
   W = mapreduce(i -> S2[:,:,i], +, 1:m) / m
