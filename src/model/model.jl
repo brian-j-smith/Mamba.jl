@@ -108,8 +108,8 @@ function labels{T<:String}(m::MCMCModel, keys::Vector{T})
           push!(values, string(key, "[", i, "]"))
         end
       elseif isa(node, VariateMatrix)
-        for j in 1:size(node)[2]
-          for i in 1:size(node)[1]
+        for j in 1:size(node, 2)
+          for i in 1:size(node, 1)
             push!(values, string(key, "[", i, ",", j, "]"))
           end
         end
