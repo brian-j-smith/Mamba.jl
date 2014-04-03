@@ -74,7 +74,7 @@ function Base.size(c::MCMCChain, ind)
 end
 
 function combine(c::MCMCChain)
-  mapreduce(i -> c.data[:,:,i], vcat, 1:size(c.data)[3])
+  mapreduce(i -> c.data[:,:,i], vcat, 1:size(c.data, 3))
 end
 
 function header(c::MCMCChain)
@@ -88,18 +88,24 @@ function header(c::MCMCChain)
   )
 end
 
-function transform_support(c::MCMCChain)
-  x = deepcopy(c.data)
-  for i in 1:size(x)[2]
-    a = minimum(x[:,i,:])
-    b = maximum(x[:,i,:])
-    if a > 0
-      if b < 1
-        x[:,i,:] = logit(x[:,i,:])
+function link(c::MCMCChain)
+  X = deepcopy(c.data)
+  m = size(X, 1)
+  for key in keys(c.model, true)
+    node = c.model[key]
+    idx = nonzeros(indexin(labels(c.model, [key]), c.names))
+    if length(idx) > 0
+      if isa(node, MCMCStochastic)
+        X[:,idx,:] = mapslices(x -> link(node.distr, x), X[:,idx,:], 2)
       else
-        x[:,i,:] = log(x[:,i,:])
+        for j in idx
+          x = X[:,j,:]
+          if minimum(x) > 0.0
+            X[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
+          end
+        end
       end
     end
   end
-  x
+  X
 end
