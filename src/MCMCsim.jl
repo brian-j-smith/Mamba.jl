@@ -50,7 +50,6 @@ type MCMCStochastic{T} <: MCMCNode{T}
   eval::Function
   deps::Vector{String}
   distr::DistributionStruct
-  inits::Vector{T}
 end
 
 
@@ -135,7 +134,6 @@ export
   graph,
   graph2dot,
   hpd,
-  initchain!,
   insupport,
   invlink,
   link,
@@ -146,8 +144,8 @@ export
   quantile,
   relist,
   relist!,
-  setinputs!,
   setinits!,
+  setinputs!,
   simulate!,
   summarystats,
   terminalkeys,

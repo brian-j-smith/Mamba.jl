@@ -1,13 +1,14 @@
 #################### MCMC Simulation Engine ####################
 
-function mcmc(model::MCMCModel, inputs::Dict, inits::Dict, iter::Integer;
-              burnin::Integer=0, thin::Integer=1, chains::Integer=1)
+function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
+           inits::Vector{Dict{U,Any}}, iter::Integer; burnin::Integer=0,
+           thin::Integer=1, chains::Integer=1)
+
   iter > burnin || error("iter <= burnin")
 
   m = deepcopy(model)
 
   setinputs!(m, inputs)
-  setinits!(m, inits)
   m.burnin = burnin
 
   monitorkeys = keys(m, true)
@@ -16,7 +17,9 @@ function mcmc(model::MCMCModel, inputs::Dict, inits::Dict, iter::Integer;
                    start=burnin + thin, thin=thin, chains=chains, model=m)
 
   for k in 1:chains
-    initchain!(m, k)
+    setinits!(m, inits[k])
+    m.chain = k
+
     print("\nSAMPLING FROM CHAIN $(k)/$(chains)\n")
     pct = 0
     i = 1

@@ -1,6 +1,6 @@
 #################### MCMCModel Constructor ####################
 
-function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=0,
+function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
                    samplers::Vector=MCMCSampler[], params...)
   nodes = Dict{String,Any}()
   for (key, value) in params
@@ -88,14 +88,6 @@ function inputkeys(m::MCMCModel)
   setdiff(nodekeys(m), paramkeys(m))
 end
 
-function initchain!(m::MCMCModel, chain::Integer)
-  for key in m.links
-    initchain!(m[key], m, chain)
-  end
-  m.chain = chain
-  m
-end
-
 function labels{T<:String}(m::MCMCModel, keys::Vector{T})
   values = String[]
   for key in keys
@@ -141,23 +133,24 @@ function paramkeys(m::MCMCModel)
   result
 end
 
+function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
+  for key in m.links
+    node = m[key]
+    if isa(node, MCMCStochastic)
+      setinits!(m[key], m, inits[key])
+    else
+      setinits!(m[key], m)
+    end
+  end
+  m
+end
+
 function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
   for key in inputkeys(m)
     isa(inputs[key], MCMCNode) && error("inputs must not be MCMCNode types")
     m.nodes[key] = deepcopy(inputs[key])
   end
   m.hasinputs = true
-  m
-end
-
-function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
-  for key in keys(m)
-    node = m[key]
-    if isa(node, MCMCStochastic)
-      node.inits = convert(typeof(node.inits), inits[key])
-    end
-  end
-  m.hasinits = true
   m
 end
 

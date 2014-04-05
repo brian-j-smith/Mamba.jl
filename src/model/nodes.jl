@@ -46,7 +46,7 @@ end
 
 identity(l::MCMCLogical, x) = x
 
-initchain!(l::MCMCLogical, m::MCMCModel, chain::Integer) = update!(l, m)
+setinits!(l::MCMCLogical, m::MCMCModel, x=nothing) = update!(l, m)
 
 invlink(l::MCMCLogical, x) = x
 
@@ -64,7 +64,7 @@ end
 
 function MCMCStochastic{T}(data::T, expr::Expr, monitor::Bool)
   MCMCStochastic(data, monitor, paramfx(expr), paramdeps(expr),
-                 NullDistribution(), Array(T,0))
+                 NullDistribution())
 end
 
 function MCMCStochastic(expr::Expr, monitor::Bool=true)
@@ -98,10 +98,8 @@ function Base.showall(io::IO, s::MCMCStochastic)
   print(io, "\n")
 end
 
-function initchain!(s::MCMCStochastic, m::MCMCModel, chain::Integer)
-  length(s.inits) > 0 || error("missing initial values for stochastic node")
-  i = (chain - 1) % length(s.inits) + 1
-  s[:] = s.inits[i]
+function setinits!(s::MCMCStochastic, m::MCMCModel, x)
+  s[:] = convert(typeof(s.data), x)
   update!(s, m)
   if isa(s.distr, Array) && size(s.data) != size(s.distr)
     error("stochastic parameter and distribution dimensions must match")
