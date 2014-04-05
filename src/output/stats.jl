@@ -33,21 +33,21 @@ end
 
 function dic(c::MCMCChain)
   m = c.model
+  keys = terminalkeys(m)
+  idx = indexin(labels(m, blockkeys(m)), c)
 
-  keys = blockkeys(m)
-  idx = indexin(labels(m, keys), c)
-
-  x0 = unlist(m, keys)
+  x0 = unlist(m)
 
   xbar = map(i -> mean(c.data[:,i,:]), idx)
   relist!(m, xbar)
-  D = -2 * logpdf(m)
-  Dbar = -2 * mean(logpdf(c))
-  pD = Dbar - D
+  Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, keys)
+  D = -2.0 * logpdf(c, keys)
+  p = [mean(D) - Dhat, 0.5 * var(D)]
 
   relist!(m, x0)
 
-  ChainSummary([D + 2 * pD pD], ["Model"], ["DIC", "pD"], header(c))
+  ChainSummary(hcat(Dhat + 2 * p, p), ["pD", "pV"],
+               ["DIC", "Effective Parameters"], header(c))
 end
 
 function hpd(x::Vector; alpha::Real=0.05)
@@ -69,13 +69,11 @@ function hpd(c::MCMCChain; alpha::Real=0.05)
   ChainSummary(vals', c.names, labels, header(c))
 end
 
-function logpdf(c::MCMCChain)
+function logpdf{T<:String}(c::MCMCChain, keys::Vector{T})
   m = c.model
+  idx = indexin(labels(m, blockkeys(m)), c)
 
-  keys = blockkeys(m)
-  idx = indexin(labels(m, keys), c)
-
-  x0 = unlist(m, keys)
+  x0 = unlist(m)
 
   iter, p, chains = size(c.data)
   values = Array(Float64, iter, 1, chains)
@@ -88,7 +86,8 @@ function logpdf(c::MCMCChain)
           "/$(iter) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
         pct += 10
       end
-      values[i,1,k] = logpdf!(m, c.data[i,idx,k][:])
+      relist!(m, c.data[i,idx,k][:])
+      values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, keys)
     end
   end
   print("\n")
