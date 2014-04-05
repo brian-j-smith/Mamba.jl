@@ -94,7 +94,8 @@ end
 include("utils.jl")
 include("variate.jl")
 
-include("model/densities.jl")
+include("model/distributions.jl")
+include("model/graph.jl")
 include("model/mcmc.jl")
 include("model/model.jl")
 include("model/nodes.jl")
@@ -149,6 +150,7 @@ export
   setinits!,
   simulate!,
   summarystats,
+  terminalkeys,
   unlist
 
 export
