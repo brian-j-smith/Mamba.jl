@@ -10,6 +10,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
 
   setinputs!(m, inputs)
   m.burnin = burnin
+  tune0 = blocktune(m)
 
   monitorkeys = keys(m, true)
 
@@ -18,6 +19,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
 
   for k in 1:chains
     setinits!(m, inits[k])
+    settune!(m, tune0)
     m.chain = k
 
     print("\nSAMPLING FROM CHAIN $(k)/$(chains)\n")
