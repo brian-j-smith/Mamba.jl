@@ -4,7 +4,7 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=0,
                    samplers::Vector=MCMCSampler[], params...)
   nodes = Dict{String,Any}()
   for (key, value) in params
-    isa(value, MCMCParam) || error("params must be MCMCParam types")
+    isa(value, MCMCNode) || error("params must be MCMCNode types")
     nodes[string(key)] = deepcopy(value)
   end
   m = MCMCModel(nodes, String[], samplers, iter, burnin, chain, false, false)
@@ -38,7 +38,7 @@ function Base.keys(m::MCMCModel, monitoronly::Bool=false)
     result = String[]
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, MCMCParam) && node.monitor
+      if isa(node, MCMCNode) && node.monitor
         push!(result, key)
       end
     end
@@ -84,7 +84,7 @@ end
 
 #################### MCMCModel Initialization Methods ####################
 
-function datakeys(m::MCMCModel)
+function inputkeys(m::MCMCModel)
   setdiff(nodekeys(m), paramkeys(m))
 end
 
@@ -100,7 +100,7 @@ function labels{T<:String}(m::MCMCModel, keys::Vector{T})
   values = String[]
   for key in keys
     node = m[key]
-    if isa(node, MCMCParam)
+    if isa(node, MCMCNode)
       if isa(node, VariateScalar)
         push!(values, key)
       elseif isa(node, VariateVector)
@@ -114,10 +114,10 @@ function labels{T<:String}(m::MCMCModel, keys::Vector{T})
           end
         end
       else
-        error("unsupported MCMCParam node")
+        error("unsupported MCMCNode node")
       end
     else
-      error("only MCMCParam nodes may be labeled")
+      error("only MCMCNode nodes may be labeled")
     end
   end
   values
@@ -134,19 +134,19 @@ end
 function paramkeys(m::MCMCModel)
   result = String[]
   for key in keys(m)
-    if isa(m[key], MCMCParam)
+    if isa(m[key], MCMCNode)
       push!(result, key)
     end
   end
   result
 end
 
-function setdata!{T<:String}(m::MCMCModel, data::Dict{T,Any})
-  for key in datakeys(m)
-    isa(data[key], MCMCParam) && error("data must not be MCMCParam types")
-    m.nodes[key] = deepcopy(data[key])
+function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
+  for key in inputkeys(m)
+    isa(inputs[key], MCMCNode) && error("inputs must not be MCMCNode types")
+    m.nodes[key] = deepcopy(inputs[key])
   end
-  m.hasdata = true
+  m.hasinputs = true
   m
 end
 

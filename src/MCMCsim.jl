@@ -33,18 +33,18 @@ typealias Multivariate Union(VariateVector, VariateMatrix)
 typealias DistributionStruct Union(Distribution, VecOrMat{Distribution})
 
 
-#################### MCMCParam Types ####################
+#################### MCMCNode Types ####################
 
-abstract MCMCParam{T} <: Variate{T}
+abstract MCMCNode{T} <: Variate{T}
 
-type MCMCLogical{T} <: MCMCParam{T}
+type MCMCLogical{T} <: MCMCNode{T}
   data::T
   monitor::Bool
   eval::Function
   deps::Vector{String}
 end
 
-type MCMCStochastic{T} <: MCMCParam{T}
+type MCMCStochastic{T} <: MCMCNode{T}
   data::T
   monitor::Bool
   eval::Function
@@ -73,7 +73,7 @@ type MCMCModel
   iter::Integer
   burnin::Integer
   chain::Integer
-  hasdata::Bool
+  hasinputs::Bool
   hasinits::Bool
 end
 
@@ -146,7 +146,7 @@ export
   quantile,
   relist,
   relist!,
-  setdata!,
+  setinputs!,
   setinits!,
   simulate!,
   summarystats,

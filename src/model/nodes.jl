@@ -1,6 +1,6 @@
-#################### MCMCParam Methods ####################
+#################### MCMCNode Methods ####################
 
-function Base.show(io::IO, p::MCMCParam)
+function Base.show(io::IO, p::MCMCNode)
   msg = string(ifelse(p.monitor, "A ", "An un"),
                "monitored node of type \"", summary(p), "\"\n")
   print(io, msg)
@@ -8,7 +8,7 @@ function Base.show(io::IO, p::MCMCParam)
   print(io, "\n")
 end
 
-function Base.showall(io::IO, p::MCMCParam)
+function Base.showall(io::IO, p::MCMCNode)
   show(io, p)
   print(io, "\nFunction:\n")
   show(io, p.eval.code)

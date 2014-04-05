@@ -1,12 +1,12 @@
 #################### MCMC Simulation Engine ####################
 
-function mcmc(model::MCMCModel, data::Dict, inits::Dict, iter::Integer;
+function mcmc(model::MCMCModel, inputs::Dict, inits::Dict, iter::Integer;
               burnin::Integer=0, thin::Integer=1, chains::Integer=1)
   iter > burnin || error("iter <= burnin")
 
   m = deepcopy(model)
 
-  setdata!(m, data)
+  setinputs!(m, inputs)
   setinits!(m, inits)
   m.burnin = burnin
 

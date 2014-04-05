@@ -29,7 +29,7 @@ function graph(m::MCMCModel)
     lookup[key] = length(lookup) + 1
     add_vertex!(g, ExVertex(lookup[key], key))
   end
-  for key in datakeys(m)
+  for key in inputkeys(m)
     v = vertices(g)[lookup[key]]
     v.attributes["shape"] = "box"
     v.attributes["style"] = "filled"
