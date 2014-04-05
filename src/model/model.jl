@@ -84,6 +84,28 @@ end
 
 #################### MCMCModel Initialization Methods ####################
 
+function blockkeys(m::MCMCModel, block::Integer=0)
+  blocks = block > 0 ? block : 1:length(m.samplers)
+  values = String[]
+  for b in blocks
+    append!(values, m.samplers[b].params)
+  end
+  unique(values)
+end
+
+function blocktune(m::MCMCModel, block::Integer=0)
+  if block > 0
+    values = m.samplers[block].tune
+  else
+    n = length(m.samplers)
+    values = Array(Any, n)
+    for i in 1:n
+      values[i] = m.samplers[i].tune
+    end
+  end
+  values
+end
+
 function inputkeys(m::MCMCModel)
   setdiff(nodekeys(m), paramkeys(m))
 end
@@ -154,25 +176,13 @@ function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
   m
 end
 
+function settune!(m::MCMCModel, tune::Vector)
+  for b in 1:length(m.samplers)
+    m.samplers[b].tune = deepcopy(tune[b])
+  end
+end
 
 #################### MCMCModel Simulation Methods ####################
-
-function blockkeys(m::MCMCModel, block::Integer=0)
-  blocks = block > 0 ? block : 1:length(m.samplers)
-  values = String[]
-  for b in blocks
-    append!(values, m.samplers[b].params)
-  end
-  unique(values)
-end
-
-function blocktune(m::MCMCModel, block::Integer=0)
-  if block > 0
-    m.samplers[block].tune
-  else
-    map(b -> m.samplers[b].tune, 1:length(m.samplers))
-  end
-end
 
 function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false,
                   dtype::Symbol=:central)
