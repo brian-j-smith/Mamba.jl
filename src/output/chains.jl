@@ -1,17 +1,17 @@
-#################### MCMCChain Constructor ####################
+#################### MCMCChains Constructor ####################
 
-function MCMCChain(params::Vector, iter::Integer; start::Integer=1,
+function MCMCChains(params::Vector, iter::Integer; start::Integer=1,
                    thin::Integer=1, chains::Integer=1,
                    model::MCMCModel=MCMCModel())
   data = Array(VariateType, iter, length(params), chains)
   fill!(data, NaN)
-  MCMCChain(data, String[params...], start, thin, model)
+  MCMCChains(data, String[params...], start, thin, model)
 end
 
 
-#################### MCMCChain Base/Utility Methods ####################
+#################### MCMCChains Base/Utility Methods ####################
 
-function Base.getindex{T<:String}(c::MCMCChain, iter::Range, names::Vector{T},
+function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
                                   chains::Vector)
   dim = size(c.data)
 
@@ -24,15 +24,15 @@ function Base.getindex{T<:String}(c::MCMCChain, iter::Range, names::Vector{T},
   idx3 = findin(1:dim[3], chains)
 
   data = c.data[idx1, idx2, idx3]
-  MCMCChain(data, c.names[idx2], c.start + (from - 1) * c.thin, c.thin * thin,
-            c.model)
+  MCMCChains(data, c.names[idx2], c.start + (from - 1) * c.thin, c.thin * thin,
+             c.model)
 end
 
-function Base.getindex(c::MCMCChain, iter::Range, names::Vector, chains::Vector)
+function Base.getindex(c::MCMCChains, iter::Range, names::Vector, chains::Vector)
   c[iter, c.names[names], chains]
 end
 
-function Base.getindex(c::MCMCChain, inds...)
+function Base.getindex(c::MCMCChains, inds...)
   length(inds) == 3 ||
     error("must supply 3-dimensional index for iter, names, and chains")
   idx = inds[1]
@@ -43,41 +43,41 @@ function Base.getindex(c::MCMCChain, inds...)
   c[iter, names, chains]
 end
 
-function Base.indexin(names::Vector{String}, c::MCMCChain)
+function Base.indexin(names::Vector{String}, c::MCMCChains)
   idx = indexin(names, c.names)
-  all(idx .!= 0) || error("node name matches not found in MCMCChain")
+  all(idx .!= 0) || error("node name matches not found in MCMCChains")
   idx
 end
 
-function Base.keys(c::MCMCChain)
+function Base.keys(c::MCMCChains)
   c.names
 end
 
-function Base.ndims(c::MCMCChain)
+function Base.ndims(c::MCMCChains)
   ndims(c.data)
 end
 
-function Base.show(io::IO, c::MCMCChain)
+function Base.show(io::IO, c::MCMCChains)
   print(io, "Object of type \"$(summary(c))\"\n\n")
   println(io, header(c))
   show(io, c.data)
   print(io, "\n")
 end
 
-function Base.size(c::MCMCChain)
+function Base.size(c::MCMCChains)
   dim = size(c.data)
   (c.start + (dim[1] - 1) * c.thin, dim[2], dim[3])
 end
 
-function Base.size(c::MCMCChain, ind)
+function Base.size(c::MCMCChains, ind)
   size(c)[ind]
 end
 
-function combine(c::MCMCChain)
+function combine(c::MCMCChains)
   mapreduce(i -> c.data[:,:,i], vcat, 1:size(c.data, 3))
 end
 
-function header(c::MCMCChain)
+function header(c::MCMCChains)
   dim = size(c.data)
   n = c.start + (dim[1] - 1) * c.thin
   string(
@@ -88,7 +88,7 @@ function header(c::MCMCChain)
   )
 end
 
-function link(c::MCMCChain)
+function link(c::MCMCChains)
   X = deepcopy(c.data)
   m = size(X, 1)
   for key in keys(c.model, true)

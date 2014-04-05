@@ -1,6 +1,6 @@
 #################### Posterior Statistics ####################
 
-function autocor(c::MCMCChain; lags::Vector=[1,5,10,50], relative::Bool=true)
+function autocor(c::MCMCChains; lags::Vector=[1,5,10,50], relative::Bool=true)
   if relative
     lags *= c.thin
   elseif any(lags .% c.thin .!= 0)
@@ -18,11 +18,11 @@ function batchSE(x::Vector; size::Integer=100)
   sem(mbar)
 end
 
-function cor(c::MCMCChain)
+function cor(c::MCMCChains)
   ChainSummary(cor(combine(c)), c.names, c.names, header(c))
 end
 
-function describe(c::MCMCChain; batchsize::Integer=100,
+function describe(c::MCMCChains; batchsize::Integer=100,
                   q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   println(header(c))
   print("Empirical Posterior Estimates:\n")
@@ -31,7 +31,7 @@ function describe(c::MCMCChain; batchsize::Integer=100,
   show(quantile(c, q=q))
 end
 
-function dic(c::MCMCChain)
+function dic(c::MCMCChains)
   m = c.model
   keys = terminalkeys(m)
   idx = indexin(labels(m, blockkeys(m)), c)
@@ -62,14 +62,14 @@ function hpd(x::Vector; alpha::Real=0.05)
   [a[i], b[i]]
 end
 
-function hpd(c::MCMCChain; alpha::Real=0.05)
+function hpd(c::MCMCChains; alpha::Real=0.05)
   X = combine(c)
   labels = [string(100 * alpha / 2) * "%", string(100 * (1 - alpha / 2)) * "%"]
   vals = mapreduce(i -> hpd(X[:,i], alpha=alpha), hcat, 1:size(X, 2))
   ChainSummary(vals', c.names, labels, header(c))
 end
 
-function logpdf{T<:String}(c::MCMCChain, keys::Vector{T})
+function logpdf{T<:String}(c::MCMCChains, keys::Vector{T})
   m = c.model
   idx = indexin(labels(m, blockkeys(m)), c)
 
@@ -78,7 +78,7 @@ function logpdf{T<:String}(c::MCMCChain, keys::Vector{T})
   iter, p, chains = size(c.data)
   values = Array(Float64, iter, 1, chains)
   for k in 1:chains
-    print("\nPROCESSING MCMCChain $(k)/$(chains)\n")
+    print("\nPROCESSING MCMCChains $(k)/$(chains)\n")
     pct = 0
     for i in 1:iter
       if floor(100 * i / iter) >= pct
@@ -97,7 +97,7 @@ function logpdf{T<:String}(c::MCMCChain, keys::Vector{T})
   values
 end
 
-function quantile(c::MCMCChain; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+function quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   X = combine(c)
   dim = size(X)
   labels = map(x -> string(100 * x) * "%", q)
@@ -105,7 +105,7 @@ function quantile(c::MCMCChain; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function summarystats(c::MCMCChain; batchsize::Integer=100)
+function summarystats(c::MCMCChains; batchsize::Integer=100)
   X = combine(c)
   n, p = size(X)
   f = (x)->[mean(x), sqrt(var(x)), sem(x), batchSE(x, size=batchsize)]

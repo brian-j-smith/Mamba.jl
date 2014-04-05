@@ -79,7 +79,7 @@ end
 
 #################### MCMCChain Type ####################
 
-type MCMCChain
+type MCMCChains
   data::Array{VariateType,3}
   names::Vector{String}
   start::Integer
@@ -99,7 +99,7 @@ include("model/mcmc.jl")
 include("model/model.jl")
 include("model/nodes.jl")
 
-include("output/chain.jl")
+include("output/chains.jl")
 include("output/chainsummary.jl")
 include("output/gelmandiag.jl")
 include("output/stats.jl")
