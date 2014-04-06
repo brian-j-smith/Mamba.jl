@@ -1,21 +1,29 @@
 #################### MCMCNode Methods ####################
 
-function Base.show(io::IO, p::MCMCNode)
-  msg = string(ifelse(p.monitor, "A ", "An un"),
-               "monitored node of type \"", summary(p), "\"\n")
+function Base.show(io::IO, n::MCMCNode)
+  msg = string(ifelse(n.monitor, "A ", "An un"),
+               "monitored node of type \"", summary(n), "\"\n")
   print(io, msg)
-  show(io, p.data)
+  show(io, n.data)
   print(io, "\n")
 end
 
-function Base.showall(io::IO, p::MCMCNode)
-  show(io, p)
+function Base.showall(io::IO, n::MCMCNode)
+  show(io, n)
   print(io, "\nFunction:\n")
-  show(io, p.eval.code)
+  show(io, n.eval.code)
   print(io, "\n\nNode Dependencies:\n")
-  show(io, p.deps)
+  show(io, n.deps)
   print(io, "\n")
 end
+
+identity(n::MCMCNode, x) = x
+
+invlink(n::MCMCNode, x) = x
+
+link(n::MCMCNode, x) = x
+
+logpdf(n::MCMCNode, transform::Bool=false) = 0.0
 
 
 #################### MCMCLogical Constructors ####################
@@ -44,15 +52,7 @@ end
 
 #################### MCMCLogical Methods ####################
 
-identity(l::MCMCLogical, x) = x
-
 setinits!(l::MCMCLogical, m::MCMCModel, x=nothing) = update!(l, m)
-
-invlink(l::MCMCLogical, x) = x
-
-link(l::MCMCLogical, x) = x
-
-logpdf(l::MCMCLogical, transform::Bool=false) = 0.0
 
 function update!(l::MCMCLogical, m::MCMCModel)
   l[:] = l.eval(m)
@@ -106,8 +106,6 @@ function setinits!(s::MCMCStochastic, m::MCMCModel, x)
   end
   s
 end
-
-identity(s::MCMCStochastic, x) = x
 
 insupport(s::MCMCStochastic) = all(mapdistr(insupport, s, s.data))
 
