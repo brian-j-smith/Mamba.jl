@@ -149,7 +149,8 @@ export
   simulate!,
   summarystats,
   terminalkeys,
-  unlist
+  unlist,
+  update!
 
 export
   SamplerAMM,
