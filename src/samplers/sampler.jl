@@ -1,6 +1,7 @@
 #################### MCMCSampler Constructor ####################
 
-function MCMCSampler(params::Vector, expr::Expr, tune::Dict=Dict())
+function MCMCSampler{T<:String}(params::Vector{T}, expr::Expr,
+           tune::Dict=Dict())
   MCMCSampler(String[params...], String[], samplerfx(expr), tune)
 end
 
@@ -29,7 +30,7 @@ end
 #################### Adaptive Metropolis within Gibbs ####################
 
 function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
-                               adapt::Symbol=:none)
+           adapt::Symbol=:none)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
@@ -53,8 +54,7 @@ end
 #################### Adaptive Metropolis within Gibbs ####################
 
 function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
-                                adapt::Symbol=:none, batch::Integer=50,
-                                target::Real=0.44)
+           adapt::Symbol=:none, batch::Integer=50, target::Real=0.44)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
@@ -80,7 +80,7 @@ end
 #################### No-U-Turn Sampler ####################
 
 function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
-                                target::Real=0.6)
+           target::Real=0.6)
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
@@ -100,7 +100,7 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
 end
 
 function nutsfx!(m::MCMCModel, x::Vector, block::Integer, transform::Bool,
-                 dtype::Symbol)
+           dtype::Symbol)
   a = logpdf!(m, x, block, transform)
   b = gradient!(m, x, block, transform, dtype)
   a, b

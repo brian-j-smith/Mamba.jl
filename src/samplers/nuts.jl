@@ -139,7 +139,7 @@ function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
 end
 
 function buildtree(x::Vector, r::Vector, grad::Vector, logu::Real, pm::Integer,
-                   j::Integer, eps::Real, p0::Real, fx::Function)
+           j::Integer, eps::Real, p0::Real, fx::Function)
   if j == 0
     node = leapfrog(x, r, pm * eps, grad, fx)
     p = node[:logf] - 0.5 * sum(node[:r].^2)

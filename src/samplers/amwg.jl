@@ -34,13 +34,13 @@ end
 #################### Sampling Functions ####################
 
 function amwg(x::Vector, sigma::Vector{Float64}, logf::Function;
-              adapt::Bool=false, batch::Integer=50, target::Real=0.44)
+           adapt::Bool=false, batch::Integer=50, target::Real=0.44)
   amwg!(VariateAMWG(x), sigma, logf, adapt=adapt, batch=batch,
         target=target)
 end
 
 function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function;
-               adapt::Bool=false, batch::Integer=50, target::Real=0.44)
+           adapt::Bool=false, batch::Integer=50, target::Real=0.44)
   tune = v.tune
 
   if adapt

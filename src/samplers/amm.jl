@@ -36,12 +36,12 @@ end
 #################### Sampling Functions ####################
 
 function amm(x::Vector, Sigma::Cholesky{Float64}, logf::Function;
-             adapt::Bool=false)
+           adapt::Bool=false)
   amm!(VariateAMM(x), Sigma, logf)
 end
 
 function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function;
-              adapt::Bool=false)
+           adapt::Bool=false)
   tune = v.tune
 
   d = length(v)
