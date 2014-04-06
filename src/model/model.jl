@@ -1,13 +1,13 @@
 #################### MCMCModel Constructor ####################
 
 function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
-                   samplers::Vector=MCMCSampler[], params...)
-  nodes = Dict{String,Any}()
-  for (key, value) in params
-    isa(value, MCMCNode) || error("params must be MCMCNode types")
-    nodes[string(key)] = deepcopy(value)
+           samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
+  nodedict = Dict{String,Any}()
+  for (key, value) in nodes
+    isa(value, MCMCNode) || error("nodes must be MCMCNode types")
+    nodedict[string(key)] = deepcopy(value)
   end
-  m = MCMCModel(nodes, String[], samplers, iter, burnin, chain, false, false)
+  m = MCMCModel(nodedict, String[], samplers, iter, burnin, chain, false, false)
   g = graph(m)
   m.links = intersect(tsort(g), paramkeys(m))
   V = vertices(g)
@@ -185,23 +185,23 @@ end
 #################### MCMCModel Simulation Methods ####################
 
 function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false,
-                  dtype::Symbol=:central)
+           dtype::Symbol=:central)
   x0 = unlist(m, block, transform)
   value = gradient!(m, x0, block, transform, dtype)
   relist!(m, x0, block, transform)
   value
 end
 
-function gradient(m::MCMCModel, x::Vector, block::Integer=0,
-                  transform::Bool=false, dtype::Symbol=:central)
+function gradient{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+           transform::Bool=false, dtype::Symbol=:central)
   x0 = unlist(m, block)
   value = gradient!(m, x, block, transform, dtype)
   relist!(m, x0, block)
   value
 end
 
-function gradient!(m::MCMCModel, x::Vector, block::Integer=0,
-                   transform::Bool=false, dtype::Symbol=:central)
+function gradient!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+           transform::Bool=false, dtype::Symbol=:central)
   f = x -> logpdf!(m, x, block, transform)
   gradient(f, x, dtype)
 end
@@ -216,16 +216,16 @@ function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
   mapreduce(key -> logpdf(m[key], transform), +, unique(keys))
 end
 
-function logpdf(m::MCMCModel, x::Vector, block::Integer=0,
-                transform::Bool=false)
+function logpdf{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+           transform::Bool=false)
   x0 = unlist(m, block)
   value = logpdf!(m, x, block, transform)
   relist!(m, x0, block)
   value
 end
 
-function logpdf!(m::MCMCModel, x::Vector, block::Integer=0,
-                 transform::Bool=false)
+function logpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+           transform::Bool=false)
   keys = blockkeys(m, block)
   m[keys] = relist(m, x, keys, transform)
   if all(map(key -> insupport(m[key]), keys))
@@ -236,13 +236,13 @@ function logpdf!(m::MCMCModel, x::Vector, block::Integer=0,
   end
 end
 
-function relist(m::MCMCModel, values::Vector, block::Integer=0,
-                transform::Bool=false)
+function relist{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
+           transform::Bool=false)
   relist(m, values, blockkeys(m, block), transform)
 end
 
-function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
-                           transform::Bool=false)
+function relist{T<:Real,U<:String}(m::MCMCModel, values::Vector{T},
+           keys::Vector{U}, transform::Bool=false)
   f =  transform ? invlink : identity
   x = Dict{String,Any}()
   j = 0
@@ -256,15 +256,15 @@ function relist{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
   x
 end
 
-function relist!(m::MCMCModel, values::Vector, block::Integer=0,
-                 transform::Bool=false)
+function relist!{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
+           transform::Bool=false)
   keys = blockkeys(m, block)
   m[keys] = relist(m, values, keys, transform)
   update!(m, block)
 end
 
-function relist!{T<:String}(m::MCMCModel, values::Vector, keys::Vector{T},
-                            transform::Bool=false)
+function relist!{T<:Real,U<:String}(m::MCMCModel, values::Vector{T},
+           keys::Vector{U}, transform::Bool=false)
   m[keys] = relist(m, values, keys, transform)
   update!(m)
 end
