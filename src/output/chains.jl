@@ -1,18 +1,18 @@
 #################### MCMCChains Constructor ####################
 
-function MCMCChains(params::Vector, iter::Integer; start::Integer=1,
-                   thin::Integer=1, chains::Integer=1,
-                   model::MCMCModel=MCMCModel())
-  data = Array(VariateType, iter, length(params), chains)
+function MCMCChains{T<:String}(names::Vector{T}, iter::Integer;
+           start::Integer=1, thin::Integer=1, chains::Integer=1,
+           model::MCMCModel=MCMCModel())
+  data = Array(VariateType, iter, length(names), chains)
   fill!(data, NaN)
-  MCMCChains(data, String[params...], start, thin, model)
+  MCMCChains(data, String[names...], start, thin, model)
 end
 
 
 #################### MCMCChains Base/Utility Methods ####################
 
 function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
-                                  chains::Vector)
+           chains::Vector)
   dim = size(c.data)
 
   from = max(iceil((first(iter) - c.start) / c.thin + 1), 1)
