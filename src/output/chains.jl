@@ -91,7 +91,7 @@ end
 function link(c::MCMCChains)
   X = deepcopy(c.data)
   m = size(X, 1)
-  for key in keys(c.model, true)
+  for key in keys(c.model, :monitor)
     node = c.model[key]
     idx = nonzeros(indexin(labels(c.model, [key]), c.names))
     if length(idx) > 0

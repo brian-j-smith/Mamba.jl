@@ -10,9 +10,9 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
 
   setinputs!(m, inputs)
   m.burnin = burnin
-  tune0 = blocktune(m)
+  tune0 = tune(m)
 
-  monitorkeys = keys(m, true)
+  monitorkeys = keys(m, :monitor)
 
   sims = MCMCChains(labels(m, monitorkeys), div(iter - burnin - 1, thin) + 1,
                     start=burnin + thin, thin=thin, chains=chains, model=m)

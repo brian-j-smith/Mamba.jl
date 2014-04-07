@@ -37,7 +37,7 @@ function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      tunepar = blocktune(model, block)
+      tunepar = tune(model, block)
       v = VariateAMM(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
@@ -61,7 +61,7 @@ function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      tunepar = blocktune(model, block)
+      tunepar = tune(model, block)
       v = VariateAMWG(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
@@ -84,7 +84,7 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      tunepar = blocktune(model, block)
+      tunepar = tune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
       f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
       if model.iter == 1
@@ -114,7 +114,7 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector)
     quote
       x = unlist(model, block, true)
       f = x -> logpdf(model, x, block, true)
-      v = slice(x, blocktune(model, block)["width"], f)
+      v = slice(x, tune(model, block)["width"], f)
       relist(model, v.data, block, true)
     end,
     ["width" => width]
@@ -129,7 +129,7 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector)
     quote
       x = unlist(model, block, true)
       f = x -> logpdf(model, x, block, true)
-      v = slicewg(x, blocktune(model, block)["width"], f)
+      v = slicewg(x, tune(model, block)["width"], f)
       relist(model, v.data, block, true)
     end,
     ["width" => width]

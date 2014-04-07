@@ -33,18 +33,18 @@ typealias Multivariate Union(VariateVector, VariateMatrix)
 typealias DistributionStruct Union(Distribution, VecOrMat{Distribution})
 
 
-#################### MCMCNode Types ####################
+#################### MCMCDepNode Types ####################
 
-abstract MCMCNode{T} <: Variate{T}
+abstract MCMCDepNode{T} <: Variate{T}
 
-type MCMCLogical{T} <: MCMCNode{T}
+type MCMCLogical{T} <: MCMCDepNode{T}
   data::T
   monitor::Bool
   eval::Function
   deps::Vector{String}
 end
 
-type MCMCStochastic{T} <: MCMCNode{T}
+type MCMCStochastic{T} <: MCMCDepNode{T}
   data::T
   monitor::Bool
   eval::Function
@@ -123,8 +123,6 @@ export
 
 export
   autocor,
-  blockkeys,
-  blocktune,
   cor,
   describe,
   dic,
@@ -148,7 +146,7 @@ export
   setinputs!,
   simulate!,
   summarystats,
-  terminalkeys,
+  tune,
   unlist,
   update!
 

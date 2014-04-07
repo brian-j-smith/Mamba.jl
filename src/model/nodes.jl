@@ -1,6 +1,6 @@
-#################### MCMCNode Methods ####################
+#################### MCMCDepNode Methods ####################
 
-function Base.show(io::IO, n::MCMCNode)
+function Base.show(io::IO, n::MCMCDepNode)
   msg = string(ifelse(n.monitor, "A ", "An un"),
                "monitored node of type \"", summary(n), "\"\n")
   print(io, msg)
@@ -8,7 +8,7 @@ function Base.show(io::IO, n::MCMCNode)
   print(io, "\n")
 end
 
-function Base.showall(io::IO, n::MCMCNode)
+function Base.showall(io::IO, n::MCMCDepNode)
   show(io, n)
   print(io, "\nFunction:\n")
   show(io, n.eval.code)
@@ -17,13 +17,13 @@ function Base.showall(io::IO, n::MCMCNode)
   print(io, "\n")
 end
 
-identity(n::MCMCNode, x) = x
+identity(n::MCMCDepNode, x) = x
 
-invlink(n::MCMCNode, x) = x
+invlink(n::MCMCDepNode, x) = x
 
-link(n::MCMCNode, x) = x
+link(n::MCMCDepNode, x) = x
 
-logpdf(n::MCMCNode, transform::Bool=false) = 0.0
+logpdf(n::MCMCDepNode, transform::Bool=false) = 0.0
 
 
 #################### MCMCLogical Constructors ####################

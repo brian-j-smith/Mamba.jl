@@ -12,30 +12,30 @@ function any_stochastic(v::ExVertex, g::AbstractGraph, m::MCMCModel)
 end
 
 function getlinks(v::ExVertex, g::AbstractGraph, m::MCMCModel)
-  keys = String[]
+  values = String[]
   for v in out_neighbors(v, g)
-    push!(keys, v.label)
+    push!(values, v.label)
     if !isa(m[v.label], MCMCStochastic)
-      keys = union(keys, getlinks(v, g, m))
+      values = union(values, getlinks(v, g, m))
     end
   end
-  keys
+  values
 end
 
 function graph(m::MCMCModel)
   g = graph(ExVertex[], Edge{ExVertex}[])
   lookup = (String=>Integer)[]
-  for key in nodekeys(m)
+  for key in keys(m, :all)
     lookup[key] = length(lookup) + 1
     add_vertex!(g, ExVertex(lookup[key], key))
   end
-  for key in inputkeys(m)
+  for key in keys(m, :input)
     v = vertices(g)[lookup[key]]
     v.attributes["shape"] = "box"
     v.attributes["style"] = "filled"
     v.attributes["fillcolor"] = "gray85"
   end
-  for key in paramkeys(m)
+  for key in keys(m, :dep)
     v = vertices(g)[lookup[key]]
     node = m[key]
     if isa(node, MCMCLogical)
@@ -81,17 +81,6 @@ function plot(m::MCMCModel)
   stream, process = writesto(`dot -Tx11`)
   write(stream, graph2dot(m))
   close(stream)
-end
-
-function terminalkeys(m::MCMCModel)
-  keys = String[]
-  g = graph(m)
-  for v in vertices(g)
-    if isa(m[v.label], MCMCStochastic) && !any_stochastic(v, g, m)
-      push!(keys, v.label)
-    end
-  end
-  keys
 end
 
 function tsort(g::AbstractGraph{ExVertex, Edge{ExVertex}})

@@ -33,15 +33,15 @@ end
 
 function dic(c::MCMCChains)
   m = c.model
-  keys = terminalkeys(m)
-  idx = indexin(labels(m, blockkeys(m)), c)
+  nkeys = keys(m, :terminal)
+  idx = indexin(labels(m, keys(m, :block)), c)
 
   x0 = unlist(m)
 
   xbar = map(i -> mean(c.data[:,i,:]), idx)
   relist!(m, xbar)
-  Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, keys)
-  D = -2.0 * logpdf(c, keys)
+  Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, nkeys)
+  D = -2.0 * logpdf(c, nkeys)
   p = [mean(D) - Dhat, 0.5 * var(D)]
 
   relist!(m, x0)
@@ -69,9 +69,9 @@ function hpd(c::MCMCChains; alpha::Real=0.05)
   ChainSummary(vals', c.names, labels, header(c))
 end
 
-function logpdf{T<:String}(c::MCMCChains, keys::Vector{T})
+function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
   m = c.model
-  idx = indexin(labels(m, blockkeys(m)), c)
+  idx = indexin(labels(m, keys(m, :block)), c)
 
   x0 = unlist(m)
 
@@ -87,7 +87,7 @@ function logpdf{T<:String}(c::MCMCChains, keys::Vector{T})
         pct += 10
       end
       relist!(m, c.data[i,idx,k][:])
-      values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, keys)
+      values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
     end
   end
   print("\n")
