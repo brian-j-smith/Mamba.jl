@@ -15,10 +15,12 @@ type VariateAMWG <: VariateVector
   data::Vector{VariateType}
   tune::TuneAMWG
 
-  VariateAMWG(x::Vector, tune::TuneAMWG) = new(VariateType[x...], tune)
+  function VariateAMWG{T<:Real}(x::Vector{T}, tune::TuneAMWG)
+    new(VariateType[x...], tune)
+  end
 end
 
-function VariateAMWG(x::Vector, tune=nothing)
+function VariateAMWG{T<:Real}(x::Vector{T}, tune=nothing)
   tune = TuneAMWG(
     false,
     zeros(Integer, length(x)),
@@ -33,7 +35,7 @@ end
 
 #################### Sampling Functions ####################
 
-function amwg(x::Vector, sigma::Vector{Float64}, logf::Function;
+function amwg{T<:Real}(x::Vector{T}, sigma::Vector{Float64}, logf::Function;
            adapt::Bool=false, batch::Integer=50, target::Real=0.44)
   amwg!(VariateAMWG(x), sigma, logf, adapt=adapt, batch=batch,
         target=target)

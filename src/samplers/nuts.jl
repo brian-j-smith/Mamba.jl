@@ -21,10 +21,12 @@ type VariateNUTS <: VariateVector
   data::Vector{VariateType}
   tune::TuneNUTS
 
-  VariateNUTS(x::Vector, tune::TuneNUTS) = new(VariateType[x...], tune)
+  function VariateNUTS{T<:Real}(x::Vector{T}, tune::TuneNUTS)
+    new(VariateType[x...], tune)
+  end
 end
 
-function VariateNUTS(x::Vector, tune=nothing)
+function VariateNUTS{T<:Real}(x::Vector{T}, tune=nothing)
   tune = TuneNUTS(
     false,
     0.0,
@@ -45,7 +47,7 @@ end
 
 #################### Sampling Functions ####################
 
-function nutseps(x::Vector, fx::Function)
+function nutseps{T<:Real}(x::Vector{T}, fx::Function)
   d = length(x)
   node0 = leapfrog(x, randn(d), 0.0, zeros(d), fx)
   eps = 1.0
@@ -60,7 +62,8 @@ function nutseps(x::Vector, fx::Function)
   eps
 end
 
-function leapfrog(x::Vector, r::Vector, eps::Real, grad::Vector, fx::Function)
+function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
+           eps::Real, grad::Vector{V}, fx::Function)
   r += (eps / 2.0) * grad
   x += eps * r
   logf, grad = fx(x)
@@ -68,13 +71,13 @@ function leapfrog(x::Vector, r::Vector, eps::Real, grad::Vector, fx::Function)
   [:x=>x, :r=>r, :logf=>logf, :grad=>grad]
 end
 
-function nuts(x::Vector, eps::Real, fx::Function; adapt::Bool=false,
-              target::Real=0.6)
+function nuts{T<:Real}(x::Vector{T}, eps::Real, fx::Function; adapt::Bool=false,
+           target::Real=0.6)
   nuts!(VariateNUTS(x), eps, fx, adapt=adapt, target=target)
 end
 
 function nuts!(v::VariateNUTS, eps::Real, fx::Function; adapt::Bool=false,
-               target::Real=0.6)
+           target::Real=0.6)
   tune = v.tune
 
   if adapt

@@ -27,9 +27,9 @@ function Base.showall(io::IO, s::MCMCSampler)
 end
 
 
-#################### Adaptive Metropolis within Gibbs ####################
+#################### Adaptive Multivariate Metropolis ####################
 
-function SamplerAMM{T<:String}(params::Vector{T}, Sigma::Matrix;
+function SamplerAMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
            adapt::Symbol=:none)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
@@ -53,7 +53,7 @@ end
 
 #################### Adaptive Metropolis within Gibbs ####################
 
-function SamplerAMWG{T<:String}(params::Vector{T}, sigma::Vector;
+function SamplerAMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
            adapt::Symbol=:none, batch::Integer=50, target::Real=0.44)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
@@ -109,7 +109,7 @@ end
 
 #################### Multivariate Slice Sampler ####################
 
-function SamplerSlice{T<:String}(params::Vector{T}, width::Vector)
+function SamplerSlice{T<:String}(params::Vector{T}, width::Vector{Float64})
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
@@ -124,7 +124,7 @@ end
 
 #################### Slice within Gibbs Sampler ####################
 
-function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector)
+function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector{Float64})
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)

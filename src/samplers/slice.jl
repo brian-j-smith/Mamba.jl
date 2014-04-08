@@ -10,10 +10,12 @@ type VariateSlice <: VariateVector
   data::Vector{VariateType}
   tune::TuneSlice
 
-  VariateSlice(x::Vector, tune::TuneSlice) = new(VariateType[x...], tune)
+  function VariateSlice{T<:Real}(x::Vector{T}, tune::TuneSlice)
+    new(VariateType[x...], tune)
+  end
 end
 
-function VariateSlice(x::Vector, tune=nothing)
+function VariateSlice{T<:Real}(x::Vector{T}, tune=nothing)
   tune = TuneSlice(
     Array(Float64, 0)
   )
@@ -23,7 +25,7 @@ end
 
 #################### Sampling Functions ####################
 
-function slice(x::Vector, width::Vector{Float64}, logf::Function)
+function slice{T<:Real}(x::Vector{T}, width::Vector{Float64}, logf::Function)
   slice!(VariateSlice(x), width, logf)
 end
 
@@ -57,7 +59,7 @@ end
 
 #################### Sampling Functions ####################
 
-function slicewg(x::Vector, width::Vector{Float64}, logf::Function)
+function slicewg{T<:Real}(x::Vector{T}, width::Vector{Float64}, logf::Function)
   slicewg!(VariateSlice(x), width, logf)
 end
 

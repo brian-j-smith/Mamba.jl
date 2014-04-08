@@ -16,10 +16,12 @@ type VariateAMM <: VariateVector
   data::Vector{VariateType}
   tune::TuneAMM
 
-  VariateAMM(x::Vector, tune::TuneAMM) = new(VariateType[x...], tune)
+  function VariateAMM{T<:Real}(x::Vector{T}, tune::TuneAMM)
+    new(VariateType[x...], tune)
+  end
 end
 
-function VariateAMM(x::Vector, tune=nothing)
+function VariateAMM{T<:Real}(x::Vector{T}, tune=nothing)
   tune = TuneAMM(
     false,
     0.05,
@@ -35,7 +37,7 @@ end
 
 #################### Sampling Functions ####################
 
-function amm(x::Vector, Sigma::Cholesky{Float64}, logf::Function;
+function amm{T<:Real}(x::Vector{T}, Sigma::Cholesky{Float64}, logf::Function;
            adapt::Bool=false)
   amm!(VariateAMM(x), Sigma, logf)
 end
