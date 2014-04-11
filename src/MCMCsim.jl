@@ -23,9 +23,7 @@ abstract Variate{T<:Union(VariateType, VecOrMat{VariateType})}
 typealias VariateScalar Variate{VariateType}
 typealias VariateVector Variate{Vector{VariateType}}
 typealias VariateMatrix Variate{Matrix{VariateType}}
-
-typealias Univariate VariateScalar
-typealias Multivariate Union(VariateVector, VariateMatrix)
+typealias VariateVecOrMat Union(VariateVector, VariateMatrix)
 
 
 #################### Distribution Types ####################
