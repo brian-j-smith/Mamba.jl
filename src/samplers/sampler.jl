@@ -99,8 +99,8 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
   )
 end
 
-function nutsfx!(m::MCMCModel, x::Vector, block::Integer, transform::Bool,
-           dtype::Symbol)
+function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
+           transform::Bool, dtype::Symbol)
   a = logpdf!(m, x, block, transform)
   b = gradient!(m, x, block, transform, dtype)
   a, b
