@@ -130,27 +130,27 @@ for op in Math2Ops
 end
 
 
-function Base.convert{T,N}(::Type{Array{T,N}}, v::Multivariate)
+function Base.convert{T<:Real,N}(::Type{Array{T,N}}, v::VariateVecOrMat)
   convert(Array{T,N}, v.data)
 end
 
-function Base.convert{T<:Number}(::Type{T}, v::Univariate)
+function Base.convert{T<:Real}(::Type{T}, v::VariateScalar)
   convert(T, v.data)
 end
 
-function Base.getindex(v::Multivariate, inds...)
+function Base.getindex(v::VariateVecOrMat, inds...)
   getindex(v.data, inds...)
 end
 
-function Base.getindex(v::Univariate, inds)
+function Base.getindex(v::VariateScalar, inds)
   isa(inds, Number) ? v.data[inds] : map(i -> v.data[i], inds)
 end
 
-function Base.setindex!(v::Multivariate, x, inds...)
+function Base.setindex!(v::VariateVecOrMat, x, inds...)
   setindex!(v.data, x, inds...)
 end
 
-function Base.setindex!(v::Univariate, x, inds)
+function Base.setindex!(v::VariateScalar, x, inds)
   length(x) == 1 || throw(ErrorException("argument dimensions must match"))
   (length(inds) == 1 && collect(inds)[1] == 1) || throw(BoundsError())
   v.data = x[1]
