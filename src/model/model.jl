@@ -85,7 +85,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
       end
     end
   else
-    error("specified ntype is unsupported")
+    error("unsupported ntype")
   end
   values
 end
