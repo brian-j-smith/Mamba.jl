@@ -117,7 +117,7 @@ for op in [ArithOps, CompareOps, Vector2Ops]
   @eval begin
     ($op)(A::Union(Array, Number, SparseMatrixCSC), v::Variate) = ($op)(A, v.data)
     ($op)(v::Variate, A::Union(Array, Number, SparseMatrixCSC)) = ($op)(v.data, A)
-    ($op)(v1::Variate, v2::Variate) = ($op)(v1.data, v2.data)
+    ($op)(u::Variate, v::Variate) = ($op)(u.data, v.data)
   end
 end
 
@@ -142,8 +142,12 @@ function Base.getindex(v::VariateVecOrMat, inds...)
   getindex(v.data, inds...)
 end
 
+function Base.getindex(v::VariateScalar, i::Real)
+  v.data[i]
+end
+
 function Base.getindex(v::VariateScalar, inds)
-  isa(inds, Number) ? v.data[inds] : map(i -> v.data[i], inds)
+  map(i -> v.data[i], inds)
 end
 
 function Base.setindex!(v::VariateVecOrMat, x, inds...)
