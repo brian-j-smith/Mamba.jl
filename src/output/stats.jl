@@ -34,7 +34,7 @@ end
 function dic(c::MCMCChains)
   m = c.model
   nkeys = keys(m, :terminal)
-  idx = indexin(labels(m, keys(m, :block)), c)
+  idx = indexin(names(m, keys(m, :block)), c)
 
   x0 = unlist(m)
 
@@ -71,7 +71,7 @@ end
 
 function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
   m = c.model
-  idx = indexin(labels(m, keys(m, :block)), c)
+  idx = indexin(names(m, keys(m, :block)), c)
 
   x0 = unlist(m)
 
