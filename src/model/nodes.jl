@@ -29,7 +29,7 @@ logpdf(n::MCMCDepNode, transform::Bool=false) = 0.0
 #################### MCMCLogical Constructors ####################
 
 function MCMCLogical(data, expr::Expr, monitor::Bool)
-  MCMCLogical(data, monitor, paramfx(expr), paramdeps(expr))
+  MCMCLogical(data, String[], monitor, paramfx(expr), paramdeps(expr))
 end
 
 function MCMCLogical(expr::Expr, monitor::Bool=true)
@@ -63,7 +63,7 @@ end
 #################### MCMCStochastic Constructors ####################
 
 function MCMCStochastic{T}(data::T, expr::Expr, monitor::Bool)
-  MCMCStochastic(data, monitor, paramfx(expr), paramdeps(expr),
+  MCMCStochastic(data, String[], monitor, paramfx(expr), paramdeps(expr),
                  NullDistribution())
 end
 
