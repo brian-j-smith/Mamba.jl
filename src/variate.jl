@@ -169,3 +169,25 @@ end
 function Base.showcompact(io::IO, v::Variate)
   showcompact(io, v.data)
 end
+
+function names(v::VariateScalar, prefix::String)
+  String[prefix]
+end
+
+function names(v::VariateVector, prefix::String)
+  values = String[]
+  for i in 1:length(v)
+    push!(values, string(prefix, "[", i, "]"))
+  end
+  values
+end
+
+function names(v::VariateMatrix, prefix::String)
+  values = String[]
+  for j in 1:size(v, 2)
+    for i in 1:size(v, 1)
+      push!(values, string(prefix, "[", i, ",", j, "]"))
+    end
+  end
+  values
+end
