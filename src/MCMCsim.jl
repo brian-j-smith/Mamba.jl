@@ -37,6 +37,7 @@ abstract MCMCDepNode{T} <: Variate{T}
 
 type MCMCLogical{T} <: MCMCDepNode{T}
   data::T
+  names::Vector{String}
   monitor::Bool
   eval::Function
   deps::Vector{String}
@@ -44,6 +45,7 @@ end
 
 type MCMCStochastic{T} <: MCMCDepNode{T}
   data::T
+  names::Vector{String}
   monitor::Bool
   eval::Function
   deps::Vector{String}
@@ -144,6 +146,7 @@ export
   relist!,
   setinits!,
   setinputs!,
+  setsamplers!,
   simulate!,
   summarystats,
   tune,
