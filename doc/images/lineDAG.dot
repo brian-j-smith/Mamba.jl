@@ -1,0 +1,11 @@
+digraph MCMCModel {
+	"beta" [shape="ellipse"];
+		"beta" -> "mu";
+	"mu" [fillcolor="gray85", shape="diamond", style="filled"];
+		"mu" -> "y";
+	"xmat" [fillcolor="gray85", shape="box", style="filled"];
+		"xmat" -> "mu";
+	"s2" [shape="ellipse"];
+		"s2" -> "y";
+	"y" [fillcolor="gray85", shape="ellipse", style="filled"];
+}
