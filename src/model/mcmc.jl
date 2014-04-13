@@ -14,7 +14,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
 
   monitorkeys = keys(m, :monitor)
 
-  sims = MCMCChains(labels(m, monitorkeys), div(iter - burnin - 1, thin) + 1,
+  sims = MCMCChains(names(m, monitorkeys), div(iter - burnin - 1, thin) + 1,
                     start=burnin + thin, thin=thin, chains=chains, model=m)
 
   for k in 1:chains
