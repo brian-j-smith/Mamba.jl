@@ -7,7 +7,7 @@ using Distributions
 
 import Base: Base, cor
 import Calculus: gradient
-import Distributions: insupport, logpdf, quantile
+import Distributions: insupport, logpdf, PDiagMat, PDMat, quantile, ScalMat
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase,
@@ -91,7 +91,9 @@ end
 include("utils.jl")
 include("variate.jl")
 
-include("model/distributions.jl")
+include("distributions/constructors.jl")
+include("distributions/methods.jl")
+
 include("model/graph.jl")
 include("model/mcmc.jl")
 include("model/model.jl")
