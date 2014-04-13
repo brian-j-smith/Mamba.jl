@@ -3,27 +3,16 @@
 function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
            samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
   nodedict = Dict{String,Any}()
-  for (key, value) in nodes
+  for (arg, value) in nodes
     isa(value, MCMCDepNode) || error("nodes must be MCMCDepNode types")
-    nodedict[string(key)] = deepcopy(value)
+    node = deepcopy(value)
+    key = string(arg)
+    node.names = names(node, key)
+    nodedict[key] = node
   end
-  m = MCMCModel(nodedict, String[], samplers, iter, burnin, chain, false, false)
-  g = graph(m)
-  m.links = intersect(tsort(g), keys(m, :dep))
-  V = vertices(g)
-  lookup = Dict{String,Integer}()
-  for v in V
-    setindex!(lookup, v.index, v.label)
-  end
-  for i in 1:length(samplers)
-    sampler = samplers[i]
-    links = String[]
-    for key in sampler.params
-      append!(links, getlinks(V[lookup[key]], g, m))
-    end
-    sampler.links = intersect(m.links, links)
-  end
-  m
+  m = MCMCModel(nodedict, String[], MCMCSampler[], iter, burnin, chain, false,
+                false)
+  setsamplers!(m, samplers)
 end
 
 
@@ -126,28 +115,14 @@ end
 
 #################### MCMCModel Initialization Methods ####################
 
-function labels{T<:String}(m::MCMCModel, nkeys::Vector{T})
+function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
   values = String[]
   for key in nkeys
     node = m[key]
     if isa(node, MCMCDepNode)
-      if isa(node, VariateScalar)
-        push!(values, key)
-      elseif isa(node, VariateVector)
-        for i in 1:length(node)
-          push!(values, string(key, "[", i, "]"))
-        end
-      elseif isa(node, VariateMatrix)
-        for j in 1:size(node, 2)
-          for i in 1:size(node, 1)
-            push!(values, string(key, "[", i, ",", j, "]"))
-          end
-        end
-      else
-        error("unsupported MCMCDepNode node")
-      end
+      append!(values, node.names)
     else
-      error("only MCMCDepNode nodes may be labeled")
+      error("only MCMCDepNode nodes have names fields")
     end
   end
   values
@@ -171,6 +146,26 @@ function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
     m.nodes[key] = deepcopy(inputs[key])
   end
   m.hasinputs = true
+  m
+end
+
+function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
+  g = graph(m)
+  m.links = intersect(tsort(g), keys(m, :dep))
+  m.samplers = deepcopy(samplers)
+  V = vertices(g)
+  lookup = Dict{String,Integer}()
+  for v in V
+    setindex!(lookup, v.index, v.label)
+  end
+  for i in 1:length(m.samplers)
+    sampler = m.samplers[i]
+    links = String[]
+    for key in sampler.params
+      append!(links, getlinks(V[lookup[key]], g, m))
+    end
+    sampler.links = intersect(m.links, links)
+  end
   m
 end
 
