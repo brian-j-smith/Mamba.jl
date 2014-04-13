@@ -93,7 +93,7 @@ function link(c::MCMCChains)
   m = size(X, 1)
   for key in keys(c.model, :monitor)
     node = c.model[key]
-    idx = nonzeros(indexin(labels(c.model, [key]), c.names))
+    idx = nonzeros(indexin(node.names, c.names))
     if length(idx) > 0
       if isa(node, MCMCStochastic)
         X[:,idx,:] = mapslices(x -> link(node.distr, x), X[:,idx,:], 2)
