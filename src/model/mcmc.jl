@@ -12,9 +12,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
   m.burnin = burnin
   tune0 = tune(m)
 
-  monitorkeys = keys(m, :monitor)
-
-  sims = MCMCChains(names(m, monitorkeys), div(iter - burnin - 1, thin) + 1,
+  sims = MCMCChains(names(m, true), div(iter - burnin - 1, thin) + 1,
                     start=burnin + thin, thin=thin, chains=chains, model=m)
 
   for k in 1:chains
@@ -37,7 +35,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
       simulate!(m)
 
       if t > burnin && (t - burnin - 1) % thin == 0
-        sims.data[i,:,k] = unlist(m, monitorkeys)
+        sims.data[i,:,k] = unlist(m, true)
         i += 1
       end
     end
