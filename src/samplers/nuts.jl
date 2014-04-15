@@ -52,12 +52,12 @@ function nutseps{T<:Real}(x::Vector{T}, fx::Function)
   node0 = leapfrog(x, randn(d), 0.0, zeros(d), fx)
   eps = 1.0
   node = leapfrog(x, node0[:r], eps, node0[:grad], fx)
-  p = exp(node[:logf] - node0[:logf] - 0.5 * sum(node[:r].^2 - node0[:r].^1))
+  p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
   a = p > 0.5 ? 1 : -1
   while p^a > 2.0^-a
     eps *= 2.0^a
     node = leapfrog(x, node0[:r], eps, node0[:grad], fx)
-    p = exp(node[:logf] - node0[:logf] - 0.5 * sum(node[:r].^2 - node0[:r].^1))
+    p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
   end
   eps
 end
@@ -107,7 +107,7 @@ end
 function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
   d = length(v)
   node0 = leapfrog(v.data, randn(d), 0.0, zeros(d), fx)
-  p0 = node0[:logf] - 0.5 * sum(node0[:r].^2)
+  p0 = node0[:logf] - 0.5 * dot(node0[:r])
   logu = p0 + log(rand())
   xminus = xplus = node0[:x]
   rminus = rplus = node0[:r]
@@ -145,7 +145,7 @@ function buildtree(x::Vector, r::Vector, grad::Vector, logu::Real, pm::Integer,
            j::Integer, eps::Real, p0::Real, fx::Function)
   if j == 0
     node = leapfrog(x, r, pm * eps, grad, fx)
-    p = node[:logf] - 0.5 * sum(node[:r].^2)
+    p = node[:logf] - 0.5 * dot(node[:r])
     node[:n] = logu <= p ? 1 : 0
     node[:s] = logu < p + 1000.0
     node[:xminus] = node[:xplus] = node[:x]
@@ -184,5 +184,5 @@ end
 
 function nouturn(xminus, xplus, rminus, rplus)
   val = xplus - xminus
-  (val' * rminus)[] >= 0 && (val' * rplus)[] >= 0
+  dot(val, rminus) >= 0 && dot(val, rplus) >= 0
 end
