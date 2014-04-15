@@ -43,7 +43,7 @@ function graph(m::MCMCModel)
     elseif isa(node, MCMCStochastic)
       v.attributes["shape"] = "ellipse"
     end
-    if !node.monitor
+    if !any(node.monitor)
       v.attributes["style"] = "filled"
       v.attributes["fillcolor"] = "gray85"
     end
