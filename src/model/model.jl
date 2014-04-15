@@ -56,7 +56,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :monitor
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, MCMCDepNode) && node.monitor
+      if isa(node, MCMCDepNode) && any(node.monitor)
         push!(values, key)
       end
     end
@@ -115,15 +115,19 @@ end
 
 #################### MCMCModel Initialization Methods ####################
 
+function names(m::MCMCModel, monitoronly::Bool)
+  values = String[]
+  for key in keys(m, :dep)
+    node = m[key]
+    append!(values, node.names[!monitoronly | node.monitor])
+  end
+  values
+end
+
 function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
   values = String[]
   for key in nkeys
-    node = m[key]
-    if isa(node, MCMCDepNode)
-      append!(values, node.names)
-    else
-      error("only MCMCDepNode nodes have names fields")
-    end
+    append!(values, m[key].names)
   end
   values
 end
@@ -288,6 +292,15 @@ end
 
 function unlist(m::MCMCModel, block::Integer=0, transform::Bool=false)
   unlist(m, keys(m, :block, block), transform)
+end
+
+function unlist(m::MCMCModel, monitoronly::Bool)
+  values = VariateType[]
+  for key in keys(m, :dep)
+    node = m[key]
+    append!(values, node[!monitoronly | node.monitor])
+  end
+  values
 end
 
 function unlist{T<:String}(m::MCMCModel, nkeys::Vector{T}, transform::Bool=false)
