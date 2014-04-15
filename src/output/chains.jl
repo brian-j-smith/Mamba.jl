@@ -96,7 +96,7 @@ function link(c::MCMCChains)
     idx = nonzeros(indexin(node.names, c.names))
     if length(idx) > 0
       if isa(node, MCMCStochastic)
-        X[:,idx,:] = mapslices(x -> link(node.distr, x), X[:,idx,:], 2)
+        X[:,idx,:] = mapslices(x -> link(node, x), X[:,idx,:], 2)
       else
         for j in idx
           x = X[:,j,:]
