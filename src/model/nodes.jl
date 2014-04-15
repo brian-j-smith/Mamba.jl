@@ -1,7 +1,7 @@
 #################### MCMCDepNode Methods ####################
 
 function Base.show(io::IO, n::MCMCDepNode)
-  msg = string(ifelse(n.monitor, "A ", "An un"),
+  msg = string(ifelse(any(n.monitor), "A ", "An un"),
                "monitored node of type \"", summary(n), "\"\n")
   print(io, msg)
   show(io, n.data)
@@ -25,25 +25,40 @@ link(n::MCMCDepNode, x) = x
 
 logpdf(n::MCMCDepNode, transform::Bool=false) = 0.0
 
+function setmonitor!(n::MCMCDepNode, monitor::Union(Bool,Vector{Bool}))
+  if isa(monitor, Bool)
+    values = fill(monitor, length(n))
+  elseif length(monitor) == length(n)
+    values = deepcopy(monitor)
+  else
+    error("data and monitor dimensions must match")
+  end
+  n.monitor = values
+  n
+end
+
 
 #################### MCMCLogical Constructors ####################
 
-function MCMCLogical(data, expr::Expr, monitor::Bool)
-  MCMCLogical(data, String[], monitor, paramfx(expr), paramdeps(expr))
+function MCMCLogical(data, expr::Expr, monitor::Union(Bool,Vector{Bool}))
+  l = MCMCLogical(data, String[], Bool[], paramfx(expr), paramdeps(expr))
+  setmonitor!(l, monitor)
 end
 
-function MCMCLogical(expr::Expr, monitor::Bool=true)
+function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
   data = convert(VariateType, NaN)
   MCMCLogical(data, expr, monitor)
 end
 
-function MCMCLogical(length::Integer, expr::Expr, monitor::Bool=true)
+function MCMCLogical(length::Integer, expr::Expr,
+           monitor::Union(Bool,Vector{Bool})=true)
   data = Array(VariateType, length)
   fill!(data, NaN)
   MCMCLogical(data, expr, monitor)
 end
 
-function MCMCLogical(m::Integer, n::Integer, expr::Expr, monitor::Bool=true)
+function MCMCLogical(m::Integer, n::Integer, expr::Expr,
+           monitor::Union(Bool,Vector{Bool})=true)
   data = Array(VariateType, m, n)
   fill!(data, NaN)
   MCMCLogical(data, expr, monitor)
@@ -62,23 +77,27 @@ end
 
 #################### MCMCStochastic Constructors ####################
 
-function MCMCStochastic{T}(data::T, expr::Expr, monitor::Bool)
-  MCMCStochastic(data, String[], monitor, paramfx(expr), paramdeps(expr),
-                 NullDistribution())
+function MCMCStochastic{T}(data::T, expr::Expr,
+           monitor::Union(Bool,Vector{Bool}))
+  s = MCMCStochastic(data, String[], Bool[], paramfx(expr), paramdeps(expr),
+                     NullDistribution())
+  setmonitor!(s, monitor)
 end
 
-function MCMCStochastic(expr::Expr, monitor::Bool=true)
+function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
   data = convert(VariateType, NaN)
   MCMCStochastic(data, expr, monitor)
 end
 
-function MCMCStochastic(length::Integer, expr::Expr, monitor::Bool=true)
+function MCMCStochastic(length::Integer, expr::Expr,
+           monitor::Union(Bool,Vector{Bool})=true)
   data = Array(VariateType, length)
   fill!(data, NaN)
   MCMCStochastic(data, expr, monitor)
 end
 
-function MCMCStochastic(m::Integer, n::Integer, expr::Expr, monitor::Bool=true)
+function MCMCStochastic(m::Integer, n::Integer, expr::Expr,
+           monitor::Union(Bool,Vector{Bool})=true)
   data = Array(VariateType, m, n)
   fill!(data, NaN)
   MCMCStochastic(data, expr, monitor)
