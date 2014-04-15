@@ -5,7 +5,7 @@ using Distributions
 
 #################### Imports ####################
 
-import Base: Base, cor
+import Base: Base, cor, dot
 import Calculus: gradient
 import Distributions: insupport, logpdf, PDiagMat, PDMat, quantile, ScalMat
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
@@ -38,7 +38,7 @@ abstract MCMCDepNode{T} <: Variate{T}
 type MCMCLogical{T} <: MCMCDepNode{T}
   data::T
   names::Vector{String}
-  monitor::Bool
+  monitor::Vector{Bool}
   eval::Function
   deps::Vector{String}
 end
@@ -46,7 +46,7 @@ end
 type MCMCStochastic{T} <: MCMCDepNode{T}
   data::T
   names::Vector{String}
-  monitor::Bool
+  monitor::Vector{Bool}
   eval::Function
   deps::Vector{String}
   distr::DistributionStruct
@@ -116,7 +116,9 @@ include("samplers/slice.jl")
 #################### Exports ####################
 
 export
-  Flat,
+  Flat
+
+export
   MCMCChain,
   MCMCLogical,
   MCMCModel,
@@ -146,6 +148,7 @@ export
   relist!,
   setinits!,
   setinputs!,
+  setmonitor!,
   setsamplers!,
   simulate!,
   summarystats,
