@@ -90,9 +90,6 @@ end
 
 #################### Includes ####################
 
-include("utils.jl")
-include("variate.jl")
-
 include("distributions/constructors.jl")
 include("distributions/methods.jl")
 
@@ -111,6 +108,11 @@ include("samplers/amwg.jl")
 include("samplers/nuts.jl")
 include("samplers/sampler.jl")
 include("samplers/slice.jl")
+
+include("utils.jl")
+
+include("variate/base.jl")
+include("variate/numeric.jl")
 
 
 #################### Exports ####################
