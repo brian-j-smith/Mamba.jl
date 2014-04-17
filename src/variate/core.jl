@@ -1,4 +1,4 @@
-#################### Variate Base Methods ####################
+#################### Variate Core Methods ####################
 
 for op in [:(Base.endof), :(Base.length), :(Base.ndims), :(Base.size)]
   @eval ($op)(v::Variate) = ($op)(v.data)

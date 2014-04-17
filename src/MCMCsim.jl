@@ -111,7 +111,7 @@ include("samplers/slice.jl")
 
 include("utils.jl")
 
-include("variate/base.jl")
+include("variate/core.jl")
 include("variate/numeric.jl")
 
 
