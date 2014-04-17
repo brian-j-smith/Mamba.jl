@@ -114,10 +114,9 @@ const PowerMethods = [
 ]
 
 const PowerMethods2 = [
-  :(Base.hypot)
+  :(Base.hypot),
+  :(Base.ldexp)
 ]
-
-Base.ldexp(v::Variate, n::Integer) = Base.ldexp(v.data, n)
 
 const RoundMethods = [
   :(Base.ceil),
@@ -164,6 +163,8 @@ const StatMethods = [
 const StatMethods2 = [
   :(Base.cor),
   :(Base.cov),
+  :(Base.stdm),
+  :(Base.varm),
   :(StatsBase.corspearman)
 ]
 
@@ -215,8 +216,10 @@ const UnaryMethods = [
 for op in [ArithMethods2, CompareMethods2, DivideMethods2, MathMethods2,
            PowerMethods2, SignMethods2, StatMethods2, TrigMethods2]
   @eval begin
-    ($op)(x::Union(Array, Number), v::Variate) = ($op)(x, v.data)
-    ($op)(v::Variate, x::Union(Array, Number)) = ($op)(v.data, x)
+    ($op)(x::Array, v::Variate) = ($op)(x, v.data)
+    ($op)(x::Number, v::Variate) = ($op)(x, v.data)
+    ($op)(v::Variate, x::Array) = ($op)(v.data, x)
+    ($op)(v::Variate, x::Number) = ($op)(v.data, x)
     ($op)(u::Variate, v::Variate) = ($op)(u.data, v.data)
   end
 end
