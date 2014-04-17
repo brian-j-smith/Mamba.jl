@@ -4,6 +4,8 @@ for op in [:(Base.endof), :(Base.length), :(Base.ndims), :(Base.size)]
   @eval ($op)(v::Variate) = ($op)(v.data)
 end
 
+Base.size(v::Variate, d) = Base.size(v)[d]
+
 function Base.convert{T<:Real,N}(::Type{Array{T,N}}, v::VariateVecOrMat)
   convert(Array{T,N}, v.data)
 end
