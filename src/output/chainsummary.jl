@@ -1,6 +1,6 @@
 #################### ChainSummary Type ####################
 
-type ChainSummary
+immutable ChainSummary
   data::Array{Float64,3}
   rownames::Vector{String}
   colnames::Vector{String}
