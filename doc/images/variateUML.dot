@@ -1,39 +1,24 @@
 digraph Variate {
-	fontsize = 12
+	fontname = "Helvetica"
+	fontsize = 11
 
-	node [
-		fontsize = 12
-		shape = "record"
-	]
+	node [fontname = "Helvetica", fontsize = 11, shape = record]
 
-	edge [
-		fontsize = 12
-		arrowhead = "empty"
-	]
+	edge [fontname = "Helvetica", fontsize = 11, dir = back, arrowtail = empty]
 
-	Variate [
-		label = "{Variate\{T\}|+ data : T\l}"
-	]
+	Variate [label = "{Variate\{T\}|+ data : T\l}"]
 
-	MCMCDepNode [
-		label = "{MCMCDepNode\{T\}|+ names : Vector\{String\}\l+ monitor : Bool\l+ eval : Function\l+ deps : Vector\{String\}\l}"
-	]
+	MCMCDepNode [label = "{MCMCDepNode\{T\}|+ names : Vector\{String\}\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ deps : Vector\{String\}\l}"]
 	
-	MCMCLogical [
-		label = "{MCMCLogical\{T\}}"
-	]
+	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	
-	MCMCStochastic [
-		label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"
-	]
+	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
 
-	VariateSampler [
-		label = "{VariateSampler\{Vector\{VariateType\}\}|+ tune : TuneSampler\l}"
-	]
+	VariateSampler [label = "{VariateSampler\{Vector\{VariateType\}\}|+ tune : TuneSampler\l}"]
 	
-	MCMCDepNode -> Variate
-	MCMCLogical -> MCMCDepNode
-	MCMCStochastic -> MCMCDepNode
-	VariateSampler -> Variate
+	Variate -> MCMCDepNode
+	MCMCDepNode -> MCMCLogical
+	MCMCDepNode -> MCMCStochastic
+	Variate -> VariateSampler
 
 }

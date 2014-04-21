@@ -1,0 +1,34 @@
+\documentclass[11pt]{report}
+
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{amsfonts}
+\usepackage[boxruled]{algorithm2e}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+
+\IncMargin{1em}
+\begin{algorithm}
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Result}{Result}
+  \Input{\begin{tabular}[t]{l}
+      Model parameters $\Theta = \{\theta_1, \ldots, \theta_p\}$. \\
+      Blocking $\{\Theta_j\}_{j=1}^{B}$ such that $\bigcup_{j=1}^B \Theta_j = \Theta$ and $\bigcap_{j=1}^B \Theta_j = \varnothing$. \\
+      Functions $\{f_j\}_{j=1}^{B}$ such that $f_j$ samples from $p(\Theta_j | \Theta \setminus \Theta_{j})$.
+    \end{tabular}}
+  \Result{Simulated values $\{\Theta^i\}_{i=1}^N$ from the joint distribution of $\Theta$.}
+  \Begin{
+    $\Theta \leftarrow \operatorname{Initialize}()$\;
+    \For{$i = 1$ \KwTo $N$}{
+      \For{$j = 1$ \KwTo $B$}{
+        $\Theta_j \leftarrow f_j(\Theta)$\;
+      }
+      $\Theta^i \leftarrow \Theta$\;
+    }
+  }
+\end{algorithm}
+
+\end{document}

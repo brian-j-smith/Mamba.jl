@@ -1,6 +1,8 @@
 .. index::
 	single: Examples; Linear Regression
 
+.. _section-Line:
+
 Linear Regression Example
 =========================
 
@@ -12,7 +14,7 @@ In the sections that follow, the Bayesian simple linear regression example from 
 .. math::
 
 	\bm{y} &\sim N\left(\bm{\mu}, \sigma^2 \bm{I}\right) \\
-    \bm{\mu} &= \bm{X} \bm{\beta}
+	\bm{\mu} &= \bm{X} \bm{\beta}
 
 with prior distribution specifications
 
@@ -58,39 +60,42 @@ In the `MCMCsim` package, terms that appear in the Bayesian model specification 
 
 Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `MCMCsim` because of the distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
-For model implementation, all nodes are stored in and accessible from a `julia` dictionary structure called ``model`` with the names (keys) of nodes being character strings.  The regression nodes will be named ``"y"``, ``"beta"``, ``"s2"``, ``"mu"``, and ``"xmat"`` to correspond to the stochastic, logical, and input nodes identified in the previous paragraph.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.
-
+For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being character strings.  The regression nodes will be named ``"y"``, ``"beta"``, ``"s2"``, ``"mu"``, and ``"xmat"`` to correspond to the stochastic, logical, and input nodes identified in the previous paragraph.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Logical and stochastic nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
 
 .. code-block:: julia
 
 	using MCMCsim
 	using Distributions
 
-	## Logical and Stochastic Model Nodes
+	## Model Implementation
 
-	y = MCMCStochastic(5,
-	  quote
-	    mu = model["mu"]
-	    s2 = model["s2"]
-	    IsoNormal(mu, s2)
-	  end,
-	  false
-	)
+	line = MCMCModel(
 
-	mu = MCMCLogical(5,
-	  :(model["xmat"] * model["beta"]),
-	  false
-	)
+	  y = MCMCStochastic(5,
+	    quote
+	      mu = model["mu"]
+	      s2 = model["s2"]
+	      IsoNormal(mu, s2)
+	    end,
+	    false
+	  ),
 
-	beta = MCMCStochastic(2,
-	  :(IsoNormal(2, 1000))
-	)
+	  mu = MCMCLogical(5,
+	    :(model["xmat"] * model["beta"]),
+	    false
+	  ),
 
-	s2 = MCMCStochastic(
-	  :(InverseGamma(0.001, 0.001))
+	  beta = MCMCStochastic(2,
+	    :(IsoNormal(2, 1000))
+	  ),
+
+	  s2 = MCMCStochastic(
+	    :(InverseGamma(0.001, 0.001))
+	  )
+
 	)
 	
-A single integer value for the first constructor argument indicates that the node is a vector of the specified length.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid `julia` code.  Expressions for logical nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression is allowed to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is a vector of the specified length.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 In the example, nodes ``y``, ``mu``, and ``beta`` are vectors, ``s2`` is a scalar, and the first two are not being monitored.  Further, note that the model could be implemented without the logical node ``mu``.  It is created here primarily for illustrative purposes.
 
@@ -159,22 +164,16 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
 
 When it is possible to do so, direct sampling from full conditions is often preferred in practice because it tends to be more efficient than general-purpose algorithms.  Schemes that mix the two approaches can be used if full conditionals are available for some of the parameters but not for others.
 
-
-Model Declarations
-^^^^^^^^^^^^^^^^^^
-
-Logical and stochastic nodes are combined with a sampling scheme in a model declaration via the ``MCMCModel`` constructor.  In the following code block, three models are declared for the nodes and sampling schemes defined previously.
+A sampling scheme can be assigned to an existing model with a call to the ``setsamplers!`` function.
 
 .. code-block:: julia
 
-	## Model Declarations
-	model1 = MCMCModel(y=y, mu=mu, beta=beta, s2=s2, samplers=scheme1)
-	model2 = MCMCModel(y=y, mu=mu, beta=beta, s2=s2, samplers=scheme2)
-	model3 = MCMCModel(y=y, mu=mu, beta=beta, s2=s2, samplers=scheme3)
+	## Sampling Scheme Assignment
+	setsamplers!(line, scheme1)
 
-Declarations serve several purposes.  One is to formally assign names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.  The names may differ from the local variables that reference the nodes, although they are the same in this example.  A second purpose of declarations is to associate a sampling scheme, though the ``samplers`` argument, with the stochastic nodes.  A third is to initialize the model and create the internal structures needed to sample from its posterior distribution.
+Alternative, a predefined scheme can be passed in to the ``MCMCModel`` constructor at the time of model implementation as the value to its ``samplers`` argument.
 
-	
+
 Directed Acyclic Graphs
 -----------------------
 
@@ -186,7 +185,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command lin
 
 	## Graph Representation of Nodes
 
-	>>> print(graph2dot(model1))
+	>>> print(graph2dot(line))
 	
 	digraph MCMCModel {
 	  "beta" [shape="ellipse"];
@@ -200,12 +199,14 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command lin
 	  "y" [fillcolor="gray85", shape="ellipse", style="filled"];
 	}
 	
-	>>> graph2dot(model1, "lineDAG.dot")
+	>>> graph2dot(line, "lineDAG.dot")
 
 Either the printed or saved output can be passed to the Graphviz software to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
 
-.. image:: images/LineDAG.png
+.. figure:: images/LineDAG.png
 	:align: center
+	
+	Directed acyclic graph representation of the example regression model nodes.
 
 Stochastic, logical, and input nodes are represented by ellipses, diamonds, and rectangles, respectively.  Gray-colored nodes are ones designated as unmonitored in MCMC simulations.  The DAG not only allows the user to visually check that the model specification is the intended one, but is also used internally to check that nodal relationships are acyclic.
 
@@ -216,7 +217,7 @@ MCMC Simulation
 Data
 ^^^^
 
-For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a `julia` dictionary defined in the code block below.  Included are predictor and response vectors ``"x"`` and ``"y"`` as well as a design matrix ``"xmat"`` corresponding to the model matrix :math:`\bm{X}`.
+For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia** dictionary defined in the code block below.  Included are predictor and response vectors ``"x"`` and ``"y"`` as well as a design matrix ``"xmat"`` corresponding to the model matrix :math:`\bm{X}`.
 
 .. code-block:: julia
 
@@ -230,7 +231,7 @@ For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a `julia` d
 Initial Values
 ^^^^^^^^^^^^^^
 
-A `julia` vector of dictionaries containing initial values for all stochastic nodes must be created.  The dictionary keys should match the node names, and their values should be vectors whose elements are the same type of structures as the nodes.  Vector elements are cycled through to initialize nodes when multiple runs of the MCMC simulator are performed.  Initial values for the regression example are as given below.
+A **julia** vector of dictionaries containing initial values for all stochastic nodes must be created.  The dictionary keys should match the node names, and their values should be vectors whose elements are the same type of structures as the nodes.  Vector elements are cycled through to initialize nodes when multiple runs of the MCMC simulator are performed.  Initial values for the regression example are as given below.
 
 .. code-block:: julia
 
@@ -251,7 +252,7 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
 .. code-block:: julia
 
 	## MCMC Simulation Engine
-	sim1 = mcmc(model1, data, inits, 10000, burnin=250, thin=2, chains=3)
+	sim1 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
 
 Results are retuned as an ``MCMCChains`` object on which methods for posterior inference are defined.
 
@@ -356,6 +357,34 @@ Once convergence has been assessed, sample statistics can be computed on the MCM
 	 "pD"  13.9011  0.979245               
 	 "pV"  24.4464  6.2519                 
 
+Output Subsetting
+^^^^^^^^^^^^^^^^^
+
+Additionally, sampler output can be subsetted to perform posterior inference on select iterations, parameters, and chains.
+
+.. code-block:: julia
+
+	## Subset Sampler Output
+	>>> describe(sim1[1000:5000, ["beta[1]", "beta[2]"], :])
+	
+	Iterations = 1000:5000
+	Thinning interval = 2
+	Number of chains = 3
+	Samples per chain = 2001
+
+	Empirical Posterior Estimates:
+	3x6 Array{Any,2}
+	 ""          "Mean"    "SD"      "Naive SE"   "Batch SE"      "ESS"
+	 "beta[1]"  0.598793  1.19409   0.0154118    0.0268244    3448.98  
+	 "beta[2]"  0.799864  0.359956  0.00464585   0.00768688   3628.13  
+
+	Quantiles:
+	3x6 Array{Any,2}:
+	 ""           "2.5%"     "25.0%"    "50.0%"   "75.0%"   "97.5%"
+	 "beta[1]"  -1.67395    0.0202488  0.622143  1.15556   2.95496 
+	 "beta[2]"   0.0709892  0.624956   0.799999  0.976372  1.49103 
+	
+
 
 Computational Performance
 -------------------------
@@ -371,4 +400,29 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 	+=====================+=======================+========+========+========+
 	| 5,000               | 7,500                 | 15,000 | 1,200  | 4,300  |
 	+---------------------+-----------------------+--------+--------+--------+
+
 	
+Development and Testing
+-----------------------
+
+Command-line access is provided for all package functionality to aid in the development and testing of models.  Examples of available functions are shown in the code block below.  Documentation for these and other related functions can be found in the :ref:`section-MCMC-Types` section. 
+
+.. code-block:: julia
+
+	## Development and Testing
+
+	setinputs!(line, data)             # Set input node values
+	setinits!(line, inits[1])          # Set initial values
+	setsamplers!(line, scheme1)        # Set sampling scheme
+
+	showall(line)                      # Show detailed node information
+
+	logpdf(line, 1)                    # Log-density sum for block 1
+	logpdf(line, 2)                    # Block 2
+	logpdf(line)                       # All blocks
+
+	simulate!(line, 1)                 # Simulate draws for block 1
+	simulate!(line, 2)                 # Block 2
+	simulate!(line)                    # All blocks
+
+In this example, functions ``setinputs!``, ``setinits!``, and ``setsampler!`` allow the user to manually set the input node values, the initial values, and the sampling scheme form the ``line`` object, and would need to be called prior to ``logpdf`` and ``simulate!``.  Updated model objects should be returned when called; otherwise, a problem with the supplied values may exist.  Method ``showall`` prints a detailed summary of all model nodes, their values, and attributes; ``logpdf`` sums the log-densities over nodes associated with a specified sampling block (second argument); and ``simulate!`` generates an MCMC draw for the nodes.  Non-numeric results may indicate problems with distributional specifications in the second case or with sampling functions in the last case.  The block arguments are optional; and, if left unspecified, will cause the corresponding functions to be applied over all sampling blocks.  This allows testing of some or all of the samplers.

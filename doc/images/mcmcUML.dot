@@ -1,0 +1,34 @@
+graph MCMC {
+	fontname = "Helvetica"
+	fontsize = 11
+	overlap = scalexy
+	sep = "+0,26"
+
+	node [fontname = "Helvetica", fontsize = 11, shape = record]
+
+	edge [fontname = "Helvetica", fontsize = 11, dir = both, arrowtail = none, arrowhead = none]
+
+	Variate [label = "{Variate\{T\}|+ data : T\l}"]
+
+	MCMCDepNode [label = "{MCMCDepNode\{T\}|+ names : Vector\{String\}\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ deps : Vector\{String\}\l}"]
+	
+	MCMCLogical [label = "{MCMCLogical\{T\}}"]
+	
+	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
+
+	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{String\}\l+ links : Vector\{String\}\l+ eval : Function\l+ tune : Dict\l}"]
+	
+	MCMCModel [label = "{MCMCModel|+ nodes : Dict\{String,Any\}\l+ links : Vector\{String\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
+	
+	MCMCChains [label = "{MCMCChains|+ data : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ start : Integer\l+ thin : Integer\l+ model : MCMCModel\l}"]
+
+	MCMCDepNode -- Variate[len = 0.8, arrowhead = empty]
+	MCMCLogical -- MCMCDepNode[arrowhead = empty]
+	MCMCStochastic -- MCMCDepNode[arrowhead = empty]
+	MCMCSampler -- MCMCStochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
+	MCMCModel -- MCMCSampler[arrowtail = odiamond, headlabel = "0..*"]
+	MCMCModel -- MCMCLogical[arrowtail = odiamond, headlabel = "0..*"]
+	MCMCModel -- MCMCStochastic[arrowtail = odiamond, headlabel = "0..*"]
+	MCMCChains -- MCMCModel[len = 1.2, arrowtail = odiamond, headlabel = "1"]
+
+}
