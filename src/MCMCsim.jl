@@ -79,7 +79,7 @@ end
 
 #################### MCMCChain Type ####################
 
-type MCMCChains
+immutable MCMCChains
   data::Array{VariateType,3}
   names::Vector{String}
   start::Integer
@@ -121,11 +121,12 @@ export
   Flat
 
 export
-  MCMCChain,
+  MCMCChains,
   MCMCLogical,
   MCMCModel,
   MCMCSampler,
-  MCMCStochastic
+  MCMCStochastic,
+  VariateType
 
 export
   autocor,
@@ -170,7 +171,6 @@ export
   VariateSlice
 
 export
-  amm,
   amm!,
   amwg,
   amwg!,
