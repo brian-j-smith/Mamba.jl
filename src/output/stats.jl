@@ -114,5 +114,3 @@ function summarystats(c::MCMCChains; batchsize::Integer=100)
   vals = [vals (n * min(vals[:,3] ./ vals[:,4], 1))]
   ChainSummary(vals, c.names, labels, header(c))
 end
-
-
