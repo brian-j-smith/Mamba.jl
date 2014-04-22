@@ -1,11 +1,19 @@
 #################### MCMCChains Constructor ####################
 
-function MCMCChains{T<:String}(names::Vector{T}, iter::Integer;
+function MCMCChains{T<:Real,U<:String}(data::Array{T,3}, names::Vector{U};
+           start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
+  length(names) == size(data, 2) ||
+    error("data column and names dimensions must match")
+  vdata = convert(Array{VariateType, 3}, data)
+  MCMCChains(vdata, String[names...], start, thin, model)
+end
+
+function MCMCChains{T<:String}(iter::Integer, names::Vector{T};
            start::Integer=1, thin::Integer=1, chains::Integer=1,
            model::MCMCModel=MCMCModel())
-  data = Array(VariateType, iter, length(names), chains)
-  fill!(data, NaN)
-  MCMCChains(data, String[names...], start, thin, model)
+  vdata = Array(VariateType, iter, length(names), chains)
+  fill!(vdata, NaN)
+  MCMCChains(vdata, String[names...], start, thin, model)
 end
 
 
@@ -90,21 +98,19 @@ end
 
 function link(c::MCMCChains)
   X = deepcopy(c.data)
-  m = size(X, 1)
-  for key in keys(c.model, :monitor)
+  idx0 = 1:length(c.names)
+  for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
     node = c.model[key]
     idx = nonzeros(indexin(node.names, c.names))
     if length(idx) > 0
-      if isa(node, MCMCStochastic)
-        X[:,idx,:] = mapslices(x -> link(node, x), X[:,idx,:], 2)
-      else
-        for j in idx
-          x = X[:,j,:]
-          if minimum(x) > 0.0
-            X[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
-          end
-        end
-      end
+      X[:,idx,:] = mapslices(x -> link(node, x), X[:,idx,:], 2)
+      idx0 = setdiff(idx0, idx)
+    end
+  end
+  for j in idx0
+    x = X[:,j,:]
+    if minimum(x) > 0.0
+      X[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
     end
   end
   X
