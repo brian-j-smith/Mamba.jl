@@ -8,20 +8,16 @@ type TuneAMM
   m::Integer
   mu::Vector{Float64}
   scale::Real
-  Sigma::Cholesky{Float64}
+  SigmaF::Cholesky{Float64}
   SigmaLm::Matrix{Float64}
 end
 
 type VariateAMM <: VariateVector
   data::Vector{VariateType}
   tune::TuneAMM
-
-  function VariateAMM{T<:Real}(x::Vector{T}, tune::TuneAMM)
-    new(VariateType[x...], tune)
-  end
 end
 
-function VariateAMM{T<:Real}(x::Vector{T}, tune=nothing)
+function VariateAMM(x::Vector{VariateType}, tune=nothing)
   tune = TuneAMM(
     false,
     0.05,
@@ -37,12 +33,7 @@ end
 
 #################### Sampling Functions ####################
 
-function amm{T<:Real}(x::Vector{T}, Sigma::Cholesky{Float64}, logf::Function;
-           adapt::Bool=false)
-  amm!(VariateAMM(x), Sigma, logf)
-end
-
-function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function;
+function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
            adapt::Bool=false)
   tune = v.tune
 
@@ -52,11 +43,11 @@ function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function;
       tune.adapt = true
       tune.m = 0
       tune.mu = zeros(d)
-      tune.Sigma = Sigma
+      tune.SigmaF = SigmaF
       tune.SigmaLm = zeros(d,d)
     end
     tune.m += 1
-    x = v + tune.Sigma[:L] * randn(d)
+    x = v + tune.SigmaF[:L] * randn(d)
     if tune.m > 2 * d
       x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(d))
     end
@@ -74,11 +65,11 @@ function amm!(v::VariateAMM, Sigma::Cholesky{Float64}, logf::Function;
     tune.SigmaLm = F[:P] * F[:L]
   else
     if tune.adapt
-      x = v + tune.beta * (tune.Sigma[:L] * randn(d)) +
+      x = v + tune.beta * (tune.SigmaF[:L] * randn(d)) +
           (1 - tune.beta) * (tune.SigmaLm * randn(d))
     else
-      tune.Sigma = Sigma
-      x = v + tune.Sigma[:L] * randn(d)
+      tune.SigmaF = SigmaF
+      x = v + tune.SigmaF[:L] * randn(d)
     end
     if rand() < exp(logf(x) - logf(v.data))
       v[:] = x
