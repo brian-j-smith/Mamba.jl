@@ -12,7 +12,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
   m.burnin = burnin
   tune0 = tune(m)
 
-  sims = MCMCChains(names(m, true), div(iter - burnin - 1, thin) + 1,
+  sims = MCMCChains(div(iter - burnin - 1, thin) + 1, names(m, true),
                     start=burnin + thin, thin=thin, chains=chains, model=m)
 
   for k in 1:chains
