@@ -126,7 +126,11 @@ export
   MCMCModel,
   MCMCSampler,
   MCMCStochastic,
-  VariateType
+  VariateType,
+  VariateScalar,
+  VariateVector,
+  VariateMatrix,
+  VariateVecOrMat
 
 export
   autocor,
@@ -172,15 +176,11 @@ export
 
 export
   amm!,
-  amwg,
   amwg!,
-  nuts,
   nuts!,
   nutseps,
   nutsfx!,
-  slice,
   slice!,
-  slicewg,
   slicewg!
 
 end
