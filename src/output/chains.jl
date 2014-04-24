@@ -1,5 +1,11 @@
 #################### MCMCChains Constructor ####################
 
+function MCMCChains{T<:Real,U<:String}(data::Array{T,2}, names::Vector{U};
+           start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
+  MCMCChains(reshape(data, size(data,1), size(data, 2), 1), names,
+             start=start, thin=thin, model=model)
+end
+
 function MCMCChains{T<:Real,U<:String}(data::Array{T,3}, names::Vector{U};
            start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
   length(names) == size(data, 2) ||
