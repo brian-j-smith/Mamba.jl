@@ -54,7 +54,7 @@ end
 #################### Adaptive Metropolis within Gibbs ####################
 
 function SamplerAMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
-           adapt::Symbol=:none, batch::Integer=50, target::Real=0.44)
+           adapt::Symbol=:none, batchsize::Integer=50, target::Real=0.44)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
@@ -66,13 +66,13 @@ function SamplerAMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
       f = x -> logpdf(model, x, block, true)
-      amwg!(v, tunepar["sigma"], f, adapt=adapt, batch=tunepar["batch"],
+      amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
       relist(model, v.data, block, true)
     end,
-    ["sigma" => sigma, "adapt" => adapt, "batch" => batch, "target" => target,
-     "sampler" => nothing]
+    ["sigma" => sigma, "adapt" => adapt, "batchsize" => batchsize,
+     "target" => target, "sampler" => nothing]
   )
 end
 
@@ -88,7 +88,7 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       v = VariateNUTS(x, tunepar["sampler"])
       f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
       if model.iter == 1
-        tunepar["eps"] = nutseps(x, f)
+        tunepar["eps"] = nutseps(v, f)
       end
       nuts!(v, tunepar["eps"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
