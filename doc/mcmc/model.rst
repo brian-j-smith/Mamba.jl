@@ -32,7 +32,7 @@ Constructor
 				
 	Construct an ``MCMCModel`` object that defines a model for MCMC simulation.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``iter`` : current iteration of the MCMC simulation.
 		* ``burnin`` : number of initial draws to be discarded as a burn-in sequence to allow for convergence.
@@ -40,7 +40,7 @@ Constructor
 		* ``samplers`` : a vector of block-specific sampling functions.
 		* ``nodes...`` : a variable number of user specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``MCMCLogical`` or ``MCMCStochastic`` type objects.  Node names in the model will be taken from the argument names.
 		
-	**Value:**
+	**Value**
 	
 		Returns an ``MCMCModel`` type object.
 
@@ -51,12 +51,12 @@ Methods
 
 	Returns a named model node.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model contining the node to get.
 		* ``key`` : name of the node to get.
 		
-	**Value:**
+	**Value**
 	
 		The specified node.
 	
@@ -67,17 +67,17 @@ Methods
 			
 	Numerically approximate the gradient for stochastic nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model containing the stochastic nodes for which to compute the gradient.
 		* ``x`` : a value (other than the current one) at which to compute the gradient.
 		* ``block`` : the sampling block of stochastic nodes for which to compute the gradient, if specified; otherwise, all sampling blocks are included.
 		* ``transform`` : whether to compute the gradient on the link–transformed scale.
-		* ``dtype`` : type of numerical approximation to use.  Options are
+		* ``dtype`` : type of differentiation for gradient calculations.  Options are
 			* ``:central`` : central differencing.
 			* ``:forward`` : forward differencing.
 		
-	**Value:**
+	**Value**
 	
 		The resulting gradient vector.
 
@@ -85,11 +85,11 @@ Methods
 
 	Construct a graph representation of model nodes and their relationships.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model for which to construct a graph.
 	
-	**Value:**
+	**Value**
 	
 		Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
 
@@ -98,12 +98,12 @@ Methods
 
 	Construct a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model for which to construct a graph.
 		* ``filename`` : an external file to which to save the resulting graph.
 	
-	**Value:**
+	**Value**
 	
 		A character string represenation of the graph in DOT format.
 	
@@ -111,7 +111,7 @@ Methods
 
 	Return names of node of a specified type.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model containing the nodes of interest.
 		* ``ntype`` : the type of node to return.  Options are
@@ -126,7 +126,7 @@ Methods
 			* ``:stochastic`` : stochastic nodes.
 		* ``block`` : the block for which to return nodes if ``ntype = :block``, or all blocks if ``block = 0`` (default).
 		
-	**Value:**
+	**Value**
 	
 		Node names returned as a vector of character strings.
 
@@ -136,14 +136,14 @@ Methods
 
 	Compute the sum of log-densities for stochastic nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
 		* ``x`` : a value (other than the current one) at which to evaluate densities.
 		* ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all sampling blocks are included.
 		* ``transform`` : whether to evaluate evaluate log-densities on the link–transformed scale.
 		
-	**Value:**
+	**Value**
 	
 		The resulting numeric value of summed log-densities.
 				
@@ -153,7 +153,7 @@ Methods
 
 	Simulate MCMC draws for a specified model.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``model`` : a specified mode.
 		* ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
@@ -163,7 +163,7 @@ Methods
 		* ``thin`` : step-size between draws to output.
 		* ``chains`` : number of simulation runs to perform.
 		
-	**Value:**
+	**Value**
 	
 		An ``MCMCChains`` type object of simulated draws.
 		
@@ -174,7 +174,7 @@ Methods
 				
 	Convert a vector of values to a set of logical and/or stochastic node values.
 
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with nodes to serve as the template for conversion.
 		* ``values`` : values to convert.
@@ -182,7 +182,7 @@ Methods
 		* ``nkeys`` : a vector of names specifying the nodes to which to convert ``values``.
 		* ``transform`` : whether to apply an inverse-link transformation in the conversion.
 		
-	**Value:**
+	**Value**
 	
 		A dictionary of node names and converted values.
 
@@ -193,7 +193,7 @@ Methods
 				
 	Copy a vector of values to a set of logical and/or stochastic nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with nodes to which values will be copied.
 		* ``values`` : values to copy.
@@ -201,7 +201,7 @@ Methods
 		* ``nkeys`` : a vector of names specifying the nodes to which to copy ``values``.
 		* ``transform`` : whether to apply an inverse-link transformation in the copy.
 		
-	**Value:**
+	**Value**
 	
 		Returns the model with copied node values.
 							
@@ -209,12 +209,12 @@ Methods
 
 	Set the initial values of stochastic model nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with nodes to be initialized.
 		* ``inits`` : a dictionary of initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.
 		
-	**Value:**
+	**Value**
 	
 		Returns the model with initialized stochastic nodes.
 
@@ -222,12 +222,12 @@ Methods
 
 	Set the values of input model nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with input nodes to be assigned.
 		* ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
 		
-	**Value:**
+	**Value**
 	
 		Returns the model with values assigned to input nodes.
 
@@ -235,7 +235,7 @@ Methods
 
 	Set the block-samplers for stochastic model nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with stochastic nodes to be sampled.
 		* ``samplers`` : block-specific samplers.
@@ -261,7 +261,7 @@ Methods
 		* ``m`` : a model specification.
 		* ``block`` : the block for which to simulate an MCMC draw, if specified; otherwise, simulate draws for all blocks (default).
 		
-	**Value:**
+	**Value**
 	
 		Returns the model updated with the MCMC draw.
 
@@ -269,12 +269,12 @@ Methods
 
 	Get block-sampler tuning parameters.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with block-samplers.
 		* ``block`` : the block for which to return the tuning parameters, if specified; otherwise, the tuning parameters for all blocks.
 		
-	**Value:**
+	**Value**
 	
 		If ``block = 0``, a vector of dictionaries containing block-specific tuning parameters; otherwise, one block-specific dictionary.
 
@@ -283,14 +283,14 @@ Methods
 			  
 	Convert a set of logical and/or stochastic node values to a vector.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a model with nodes to be converted.
 		* ``block`` : the sampling block of nodes to be converted.  Defaults to all blocks.
 		* ``nkeys`` : a vector of names specifying the nodes to be converted.
 		* ``transform`` : whether to apply a link transformation in the conversion.
 		
-	**Value:**
+	**Value**
 	
 		A vector of concatenated node values.
 
@@ -298,11 +298,11 @@ Methods
 
 	Update values of logical and stochastic model node according to their relationship with others in a model.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``m`` : a mode with nodes to be updated.
 		* ``block`` : the sampling block of nodes to be updated.  Defaults to all blocks.
 		
-	**Value:**
+	**Value**
 	
 		Returns the model with updated nodes.

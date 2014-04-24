@@ -251,10 +251,18 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
 
 .. code-block:: julia
 
-	## MCMC Simulation Engine
+	## MCMC Simulations
+	
+	setsamplers!(line, scheme1)
 	sim1 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
 
-Results are retuned as an ``MCMCChains`` object on which methods for posterior inference are defined.
+	setsamplers!(line, scheme2)
+	sim2 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+
+	setsamplers!(line, scheme3)
+	sim3 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+
+Results are retuned as ``MCMCChains`` objects on which methods for posterior inference are defined.
 
 
 Posterior Inference

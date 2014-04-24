@@ -33,13 +33,13 @@ Constructor
 
 	Construct a ``MCMCSampler`` object that defines a sampling function for a block of stochastic nodes.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``params`` : names of nodes that are being block-updated by the sampler.
 		* ``expr`` : a quoted expression that makes up the body of the sampling function whose definition is described above.
 		* ``tune`` : tuning parameters needed by the sampling function.
 		
-	**Value:**
+	**Value**
 	
 		Returns an ``MCMCSampler`` type object.
 

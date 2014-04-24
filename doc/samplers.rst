@@ -4,7 +4,7 @@ Sampling Functions
 ==================
 
 .. toctree::
-	:maxdepth: 2
+	:maxdepth: 1
 
 	samplers/amm.rst
 	samplers/amwg.rst

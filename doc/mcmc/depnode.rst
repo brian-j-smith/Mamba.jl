@@ -30,12 +30,12 @@ Methods
 
 	Apply a node-specific inverse-link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDepNode`` to implement other link functions. 
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``n`` : a node on which a ``link`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
 	
-	**Value:**
+	**Value**
 	
 		Returns the inverse-link-transformed version of ``x``.
 
@@ -43,12 +43,12 @@ Methods
 
 	Apply a node-specific link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDepNode`` to implement other link functions. 
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``n`` : a node on which a ``link`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
 	
-	**Value:**
+	**Value**
 	
 		Returns the link-transformed version of ``x``.
 
@@ -56,12 +56,12 @@ Methods
 
 	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a value of 0 is thus returned.  The method function may be redefined for subtypes of ``MCMCDepNode`` that have distributional specifications.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``n`` : a node containing values at which to compute the log-density.
 		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
 		
-	**Value:**
+	**Value**
 	
 		The resulting numeric value of the log-density.
 
@@ -69,12 +69,12 @@ Methods
 
 	Specify node elements to be included in monitored MCMC sampler output.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``n`` : a node whose elements contain sampled MCMC values.
 		* ``momitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
-	**Value:**
+	**Value**
 	
 		Returns ``n`` with its ``monitor`` field updated to reflect the specified monitoring.
 
@@ -125,14 +125,14 @@ Constructors
 
 	Construct an ``MCMCLogical`` object that defines a logical model node.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``length`` : number of vector elements in the node.
 		* ``m``, ``n`` : number of matrix rows and columns in the node.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
-	**Value:**
+	**Value**
 	
 		Returns an ``MCMCLogical{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCLogical{Vector{VariateType}}`` if ``length`` is specified, and a ``MCMCLogcial{Matrix{VariateType}}`` if ``m`` and ``n`` are specified.
 
@@ -143,13 +143,13 @@ Methods
 
 	Set initial values for a logical node.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``l`` : a logical node to assign initial values.
 		* ``m`` : a model that contains the node.
 		* ``x`` : unused.
 		
-	**Value:**
+	**Value**
 	
 		Returns the result of a call to `update!(l, m)``.
 
@@ -157,12 +157,12 @@ Methods
 
 	Update the values of a logical node according to its relationship with others in a model.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``l`` : a logical node to update.
 		* ``m`` : a model that contains the node.
 		
-	**Value:**
+	**Value**
 	
 		Returns the node with its values updated.
 
@@ -213,14 +213,14 @@ Constructors
 
 	Construct an ``MCMCStochastic`` object that defines a stochastic model node.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``length`` : number of vector elements in the node.
 		* ``m``, ``n`` : number of matrix rows and columns in the node.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
-	**Value:**
+	**Value**
 	
 		Returns an ``MCMCStochastic{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCStochastic{Vector{VariateType}}`` if ``length`` is specified, and a ``MCMCStochastic{Matrix{VariateType}}`` if ``m`` and ``n`` are specified.
 
@@ -231,11 +231,11 @@ Methods
 
 	Check whether stochastic node values are within the support of its distribution.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``s`` : a stochastic node on which to perform the check.
 		
-	**Value:**
+	**Value**
 	
 		Returns ``true`` if all values are within the support, and ``false`` otherwise.
 
@@ -243,12 +243,12 @@ Methods
 
 	Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``s`` : a stochastic node on which a ``link`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
 	
-	**Value:**
+	**Value**
 	
 		Returns the inverse-link-transformed version of ``x``.
 
@@ -256,12 +256,12 @@ Methods
 
 	Apply a link transformation to map values in a constrained distributional support to an unconstrained space. 
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``s`` : a stochastic node on which a ``link`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
 	
-	**Value:**
+	**Value**
 	
 		Returns the link-transformed version of ``x``.
 
@@ -269,12 +269,12 @@ Methods
 
 	Evaluate the log-density function for a stochastic node.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``s`` : a stochastic node containing values at which to compute the log-density.
 		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
 		
-	**Value:**
+	**Value**
 	
 		The resulting numeric value of the log-density.
 
@@ -282,13 +282,13 @@ Methods
 
 	Set initial values for a stochastic node.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``s`` : a stochastic node to assign initial values.
 		* ``m`` : a model that contains the node.
 		* ``x`` : values to assign to the node.
 		
-	**Value:**
+	**Value**
 	
 		Returns the node with its assigned initial values.
 
@@ -296,11 +296,11 @@ Methods
 
 	Update the values of a stochastic node according to its relationship with others in a model.
 	
-	**Arguments:**
+	**Arguments**
 	
 		* ``s`` : a stochastic node to update.
 		* ``m`` : a model that contains the node.
 		
-	**Value:**
+	**Value**
 	
 		Returns the node with its values updated.
