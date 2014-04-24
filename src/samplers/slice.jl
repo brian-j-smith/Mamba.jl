@@ -9,13 +9,9 @@ end
 type VariateSlice <: VariateVector
   data::Vector{VariateType}
   tune::TuneSlice
-
-  function VariateSlice{T<:Real}(x::Vector{T}, tune::TuneSlice)
-    new(VariateType[x...], tune)
-  end
 end
 
-function VariateSlice{T<:Real}(x::Vector{T}, tune=nothing)
+function VariateSlice(x::Vector{VariateType}, tune=nothing)
   tune = TuneSlice(
     Array(Float64, 0)
   )
@@ -24,10 +20,6 @@ end
 
 
 #################### Sampling Functions ####################
-
-function slice{T<:Real}(x::Vector{T}, width::Vector{Float64}, logf::Function)
-  slice!(VariateSlice(x), width, logf)
-end
 
 function slice!(v::VariateSlice, width::Vector{Float64}, logf::Function)
   p0 = logf(v.data) + log(rand())
@@ -58,10 +50,6 @@ end
 #################### Slice within Gibbs Sampler ####################
 
 #################### Sampling Functions ####################
-
-function slicewg{T<:Real}(x::Vector{T}, width::Vector{Float64}, logf::Function)
-  slicewg!(VariateSlice(x), width, logf)
-end
 
 function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
   logf0 = logf(v.data)
