@@ -6,7 +6,8 @@ type TuneAMM
   adapt::Bool
   beta::Real
   m::Integer
-  mu::Vector{Float64}
+  Mv::Vector{Float64}
+  Mvv::Matrix{Float64}
   scale::Real
   SigmaF::Cholesky{Float64}
   SigmaLm::Matrix{Float64}
@@ -23,6 +24,7 @@ function VariateAMM(x::Vector{VariateType}, tune=nothing)
     0.05,
     0,
     Array(Float64, 0),
+    Array(Float64, 0, 0),
     2.38^2,
     Cholesky(Array(Float64, 0, 0), 'U'),
     Array(Float64, 0, 0)
@@ -42,11 +44,11 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
     if !tune.adapt
       tune.adapt = true
       tune.m = 0
-      tune.mu = zeros(d)
+      tune.Mv = v.data
+      tune.Mvv = v * v'
       tune.SigmaF = SigmaF
-      tune.SigmaLm = zeros(d,d)
+      tune.SigmaLm = zeros(d, d)
     end
-    tune.m += 1
     x = v + tune.SigmaF[:L] * randn(d)
     if tune.m > 2 * d
       x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(d))
@@ -54,15 +56,16 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
     if rand() < exp(logf(x) - logf(v.data))
       v[:] = x
     end
+    tune.m += 1
     sd = tune.scale / d
-    p = 1.0 / (tune.m + 1)
-    mu = (1.0 - p) * tune.mu + p * v
-    Sigma = (1.0 - 1.0 / tune.m) * tune.SigmaLm * tune.SigmaLm' +
-            sd * tune.mu * tune.mu' - sd * (1.0 + 1.0 / tune.m) * mu * mu' +
-            sd / tune.m * v * v'
-    tune.mu = mu
+    p = tune.m / (tune.m + 1.0)
+    tune.Mv = p * tune.Mv + (1.0 - p) * v
+    tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
+    Sigma = (sd / p) * (tune.Mvv - tune.Mv * tune.Mv')
     F = cholpfact(Sigma)
-    tune.SigmaLm = F[:P] * F[:L]
+    if rank(F) == d
+      tune.SigmaLm = F[:P] * F[:L]
+    end
   else
     if tune.adapt
       x = v + tune.beta * (tune.SigmaF[:L] * randn(d)) +
