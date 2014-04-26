@@ -133,7 +133,7 @@ invlink(s::MCMCStochastic, x) = mapdistr(invlink, s, x)
 link(s::MCMCStochastic, x) =  mapdistr(link, s, x)
 
 function logpdf(s::MCMCStochastic, transform::Bool=false)
-  +(mapdistr(logpdf, s, s.data, transform))
+  sum(mapdistr(logpdf, s, s.data, transform))
 end
 
 function mapdistr(f::Function, s::MCMCStochastic, x, args...)
