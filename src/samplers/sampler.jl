@@ -114,7 +114,8 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector{Float64})
     quote
       x = unlist(model, block, true)
       f = x -> logpdf(model, x, block, true)
-      v = slice(x, tune(model, block)["width"], f)
+      v = VariateSlice(x)
+      slice!(v, tune(model, block)["width"], f)
       relist(model, v.data, block, true)
     end,
     ["width" => width]
@@ -129,7 +130,8 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector{Float64})
     quote
       x = unlist(model, block, true)
       f = x -> logpdf(model, x, block, true)
-      v = slicewg(x, tune(model, block)["width"], f)
+      v = VariateSlice(x)
+      slicewg!(v, tune(model, block)["width"], f)
       relist(model, v.data, block, true)
     end,
     ["width" => width]
