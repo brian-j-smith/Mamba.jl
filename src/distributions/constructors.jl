@@ -7,11 +7,10 @@
 macro distr_fallback(g)
   quote
     local f = deepcopy($g)
-    f.args[1] = symbol("Distributions." * string(($g).args[1]))
     for i in 2:length(($g).args)
       f.args[i] = ($g).args[i].args[end]
     end
-    eval(Expr(:(=), f, $g))
+    eval(Distributions, Expr(:(=), f, $g))
   end
 end
 
