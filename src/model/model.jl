@@ -298,7 +298,10 @@ function unlist(m::MCMCModel, monitoronly::Bool)
   values = VariateType[]
   for key in keys(m, :dep)
     node = m[key]
-    append!(values, node[!monitoronly | node.monitor])
+    idx = find(!monitoronly | node.monitor)
+    if length(idx) > 0
+      append!(values, node[idx])
+    end
   end
   values
 end
