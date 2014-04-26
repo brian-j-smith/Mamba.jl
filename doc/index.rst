@@ -7,10 +7,11 @@ Contents:
 	:maxdepth: 2
 
 	intro.rst
-	line.rst
+	tutorial.rst
 	variate.rst
 	mcmc.rst
 	samplers.rst
+	examples.rst
 	xrefs.rst
 
 

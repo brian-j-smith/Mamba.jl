@@ -3,11 +3,11 @@
 
 .. _section-Line:
 
-Linear Regression Example
-=========================
+Tutorial
+========
 
-Bayesian Model Specification
-----------------------------
+Bayesian Linear Regression Model
+--------------------------------
 
 In the sections that follow, the Bayesian simple linear regression example from the `BUGS 0.5` manual :cite:`spiegelhalter:1996:BIU` is used to illustrate features of the package.  The example describes a regression relationship between observations :math:`\bm{x} = (1, 2, 3, 4, 5)^\top` and :math:`\bm{y} = (1, 3, 3, 3, 5)^\top` that can be expressed as
 
@@ -46,8 +46,8 @@ where :math:`\bm{\beta} = (\beta_0, \beta_1)^\top`, and :math:`\bm{X}` is a desi
 A common alternative is to make approximate inference based on parameter values simulated from the posterior with MCMC methods.
 
 
-Model Implementation
---------------------
+Model Specification
+-------------------
 
 Nodes
 ^^^^^
@@ -67,7 +67,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	using MCMCsim
 	using Distributions
 
-	## Model Implementation
+	## Model Specification
 
 	line = MCMCModel(
 
@@ -75,7 +75,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	    quote
 	      mu = model["mu"]
 	      s2 = model["s2"]
-	      IsoNormal(mu, s2)
+	      IsoNormal(mu, sqrt(s2))
 	    end,
 	    false
 	  ),
@@ -86,7 +86,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	  ),
 
 	  beta = MCMCStochastic(2,
-	    :(IsoNormal(2, 1000))
+	    :(IsoNormal(2, sqrt(1000)))
 	  ),
 
 	  s2 = MCMCStochastic(
