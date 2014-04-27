@@ -6,6 +6,8 @@
 Tutorial
 ========
 
+The complete source code for the examples containing in this tutorial can be found :download:`here <tutorial/line.jl>`.
+
 Bayesian Linear Regression Model
 --------------------------------
 
@@ -203,7 +205,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command lin
 
 Either the printed or saved output can be passed to the Graphviz software to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
 
-.. figure:: images/LineDAG.png
+.. figure:: tutorial/LineDAG.png
 	:align: center
 	
 	Directed acyclic graph representation of the example regression model nodes.
