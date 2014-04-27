@@ -73,7 +73,7 @@ rats = MCMCModel(
       s2 = model["s2_alpha"]
       IsoNormal(mu, sqrt(s2))
     end,
-    [true, fill(false, 29)]
+    false
   ),
 
   beta = MCMCStochastic(30,
