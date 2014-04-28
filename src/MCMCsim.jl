@@ -31,11 +31,11 @@ typealias VariateVecOrMat Union(VariateVector, VariateMatrix)
 typealias DistributionStruct Union(Distribution, VecOrMat{Distribution})
 
 
-#################### MCMCDepNode Types ####################
+#################### MCMCDependent Types ####################
 
-abstract MCMCDepNode{T} <: Variate{T}
+abstract MCMCDependent{T} <: Variate{T}
 
-type MCMCLogical{T} <: MCMCDepNode{T}
+type MCMCLogical{T} <: MCMCDependent{T}
   data::T
   names::Vector{String}
   monitor::Vector{Bool}
@@ -43,7 +43,7 @@ type MCMCLogical{T} <: MCMCDepNode{T}
   deps::Vector{String}
 end
 
-type MCMCStochastic{T} <: MCMCDepNode{T}
+type MCMCStochastic{T} <: MCMCDependent{T}
   data::T
   names::Vector{String}
   monitor::Vector{Bool}

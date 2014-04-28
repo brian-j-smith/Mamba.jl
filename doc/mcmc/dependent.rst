@@ -1,18 +1,18 @@
-.. index:: MCMCDepNode
+.. index:: MCMCDependent
 
-.. _section-MCMCDepNode:
+.. _section-MCMCDependent:
 
-MCMCDepNode
+MCMCDependent
 -----------
 
-``MCMCDepNode`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``data`` field and can be used with method functions that accept ``Variate`` type objects.
+``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``data`` field and can be used with method functions that accept ``Variate`` type objects.
 
-Since parameter values in the ``MCMCNode`` structure are stored as a scalar, vector, or matrix, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the three being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDepNode`` for each one.  At the other end, a formulation might be made in terms of a single parameter vector, with one corresponding instance of ``MCMCDepNode``.  Whether to formulate parameters as scalar, vector, or matrix nodes depends on the application at hand.  Vector and matrix formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parameterizations may be preferable.  Situations in which parameter vectors are often used include the specification of regression coefficients and random effects.
+Since parameter values in the ``MCMCNode`` structure are stored as a scalar, vector, or matrix, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the three being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter vector, with one corresponding instance of ``MCMCDependent``.  Whether to formulate parameters as scalar, vector, or matrix nodes depends on the application at hand.  Vector and matrix formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parameterizations may be preferable.  Situations in which parameter vectors are often used include the specification of regression coefficients and random effects.
 
 Declaration
 ^^^^^^^^^^^
 
-``abstract MCMCDepNode{T} <: Variate{T}``
+``abstract MCMCDependent{T} <: Variate{T}``
 
 Fields
 ^^^^^^
@@ -26,9 +26,9 @@ Fields
 Methods
 ^^^^^^^
 
-.. function:: invlink(n::MCMCDepNode, x)
+.. function:: invlink(n::MCMCDependent, x)
 
-	Apply a node-specific inverse-link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDepNode`` to implement other link functions. 
+	Apply a node-specific inverse-link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDependent`` to implement other link functions. 
 	
 	**Arguments**
 	
@@ -39,9 +39,9 @@ Methods
 	
 		Returns the inverse-link-transformed version of ``x``.
 
-.. function:: link(n::MCMCDepNode, x)
+.. function:: link(n::MCMCDependent, x)
 
-	Apply a node-specific link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDepNode`` to implement other link functions. 
+	Apply a node-specific link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDependent`` to implement other link functions. 
 	
 	**Arguments**
 	
@@ -52,9 +52,9 @@ Methods
 	
 		Returns the link-transformed version of ``x``.
 
-.. function:: logpdf(n::MCMCDepNode, transform::Bool=false)
+.. function:: logpdf(n::MCMCDependent, transform::Bool=false)
 
-	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a value of 0 is thus returned.  The method function may be redefined for subtypes of ``MCMCDepNode`` that have distributional specifications.
+	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a value of 0 is thus returned.  The method function may be redefined for subtypes of ``MCMCDependent`` that have distributional specifications.
 	
 	**Arguments**
 	
@@ -65,7 +65,7 @@ Methods
 	
 		The resulting numeric value of the log-density.
 
-.. function:: setmonitor!(n::MCMCDepNode, monitor::Union(Bool,Vector{Bool}))
+.. function:: setmonitor!(n::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
 
 	Specify node elements to be included in monitored MCMC sampler output.
 	
@@ -78,11 +78,11 @@ Methods
 	
 		Returns ``n`` with its ``monitor`` field updated to reflect the specified monitoring.
 
-.. function:: show(n::MCMCDepNode)
+.. function:: show(n::MCMCDependent)
 
 	Write a text representation of nodal values and attributes to the current output stream.  
 
-.. function:: showall(n::MCMCDepNode)
+.. function:: showall(n::MCMCDependent)
 
 	Write a verbose text representation of nodal values and attributes to the current output stream.  
 
@@ -94,7 +94,7 @@ Methods
 MCMCLogical
 -----------
 
-Type ``MCMCLogical`` inherits the fields and method functions from the ``MCMCDepNode`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
+Type ``MCMCLogical`` inherits the fields and method functions from the ``MCMCDependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -105,7 +105,7 @@ where ``model`` contains all model nodes.  The function can contain any valid **
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCLogical{T} <: MCMCDepNode{T}``
+``type MCMCLogical{T} <: MCMCDependent{T}``
 
 Fields
 ^^^^^^
@@ -174,7 +174,7 @@ Methods
 MCMCStochastic
 --------------
 
-Type ``MCMCStochastic`` inherits the fields and method functions from the ``MCMCDepNode`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
+Type ``MCMCStochastic`` inherits the fields and method functions from the ``MCMCDependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -185,7 +185,7 @@ where ``model`` contains all model nodes.  The function can contain any valid **
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCStochastic{T} <: MCMCDepNode{T}``
+``type MCMCStochastic{T} <: MCMCDependent{T}``
 
 Fields
 ^^^^^^

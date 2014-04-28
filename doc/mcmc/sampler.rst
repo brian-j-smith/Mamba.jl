@@ -22,7 +22,7 @@ Fields
 ^^^^^^
 
 * ``params::Vector{String}`` : names of the stochastic nodes in the block being updated by the sampler.
-* ``links::Vector{String}`` : names of ``MCMCDepNode`` nodes that depend on and whose states must be updated after the ``params``.  Elements of ``links`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``links::Vector{String}`` : names of ``MCMCDependent`` nodes that depend on and whose states must be updated after the ``params``.  Elements of ``links`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``eval::Function`` : a sampling function that updates values of the ``params`` nodes.
 * ``tune::Dict`` : any tuning parameters needed by the sampling function.
 

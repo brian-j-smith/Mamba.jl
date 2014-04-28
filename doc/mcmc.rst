@@ -7,7 +7,7 @@ MCMC Types
 	:maxdepth: 1
 	
 	mcmc/intro.rst
-	mcmc/depnode.rst
+	mcmc/dependent.rst
 	mcmc/sampler.rst
 	mcmc/model.rst
 	mcmc/chains.rst

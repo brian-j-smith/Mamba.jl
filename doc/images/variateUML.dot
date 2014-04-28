@@ -8,7 +8,7 @@ digraph Variate {
 
 	Variate [label = "{Variate\{T\}|+ data : T\l}"]
 
-	MCMCDepNode [label = "{MCMCDepNode\{T\}|+ names : Vector\{String\}\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ deps : Vector\{String\}\l}"]
+	MCMCDependent [label = "{MCMCDependent\{T\}|+ names : Vector\{String\}\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ deps : Vector\{String\}\l}"]
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	
@@ -16,9 +16,9 @@ digraph Variate {
 
 	VariateSampler [label = "{VariateSampler\{Vector\{VariateType\}\}|+ tune : TuneSampler\l}"]
 	
-	Variate -> MCMCDepNode
-	MCMCDepNode -> MCMCLogical
-	MCMCDepNode -> MCMCStochastic
+	Variate -> MCMCDependent
+	MCMCDependent -> MCMCLogical
+	MCMCDependent -> MCMCStochastic
 	Variate -> VariateSampler
 
 }

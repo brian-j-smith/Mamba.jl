@@ -1,6 +1,6 @@
-#################### MCMCDepNode Methods ####################
+#################### MCMCDependent Methods ####################
 
-function Base.show(io::IO, n::MCMCDepNode)
+function Base.show(io::IO, n::MCMCDependent)
   msg = string(ifelse(any(n.monitor), "A ", "An un"),
                "monitored node of type \"", summary(n), "\"\n")
   print(io, msg)
@@ -8,7 +8,7 @@ function Base.show(io::IO, n::MCMCDepNode)
   print(io, "\n")
 end
 
-function Base.showall(io::IO, n::MCMCDepNode)
+function Base.showall(io::IO, n::MCMCDependent)
   show(io, n)
   print(io, "\nFunction:\n")
   show(io, n.eval.code)
@@ -17,15 +17,15 @@ function Base.showall(io::IO, n::MCMCDepNode)
   print(io, "\n")
 end
 
-identity(n::MCMCDepNode, x) = x
+identity(n::MCMCDependent, x) = x
 
-invlink(n::MCMCDepNode, x) = x
+invlink(n::MCMCDependent, x) = x
 
-link(n::MCMCDepNode, x) = x
+link(n::MCMCDependent, x) = x
 
-logpdf(n::MCMCDepNode, transform::Bool=false) = 0.0
+logpdf(n::MCMCDependent, transform::Bool=false) = 0.0
 
-function setmonitor!(n::MCMCDepNode, monitor::Union(Bool,Vector{Bool}))
+function setmonitor!(n::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
   if isa(monitor, Bool)
     values = fill(monitor, length(n))
   elseif length(monitor) == length(n)

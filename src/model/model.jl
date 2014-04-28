@@ -4,7 +4,7 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
            samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
   nodedict = Dict{String,Any}()
   for (arg, value) in nodes
-    isa(value, MCMCDepNode) || error("nodes must be MCMCDepNode types")
+    isa(value, MCMCDependent) || error("nodes must be MCMCDependent types")
     node = deepcopy(value)
     key = string(arg)
     node.names = names(node, key)
@@ -26,7 +26,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   values = String[]
   if ntype == :all
     for key in keys(m.nodes)
-      if isa(m[key], MCMCDepNode)
+      if isa(m[key], MCMCDependent)
         values = [values, key, m[key].deps]
       end
     end
@@ -41,7 +41,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
     values = unique(values)
   elseif ntype == :dep
     for key in keys(m.nodes)
-      if isa(m[key], MCMCDepNode)
+      if isa(m[key], MCMCDependent)
         push!(values, key)
       end
     end
@@ -56,7 +56,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :monitor
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, MCMCDepNode) && any(node.monitor)
+      if isa(node, MCMCDependent) && any(node.monitor)
         push!(values, key)
       end
     end
@@ -146,7 +146,8 @@ end
 
 function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
   for key in keys(m, :input)
-    isa(inputs[key], MCMCDepNode) && error("inputs must not be MCMCDepNode types")
+    isa(inputs[key], MCMCDependent) &&
+      error("inputs must not be MCMCDependent types")
     m.nodes[key] = deepcopy(inputs[key])
   end
   m.hasinputs = true
