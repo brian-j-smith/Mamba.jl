@@ -6,7 +6,7 @@ Variate Types
 Variate
 -------
 
-``Variate`` is an abstract type that serves as the basis for several concrete types in the *MCMCsim* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``Variate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type.  Accordingly, a core set of functionality is defined for the ``Variate`` type through the method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``data`` field defined below.
+``Variate`` is an abstract type that serves as the basis for several concrete types in the *MCMCsim* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``Variate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type.  Accordingly, a core set of functionality is defined for the ``Variate`` type through the method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``value`` field defined below.
 
 Declaration
 ^^^^^^^^^^^
@@ -34,7 +34,7 @@ Aliases
 Field
 ^^^^^
 
-* ``data::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
+* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
 
 Methods
 ^^^^^^^

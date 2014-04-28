@@ -36,7 +36,7 @@ typealias DistributionStruct Union(Distribution, VecOrMat{Distribution})
 abstract MCMCDependent{T} <: Variate{T}
 
 type MCMCLogical{T} <: MCMCDependent{T}
-  data::T
+  value::T
   names::Vector{String}
   monitor::Vector{Bool}
   eval::Function
@@ -44,7 +44,7 @@ type MCMCLogical{T} <: MCMCDependent{T}
 end
 
 type MCMCStochastic{T} <: MCMCDependent{T}
-  data::T
+  value::T
   names::Vector{String}
   monitor::Vector{Bool}
   eval::Function
@@ -80,7 +80,7 @@ end
 #################### MCMCChain Type ####################
 
 immutable MCMCChains
-  data::Array{VariateType,3}
+  value::Array{VariateType,3}
   names::Vector{String}
   start::Integer
   thin::Integer

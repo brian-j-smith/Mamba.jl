@@ -16,7 +16,7 @@ Stand-Alone Functions
 	
 		* ``v`` : current state of parameters to be simulated.
 		* ``width`` : vector of the same length as ``v``, defining initial widths of a hyperrectangle from which to simulate values.
-		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.data``.
+		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 		
 	**Value**
 	
@@ -41,7 +41,7 @@ Declaration
 Fields
 ``````
 
-* ``data::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{VariateType}`` : vector of sampled values.
 * ``tune::TuneSlice`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -110,7 +110,7 @@ Stand-Alone Functions
 	
 		* ``v`` : current state of parameters to be simulated.
 		* ``width`` : vector of the same length as ``v``, defining initial intervals widths from which to simulate values.
-		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.data``.
+		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 		
 	**Value**
 	

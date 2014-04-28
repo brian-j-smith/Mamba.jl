@@ -15,18 +15,18 @@ Declaration
 Fields
 ^^^^^^
 
-* ``data::Array{VariateType,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
+* ``value::Array{VariateType,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``names::Vector{String}`` : names assigned to the parameter elements.
-* ``start::Integer`` : number of the iteration stored in the first row of the ``data`` array.
-* ``thin::Integer`` : number of steps between consecutive iterations stored in the ``data`` array.
+* ``start::Integer`` : number of the iteration stored in the first row of the ``value`` array.
+* ``thin::Integer`` : number of steps between consecutive iterations stored in the ``value`` array.
 * ``model::MCMCModel`` : the model from which the sampled values were generated.
 
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCChains(data::Array{T<:Real,2}, names::Vector{U<:String}; \
+.. function:: MCMCChains(value::Array{T<:Real,2}, names::Vector{U<:String}; \
                 start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-		      MCMCChains(data::Array{T<:Real,3}, names::Vector{U<:String}; \
+		      MCMCChains(value::Array{T<:Real,3}, names::Vector{U<:String}; \
                 start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
               MCMCChains(iter::Integer, names::Vector{T<:String}; start::Integer=1, \
                 thin::Integer=1, chains::Integer=1, model::MCMCModel=MCMCModel())
@@ -36,7 +36,7 @@ Constructors
 	
 	**Arguments**
 	
-		* ``data`` : simulated values whose first, second, and third (optional) dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
+		* ``value`` : simulated values whose first, second, and third (optional) dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 		* ``iter`` : number of simulation-specific iterations to store.
 		* ``names`` : names to assign to the parameter elements.
 		* ``start`` : number of the first iteration to be stored.
@@ -70,13 +70,13 @@ Methods
 		.. code-block:: julia
 		
 			immutable ChainSummary
-			  data::Array{Float64,3}
+			  value::Array{Float64,3}
 			  rownames::Vector{String}
 			  colnames::Vector{String}
 			  header::String
 			end
 
-		with model parameters indexed by the first dimension of ``data``, lag-autocorrelations by the second, and chains by the third.
+		with model parameters indexed by the first dimension of ``value``, lag-autocorrelations by the second, and chains by the third.
 
 .. function:: cor(c::MCMCChains)
 
@@ -88,7 +88,7 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with the first and second dimensions of the ``data`` field indexing the model parameters between which correlations.  Results are for all chains combined.
+		A ``ChainSummary`` type object with the first and second dimensions of the ``value`` field indexing the model parameters between which correlations.  Results are for all chains combined.
 
 .. function:: describe(c::MCMCChains; batchsize::Integer=100, \
 				q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
@@ -115,7 +115,7 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``data`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
+		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
 
 .. function:: gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
@@ -130,7 +130,7 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``data`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
 
 .. function:: getindex(c::MCMCChains, inds...)
 
@@ -156,7 +156,7 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``data`` field, and lower and upper intervals in the first and second columns.  Results are for all chains combined.
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and lower and upper intervals in the first and second columns.  Results are for all chains combined.
 
 .. function:: quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
@@ -169,7 +169,7 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``data`` field, and quantiles in the columns.  Results are for all chains combined.
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
 
 .. function:: summarystats(c::MCMCChains; batchsize::Integer=100)
 
@@ -182,4 +182,4 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with parameters in the rows of the ``data`` field; and the sample mean, standard deviation, standard error, batch standard error (estimate of Monte Carlo error), and effective sample size in the columns.  Results are for all chains combined.
+		A ``ChainSummary`` type object with parameters in the rows of the ``value`` field; and the sample mean, standard deviation, standard error, batch standard error (estimate of Monte Carlo error), and effective sample size in the columns.  Results are for all chains combined.

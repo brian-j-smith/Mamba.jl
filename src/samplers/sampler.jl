@@ -44,7 +44,7 @@ function SamplerAMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
       f = x -> logpdf(model, x, block, true)
       amm!(v, tunepar["Sigma"], f, adapt=adapt)
       tunepar["sampler"] = v.tune
-      relist(model, v.data, block, true)
+      relist(model, v.value, block, true)
     end,
     ["Sigma" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
   )
@@ -69,7 +69,7 @@ function SamplerAMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
       amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.data, block, true)
+      relist(model, v.value, block, true)
     end,
     ["sigma" => sigma, "adapt" => adapt, "batchsize" => batchsize,
      "target" => target, "sampler" => nothing]
@@ -93,7 +93,7 @@ function SamplerNUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       nuts!(v, tunepar["eps"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.data, block, true)
+      relist(model, v.value, block, true)
     end,
     ["eps" => 1.0, "target" => target, "dtype" => dtype, "sampler" => nothing]
   )
@@ -116,7 +116,7 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector{Float64})
       f = x -> logpdf(model, x, block, true)
       v = VariateSlice(x)
       slice!(v, tune(model, block)["width"], f)
-      relist(model, v.data, block, true)
+      relist(model, v.value, block, true)
     end,
     ["width" => width]
   )
@@ -132,7 +132,7 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector{Float64})
       f = x -> logpdf(model, x, block, true)
       v = VariateSlice(x)
       slicewg!(v, tune(model, block)["width"], f)
-      relist(model, v.data, block, true)
+      relist(model, v.value, block, true)
     end,
     ["width" => width]
   )

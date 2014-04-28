@@ -1,67 +1,67 @@
 #################### MCMCDependent Methods ####################
 
-function Base.show(io::IO, n::MCMCDependent)
-  msg = string(ifelse(any(n.monitor), "A ", "An un"),
-               "monitored node of type \"", summary(n), "\"\n")
+function Base.show(io::IO, d::MCMCDependent)
+  msg = string(ifelse(any(d.monitor), "A ", "An un"),
+               "monitored node of type \"", summary(d), "\"\n")
   print(io, msg)
-  show(io, n.data)
+  show(io, d.value)
   print(io, "\n")
 end
 
-function Base.showall(io::IO, n::MCMCDependent)
-  show(io, n)
+function Base.showall(io::IO, d::MCMCDependent)
+  show(io, d)
   print(io, "\nFunction:\n")
-  show(io, n.eval.code)
+  show(io, d.eval.code)
   print(io, "\n\nNode Dependencies:\n")
-  show(io, n.deps)
+  show(io, d.deps)
   print(io, "\n")
 end
 
-identity(n::MCMCDependent, x) = x
+identity(d::MCMCDependent, x) = x
 
-invlink(n::MCMCDependent, x) = x
+invlink(d::MCMCDependent, x) = x
 
-link(n::MCMCDependent, x) = x
+link(d::MCMCDependent, x) = x
 
-logpdf(n::MCMCDependent, transform::Bool=false) = 0.0
+logpdf(d::MCMCDependent, transform::Bool=false) = 0.0
 
-function setmonitor!(n::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
+function setmonitor!(d::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
   if isa(monitor, Bool)
-    values = fill(monitor, length(n))
-  elseif length(monitor) == length(n)
+    values = fill(monitor, length(d))
+  elseif length(monitor) == length(d)
     values = deepcopy(monitor)
   else
-    error("data and monitor dimensions must match")
+    error("node and monitor dimensions must match")
   end
-  n.monitor = values
-  n
+  d.monitor = values
+  d
 end
 
 
 #################### MCMCLogical Constructors ####################
 
-function MCMCLogical(data, expr::Expr, monitor::Union(Bool,Vector{Bool}))
-  l = MCMCLogical(data, String[], Bool[], paramfx(expr), paramdeps(expr))
+function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Bool}))
+  l = MCMCLogical(value, String[], Bool[], paramfx(expr), paramdeps(expr))
   setmonitor!(l, monitor)
 end
 
 function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-  data = convert(VariateType, NaN)
-  MCMCLogical(data, expr, monitor)
+  value = convert(VariateType, NaN)
+  MCMCLogical(value, expr, monitor)
 end
 
 function MCMCLogical(length::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  data = Array(VariateType, length)
-  fill!(data, NaN)
-  MCMCLogical(data, expr, monitor)
+  value = Array(VariateType, length)
+  fill!(value, NaN)
+  MCMCLogical(value, expr, monitor)
 end
 
 function MCMCLogical(m::Integer, n::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  data = Array(VariateType, m, n)
-  fill!(data, NaN)
-  MCMCLogical(data, expr, monitor)
+  value = Array(VariateType, m, n)
+  fill!(value, NaN)
+  MCMCLogical(value, expr, monitor)
 end
 
 
@@ -77,30 +77,30 @@ end
 
 #################### MCMCStochastic Constructors ####################
 
-function MCMCStochastic{T}(data::T, expr::Expr,
+function MCMCStochastic{T}(value::T, expr::Expr,
            monitor::Union(Bool,Vector{Bool}))
-  s = MCMCStochastic(data, String[], Bool[], paramfx(expr), paramdeps(expr),
+  s = MCMCStochastic(value, String[], Bool[], paramfx(expr), paramdeps(expr),
                      NullDistribution())
   setmonitor!(s, monitor)
 end
 
 function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-  data = convert(VariateType, NaN)
-  MCMCStochastic(data, expr, monitor)
+  value = convert(VariateType, NaN)
+  MCMCStochastic(value, expr, monitor)
 end
 
 function MCMCStochastic(length::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  data = Array(VariateType, length)
-  fill!(data, NaN)
-  MCMCStochastic(data, expr, monitor)
+  value = Array(VariateType, length)
+  fill!(value, NaN)
+  MCMCStochastic(value, expr, monitor)
 end
 
 function MCMCStochastic(m::Integer, n::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  data = Array(VariateType, m, n)
-  fill!(data, NaN)
-  MCMCStochastic(data, expr, monitor)
+  value = Array(VariateType, m, n)
+  fill!(value, NaN)
+  MCMCStochastic(value, expr, monitor)
 end
 
 
@@ -118,22 +118,22 @@ function Base.showall(io::IO, s::MCMCStochastic)
 end
 
 function setinits!(s::MCMCStochastic, m::MCMCModel, x)
-  s[:] = convert(typeof(s.data), x)
+  s[:] = convert(typeof(s.value), x)
   update!(s, m)
-  if isa(s.distr, Array) && size(s.data) != size(s.distr)
+  if isa(s.distr, Array) && size(s.value) != size(s.distr)
     error("stochastic parameter and distribution dimensions must match")
   end
   s
 end
 
-insupport(s::MCMCStochastic) = all(mapdistr(insupport, s, s.data))
+insupport(s::MCMCStochastic) = all(mapdistr(insupport, s, s.value))
 
 invlink(s::MCMCStochastic, x) = mapdistr(invlink, s, x)
 
 link(s::MCMCStochastic, x) =  mapdistr(link, s, x)
 
 function logpdf(s::MCMCStochastic, transform::Bool=false)
-  sum(mapdistr(logpdf, s, s.data, transform))
+  sum(mapdistr(logpdf, s, s.value, transform))
 end
 
 function mapdistr(f::Function, s::MCMCStochastic, x, args...)

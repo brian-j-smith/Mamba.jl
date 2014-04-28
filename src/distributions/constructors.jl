@@ -44,7 +44,7 @@ end
 
 #################### Categorical ####################
 
-Distributions.Categorical(p::VariateVector) = Categorical(p.data)
+Distributions.Categorical(p::VariateVector) = Categorical(p.value)
 Distributions.Categorical(k::VariateScalar) = Categorical(int(k))
 
 
@@ -262,7 +262,7 @@ Distributions.DiagNormal(μ, C::PDiagMat) =
 Distributions.DiagNormal(μ, σ) =
   DiagNormal(convert(Vector{Float64}, μ), convert(Vector{Float64}, σ))
 
-Distributions.IsoNormal(d::Integer, σ::VariateScalar) = IsoNormal(d, σ.data)
+Distributions.IsoNormal(d::Integer, σ::VariateScalar) = IsoNormal(d, σ.value)
 Distributions.IsoNormal(μ, C::ScalMat) =
   IsoNormal(convert(Vector{Float64}, μ), C)
 Distributions.IsoNormal(μ, σ) =
@@ -272,7 +272,7 @@ Distributions.IsoNormal(μ, σ) =
 #################### Dirichlet ####################
 
 Distributions.Dirichlet(d::Integer, alpha::VariateScalar) =
-  Dirichlet(d, alpha.data)
+  Dirichlet(d, alpha.value)
 Distributions.Dirichlet(alpha) = Dirichlet(convert(Vector{Float64}, alpha))
 
 
@@ -297,7 +297,7 @@ Distributions.DiagNormalCanon(h, J) =
   DiagNormalCanon(convert(Vector{Float64}, h), convert(Vector{Float64}, J))
 
 Distributions.IsoNormalCanon(d::Integer, prec::VariateScalar) =
-  IsoNormalCanon(d, prec.data)
+  IsoNormalCanon(d, prec.value)
 Distributions.IsoNormalCanon(h, J::ScalMat) =
   IsoNormalCanon(convert(Vector{Float64}, h), J)
 Distributions.IsoNormalCanon(h, prec) =

@@ -7,7 +7,7 @@ function autocor(c::MCMCChains; lags::Vector=[1,5,10,50], relative::Bool=true)
     error("lags do not correspond to thinning interval")
   end
   labels = map(x -> "Lag " * string(x), lags)
-  vals = mapslices(x -> autocor(x, lags)', c.data, [1,2])
+  vals = mapslices(x -> autocor(x, lags)', c.value, [1,2])
   ChainSummary(vals, c.names, labels, header(c))
 end
 
@@ -38,7 +38,7 @@ function dic(c::MCMCChains)
 
   x0 = unlist(m)
 
-  xbar = map(i -> mean(c.data[:,i,:]), idx)
+  xbar = map(i -> mean(c.value[:,i,:]), idx)
   relist!(m, xbar)
   Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, nkeys)
   D = -2.0 * logpdf(c, nkeys)
@@ -75,7 +75,7 @@ function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
 
   x0 = unlist(m)
 
-  iter, p, chains = size(c.data)
+  iter, p, chains = size(c.value)
   values = Array(Float64, iter, 1, chains)
   for k in 1:chains
     print("\nPROCESSING MCMCChains $(k)/$(chains)\n")
@@ -86,7 +86,7 @@ function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
           "/$(iter) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
         pct += 10
       end
-      relist!(m, c.data[i,idx,k][:])
+      relist!(m, c.value[i,idx,k][:])
       values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
     end
   end

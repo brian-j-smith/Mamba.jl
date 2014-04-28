@@ -1,25 +1,25 @@
 #################### MCMCChains Constructor ####################
 
-function MCMCChains{T<:Real,U<:String}(data::Array{T,2}, names::Vector{U};
+function MCMCChains{T<:Real,U<:String}(value::Array{T,2}, names::Vector{U};
            start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-  MCMCChains(reshape(data, size(data,1), size(data, 2), 1), names,
+  MCMCChains(reshape(value, size(value,1), size(value, 2), 1), names,
              start=start, thin=thin, model=model)
 end
 
-function MCMCChains{T<:Real,U<:String}(data::Array{T,3}, names::Vector{U};
+function MCMCChains{T<:Real,U<:String}(value::Array{T,3}, names::Vector{U};
            start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-  length(names) == size(data, 2) ||
-    error("data column and names dimensions must match")
-  vdata = convert(Array{VariateType, 3}, data)
-  MCMCChains(vdata, String[names...], start, thin, model)
+  length(names) == size(value, 2) ||
+    error("value column and names dimensions must match")
+  varval = convert(Array{VariateType, 3}, value)
+  MCMCChains(varval, String[names...], start, thin, model)
 end
 
 function MCMCChains{T<:String}(iter::Integer, names::Vector{T};
            start::Integer=1, thin::Integer=1, chains::Integer=1,
            model::MCMCModel=MCMCModel())
-  vdata = Array(VariateType, iter, length(names), chains)
-  fill!(vdata, NaN)
-  MCMCChains(vdata, String[names...], start, thin, model)
+  varval = Array(VariateType, iter, length(names), chains)
+  fill!(varval, NaN)
+  MCMCChains(varval, String[names...], start, thin, model)
 end
 
 
@@ -27,7 +27,7 @@ end
 
 function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
            chains::Vector)
-  dim = size(c.data)
+  dim = size(c.value)
 
   from = max(iceil((first(iter) - c.start) / c.thin + 1), 1)
   thin = step(iter)
@@ -37,8 +37,8 @@ function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
   idx2 = findin(c.names, names)
   idx3 = findin(1:dim[3], chains)
 
-  data = c.data[idx1, idx2, idx3]
-  MCMCChains(data, c.names[idx2], c.start + (from - 1) * c.thin, c.thin * thin,
+  value = c.value[idx1, idx2, idx3]
+  MCMCChains(value, c.names[idx2], c.start + (from - 1) * c.thin, c.thin * thin,
              c.model)
 end
 
@@ -68,18 +68,18 @@ function Base.keys(c::MCMCChains)
 end
 
 function Base.ndims(c::MCMCChains)
-  ndims(c.data)
+  ndims(c.value)
 end
 
 function Base.show(io::IO, c::MCMCChains)
   print(io, "Object of type \"$(summary(c))\"\n\n")
   println(io, header(c))
-  show(io, c.data)
+  show(io, c.value)
   print(io, "\n")
 end
 
 function Base.size(c::MCMCChains)
-  dim = size(c.data)
+  dim = size(c.value)
   (c.start + (dim[1] - 1) * c.thin, dim[2], dim[3])
 end
 
@@ -88,11 +88,11 @@ function Base.size(c::MCMCChains, ind)
 end
 
 function combine(c::MCMCChains)
-  mapreduce(i -> c.data[:,:,i], vcat, 1:size(c.data, 3))
+  mapreduce(i -> c.value[:,:,i], vcat, 1:size(c.value, 3))
 end
 
 function header(c::MCMCChains)
-  dim = size(c.data)
+  dim = size(c.value)
   n = c.start + (dim[1] - 1) * c.thin
   string(
     "Iterations = $(c.start):$n\n",
@@ -103,7 +103,7 @@ function header(c::MCMCChains)
 end
 
 function link(c::MCMCChains)
-  X = deepcopy(c.data)
+  X = deepcopy(c.value)
   idx0 = 1:length(c.names)
   for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
     node = c.model[key]

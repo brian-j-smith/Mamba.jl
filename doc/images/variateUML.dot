@@ -6,7 +6,7 @@ digraph Variate {
 
 	edge [fontname = "Helvetica", fontsize = 11, dir = back, arrowtail = empty]
 
-	Variate [label = "{Variate\{T\}|+ data : T\l}"]
+	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
 	MCMCDependent [label = "{MCMCDependent\{T\}|+ names : Vector\{String\}\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ deps : Vector\{String\}\l}"]
 	

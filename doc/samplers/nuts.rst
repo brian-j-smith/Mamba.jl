@@ -15,7 +15,7 @@ Stand-Alone Functions
 	**Arguments**
 	
 		* ``v`` : the current state of parameters to be simulated.
-		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.data``, and to return the respective results as a tuple.
+		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
 		
 	**Value**
 	
@@ -30,7 +30,7 @@ Stand-Alone Functions
 	
 		* ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
 		* ``eps`` : the NUTS algorithm step size parameter.
-		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.data``, and to return the respective results as a tuple.
+		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
 		* ``adapt`` : whether to adaptively update the ``eps`` step size parameter.
 		* ``target`` : a target acceptance rate for the algorithm.
 		
@@ -56,7 +56,7 @@ Declaration
 Fields
 ``````
 
-* ``data::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{VariateType}`` : vector of sampled values.
 * ``tune::TuneNUTS`` : tuning parameters for the sampling algorithm.
 
 Constructors

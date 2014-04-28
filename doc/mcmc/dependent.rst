@@ -5,7 +5,7 @@
 MCMCDependent
 -----------
 
-``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``data`` field and can be used with method functions that accept ``Variate`` type objects.
+``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
 
 Since parameter values in the ``MCMCNode`` structure are stored as a scalar, vector, or matrix, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the three being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter vector, with one corresponding instance of ``MCMCDependent``.  Whether to formulate parameters as scalar, vector, or matrix nodes depends on the application at hand.  Vector and matrix formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parameterizations may be preferable.  Situations in which parameter vectors are often used include the specification of regression coefficients and random effects.
 
@@ -17,72 +17,72 @@ Declaration
 Fields
 ^^^^^^
 
-* ``data::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
-* ``names::Vector{String}`` : element-specific names corresponding to values in the ``data`` field.
-* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``data`` field values in monitored MCMC sampler output.
+* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
+* ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
+* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``deps::Vector{String}`` : names of other nodes upon whom the values of this one depends.
 
 Methods
 ^^^^^^^
 
-.. function:: invlink(n::MCMCDependent, x)
+.. function:: invlink(d::MCMCDependent, x)
 
 	Apply a node-specific inverse-link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDependent`` to implement other link functions. 
 	
 	**Arguments**
 	
-		* ``n`` : a node on which a ``link`` transformation method is defined.
+		* ``d`` : a node on which a ``link`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
 	
 	**Value**
 	
 		Returns the inverse-link-transformed version of ``x``.
 
-.. function:: link(n::MCMCDependent, x)
+.. function:: link(d::MCMCDependent, x)
 
 	Apply a node-specific link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDependent`` to implement other link functions. 
 	
 	**Arguments**
 	
-		* ``n`` : a node on which a ``link`` transformation method is defined.
+		* ``d`` : a node on which a ``link`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
 	
 	**Value**
 	
 		Returns the link-transformed version of ``x``.
 
-.. function:: logpdf(n::MCMCDependent, transform::Bool=false)
+.. function:: logpdf(d::MCMCDependent, transform::Bool=false)
 
 	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a value of 0 is thus returned.  The method function may be redefined for subtypes of ``MCMCDependent`` that have distributional specifications.
 	
 	**Arguments**
 	
-		* ``n`` : a node containing values at which to compute the log-density.
+		* ``d`` : a node containing values at which to compute the log-density.
 		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
 		
 	**Value**
 	
 		The resulting numeric value of the log-density.
 
-.. function:: setmonitor!(n::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
+.. function:: setmonitor!(d::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
 
 	Specify node elements to be included in monitored MCMC sampler output.
 	
 	**Arguments**
 	
-		* ``n`` : a node whose elements contain sampled MCMC values.
+		* ``d`` : a node whose elements contain sampled MCMC values.
 		* ``momitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
 	**Value**
 	
-		Returns ``n`` with its ``monitor`` field updated to reflect the specified monitoring.
+		Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
 
-.. function:: show(n::MCMCDependent)
+.. function:: show(d::MCMCDependent)
 
 	Write a text representation of nodal values and attributes to the current output stream.  
 
-.. function:: showall(n::MCMCDependent)
+.. function:: showall(d::MCMCDependent)
 
 	Write a verbose text representation of nodal values and attributes to the current output stream.  
 
@@ -100,7 +100,7 @@ Type ``MCMCLogical`` inherits the fields and method functions from the ``MCMCDep
 
 	function(model::MCMCModel)
 
-where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``data`` field of the node.
+where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
 
 Declaration
 ^^^^^^^^^^^
@@ -110,10 +110,10 @@ Declaration
 Fields
 ^^^^^^
 
-* ``data::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
-* ``names::Vector{String}`` : element-specific names corresponding to values in the ``data`` field.
-* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``data`` field values in monitored MCMC sampler output.
-* ``eval::Function`` : a function for updating values stored in ``data``.
+* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
+* ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
+* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
+* ``eval::Function`` : a function for updating values stored in ``value``.
 * ``deps::Vector{String}`` : names of other nodes upon whom the values of this one depends.
 
 Constructors
@@ -190,9 +190,9 @@ Declaration
 Fields
 ^^^^^^
 
-* ``data::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
-* ``names::Vector{String}`` : element-specific names corresponding to values in the ``data`` field.
-* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``data`` field values in monitored MCMC sampler output.
+* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
+* ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
+* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``deps::Vector{String}`` : names of other nodes upon whom the distributional specification for this one depends.
 * ``distr::DistributionStruct`` : the distributional specification for the node.

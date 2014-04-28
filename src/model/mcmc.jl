@@ -35,7 +35,7 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
       simulate!(m)
 
       if t > burnin && (t - burnin - 1) % thin == 0
-        sims.data[i,:,k] = unlist(m, true)
+        sims.value[i,:,k] = unlist(m, true)
         i += 1
       end
     end

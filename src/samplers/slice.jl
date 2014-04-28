@@ -7,7 +7,7 @@ type TuneSlice
 end
 
 type VariateSlice <: VariateVector
-  data::Vector{VariateType}
+  value::Vector{VariateType}
   tune::TuneSlice
 end
 
@@ -22,7 +22,7 @@ end
 #################### Sampling Functions ####################
 
 function slice!(v::VariateSlice, width::Vector{Float64}, logf::Function)
-  p0 = logf(v.data) + log(rand())
+  p0 = logf(v.value) + log(rand())
 
   n = length(v)
   lower = v - width .* rand(n)
@@ -52,7 +52,7 @@ end
 #################### Sampling Functions ####################
 
 function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
-  logf0 = logf(v.data)
+  logf0 = logf(v.value)
   for i in 1:length(v)
     p0 = logf0 + log(rand())
 
@@ -62,7 +62,7 @@ function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
     x = v[i]
     v[i] = width[i] * rand() + lower
     while true
-      logf0 = logf(v.data)
+      logf0 = logf(v.value)
       logf0 < p0 || break
       value = v[i]
       if value < x

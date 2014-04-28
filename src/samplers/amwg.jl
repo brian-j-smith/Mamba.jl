@@ -12,7 +12,7 @@ type TuneAMWG
 end
 
 type VariateAMWG <: VariateVector
-  data::Vector{VariateType}
+  value::Vector{VariateType}
   tune::TuneAMWG
 end
 
@@ -64,13 +64,13 @@ function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function;
 end
 
 function amwg_sub!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function)
-  logf0 = logf(v.data)
+  logf0 = logf(v.value)
   d = length(v)
   z = randn(d) .* sigma
   for i in 1:d
     x = v[i]
     v[i] += z[i]
-    logfprime = logf(v.data)
+    logfprime = logf(v.value)
     if rand() < exp(logfprime - logf0)
       logf0 = logfprime
       v.tune.accept[i] += 1

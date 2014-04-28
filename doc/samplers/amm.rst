@@ -17,7 +17,7 @@ Stand-Alone Function
 	
 		* ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
 		* ``SigmaF`` : Cholesky factorization of the covariance matrix for the non-adaptive multivariate normal proposal distribution.
-		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.data``.
+		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 		* ``adapt`` : whether to adaptively update the proposal distribution.
 		
 	**Value**
@@ -42,7 +42,7 @@ Declaration
 Fields
 ``````
 
-* ``data::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{VariateType}`` : vector of sampled values.
 * ``tune::TuneAMM`` : tuning parameters for the sampling algorithm.
 
 Constructors

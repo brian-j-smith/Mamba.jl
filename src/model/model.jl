@@ -315,7 +315,7 @@ function unlist{T<:String}(m::MCMCModel, nkeys::Vector{T}, transform::Bool=false
   for k in 1:length(nkeys)
     node = m[nkeys[k]]
     n = N[k]
-    values[i+(1:n)] = f(node, node.data)
+    values[i+(1:n)] = f(node, node.value)
     i += n
   end
   values

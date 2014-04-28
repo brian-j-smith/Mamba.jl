@@ -14,7 +14,7 @@ type TuneAMM
 end
 
 type VariateAMM <: VariateVector
-  data::Vector{VariateType}
+  value::Vector{VariateType}
   tune::TuneAMM
 end
 
@@ -44,7 +44,7 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
     if !tune.adapt
       tune.adapt = true
       tune.m = 0
-      tune.Mv = v.data
+      tune.Mv = v.value
       tune.Mvv = v * v'
       tune.SigmaF = SigmaF
       tune.SigmaLm = zeros(d, d)
@@ -53,7 +53,7 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
     if tune.m > 2 * d
       x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(d))
     end
-    if rand() < exp(logf(x) - logf(v.data))
+    if rand() < exp(logf(x) - logf(v.value))
       v[:] = x
     end
     tune.m += 1
@@ -74,7 +74,7 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
       tune.SigmaF = SigmaF
       x = v + tune.SigmaF[:L] * randn(d)
     end
-    if rand() < exp(logf(x) - logf(v.data))
+    if rand() < exp(logf(x) - logf(v.value))
       v[:] = x
     end
   end

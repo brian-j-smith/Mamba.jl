@@ -18,7 +18,7 @@ type TuneNUTS
 end
 
 type VariateNUTS <: VariateVector
-  data::Vector{VariateType}
+  value::Vector{VariateType}
   tune::TuneNUTS
 end
 
@@ -45,14 +45,14 @@ end
 
 function nutseps(v::VariateNUTS, fx::Function)
   d = length(v)
-  node0 = leapfrog(v.data, randn(d), 0.0, zeros(d), fx)
+  node0 = leapfrog(v.value, randn(d), 0.0, zeros(d), fx)
   eps = 1.0
-  node = leapfrog(v.data, node0[:r], eps, node0[:grad], fx)
+  node = leapfrog(v.value, node0[:r], eps, node0[:grad], fx)
   p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
   a = p > 0.5 ? 1 : -1
   while p^a > 2.0^-a
     eps *= 2.0^a
-    node = leapfrog(v.data, node0[:r], eps, node0[:grad], fx)
+    node = leapfrog(v.value, node0[:r], eps, node0[:grad], fx)
     p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
   end
   eps
@@ -97,7 +97,7 @@ end
 
 function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
   d = length(v)
-  node0 = leapfrog(v.data, randn(d), 0.0, zeros(d), fx)
+  node0 = leapfrog(v.value, randn(d), 0.0, zeros(d), fx)
   p0 = node0[:logf] - 0.5 * dot(node0[:r])
   logu = p0 + log(rand())
   xminus = xplus = node0[:x]
