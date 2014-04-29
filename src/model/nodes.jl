@@ -13,7 +13,7 @@ function Base.showall(io::IO, d::MCMCDependent)
   print(io, "\nFunction:\n")
   show(io, d.eval.code)
   print(io, "\n\nNode Dependencies:\n")
-  show(io, d.deps)
+  show(io, d.sources)
   print(io, "\n")
 end
 
@@ -41,7 +41,7 @@ end
 #################### MCMCLogical Constructors ####################
 
 function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Bool}))
-  l = MCMCLogical(value, String[], Bool[], paramfx(expr), paramdeps(expr))
+  l = MCMCLogical(value, String[], Bool[], paramfx(expr), paramsrc(expr))
   setmonitor!(l, monitor)
 end
 
@@ -79,7 +79,7 @@ end
 
 function MCMCStochastic{T}(value::T, expr::Expr,
            monitor::Union(Bool,Vector{Bool}))
-  s = MCMCStochastic(value, String[], Bool[], paramfx(expr), paramdeps(expr),
+  s = MCMCStochastic(value, String[], Bool[], paramfx(expr), paramsrc(expr),
                      NullDistribution())
   setmonitor!(s, monitor)
 end
@@ -113,7 +113,7 @@ function Base.showall(io::IO, s::MCMCStochastic)
   print(io, "\nFunction:\n")
   show(io, s.eval.code)
   print(io, "\n\nNode Dependencies:\n")
-  show(io, s.deps)
+  show(io, s.sources)
   print(io, "\n")
 end
 
@@ -155,15 +155,15 @@ end
 
 #################### Utility Functions ####################
 
-function paramdeps(expr::Expr)
+function paramsrc(expr::Expr)
   if expr.head == :ref && expr.args[1] == :model && isa(expr.args[2], String)
     String[expr.args[2]]
   else
-    mapreduce(paramdeps, union, expr.args)
+    mapreduce(paramsrc, union, expr.args)
   end
 end
 
-function paramdeps(expr)
+function paramsrc(expr)
   String[]
 end
 

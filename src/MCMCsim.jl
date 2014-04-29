@@ -40,7 +40,7 @@ type MCMCLogical{T} <: MCMCDependent{T}
   names::Vector{String}
   monitor::Vector{Bool}
   eval::Function
-  deps::Vector{String}
+  sources::Vector{String}
 end
 
 type MCMCStochastic{T} <: MCMCDependent{T}
@@ -48,7 +48,7 @@ type MCMCStochastic{T} <: MCMCDependent{T}
   names::Vector{String}
   monitor::Vector{Bool}
   eval::Function
-  deps::Vector{String}
+  sources::Vector{String}
   distr::DistributionStruct
 end
 

@@ -21,7 +21,7 @@ Fields
 * ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
-* ``deps::Vector{String}`` : names of other nodes upon whom the values of this one depends.
+* ``sources::Vector{String}`` : names of other nodes upon whom the values of this one depends.
 
 Methods
 ^^^^^^^
@@ -114,7 +114,7 @@ Fields
 * ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
-* ``deps::Vector{String}`` : names of other nodes upon whom the values of this one depends.
+* ``sources::Vector{String}`` : names of other nodes upon whom the values of this one depends.
 
 Constructors
 ^^^^^^^^^^^^
@@ -194,7 +194,7 @@ Fields
 * ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
-* ``deps::Vector{String}`` : names of other nodes upon whom the distributional specification for this one depends.
+* ``sources::Vector{String}`` : names of other nodes upon whom the distributional specification for this one depends.
 * ``distr::DistributionStruct`` : the distributional specification for the node.
 
 Aliases

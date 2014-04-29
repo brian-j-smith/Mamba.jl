@@ -27,7 +27,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   if ntype == :all
     for key in keys(m.nodes)
       if isa(m[key], MCMCDependent)
-        values = [values, key, m[key].deps]
+        values = [values, key, m[key].sources]
       end
     end
     values = unique(values)

@@ -47,7 +47,7 @@ function graph(m::MCMCModel)
       v.attributes["style"] = "filled"
       v.attributes["fillcolor"] = "gray85"
     end
-    for key in node.deps
+    for key in node.sources
       add_edge!(g, vertices(g)[lookup[key]], v)
     end
   end
