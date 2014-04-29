@@ -10,3 +10,4 @@ Examples
 	examples/pumps.rst
 	examples/dogs.rst
 	examples/seeds.rst
+	examples/surgical.rst
