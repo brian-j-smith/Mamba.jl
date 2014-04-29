@@ -18,7 +18,7 @@ Germinations are modelled as
 	\alpha_0, \alpha_1, \alpha_2, \alpha_{12} &\sim \text{Normal}(0, 1e12) \\
 	\sigma^2 &\sim \text{InverseGamma}(0.001, 0.001),
 	
-where :math:`r_i` are the number of seeds, out of :math:`n_i` that germinate on plate :math:`i`; and :math:`x_{1i}` and :math:`x_{2i}` are the seed type and root extract.
+where :math:`r_i` are the number of seeds, out of :math:`n_i`, that germinate on plate :math:`i`; and :math:`x_{1i}` and :math:`x_{2i}` are the seed type and root extract.
 	
 
 Analysis Program
