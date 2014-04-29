@@ -16,8 +16,8 @@ Fields
 ^^^^^^
 
 * ``nodes::Dict{String,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
-* ``targets::Vector{String}`` : names of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``samplers::Vector{MCMCSampler}`` : sampling functions for updating blocks of stochastic nodes.
+* ``targets::Vector{String}`` : names of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``iter::Integer`` : current MCMC draw from the target distribution.
 * ``burnin::Integer`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
 * ``chain::Integer`` : current run of the MCMC simulator in a possible sequence of runs.

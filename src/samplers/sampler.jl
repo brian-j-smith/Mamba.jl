@@ -2,7 +2,7 @@
 
 function MCMCSampler{T<:String}(params::Vector{T}, expr::Expr,
            tune::Dict=Dict())
-  MCMCSampler(String[params...], String[], samplerfx(expr), tune)
+  MCMCSampler(String[params...], samplerfx(expr), tune, String[])
 end
 
 

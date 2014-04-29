@@ -41,6 +41,7 @@ type MCMCLogical{T} <: MCMCDependent{T}
   monitor::Vector{Bool}
   eval::Function
   sources::Vector{String}
+  targets::Vector{String}
 end
 
 type MCMCStochastic{T} <: MCMCDependent{T}
@@ -49,6 +50,7 @@ type MCMCStochastic{T} <: MCMCDependent{T}
   monitor::Vector{Bool}
   eval::Function
   sources::Vector{String}
+  targets::Vector{String}
   distr::DistributionStruct
 end
 
@@ -57,9 +59,9 @@ end
 
 type MCMCSampler
   params::Vector{String}
-  targets::Vector{String}
   eval::Function
   tune::Dict
+  targets::Vector{String}
 end
 
 
@@ -67,8 +69,8 @@ end
 
 type MCMCModel
   nodes::Dict{String,Any}
-  targets::Vector{String}
   samplers::Vector{MCMCSampler}
+  targets::Vector{String}
   iter::Integer
   burnin::Integer
   chain::Integer

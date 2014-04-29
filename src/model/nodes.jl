@@ -41,7 +41,8 @@ end
 #################### MCMCLogical Constructors ####################
 
 function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Bool}))
-  l = MCMCLogical(value, String[], Bool[], paramfx(expr), paramsrc(expr))
+  l = MCMCLogical(value, String[], Bool[], paramfx(expr), paramsrc(expr),
+                  String[])
   setmonitor!(l, monitor)
 end
 
@@ -80,7 +81,7 @@ end
 function MCMCStochastic{T}(value::T, expr::Expr,
            monitor::Union(Bool,Vector{Bool}))
   s = MCMCStochastic(value, String[], Bool[], paramfx(expr), paramsrc(expr),
-                     NullDistribution())
+                     String[], NullDistribution())
   setmonitor!(s, monitor)
 end
 

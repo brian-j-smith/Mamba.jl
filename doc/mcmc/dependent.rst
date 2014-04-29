@@ -22,6 +22,7 @@ Fields
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{String}`` : names of other nodes upon whom the values of this one depends.
+* ``targets::Vector{String}`` : names of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Methods
 ^^^^^^^
@@ -115,6 +116,7 @@ Fields
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{String}`` : names of other nodes upon whom the values of this one depends.
+* ``targets::Vector{String}`` : names of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructors
 ^^^^^^^^^^^^
@@ -195,6 +197,7 @@ Fields
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{String}`` : names of other nodes upon whom the distributional specification for this one depends.
+* ``targets::Vector{String}`` : names of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``distr::DistributionStruct`` : the distributional specification for the node.
 
 Aliases

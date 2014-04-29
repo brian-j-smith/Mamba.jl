@@ -10,8 +10,19 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.names = names(node, key)
     nodedict[key] = node
   end
-  m = MCMCModel(nodedict, String[], MCMCSampler[], iter, burnin, chain, false,
+  m = MCMCModel(nodedict, MCMCSampler[], String[], iter, burnin, chain, false,
                 false)
+  g = graph(m)
+  V = vertices(g)
+  lookup = Dict{String,Integer}()
+  for v in V
+    setindex!(lookup, v.index, v.label)
+  end
+  m.targets = intersect(tsort(g), keys(m, :dep))
+  for key in m.targets
+    targets = gettargets(V[lookup[key]], g, m)
+    m[key].targets = intersect(m.targets, targets)
+  end
   setsamplers!(m, samplers)
 end
 
@@ -155,20 +166,10 @@ function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
 end
 
 function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
-  g = graph(m)
-  m.targets = intersect(tsort(g), keys(m, :dep))
   m.samplers = deepcopy(samplers)
-  V = vertices(g)
-  lookup = Dict{String,Integer}()
-  for v in V
-    setindex!(lookup, v.index, v.label)
-  end
   for i in 1:length(m.samplers)
     sampler = m.samplers[i]
-    targets = String[]
-    for key in sampler.params
-      append!(targets, gettargets(V[lookup[key]], g, m))
-    end
+    targets = mapreduce(key -> m[key].targets, vcat, sampler.params)
     sampler.targets = intersect(m.targets, targets)
   end
   m
