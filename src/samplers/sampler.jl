@@ -22,7 +22,7 @@ function Base.showall(io::IO, s::MCMCSampler)
   print(io, "\nTuning Parameters:\n")
   show(io, s.tune)
   print(io, "\nDirectly Linked Nodes:\n")
-  show(io, s.links)
+  show(io, s.targets)
   print(io, "\n")
 end
 

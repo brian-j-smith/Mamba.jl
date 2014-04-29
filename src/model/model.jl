@@ -133,7 +133,7 @@ function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
 end
 
 function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
-  for key in m.links
+  for key in m.targets
     node = m[key]
     if isa(node, MCMCStochastic)
       setinits!(m[key], m, inits[key])
@@ -156,7 +156,7 @@ end
 
 function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
   g = graph(m)
-  m.links = intersect(tsort(g), keys(m, :dep))
+  m.targets = intersect(tsort(g), keys(m, :dep))
   m.samplers = deepcopy(samplers)
   V = vertices(g)
   lookup = Dict{String,Integer}()
@@ -165,11 +165,11 @@ function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
   end
   for i in 1:length(m.samplers)
     sampler = m.samplers[i]
-    links = String[]
+    targets = String[]
     for key in sampler.params
-      append!(links, getlinks(V[lookup[key]], g, m))
+      append!(targets, gettargets(V[lookup[key]], g, m))
     end
-    sampler.links = intersect(m.links, links)
+    sampler.targets = intersect(m.targets, targets)
   end
   m
 end
@@ -223,7 +223,7 @@ function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
   nkeys = String[]
   for b in blocks
     append!(nkeys, m.samplers[b].params)
-    append!(nkeys, m.samplers[b].links)
+    append!(nkeys, m.samplers[b].targets)
   end
   mapreduce(key -> logpdf(m[key], transform), +, unique(nkeys))
 end
@@ -322,8 +322,8 @@ function unlist{T<:String}(m::MCMCModel, nkeys::Vector{T}, transform::Bool=false
 end
 
 function update!(m::MCMCModel, block::Integer=0)
-  links = block > 0 ? m.samplers[block].links : m.links
-  for key in links
+  targets = block > 0 ? m.samplers[block].targets : m.targets
+  for key in targets
     update!(m[key], m)
   end
   m

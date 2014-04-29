@@ -57,7 +57,7 @@ end
 
 type MCMCSampler
   params::Vector{String}
-  links::Vector{String}
+  targets::Vector{String}
   eval::Function
   tune::Dict
 end
@@ -67,7 +67,7 @@ end
 
 type MCMCModel
   nodes::Dict{String,Any}
-  links::Vector{String}
+  targets::Vector{String}
   samplers::Vector{MCMCSampler}
   iter::Integer
   burnin::Integer

@@ -16,9 +16,9 @@ graph MCMC {
 	
 	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
 
-	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{String\}\l+ links : Vector\{String\}\l+ eval : Function\l+ tune : Dict\l}"]
+	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{String\}\l+ targets : Vector\{String\}\l+ eval : Function\l+ tune : Dict\l}"]
 	
-	MCMCModel [label = "{MCMCModel|+ nodes : Dict\{String,Any\}\l+ links : Vector\{String\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
+	MCMCModel [label = "{MCMCModel|+ nodes : Dict\{String,Any\}\l+ targets : Vector\{String\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
 	
 	MCMCChains [label = "{MCMCChains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ start : Integer\l+ thin : Integer\l+ model : MCMCModel\l}"]
 

@@ -11,12 +11,12 @@ function any_stochastic(v::ExVertex, g::AbstractGraph, m::MCMCModel)
   found
 end
 
-function getlinks(v::ExVertex, g::AbstractGraph, m::MCMCModel)
+function gettargets(v::ExVertex, g::AbstractGraph, m::MCMCModel)
   values = String[]
   for v in out_neighbors(v, g)
     push!(values, v.label)
     if !isa(m[v.label], MCMCStochastic)
-      values = union(values, getlinks(v, g, m))
+      values = union(values, gettargets(v, g, m))
     end
   end
   values
