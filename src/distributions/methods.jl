@@ -37,7 +37,11 @@ link(d::PositiveDistribution, x) = log(x)
 invlink(d::PositiveDistribution, x) = exp(x)
 
 function logpdf(d::PositiveDistribution, x::Real, transform::Bool)
-  transform ? logpdf(d, x) + log(x) : logpdf(d, x)
+  value = logpdf(d, x)
+  if transform
+    value += log(x)
+  end
+  value
 end
 
 
@@ -50,7 +54,11 @@ link(d::RightDistribution, x) = log(x - minimum(d))
 invlink(d::RightDistribution, x) = exp(x) + minimum(d)
 
 function logpdf(d::RightDistribution, x::Real, transform::Bool)
-  transform ? logpdf(d, x) + log(x - minimum(d)) : logpdf(x)
+  value = logpdf(d, x)
+  if transform
+    value += log(x - minimum(d))
+  end
+  value
 end
 
 
@@ -64,12 +72,12 @@ link(d::UnitDistribution, x) = logit(x)
 invlink(d::UnitDistribution, x) = invlogit(x)
 
 function logpdf(d::UnitDistribution, x::Real, transform::Bool)
+  value = logpdf(d, x)
   if transform
     y = x / (1.0 - x)
-    logpdf(d, x) + log(y / (y + 1.0)^2)
-  else
-    logpdf(d, x)
+    value += log(y / (y + 1.0)^2)
   end
+  value
 end
 
 
@@ -88,11 +96,67 @@ function invlink(d::RangeDistribution, x)
 end
 
 function logpdf(d::RangeDistribution, x::Real, transform::Bool)
+  value = logpdf(d, x)
   if transform
     a, b = minimum(d), maximum(d)
     y = (x - a) / (b - x)
-    logpdf(d, x) + log((b - a) * y / (y + 1.0)^2)
-  else
-    logpdf(d, x)
+    value += log((b - a) * y / (y + 1.0)^2)
   end
+  value
+end
+
+
+#################### TruncatedDistribution ####################
+
+typealias TruncatedDistribution{T} Truncated{T, Continuous}
+
+function minimum{T<:UnivariateDistribution}(d::TruncatedDistribution{T})
+  max(d.lower, minimum(d.untruncated))
+end
+
+function maximum{T<:UnivariateDistribution}(d::TruncatedDistribution{T})
+  min(d.upper, maximum(d.untruncated))
+end
+
+function link{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x)
+  a, b = minimum(d), maximum(d)
+  if a > -Inf && b < Inf
+    logit((x - a) ./ (b - a))
+  elseif a > -Inf
+    log(x - a)
+  elseif b < Inf
+    log(b - x)
+  else
+    x
+  end
+end
+
+function invlink{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x)
+  a, b = minimum(d), maximum(d)
+  if a > -Inf && b < Inf
+    (b - a) * invlogit(x) + a
+  elseif a > -Inf
+    exp(x) + a
+  elseif b < Inf
+    b - exp(x)
+  else
+    x
+  end
+end
+
+function logpdf{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x::Real,
+           transform::Bool)
+  value = logpdf(d, x)
+  if transform
+    a, b = minimum(d), maximum(d)
+    if a > -Inf && b < Inf
+      y = (x - a) / (b - x)
+      value += log((b - a) * y / (y + 1.0)^2)
+    elseif a > -Inf
+      value += log(x - a)
+    elseif b < Inf
+      value += log(b - x)
+    end
+  end
+  value
 end
