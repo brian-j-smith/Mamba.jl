@@ -25,100 +25,20 @@ function logpdf{T<:Real}(d::Flat, x::Union(T, Vector{T}), transform::Bool)
 end
 
 
-#################### PositiveDistribution ####################
+#################### TransformDistribution ####################
 
-typealias PositiveDistribution
-  Union(BetaPrime, Chi, Chisq, Erlang, Exponential, FDist, Gamma, InverseGamma,
-        InverseGaussian, Kolmogorov, LogNormal, NoncentralChisq, NoncentralF,
-        Rayleigh, Weibull)
+typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
+  Union(T, Truncated{T, Continuous})
 
-link(d::PositiveDistribution, x) = log(x)
-
-invlink(d::PositiveDistribution, x) = exp(x)
-
-function logpdf(d::PositiveDistribution, x::Real, transform::Bool)
-  value = logpdf(d, x)
-  if transform
-    value += log(x)
-  end
-  value
-end
-
-
-#################### RightDistribution ####################
-
-typealias RightDistribution Union(Levy, Pareto)
-
-link(d::RightDistribution, x) = log(x - minimum(d))
-
-invlink(d::RightDistribution, x) = exp(x) + minimum(d)
-
-function logpdf(d::RightDistribution, x::Real, transform::Bool)
-  value = logpdf(d, x)
-  if transform
-    value += log(x - minimum(d))
-  end
-  value
-end
-
-
-#################### UnitDistribution ####################
-
-typealias UnitDistribution
-  Union(Arcsine, Beta, Cosine, KSOneSided, NoncentralBeta)
-
-link(d::UnitDistribution, x) = logit(x)
-
-invlink(d::UnitDistribution, x) = invlogit(x)
-
-function logpdf(d::UnitDistribution, x::Real, transform::Bool)
-  value = logpdf(d, x)
-  if transform
-    y = x / (1.0 - x)
-    value += log(y / (y + 1.0)^2)
-  end
-  value
-end
-
-
-#################### RangeDistribution ####################
-
-typealias RangeDistribution Union(KSDist, TriangularDist, Uniform)
-
-function link(d::RangeDistribution, x)
-  a, b = minimum(d), maximum(d)
-  logit((x - a) ./ (b - a))
-end
-
-function invlink(d::RangeDistribution, x)
-  a, b = minimum(d), maximum(d)
-  (b - a) * invlogit(x) + a
-end
-
-function logpdf(d::RangeDistribution, x::Real, transform::Bool)
-  value = logpdf(d, x)
-  if transform
-    a, b = minimum(d), maximum(d)
-    y = (x - a) / (b - x)
-    value += log((b - a) * y / (y + 1.0)^2)
-  end
-  value
-end
-
-
-#################### TruncatedDistribution ####################
-
-typealias TruncatedDistribution{T} Truncated{T, Continuous}
-
-function minimum{T<:UnivariateDistribution}(d::TruncatedDistribution{T})
+function minimum(d::Truncated)
   max(d.lower, minimum(d.untruncated))
 end
 
-function maximum{T<:UnivariateDistribution}(d::TruncatedDistribution{T})
+function maximum(d::Truncated)
   min(d.upper, maximum(d.untruncated))
 end
 
-function link{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x)
+function link(d::TransformDistribution, x)
   a, b = minimum(d), maximum(d)
   if a > -Inf && b < Inf
     logit((x - a) ./ (b - a))
@@ -131,7 +51,7 @@ function link{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x)
   end
 end
 
-function invlink{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x)
+function invlink(d::TransformDistribution, x)
   a, b = minimum(d), maximum(d)
   if a > -Inf && b < Inf
     (b - a) * invlogit(x) + a
@@ -144,8 +64,7 @@ function invlink{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x)
   end
 end
 
-function logpdf{T<:UnivariateDistribution}(d::TruncatedDistribution{T}, x::Real,
-           transform::Bool)
+function logpdf(d::TransformDistribution, x::Real, transform::Bool)
   value = logpdf(d, x)
   if transform
     a, b = minimum(d), maximum(d)
