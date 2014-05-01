@@ -46,11 +46,11 @@ function Base.showcompact(io::IO, v::Variate)
   showcompact(io, v.value)
 end
 
-function names(v::VariateScalar, prefix::String)
+function names{T<:String}(v::VariateScalar, prefix::T)
   String[prefix]
 end
 
-function names(v::VariateVector, prefix::String)
+function names{T<:String}(v::VariateVector, prefix::T)
   values = String[]
   for i in 1:length(v)
     push!(values, string(prefix, "[", i, "]"))
@@ -58,7 +58,7 @@ function names(v::VariateVector, prefix::String)
   values
 end
 
-function names(v::VariateMatrix, prefix::String)
+function names{T<:String}(v::VariateMatrix, prefix::T)
   values = String[]
   for j in 1:size(v, 2)
     for i in 1:size(v, 1)

@@ -12,13 +12,15 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
   m.burnin = burnin
   tune0 = tune(m)
 
-  sims = MCMCChains(div(iter - burnin - 1, thin) + 1, names(m, true),
-                    start=burnin + thin, thin=thin, chains=chains, model=m)
+  sims = Array(Matrix{VariateType}, chains)
 
   for k in 1:chains
     setinits!(m, inits[k])
     settune!(m, tune0)
     m.chain = k
+
+    sims[k] = Array(VariateType, div(iter - burnin - 1, thin) + 1,
+                    length(unlist(m, true)))
 
     print("\nSAMPLING FROM CHAIN $(k)/$(chains)\n")
     pct = 0
@@ -35,12 +37,13 @@ function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
       simulate!(m)
 
       if t > burnin && (t - burnin - 1) % thin == 0
-        sims.value[i,:,k] = unlist(m, true)
+        sims[k][i,:] = unlist(m, true)
         i += 1
       end
     end
   end
   print("\n")
 
-  sims
+  MCMCChains(cat(3, sims...), names(m, true), start=burnin+thin, thin=thin,
+             model=m)
 end

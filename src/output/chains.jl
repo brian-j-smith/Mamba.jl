@@ -107,7 +107,7 @@ function link(c::MCMCChains)
   idx0 = 1:length(c.names)
   for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
     node = c.model[key]
-    idx = nonzeros(indexin(node.names, c.names))
+    idx = nonzeros(indexin(names(node), c.names))
     if length(idx) > 0
       X[:,idx,:] = mapslices(x -> link(node, x), X[:,idx,:], 2)
       idx0 = setdiff(idx0, idx)

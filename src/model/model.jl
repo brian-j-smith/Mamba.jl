@@ -7,7 +7,7 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     isa(value, MCMCDependent) || error("nodes must be MCMCDependent types")
     node = deepcopy(value)
     key = string(arg)
-    node.names = names(node, key)
+    node.name = key
     nodedict[key] = node
   end
   m = MCMCModel(nodedict, MCMCSampler[], String[], iter, burnin, chain, false,
@@ -130,7 +130,7 @@ function names(m::MCMCModel, monitoronly::Bool)
   values = String[]
   for key in keys(m, :dep)
     node = m[key]
-    append!(values, node.names[!monitoronly | node.monitor])
+    append!(values, names(node)[!monitoronly | node.monitor])
   end
   values
 end
@@ -138,7 +138,7 @@ end
 function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
   values = String[]
   for key in nkeys
-    append!(values, m[key].names)
+    append!(values, names(m[key]))
   end
   values
 end

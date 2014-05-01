@@ -25,13 +25,19 @@ link(d::MCMCDependent, x) = x
 
 logpdf(d::MCMCDependent, transform::Bool=false) = 0.0
 
+function names(d::MCMCDependent)
+  names(d, d.name)
+end
+
 function setmonitor!(d::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
-  if isa(monitor, Bool)
-    values = fill(monitor, length(d))
-  elseif length(monitor) == length(d)
-    values = deepcopy(monitor)
-  else
-    error("node and monitor dimensions must match")
+  values = [monitor...]
+  n = length(d)
+  if n > 0
+    if length(monitor) == 1
+      values = fill(values[1], n)
+    elseif length(monitor) != n
+      error("node and monitor dimensions must match")
+    end
   end
   d.monitor = values
   d
@@ -41,9 +47,8 @@ end
 #################### MCMCLogical Constructors ####################
 
 function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Bool}))
-  l = MCMCLogical(value, String[], Bool[], paramfx(expr), paramsrc(expr),
-                  String[])
-  setmonitor!(l, monitor)
+  MCMCLogical(value, string(), [monitor...], paramfx(expr), paramsrc(expr),
+              String[])
 end
 
 function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
@@ -51,24 +56,21 @@ function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
   MCMCLogical(value, expr, monitor)
 end
 
-function MCMCLogical(length::Integer, expr::Expr,
+function MCMCLogical(d::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  value = Array(VariateType, length)
-  fill!(value, NaN)
+  1 <= d <= 2 || error("logical array must be 1-d or 2-d")
+  value = Array(VariateType, tuple(zeros(Integer, d)...))
   MCMCLogical(value, expr, monitor)
 end
 
-function MCMCLogical(m::Integer, n::Integer, expr::Expr,
-           monitor::Union(Bool,Vector{Bool})=true)
-  value = Array(VariateType, m, n)
-  fill!(value, NaN)
-  MCMCLogical(value, expr, monitor)
-end
 
 
 #################### MCMCLogical Methods ####################
 
-setinits!(l::MCMCLogical, m::MCMCModel, x=nothing) = update!(l, m)
+function setinits!(l::MCMCLogical, m::MCMCModel, x=nothing)
+  l.value = l.eval(m)
+  setmonitor!(l, l.monitor)
+end
 
 function update!(l::MCMCLogical, m::MCMCModel)
   l[:] = l.eval(m)
@@ -80,9 +82,8 @@ end
 
 function MCMCStochastic{T}(value::T, expr::Expr,
            monitor::Union(Bool,Vector{Bool}))
-  s = MCMCStochastic(value, String[], Bool[], paramfx(expr), paramsrc(expr),
-                     String[], NullDistribution())
-  setmonitor!(s, monitor)
+  MCMCStochastic(value, string(), [monitor...], paramfx(expr), paramsrc(expr),
+                 String[], NullDistribution())
 end
 
 function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
@@ -90,17 +91,10 @@ function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
   MCMCStochastic(value, expr, monitor)
 end
 
-function MCMCStochastic(length::Integer, expr::Expr,
+function MCMCStochastic(d::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  value = Array(VariateType, length)
-  fill!(value, NaN)
-  MCMCStochastic(value, expr, monitor)
-end
-
-function MCMCStochastic(m::Integer, n::Integer, expr::Expr,
-           monitor::Union(Bool,Vector{Bool})=true)
-  value = Array(VariateType, m, n)
-  fill!(value, NaN)
+  1 <= d <= 2 || error("stochastic array must be 1-d or 2-d")
+  value = Array(VariateType, tuple(zeros(Integer, d)...))
   MCMCStochastic(value, expr, monitor)
 end
 
@@ -119,7 +113,8 @@ function Base.showall(io::IO, s::MCMCStochastic)
 end
 
 function setinits!(s::MCMCStochastic, m::MCMCModel, x)
-  s[:] = convert(typeof(s.value), x)
+  s.value = convert(typeof(s.value), x)
+  setmonitor!(s, s.monitor)
   update!(s, m)
   if isa(s.distr, Array) && size(s.value) != size(s.distr)
     error("stochastic parameter and distribution dimensions must match")

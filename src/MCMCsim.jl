@@ -38,7 +38,7 @@ abstract MCMCDependent{T} <: Variate{T}
 
 type MCMCLogical{T} <: MCMCDependent{T}
   value::T
-  names::Vector{String}
+  name::String
   monitor::Vector{Bool}
   eval::Function
   sources::Vector{String}
@@ -47,7 +47,7 @@ end
 
 type MCMCStochastic{T} <: MCMCDependent{T}
   value::T
-  names::Vector{String}
+  name::String
   monitor::Vector{Bool}
   eval::Function
   sources::Vector{String}
