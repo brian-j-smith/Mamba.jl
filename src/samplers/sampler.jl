@@ -30,7 +30,7 @@ end
 #################### Adaptive Multivariate Metropolis ####################
 
 function SamplerAMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
-           adapt::Symbol=:none)
+           adapt::Symbol=:all)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
@@ -54,7 +54,7 @@ end
 #################### Adaptive Metropolis within Gibbs ####################
 
 function SamplerAMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
-           adapt::Symbol=:none, batchsize::Integer=50, target::Real=0.44)
+           adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
   any(adapt .== [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
