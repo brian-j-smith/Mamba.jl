@@ -136,6 +136,7 @@ export
   VariateVecOrMat
 
 export
+  @modelexpr,
   autocor,
   cor,
   describe,

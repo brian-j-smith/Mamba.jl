@@ -1,3 +1,19 @@
+#################### Utility Macros ####################
+
+macro modelexpr(args...)
+  quote
+    n = length($args)
+    ex = Array(Expr, n)
+    for i in 1:(n-1)
+      x = $args[i]
+      ex[i] = Expr(:(=), x, Expr(:ref, :model, string(x)))
+    end
+    ex[n] = $args[n]
+    Expr(:block, ex...)
+  end
+end
+
+
 #################### Utility Functions ####################
 
 dot(x) = dot(x, x)
