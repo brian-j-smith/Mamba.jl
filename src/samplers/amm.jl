@@ -69,7 +69,7 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
   else
     if tune.adapt
       x = v + tune.beta * (tune.SigmaF[:L] * randn(d)) +
-          (1 - tune.beta) * (tune.SigmaLm * randn(d))
+          (1.0 - tune.beta) * (tune.SigmaLm * randn(d))
     else
       tune.SigmaF = SigmaF
       x = v + tune.SigmaF[:L] * randn(d)
