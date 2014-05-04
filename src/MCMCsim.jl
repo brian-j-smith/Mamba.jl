@@ -7,8 +7,8 @@ using Distributions
 
 import Base: Base, cor, dot
 import Calculus: gradient
-import Distributions: Continuous, Distribution, insupport, logpdf, minimum,
-       maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
+import Distributions: Continuous, Distribution, insupport, logpdf, logpdf!,
+       minimum, maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase,
