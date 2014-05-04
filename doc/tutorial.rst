@@ -71,9 +71,9 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	## Model Specification
 
-	line = MCMCModel(
+	model = MCMCModel(
 
-	  y = MCMCStochastic(5,
+	  y = MCMCStochastic(1,
 	    quote
 	      mu = model["mu"]
 	      s2 = model["s2"]
@@ -82,12 +82,12 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	    false
 	  ),
 
-	  mu = MCMCLogical(5,
+	  mu = MCMCLogical(1,
 	    :(model["xmat"] * model["beta"]),
 	    false
 	  ),
 
-	  beta = MCMCStochastic(2,
+	  beta = MCMCStochastic(1,
 	    :(IsoNormal(2, sqrt(1000)))
 	  ),
 
@@ -97,7 +97,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	)
 	
-A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is a vector of the specified length.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 In the example, nodes ``y``, ``mu``, and ``beta`` are vectors, ``s2`` is a scalar, and the first two are not being monitored.  Further, note that the model could be implemented without the logical node ``mu``.  It is created here primarily for illustrative purposes.
 
@@ -171,23 +171,66 @@ A sampling scheme can be assigned to an existing model with a call to the ``sets
 .. code-block:: julia
 
 	## Sampling Scheme Assignment
-	setsamplers!(line, scheme1)
+	setsamplers!(model, scheme1)
 
 Alternative, a predefined scheme can be passed in to the ``MCMCModel`` constructor at the time of model implementation as the value to its ``samplers`` argument.
 
+The Model Expression Macro
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: @modelexpr(args...)
+
+	A macro to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``MCMCLogical``, and ``MCMCSampler`` constructors. 
+
+	**Arguments**
+	
+		* ``args...`` : sequence of one or more arguments, such that the last argument is a single expression or code block, and the previous ones are variable names of model nodes upon which the expression depends.
+		
+	**Value**
+	
+		An expression block of nodal variable declarations followed by the specified expression.
+		
+	**Example**
+	
+		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``MCMCSampler``, as follows.  In essence, they automate the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and return the same quoted expressions as before but with less coding required.
+		
+		.. code-block:: julia
+		
+			Gibbs_beta = MCMCSampler(["beta"],
+			  @modelexpr(beta, s2, xmat, y,
+			    begin
+			      beta_mean = mean(beta.distr)
+			      beta_invcov = invcov(beta.distr)
+			      Sigma = inv(xmat' * xmat / s2 + beta_invcov)
+			      mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
+			      rand(MvNormal(mu, Sigma))
+			    end
+			  )
+			)
+
+			Gibbs_s2 = MCMCSampler(["s2"],
+			  @modelexpr(beta, s2, xmat, y,
+			    begin
+			      a = length(y) / 2.0 + s2.distr.shape
+			      b = sum((y - xmat * beta).^2) / 2.0 + s2.distr.scale
+			      rand(InverseGamma(a, b))
+			    end
+			  )
+			)
+	
 
 Directed Acyclic Graphs
 -----------------------
 
 One of the internal structures created by ``MCMCModel`` is a graph representation of the model nodes and their associations.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `MCMCsim` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
 
-The DAG representation of an ``MCMCModel`` can be printed out at the command line or saved to an external file in a format that can be displayed in `Graphviz <http://www.graphviz.org/>`_.
+The DAG representation of an ``MCMCModel`` can be printed out at the command-line or saved to an external file in a format that can be displayed in `Graphviz <http://www.graphviz.org/>`_.
 
 .. code-block:: julia
 
 	## Graph Representation of Nodes
 
-	>>> print(graph2dot(line))
+	>>> print(graph2dot(model))
 	
 	digraph MCMCModel {
 	  "beta" [shape="ellipse"];
@@ -201,7 +244,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command lin
 	  "y" [fillcolor="gray85", shape="ellipse", style="filled"];
 	}
 	
-	>>> graph2dot(line, "lineDAG.dot")
+	>>> graph2dot(model, "lineDAG.dot")
 
 Either the printed or saved output can be passed to the Graphviz software to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
 
@@ -224,11 +267,11 @@ For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia**
 .. code-block:: julia
 
 	## Data
-	data = (String => Any)[
+	line = (String => Any)[
 	  "x" => [1, 2, 3, 4, 5],
 	  "y" => [1, 3, 3, 3, 5]
 	]
-	data["xmat"] = [ones(5) data["x"]]
+	line["xmat"] = [ones(5) line["x"]]
 
 Initial Values
 ^^^^^^^^^^^^^^
@@ -238,7 +281,7 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 .. code-block:: julia
 
 	## Initial Values
-	inits = [["y" => data["y"],
+	inits = [["y" => line["y"],
 	          "beta" => rand(Normal(0, 1), 2),
 	          "s2" => rand(Gamma(1, 1))]
 	         for i in 1:3]
@@ -255,14 +298,14 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
 
 	## MCMC Simulations
 	
-	setsamplers!(line, scheme1)
-	sim1 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+	setsamplers!(model, scheme1)
+	sim1 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
-	setsamplers!(line, scheme2)
-	sim2 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+	setsamplers!(model, scheme2)
+	sim2 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
-	setsamplers!(line, scheme3)
-	sim3 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+	setsamplers!(model, scheme3)
+	sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
 Results are retuned as ``MCMCChains`` objects on which methods for posterior inference are defined.
 
@@ -282,10 +325,10 @@ Checks of MCMC output should be performed to assess convergence of simulated dra
 
 	5x3 Array{Any,2}:
 	 ""               "PSRF"      "97.5%"
-	 "beta[1]"       0.558658    0.559873
-	 "beta[2]"       0.58107     0.582333
-	 "s2"            1.15596     1.15848 
-	 "Multivariate"  1.00221   NaN       
+	 "beta[1]"       1.15816     1.16025 
+	 "beta[2]"       0.762546    0.763922
+	 "s2"            0.842252    0.843771
+	 "Multivariate"  1.00344   NaN       
 
 Values of the diagnostic that are greater than 1.2 are evidence of non-convergence.  The smaller diagnostic values for the regression example suggest that its draws have converged.
  
@@ -307,66 +350,67 @@ Once convergence has been assessed, sample statistics can be computed on the MCM
 
 	Empirical Posterior Estimates:
 	4x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "Batch SE"      "ESS"
-	 "beta[1]"  0.646951  1.33333   0.0110253    0.0240354    6708.61  
-	 "beta[2]"  0.788261  0.400042  0.00330794   0.00638979   7571.25  
-	 "s2"       1.60026   6.616     0.0547076    0.227472     3517.35  
+	 ""          "Mean"    "SD"     "Naive SE"   "Batch SE"      "ESS"
+	 "beta[1]"  0.582929  1.28164  0.0105979    0.021668     7153.13  
+	 "beta[2]"  0.805483  0.39054  0.00322937   0.00610328   7738.38  
+	 "s2"       1.53233   4.33597  0.0358541    0.137321     3818.55  
 
 	Quantiles:
 	4x6 Array{Any,2}:
-	 ""           "2.5%"     "25.0%"    "50.0%"   "75.0%"   "97.5%"
-	 "beta[1]"  -1.8012     0.0516419  0.594027  1.21848   3.24066 
-	 "beta[2]"   0.0369576  0.61944    0.79773   0.965215  1.53923 
-	 "s2"        0.175576   0.387191   0.674083  1.32558   7.47037 
+	 ""           "2.5%"      "25.0%"     "50.0%"   "75.0%"   "97.5%"
+	 "beta[1]"  -1.94076    -0.00512526  0.610874  1.18267   3.01166 
+	 "beta[2]"   0.0777173   0.625455    0.798301  0.981351  1.5851  
+	 "s2"        0.172576    0.39421     0.69147   1.35316   7.8068  
 
 	## Highest Posterior Density Intervals
 	>>> hpd(sim1)
 
 	4x3 Array{Any,2}:
 	 ""           "2.5%"     "97.5%"
-	 "beta[1]"  -1.82575    3.19734 
-	 "beta[2]"   0.0734925  1.57316 
-	 "s2"        0.0861001  4.69749 
-	
+	 "beta[1]"  -1.89625    3.03591 
+	 "beta[2]"   0.0688423  1.56786 
+	 "s2"        0.0844982  4.83584 
+
 	## Cross-Correlations
 	>>> cor(sim1)
-
+	
 	4x4 Array{Any,2}:
 	 ""           "beta[1]"    "beta[2]"    "s2"    
-	 "beta[1]"   1.0         -0.899921    -0.0145811
-	 "beta[2]"  -0.899921     1.0          0.0227525
-	 "s2"       -0.0145811    0.0227525    1.0      
+	 "beta[1]"   1.0         -0.904011     0.0414925
+	 "beta[2]"  -0.904011     1.0         -0.0505885
+	 "s2"        0.0414925   -0.0505885    1.0      
 
 	## Lag-Autocorrelations
 	>>> autocor(sim1)
 
 	4x5x3 Array{Any,3}:
 	[:, :, 1] =
-	 ""          "Lag 2"   "Lag 10"    "Lag 20"    "Lag 100" 
-	 "beta[1]"  0.449877  0.0867905  -0.0360931  -0.000137467
-	 "beta[2]"  0.371405  0.067229   -0.0305984   0.00658498 
-	 "s2"       0.725702  0.245108    0.150537   -0.0479392  
+	 ""          "Lag 2"   "Lag 10"   "Lag 20"    "Lag 100"
+	 "beta[1]"  0.316926  0.0220294  0.0133442   0.0155147 
+	 "beta[2]"  0.265837  0.0158142  0.0241938   0.00982322
+	 "s2"       0.683814  0.253235   0.124647   -0.00717739
 
 	[:, :, 2] =
-	 ""          "Lag 2"   "Lag 10"     "Lag 20"    "Lag 100"
-	 "beta[1]"  0.395009  0.0224026   -0.0272157  -0.00879161
-	 "beta[2]"  0.303902  0.00634753  -0.0344257  -0.0140071 
-	 "s2"       0.829777  0.428135     0.105249   -0.0236275 
+	 ""          "Lag 2"    "Lag 10"   "Lag 20"    "Lag 100"
+	 "beta[1]"  0.304566  -0.0688736  0.0102526   0.00368834
+	 "beta[2]"  0.255234  -0.0423353  0.02073    -0.00207504
+	 "s2"       0.804116   0.384415   0.126091   -0.0104676 
 
 	[:, :, 3] =
-	 ""          "Lag 2"   "Lag 10"    "Lag 20"     "Lag 100"
-	 "beta[1]"  0.31747   0.0143544   0.000619652  0.0142481 
-	 "beta[2]"  0.295017  0.0192439  -0.0149453    0.0236515 
-	 "s2"       0.811755  0.273569    0.15009      0.0561878 
+	 ""          "Lag 2"    "Lag 10"    "Lag 20"    "Lag 100"
+	 "beta[1]"  0.399699  -0.0287181   0.0197833  -0.014457  
+	 "beta[2]"  0.32555   -0.0287953  -0.0102513  -0.0188129 
+	 "s2"       0.792312   0.437098    0.141379   -0.0101772 
 
 	## Deviance Information Criterion
 	>>> dic(sim1)
 
 	3x3 Array{Any,2}:
 	 ""      "DIC"   "Effective Parameters"
-	 "pD"  13.9011  0.979245               
-	 "pV"  24.4464  6.2519                 
+	 "pD"  13.536   0.584149               
+	 "pV"  25.8718  6.75207                
 
+	 
 Output Subsetting
 ^^^^^^^^^^^^^^^^^
 
@@ -383,17 +427,17 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	Samples per chain = 2001
 
 	Empirical Posterior Estimates:
-	3x6 Array{Any,2}
+
+	3x6 Array{Any,2}:
 	 ""          "Mean"    "SD"      "Naive SE"   "Batch SE"      "ESS"
-	 "beta[1]"  0.598793  1.19409   0.0154118    0.0268244    3448.98  
-	 "beta[2]"  0.799864  0.359956  0.00464585   0.00768688   3628.13  
+	 "beta[1]"  0.546766  1.24905   0.0161211    0.0363613    2661.49  
+	 "beta[2]"  0.815492  0.381979  0.00493009   0.0104548    2830.79  
 
 	Quantiles:
 	3x6 Array{Any,2}:
-	 ""           "2.5%"     "25.0%"    "50.0%"   "75.0%"   "97.5%"
-	 "beta[1]"  -1.67395    0.0202488  0.622143  1.15556   2.95496 
-	 "beta[2]"   0.0709892  0.624956   0.799999  0.976372  1.49103 
-	
+	 ""           "2.5%"     "25.0%"     "50.0%"   "75.0%"   "97.5%"
+	 "beta[1]"  -1.99179   -0.00878084  0.598654  1.17346   2.93236 
+	 "beta[2]"   0.120749   0.625547    0.801338  0.989835  1.60552 
 
 
 Computational Performance
@@ -421,18 +465,18 @@ Command-line access is provided for all package functionality to aid in the deve
 
 	## Development and Testing
 
-	setinputs!(line, data)             # Set input node values
-	setinits!(line, inits[1])          # Set initial values
-	setsamplers!(line, scheme1)        # Set sampling scheme
+	setinputs!(model, line)             # Set input node values
+	setinits!(model, inits[1])          # Set initial values
+	setsamplers!(model, scheme1)        # Set sampling scheme
 
-	showall(line)                      # Show detailed node information
+	showall(model)                      # Show detailed node information
 
-	logpdf(line, 1)                    # Log-density sum for block 1
-	logpdf(line, 2)                    # Block 2
-	logpdf(line)                       # All blocks
+	logpdf(model, 1)                    # Log-density sum for block 1
+	logpdf(model, 2)                    # Block 2
+	logpdf(model)                       # All blocks
 
-	simulate!(line, 1)                 # Simulate draws for block 1
-	simulate!(line, 2)                 # Block 2
-	simulate!(line)                    # All blocks
+	simulate!(model, 1)                 # Simulate draws for block 1
+	simulate!(model, 2)                 # Block 2
+	simulate!(model)                    # All blocks
 
-In this example, functions ``setinputs!``, ``setinits!``, and ``setsampler!`` allow the user to manually set the input node values, the initial values, and the sampling scheme form the ``line`` object, and would need to be called prior to ``logpdf`` and ``simulate!``.  Updated model objects should be returned when called; otherwise, a problem with the supplied values may exist.  Method ``showall`` prints a detailed summary of all model nodes, their values, and attributes; ``logpdf`` sums the log-densities over nodes associated with a specified sampling block (second argument); and ``simulate!`` generates an MCMC draw for the nodes.  Non-numeric results may indicate problems with distributional specifications in the second case or with sampling functions in the last case.  The block arguments are optional; and, if left unspecified, will cause the corresponding functions to be applied over all sampling blocks.  This allows testing of some or all of the samplers.
+In this example, functions ``setinputs!``, ``setinits!``, and ``setsampler!`` allow the user to manually set the input node values, the initial values, and the sampling scheme form the ``model`` object, and would need to be called prior to ``logpdf`` and ``simulate!``.  Updated model objects should be returned when called; otherwise, a problem with the supplied values may exist.  Method ``showall`` prints a detailed summary of all model nodes, their values, and attributes; ``logpdf`` sums the log-densities over nodes associated with a specified sampling block (second argument); and ``simulate!`` generates an MCMC draw for the nodes.  Non-numeric results may indicate problems with distributional specifications in the second case or with sampling functions in the last case.  The block arguments are optional; and, if left unspecified, will cause the corresponding functions to be applied over all sampling blocks.  This allows testing of some or all of the samplers.

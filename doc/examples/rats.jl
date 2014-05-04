@@ -2,7 +2,7 @@ using MCMCsim
 using Distributions
 
 ## Data
-data = (String => Any)[
+rats = (String => Any)[
   "y" => [151, 199, 246, 283, 320,
           145, 199, 249, 293, 354,
           147, 214, 263, 312, 328,
@@ -34,18 +34,37 @@ data = (String => Any)[
           137, 180, 219, 258, 291,
           153, 200, 244, 286, 324]
 ]
-data["i"] = Integer[div(i - 1, 5) + 1 for i in 1:150]
-data["j"] = Integer[(i - 1) % 5 + 1 for i in 1:150]
-data["x"] = [8, 15, 22, 29, 36][data["j"]]
-data["xm"] = data["x"] - 22.0
+rats["rat"] = Integer[div(i - 1, 5) + 1 for i in 1:150]
+rats["week"] = Integer[(i - 1) % 5 + 1 for i in 1:150]
+rats["x"] = [8, 15, 22, 29, 36][rats["week"]]
+rats["xm"] = rats["x"] - 22.0
 
 
 ## Model Specification
 
-rats = MCMCModel(
+model = MCMCModel(
 
-  s2_c = MCMCStochastic(
-    :(InverseGamma(0.001, 0.001))
+  y = MCMCStochastic(1,
+    @modelexpr(alpha, beta, rat, xm, s2_c,
+      begin
+        mu = alpha[rat] + beta[rat] .* xm
+        IsoNormal(mu, sqrt(s2_c))
+      end
+    ),
+    false
+  ),
+
+  alpha = MCMCStochastic(1,
+    @modelexpr(mu_alpha, s2_alpha,
+      IsoNormal(mu_alpha * ones(30), sqrt(s2_alpha))
+    ),
+    false
+  ),
+
+  alpha0 = MCMCLogical(
+    @modelexpr(mu_alpha, mu_beta,
+      mu_alpha - 22.0 * mu_beta
+    )
   ),
 
   mu_alpha = MCMCStochastic(
@@ -58,6 +77,13 @@ rats = MCMCModel(
     false
   ),
 
+  beta = MCMCStochastic(1,
+    @modelexpr(mu_beta, s2_beta,
+      IsoNormal(mu_beta * ones(30), sqrt(s2_beta))
+    ),
+    false
+  ),
+
   mu_beta = MCMCStochastic(
     :(Normal(0.0, 1.0e6))
   ),
@@ -67,36 +93,8 @@ rats = MCMCModel(
     false
   ),
 
-  alpha = MCMCStochastic(30,
-    quote
-      mu = model["mu_alpha"] * ones(30)
-      s2 = model["s2_alpha"]
-      IsoNormal(mu, sqrt(s2))
-    end,
-    false
-  ),
-
-  beta = MCMCStochastic(30,
-    quote
-      mu = model["mu_beta"] * ones(30)
-      s2 = model["s2_beta"]
-      IsoNormal(mu, sqrt(s2))
-    end,
-    false
-  ),
-
-  alpha0 = MCMCLogical(
-    :(model["mu_alpha"] - 22.0 * model["mu_beta"])
-  ),
-
-  y = MCMCStochastic(150,
-    quote
-      alpha = model["alpha"][model["i"]]
-      beta = model["beta"][model["i"]]
-      mu = alpha + beta .* model["xm"]
-      IsoNormal(mu, sqrt(model["s2_c"]))
-    end,
-    false
+  s2_c = MCMCStochastic(
+    :(InverseGamma(0.001, 0.001))
   )
 
 )
@@ -104,10 +102,10 @@ rats = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["y" => data["y"], "alpha" => fill(250, 30), "beta" => fill(6, 30),
+  ["y" => rats["y"], "alpha" => fill(250, 30), "beta" => fill(6, 30),
    "mu_alpha" => 150, "mu_beta" => 10, "s2_c" => 1, "s2_alpha" => 1,
    "s2_beta" => 1],
-  ["y" => data["y"], "alpha" => fill(20, 30), "beta" => fill(0.6, 30),
+  ["y" => rats["y"], "alpha" => fill(20, 30), "beta" => fill(0.6, 30),
    "mu_alpha" => 15, "mu_beta" => 1, "s2_c" => 10, "s2_alpha" => 10,
    "s2_beta" => 10]
 ]
@@ -115,13 +113,13 @@ inits = [
 
 ## Sampling Scheme
 scheme = [SamplerSlice(["s2_c"], [10.0]),
-          SamplerAMWG(["alpha"], 100 * ones(30), adapt=:all),
+          SamplerAMWG(["alpha"], 100 * ones(30)),
           SamplerSliceWG(["mu_alpha", "s2_alpha"], [100.0, 10.0]),
-          SamplerAMWG(["beta"], ones(30), adapt=:all),
+          SamplerAMWG(["beta"], ones(30)),
           SamplerSliceWG(["mu_beta", "s2_beta"], [1.0, 1.0])]
-setsamplers!(rats, scheme)
+setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(rats, data, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, rats, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim)

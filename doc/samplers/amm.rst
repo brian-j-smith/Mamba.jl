@@ -88,7 +88,7 @@ MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: SamplerAMM(params::Vector{T<:String}, Sigma::Matrix{U:<Real}; \
-				adapt::Symbol=:none)
+				adapt::Symbol=:all)
 
 	Construct an ``MCMCSampler`` object for adaptive multivariate Metropolis sampling.
 	

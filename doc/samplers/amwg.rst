@@ -89,7 +89,7 @@ MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: SamplerAMWG(params::Vector{T<:String}, sigma::Vector{U<:Real}; \
-				adapt::Symbol=:none, batchsize::Integer=50, target::Real=0.44)
+				adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
 
 	Construct an ``MCMCSampler`` object for adaptive Metropolis-within-Gibbs sampling.
 	

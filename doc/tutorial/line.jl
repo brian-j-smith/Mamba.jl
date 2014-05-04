@@ -3,9 +3,9 @@ using Distributions
 
 ## Model Specification
 
-line = MCMCModel(
+model = MCMCModel(
 
-  y = MCMCStochastic(5,
+  y = MCMCStochastic(1,
     quote
       mu = model["mu"]
       s2 = model["s2"]
@@ -14,12 +14,12 @@ line = MCMCModel(
     false
   ),
 
-  mu = MCMCLogical(5,
+  mu = MCMCLogical(1,
     :(model["xmat"] * model["beta"]),
     false
   ),
 
-  beta = MCMCStochastic(2,
+  beta = MCMCStochastic(1,
     :(IsoNormal(2, sqrt(1000)))
   ),
 
@@ -52,6 +52,18 @@ Gibbs_beta = MCMCSampler(["beta"],
   end
 )
 
+Gibbs_beta = MCMCSampler(["beta"],
+  @modelexpr(beta, s2, xmat, y,
+    begin
+      beta_mean = mean(beta.distr)
+      beta_invcov = invcov(beta.distr)
+      Sigma = inv(xmat' * xmat / s2 + beta_invcov)
+      mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
+      rand(MvNormal(mu, Sigma))
+    end
+  )
+)
+
 Gibbs_s2 = MCMCSampler(["s2"],
   quote
     beta = model["beta"]
@@ -64,28 +76,38 @@ Gibbs_s2 = MCMCSampler(["s2"],
   end
 )
 
+Gibbs_s2 = MCMCSampler(["s2"],
+  @modelexpr(beta, s2, xmat, y,
+    begin
+      a = length(y) / 2.0 + s2.distr.shape
+      b = sum((y - xmat * beta).^2) / 2.0 + s2.distr.scale
+      rand(InverseGamma(a, b))
+    end
+  )
+)
+
 ## User-Defined Sampling Scheme
 scheme3 = [Gibbs_beta, Gibbs_s2]
 
 ## Sampling Scheme Assignment
-setsamplers!(line, scheme1)
+setsamplers!(model, scheme1)
 
 
 ## Graph Representation of Nodes
-print(graph2dot(line))
-graph2dot(line, "lineDAG.dot")
+print(graph2dot(model))
+graph2dot(model, "lineDAG.dot")
 
 
 ## Data
-data = (String => Any)[
+line = (String => Any)[
   "x" => [1, 2, 3, 4, 5],
   "y" => [1, 3, 3, 3, 5]
 ]
-data["xmat"] = [ones(5) data["x"]]
+line["xmat"] = [ones(5) line["x"]]
 
 
 ## Initial Values
-inits = [["y" => data["y"],
+inits = [["y" => line["y"],
           "beta" => rand(Normal(0, 1), 2),
           "s2" => rand(Gamma(1, 1))]
          for i in 1:3]
@@ -93,14 +115,14 @@ inits = [["y" => data["y"],
 
 ## MCMC Simulations
 
-setsamplers!(line, scheme1)
-sim1 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+setsamplers!(model, scheme1)
+sim1 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
-setsamplers!(line, scheme2)
-sim2 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+setsamplers!(model, scheme2)
+sim2 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
-setsamplers!(line, scheme3)
-sim3 = mcmc(line, data, inits, 10000, burnin=250, thin=2, chains=3)
+setsamplers!(model, scheme3)
+sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
@@ -128,16 +150,16 @@ describe(sim1[1000:5000, ["beta[1]", "beta[2]"], :])
 
 ## Development and Testing
 
-setinputs!(line, data)             # Set input node values
-setinits!(line, inits[1])          # Set initial values
-setsamplers!(line, scheme1)        # Set sampling scheme
+setinputs!(model, line)             # Set input node values
+setinits!(model, inits[1])          # Set initial values
+setsamplers!(model, scheme1)        # Set sampling scheme
 
-showall(line)                      # Show detailed node information
+showall(model)                      # Show detailed node information
 
-logpdf(line, 1)                    # Log-density sum for block 1
-logpdf(line, 2)                    # Block 2
-logpdf(line)                       # All blocks
+logpdf(model, 1)                    # Log-density sum for block 1
+logpdf(model, 2)                    # Block 2
+logpdf(model)                       # All blocks
 
-simulate!(line, 1)                 # Simulate draws for block 1
-simulate!(line, 2)                 # Block 2
-simulate!(line)                    # All blocks
+simulate!(model, 1)                 # Simulate draws for block 1
+simulate!(model, 2)                 # Block 2
+simulate!(model)                    # All blocks

@@ -39,7 +39,7 @@ eps = nutseps(theta, fx)
 for i in 1:n
   nuts!(theta, eps, fx, adapt = (i <= burnin))
   if i > burnin
-    sim.data[i - burnin,:,1] = [theta[1:2], exp(theta[3])]
+    sim.value[i - burnin,:,1] = [theta[1:2], exp(theta[3])]
   end
 end
 describe(sim)

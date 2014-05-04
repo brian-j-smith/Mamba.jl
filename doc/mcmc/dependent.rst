@@ -122,21 +122,20 @@ Constructors
 ^^^^^^^^^^^^
 
 .. function:: MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-              MCMCLogical(length::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-              MCMCLogical(m::Integer, n::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
+              MCMCLogical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
 
 	Construct an ``MCMCLogical`` object that defines a logical model node.
 	
 	**Arguments**
 	
 		* ``length`` : number of vector elements in the node.
-		* ``m``, ``n`` : number of matrix rows and columns in the node.
+		* ``d`` : number dimensions (1 or 2) for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
 	**Value**
 	
-		Returns an ``MCMCLogical{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCLogical{Vector{VariateType}}`` if ``length`` is specified, and a ``MCMCLogcial{Matrix{VariateType}}`` if ``m`` and ``n`` are specified.
+		Returns an ``MCMCLogical{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCLogical{Vector{VariateType}}`` if ``d = 1`` is specified, and a ``MCMCLogcial{Matrix{VariateType}}`` if ``d = 2`` is specified.
 
 Methods
 ^^^^^^^
@@ -211,21 +210,19 @@ Constructors
 ^^^^^^^^^^^^
 
 .. function:: MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-              MCMCStochastic(length::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-              MCMCStochastic(m::Integer, n::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
+              MCMCStochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
 
 	Construct an ``MCMCStochastic`` object that defines a stochastic model node.
 	
 	**Arguments**
 	
-		* ``length`` : number of vector elements in the node.
-		* ``m``, ``n`` : number of matrix rows and columns in the node.
+		* ``d`` : number dimensions (1 or 2) for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
 	**Value**
 	
-		Returns an ``MCMCStochastic{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCStochastic{Vector{VariateType}}`` if ``length`` is specified, and a ``MCMCStochastic{Matrix{VariateType}}`` if ``m`` and ``n`` are specified.
+		Returns an ``MCMCStochastic{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCStochastic{Vector{VariateType}}`` if ``d = 1`` is specified, and a ``MCMCStochastic{Matrix{VariateType}}`` if ``d = 2`` is specified.
 
 Methods
 ^^^^^^^

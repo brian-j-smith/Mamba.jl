@@ -12,8 +12,8 @@ Pump failure are modelled as
 
 .. math::
 
-	y_i | \theta_i &\sim \text{Poisson}(\theta_i t_i) \quad\quad i=1,\ldots,10 \\
-	\theta_i | \alpha, \beta &\sim \text{Gamma}(\alpha, \beta) \\
+	y_i &\sim \text{Poisson}(\theta_i t_i) \quad\quad i=1,\ldots,10 \\
+	\theta_i &\sim \text{Gamma}(\alpha, \beta) \\
 	\alpha &\sim \text{Gamma}(1, 1) \\
 	\beta &\sim \text{Gamma}(0.1, 1),
 	

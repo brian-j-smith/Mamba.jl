@@ -74,7 +74,11 @@ Linear Algebra
 Mathematical Operators and Elementary Functions
 ```````````````````````````````````````````````
 
-The basic numerical `Mathematical Operators and Elementary Functions <http://julia.readthedocs.org/en/release-0.2/manual/mathematical-operations/>`_ of the **julia** language are supported.
+The basic numerical `Mathematical Operators and Elementary Functions <http://julia.readthedocs.org/en/release-0.2/manual/mathematical-operations/>`_ of the **julia** language are supported, and the ones below added.
+
+.. code-block:: julia
+
+	invlogit     logit
 
 Statistics
 ``````````

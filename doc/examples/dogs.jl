@@ -2,7 +2,7 @@ using MCMCsim
 using Distributions
 
 ## Data
-data = (String => Any)[
+dogs = (String => Any)[
   "Y" => reshape(
     [0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
      0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -34,34 +34,29 @@ data = (String => Any)[
      0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
      0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1,
      0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    30, 25
-  ),
+    25, 30)',
   "Dogs" => 30,
   "Trials" => 25
 ]
-data["xa"] = mapslices(cumsum, data["Y"], 2)
-data["xs"] = mapslices(x -> [1:25] - x, data["xa"], 2)
-data["y"] = 1 - data["Y"][:, 2:25]
+dogs["xa"] = mapslices(cumsum, dogs["Y"], 2)
+dogs["xs"] = mapslices(x -> [1:25] - x, dogs["xa"], 2)
+dogs["y"] = 1 - dogs["Y"][:, 2:25]
 
 
 ## Model Specification
 
-dogs = MCMCModel(
+model = MCMCModel(
 
-  y = MCMCStochastic(data["Dogs"], data["Trials"] - 1,
-    quote
-      m = model["Dogs"]
-      n = model["Trials"] - 1
-      d = Array(Distribution, m, n)
-      for i in 1:m
-        for j in 1:n
-          p = exp(model["alpha"] * model["xa"][i,j] +
-                    model["beta"] * model["xs"][i,j])
-          d[i,j] = Bernoulli(p)
+  y = MCMCStochastic(2,
+    @modelexpr(Dogs, Trials, alpha, xa, beta, xs,
+      Distribution[
+        begin
+          p = exp(alpha * xa[i,j] + beta * xs[i,j])
+          Bernoulli(p)
         end
-      end
-      d
-    end,
+        for i in 1:Dogs, j in 1:Trials-1
+      ]
+    ),
     false
   ),
 
@@ -70,7 +65,9 @@ dogs = MCMCModel(
   ),
 
   A = MCMCLogical(
-    :(exp(model["alpha"]))
+    @modelexpr(alpha,
+      exp(alpha)
+    )
   ),
 
   beta = MCMCStochastic(
@@ -78,7 +75,9 @@ dogs = MCMCModel(
   ),
 
   B = MCMCLogical(
-    :(exp(model["beta"]))
+    @modelexpr(beta,
+      exp(beta)
+    )
   )
 
 )
@@ -86,16 +85,16 @@ dogs = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["y" => data["y"], "alpha" => -1, "beta" => -1],
-  ["y" => data["y"], "alpha" => -2, "beta" => -2]
+  ["y" => dogs["y"], "alpha" => -1, "beta" => -1],
+  ["y" => dogs["y"], "alpha" => -2, "beta" => -2]
 ]
 
 
 ## Sampling Scheme
 scheme = [SamplerSlice(["alpha", "beta"], [0.1, 0.1])]
-setsamplers!(dogs, scheme)
+setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(dogs, data, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, dogs, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim)

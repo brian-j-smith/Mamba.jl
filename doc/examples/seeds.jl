@@ -2,7 +2,7 @@ using MCMCsim
 using Distributions
 
 ## Data
-data = (String => Any)[
+seeds = (String => Any)[
   "r" => [10, 23, 23, 26, 17, 5, 53, 55, 32, 46, 10, 8, 10, 8, 23, 0, 3, 22, 15,
           32, 3],
   "n" => [39, 62, 81, 51, 39, 6, 74, 72, 51, 79, 13, 16, 30, 28, 45, 4, 12, 41,
@@ -15,21 +15,23 @@ data = (String => Any)[
 
 ## Model Specification
 
-seeds = MCMCModel(
+model = MCMCModel(
 
-  r = MCMCStochastic(data["N"],
-    quote
-      eta = model["alpha0"] + model["alpha1"] * model["x1"] +
-              model["alpha2"] * model["x2"] +
-              model["alpha12"] * model["x1"] .* model["x2"] + model["b"]
-      p = 1.0 / (exp(-eta) + 1.0)
-      Distribution[Binomial(model["n"][i], p[i]) for i in 1:model["N"]]
-    end,
+  r = MCMCStochastic(1,
+    @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,
+      begin
+        eta = alpha0 + alpha1 * x1 + alpha2 * x2 + alpha12 * x1 .* x2 + b
+        p = 1.0 / (exp(-eta) + 1.0)
+        Distribution[Binomial(n[i], p[i]) for i in 1:N]
+      end
+    ),
     false
   ),
 
-  b = MCMCStochastic(data["N"],
-    :(IsoNormal(model["N"], model["s2"])),
+  b = MCMCStochastic(1,
+    @modelexpr(N, s2,
+      IsoNormal(N, sqrt(s2))
+    ),
     false
   ),
 
@@ -58,21 +60,20 @@ seeds = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["r" => data["r"], "alpha0" => 0, "alpha1" => 0, "alpha2" => 0,
-   "alpha12" => 0, "s2" => 0.01, "b" => zeros(data["N"])],
-  ["r" => data["r"], "alpha0" => 0, "alpha1" => 0, "alpha2" => 0,
-   "alpha12" => 0, "s2" => 1, "b" => zeros(data["N"])]
+  ["r" => seeds["r"], "alpha0" => 0, "alpha1" => 0, "alpha2" => 0,
+   "alpha12" => 0, "s2" => 0.01, "b" => zeros(seeds["N"])],
+  ["r" => seeds["r"], "alpha0" => 0, "alpha1" => 0, "alpha2" => 0,
+   "alpha12" => 0, "s2" => 1, "b" => zeros(seeds["N"])]
 ]
 
 
 ## Sampling Scheme
-scheme = [SamplerAMM(["alpha0", "alpha1", "alpha2", "alpha12"], 0.01 * eye(4),
-                     adapt=:all),
-          SamplerAMWG(["b"], 0.01 * ones(data["N"]), adapt=:all),
+scheme = [SamplerAMM(["alpha0", "alpha1", "alpha2", "alpha12"], 0.01 * eye(4)),
+          SamplerAMWG(["b"], 0.01 * ones(seeds["N"])),
           SamplerSlice(["s2"], [1.0])]
-setsamplers!(seeds, scheme)
+setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(seeds, data, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, seeds, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim)

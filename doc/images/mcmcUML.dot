@@ -10,15 +10,15 @@ graph MCMC {
 
 	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	MCMCDependent [label = "{MCMCDependent\{T\}|+ names : Vector\{String\}\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ sources : Vector\{String\}\l+ targets : Vector\{String\}\l}"]
+	MCMCDependent [label = "{MCMCDependent\{T\}|+ name : String\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ sources : Vector\{String\}\l+ targets : Vector\{String\}\l}"]
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	
 	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
 
-	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{String\}\l+ targets : Vector\{String\}\l+ eval : Function\l+ tune : Dict\l}"]
+	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{String\}\l+ eval : Function\l+ tune : Dict\l+ targets : Vector\{String\}\l}"]
 	
-	MCMCModel [label = "{MCMCModel|+ nodes : Dict\{String,Any\}\l+ targets : Vector\{String\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
+	MCMCModel [label = "{MCMCModel|+ nodes : Dict\{String,Any\}\l+ samplers : Vector\{MCMCSampler\}\l+ targets : Vector\{String\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
 	
 	MCMCChains [label = "{MCMCChains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ start : Integer\l+ thin : Integer\l+ model : MCMCModel\l}"]
 

@@ -2,7 +2,7 @@ using MCMCsim
 using Distributions
 
 ## Data
-data = (String => Any)[
+surgical = (String => Any)[
   "r" => [0, 18, 8, 46, 8, 13, 9, 31, 14, 8, 29, 24],
   "n" => [47, 148, 119, 810, 211, 196, 148, 215, 207, 97, 256, 360],
   "N" => 12
@@ -11,22 +11,26 @@ data = (String => Any)[
 
 ## Model Specification
 
-surgical = MCMCModel(
+model = MCMCModel(
 
-  r = MCMCStochastic(data["N"],
-    quote
-      Distribution[Binomial(model["n"][i], model["p"][i]) for i in 1:model["N"]]
-    end,
+  r = MCMCStochastic(1,
+    @modelexpr(n, p, N,
+      Distribution[Binomial(n[i], p[i]) for i in 1:N]
+    ),
     false
   ),
 
-  b = MCMCStochastic(data["N"],
-    :(IsoNormal(model["mu"] * ones(model["N"]), model["s2"])),
-    false
+  p = MCMCLogical(1,
+    @modelexpr(b,
+      1.0 / (exp(-b) + 1.0)
+    )
   ),
 
-  p = MCMCLogical(data["N"],
-    :(1.0 / (exp(-model["b"]) + 1.0))
+  b = MCMCStochastic(1,
+    @modelexpr(mu, N, s2,
+      IsoNormal(mu * ones(N), sqrt(s2))
+    ),
+    false
   ),
 
   mu = MCMCStochastic(
@@ -34,7 +38,9 @@ surgical = MCMCModel(
   ),
 
   pop_mean = MCMCLogical(
-    :(1.0 / (exp(-model["mu"]) + 1.0))
+    @modelexpr(mu,
+      1.0 / (exp(-mu) + 1.0)
+    )
   ),
 
   s2 = MCMCStochastic(
@@ -46,17 +52,17 @@ surgical = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["r" => data["r"], "b" => fill(0.1, data["N"]), "s2" => 1, "mu" => 0],
-  ["r" => data["r"], "b" => fill(0.5, data["N"]), "s2" => 10, "mu" => 1]
+  ["r" => surgical["r"], "b" => fill(0.1, surgical["N"]), "s2" => 1, "mu" => 0],
+  ["r" => surgical["r"], "b" => fill(0.5, surgical["N"]), "s2" => 10, "mu" => 1]
 ]
 
 
 ## Sampling Scheme
 scheme = [SamplerNUTS(["b"]),
           SamplerSlice(["mu", "s2"], [1.0, 1.0])]
-setsamplers!(surgical, scheme)
+setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(surgical, data, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, surgical, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim)

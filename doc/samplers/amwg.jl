@@ -32,6 +32,6 @@ theta = VariateAMWG([0.0, 0.0, 0.0])
 sigma = ones(3)
 for i in 1:n
   amwg!(theta, sigma, logf, adapt = (i <= burnin))
-  sim.data[i,:,1] = [theta[1:2], exp(theta[3])]
+  sim.value[i,:,1] = [theta[1:2], exp(theta[3])]
 end
 describe(sim)
