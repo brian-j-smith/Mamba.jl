@@ -41,12 +41,12 @@ function SamplerAMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
       v = VariateAMM(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      f = x -> logpdf(model, x, block, true)
-      amm!(v, tunepar["Sigma"], f, adapt=adapt)
+      f = x -> logpdf!(model, x, block, true)
+      amm!(v, tunepar["SigmaF"], f, adapt=adapt)
       tunepar["sampler"] = v.tune
       relist(model, v.value, block, true)
     end,
-    ["Sigma" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
+    ["SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
   )
 end
 
@@ -65,7 +65,7 @@ function SamplerAMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
       v = VariateAMWG(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      f = x -> logpdf(model, x, block, true)
+      f = x -> logpdf!(model, x, block, true)
       amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
@@ -113,7 +113,7 @@ function SamplerSlice{T<:String}(params::Vector{T}, width::Vector{Float64})
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      f = x -> logpdf(model, x, block, true)
+      f = x -> logpdf!(model, x, block, true)
       v = VariateSlice(x)
       slice!(v, tune(model, block)["width"], f)
       relist(model, v.value, block, true)
@@ -129,7 +129,7 @@ function SamplerSliceWG{T<:String}(params::Vector{T}, width::Vector{Float64})
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
-      f = x -> logpdf(model, x, block, true)
+      f = x -> logpdf!(model, x, block, true)
       v = VariateSlice(x)
       slicewg!(v, tune(model, block)["width"], f)
       relist(model, v.value, block, true)
