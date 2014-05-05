@@ -19,17 +19,17 @@ import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase,
 
 typealias VariateType Float64
 
-abstract Variate{T<:Union(VariateType, VecOrMat{VariateType})}
+abstract Variate{T<:Union(VariateType, Array{VariateType})}
 
 typealias VariateScalar Variate{VariateType}
 typealias VariateVector Variate{Vector{VariateType}}
 typealias VariateMatrix Variate{Matrix{VariateType}}
-typealias VariateVecOrMat Union(VariateVector, VariateMatrix)
+typealias VariateArray{N} Variate{Array{VariateType,N}}
 
 
 #################### Distribution Types ####################
 
-typealias DistributionStruct Union(Distribution, VecOrMat{Distribution})
+typealias DistributionStruct Union(Distribution, Array{Distribution})
 
 
 #################### MCMCDependent Types ####################
@@ -133,7 +133,7 @@ export
   VariateScalar,
   VariateVector,
   VariateMatrix,
-  VariateVecOrMat
+  VariateArray
 
 export
   @modelexpr,

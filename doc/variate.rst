@@ -11,7 +11,7 @@ Variate
 Declaration
 ^^^^^^^^^^^
 
-``abstract Variate{T<:Union(VariateType, VecOrMat{VariateType})}``
+``abstract Variate{T<:Union(VariateType, Array{VariateType})}``
 
 Aliases
 ^^^^^^^
@@ -20,7 +20,7 @@ Aliases
 .. index:: VariateScalar
 .. index:: VariateVector
 .. index:: VariateMatrix
-.. index:: VariateVecOrMat
+.. index:: VariateArray
 
 .. code-block:: julia
 
@@ -29,7 +29,7 @@ Aliases
 	typealias VariateScalar Variate{VariateType}
 	typealias VariateVector Variate{Vector{VariateType}}
 	typealias VariateMatrix Variate{Matrix{VariateType}}
-	typealias VariateVecOrMat Union(VariateVector, VariateMatrix)
+	typealias VariateArray{N} Variate{Array{VariateType,N}}
 
 Field
 ^^^^^

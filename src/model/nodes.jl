@@ -58,7 +58,6 @@ end
 
 function MCMCLogical(d::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  1 <= d <= 2 || error("logical array must be 1-d or 2-d")
   value = Array(VariateType, tuple(zeros(Integer, d)...))
   MCMCLogical(value, expr, monitor)
 end
@@ -93,7 +92,6 @@ end
 
 function MCMCStochastic(d::Integer, expr::Expr,
            monitor::Union(Bool,Vector{Bool})=true)
-  1 <= d <= 2 || error("stochastic array must be 1-d or 2-d")
   value = Array(VariateType, tuple(zeros(Integer, d)...))
   MCMCStochastic(value, expr, monitor)
 end

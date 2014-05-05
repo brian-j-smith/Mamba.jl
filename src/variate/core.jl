@@ -6,7 +6,7 @@ end
 
 Base.size(v::Variate, d) = Base.size(v)[d]
 
-function Base.convert{T<:Real,N}(::Type{Array{T,N}}, v::VariateVecOrMat)
+function Base.convert{T<:Real,N}(::Type{Array{T,N}}, v::VariateArray{N})
   convert(Array{T,N}, v.value)
 end
 
@@ -14,7 +14,7 @@ function Base.convert{T<:Real}(::Type{T}, v::VariateScalar)
   convert(T, v.value)
 end
 
-function Base.getindex(v::VariateVecOrMat, inds...)
+function Base.getindex{N}(v::VariateArray{N}, inds...)
   getindex(v.value, inds...)
 end
 
@@ -26,7 +26,7 @@ function Base.getindex(v::VariateScalar, inds)
   map(i -> v.value[i], inds)
 end
 
-function Base.setindex!(v::VariateVecOrMat, x, inds...)
+function Base.setindex!{N}(v::VariateArray{N}, x, inds...)
   setindex!(v.value, x, inds...)
 end
 
@@ -50,20 +50,14 @@ function names{T<:String}(v::VariateScalar, prefix::T)
   String[prefix]
 end
 
-function names{T<:String}(v::VariateVector, prefix::T)
-  values = String[]
-  for i in 1:length(v)
-    push!(values, string(prefix, "[", i, "]"))
-  end
-  values
-end
-
-function names{T<:String}(v::VariateMatrix, prefix::T)
-  values = String[]
-  for j in 1:size(v, 2)
-    for i in 1:size(v, 1)
-      push!(values, string(prefix, "[", i, ",", j, "]"))
-    end
+function names{N,T<:String}(v::VariateArray{N}, prefix::T)
+  n = length(v)
+  values = Array(String, n)
+  dims = size(v)
+  offset = ndims(v) > 1 ? 1 : 2
+  for i in 1:n
+    s = string(ind2sub(dims, i))
+    values[i] = string(prefix, "[", s[2:end-offset], "]")
   end
   values
 end

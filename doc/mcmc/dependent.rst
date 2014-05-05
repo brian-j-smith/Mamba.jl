@@ -3,7 +3,7 @@
 .. _section-MCMCDependent:
 
 MCMCDependent
------------
+-------------
 
 ``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
 
@@ -129,13 +129,13 @@ Constructors
 	**Arguments**
 	
 		* ``length`` : number of vector elements in the node.
-		* ``d`` : number dimensions (1 or 2) for array nodes.
+		* ``d`` : number of dimensions for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
 	**Value**
 	
-		Returns an ``MCMCLogical{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCLogical{Vector{VariateType}}`` if ``d = 1`` is specified, and a ``MCMCLogcial{Matrix{VariateType}}`` if ``d = 2`` is specified.
+		Returns an ``MCMCLogical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``MCMCLogical{VariateType}`` if not.
 
 Methods
 ^^^^^^^
@@ -216,13 +216,13 @@ Constructors
 	
 	**Arguments**
 	
-		* ``d`` : number dimensions (1 or 2) for array nodes.
+		* ``d`` : number of dimensions for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
 		
 	**Value**
 	
-		Returns an ``MCMCStochastic{VariateType}`` type object if no dimensional arguments are specified, a ``MCMCStochastic{Vector{VariateType}}`` if ``d = 1`` is specified, and a ``MCMCStochastic{Matrix{VariateType}}`` if ``d = 2`` is specified.
+		Returns an ``MCMCStochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``MCMCStochastic{VariateType}`` if not.
 
 Methods
 ^^^^^^^
