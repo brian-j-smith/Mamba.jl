@@ -17,9 +17,9 @@ Deaths are modelled as
 	\operatorname{logit}(p^0_i) &= \mu_i \\
 	\operatorname{logit}(p^1_i) &= \mu_i + \log(\psi_i) \\
 	\log(\psi) &= \alpha + \beta_1 \text{year}_i + \beta_2 (\text{year}^2_i - 22) + b_i \\
-	\mu_i &\sim \text{Normal}(0, 1e6) \\
+	\mu_i &\sim \text{Normal}(0, 1000) \\
 	b_i &\sim \text{Normal}(0, \sigma) \\
-	\alpha, \beta_1, \beta_2 &\sim \text{Normal}(0, 1e6) \\
+	\alpha, \beta_1, \beta_2 &\sim \text{Normal}(0, 1000) \\
 	\sigma^2 &\sim \text{InverseGamma}(0.001, 0.001),
 	
 where :math:`r^0_i` is the number of deaths among unexposed subjects in stratum :math:`i`, :math:`r^1_i` is the number among exposed subjects, and :math:`\text{year}_i` is the stratum-specific birth year (relative to 1954).

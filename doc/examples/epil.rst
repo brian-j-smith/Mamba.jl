@@ -19,7 +19,7 @@ Counts are modelled as
 	    \text{b}_{i,j} \\
 	\text{b1}_i &\sim \text{Normal}(0, \sigma_\text{b1}) \\
 	\text{b}_{i,j} &\sim \text{Normal}(0, \sigma_\text{b}) \\
-	\alpha_* &\sim \text{Normal}(0, 1e4) \\
+	\alpha_* &\sim \text{Normal}(0, 100) \\
 	\sigma^2_\text{b1}, \sigma^2_\text{b} &\sim \text{InverseGamma}(0.001, 0.001),
 	  
 	

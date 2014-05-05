@@ -51,11 +51,11 @@ model = MCMCModel(
   ),
 
   mu = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   phi = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   theta = MCMCLogical(
@@ -65,7 +65,7 @@ model = MCMCModel(
   ),
 
   pi = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   s2_1 = MCMCStochastic(
@@ -76,7 +76,7 @@ model = MCMCModel(
     :(InverseGamma(0.001, 0.001))
   ),
 
-  model = MCMCLogical(
+  equiv = MCMCLogical(
     @modelexpr(theta,
       int(0.8 < theta < 1.2)
     )

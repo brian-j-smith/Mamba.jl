@@ -68,7 +68,7 @@ model = MCMCModel(
   ),
 
   mu_alpha = MCMCStochastic(
-    :(Normal(0.0, 1.0e6)),
+    :(Normal(0.0, 1000)),
     false
   ),
 
@@ -85,7 +85,7 @@ model = MCMCModel(
   ),
 
   mu_beta = MCMCStochastic(
-    :(Normal(0.0, 1.0e6))
+    :(Normal(0.0, 1000))
   ),
 
   s2_beta = MCMCStochastic(

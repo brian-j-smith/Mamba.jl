@@ -19,4 +19,4 @@ Examples
 	examples/epil.rst
 	examples/blocker.rst
 	examples/oxford.rst
-	examples/lsat.rst
+	examples/mice.rst

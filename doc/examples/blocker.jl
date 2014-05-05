@@ -41,7 +41,7 @@ model = MCMCModel(
 
   mu = MCMCStochastic(1,
     @modelexpr(N,
-      IsoNormal(N, 1e5)
+      IsoNormal(N, 1000)
     ),
     false
   ),
@@ -60,7 +60,7 @@ model = MCMCModel(
   ),
 
   d = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   s2 = MCMCStochastic(

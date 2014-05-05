@@ -30,15 +30,15 @@ model = MCMCModel(
   ),
 
   alpha = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   beta = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   gamma = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   lambda = MCMCStochastic(2,

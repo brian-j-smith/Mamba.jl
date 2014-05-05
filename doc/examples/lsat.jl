@@ -74,7 +74,7 @@ model = MCMCModel(
 
   alpha = MCMCStochastic(1,
     @modelexpr(T,
-      IsoNormal(T, 1e4)
+      IsoNormal(T, 100)
     )
   ),
 

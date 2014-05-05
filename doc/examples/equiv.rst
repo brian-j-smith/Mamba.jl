@@ -15,7 +15,7 @@ Treatment responses are modelled as
 	y_{i,j} &\sim \text{Normal}(m_{i,j}, \sigma_1) \quad\quad i=1,\ldots,10; j=1,2 \\
 	m_{i,j} &= \mu + (-1)^{T_{i,j} - 1} \phi / 2 + (-1)^{j-1} \pi / 2 + \delta_i \\
 	\delta_i &\sim \text{Normal}(0, \sigma_2) \\
-	\mu, \phi, \pi &\sim \text{Normal}(0, 1e6) \\
+	\mu, \phi, \pi &\sim \text{Normal}(0, 1000) \\
 	\sigma_1^2, \sigma_2^2 &\sim \text{InverseGamma}(0.001, 0.001) \\
 	
 where :math:`y_{i,j}` is the response for patient :math:`i` in period :math:`j`; and :math:`T_{i,j} = 1,2` is the treatment received.

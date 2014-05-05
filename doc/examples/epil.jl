@@ -131,27 +131,27 @@ model = MCMCModel(
   ),
 
   alpha0 = MCMCStochastic(
-    :(Normal(0, 1e4))
+    :(Normal(0, 100))
   ),
 
   alpha_Base = MCMCStochastic(
-    :(Normal(0, 1e4))
+    :(Normal(0, 100))
   ),
 
   alpha_Trt = MCMCStochastic(
-    :(Normal(0, 1e4))
+    :(Normal(0, 100))
   ),
 
   alpha_BT = MCMCStochastic(
-    :(Normal(0, 1e4))
+    :(Normal(0, 100))
   ),
 
   alpha_Age = MCMCStochastic(
-    :(Normal(0, 1e4))
+    :(Normal(0, 100))
   ),
 
   alpha_V4 = MCMCStochastic(
-    :(Normal(0, 1e4))
+    :(Normal(0, 100))
   ),
 
   s2_b1 = MCMCStochastic(

@@ -34,7 +34,7 @@ model = MCMCModel(
   ),
 
   mu = MCMCStochastic(
-    :(Normal(0.0, 1.0e6))
+    :(Normal(0, 1000))
   ),
 
   pop_mean = MCMCLogical(

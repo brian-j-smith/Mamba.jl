@@ -53,7 +53,7 @@ model = MCMCModel(
 
   beta = MCMCStochastic(1,
     @modelexpr(p,
-      IsoNormal(1 + p, 1e5)
+      IsoNormal(1 + p, 1000)
     )
   ),
 

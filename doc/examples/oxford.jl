@@ -75,21 +75,21 @@ model = MCMCModel(
 
   mu = MCMCStochastic(1,
     @modelexpr(K,
-      IsoNormal(K, 1e6)
+      IsoNormal(K, 1000)
     ),
     false
   ),
 
   alpha = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   beta1 = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   beta2 = MCMCStochastic(
-    :(Normal(0, 1e6))
+    :(Normal(0, 1000))
   ),
 
   s2 = MCMCStochastic(

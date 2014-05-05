@@ -16,9 +16,9 @@ Events are modelled as
 	r^t_i &\sim \text{Binomial}(n^t_i, p^t_i) \\
 	\operatorname{logit}(p^c_i) &= \mu_i \\
 	\operatorname{logit}(p^t_i) &= \mu_i + \delta_i \\
-	\mu_i &\sim \text{Normal}(0, 1e5) \\
+	\mu_i &\sim \text{Normal}(0, 1000) \\
 	\delta_i &\sim \text{Normal}(d, \sigma) \\
-	d &\sim \text{Normal}(0, 1e6) \\
+	d &\sim \text{Normal}(0, 1000) \\
 	\sigma^2 &\sim \text{InverseGamma}(0.001, 0.001),
 	
 where :math:`r^c_i` is the number of control group events, out of :math:`n^c_i`, in study :math:`i`; and :math:`r^t_i` is the number of treatment group events.

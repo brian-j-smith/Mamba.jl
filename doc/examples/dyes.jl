@@ -37,7 +37,7 @@ model = MCMCModel(
   ),
 
   theta = MCMCStochastic(
-    :(Normal(0, 1e10))
+    :(Normal(0, 1000))
   ),
 
   s2_within = MCMCStochastic(

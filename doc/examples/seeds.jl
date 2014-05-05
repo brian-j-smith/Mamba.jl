@@ -36,19 +36,19 @@ model = MCMCModel(
   ),
 
   alpha0 = MCMCStochastic(
-    :(Normal(0.0, 1.0e6))
+    :(Normal(0, 1000))
   ),
 
   alpha1 = MCMCStochastic(
-    :(Normal(0.0, 1.0e6))
+    :(Normal(0, 1000))
   ),
 
   alpha2 = MCMCStochastic(
-    :(Normal(0.0, 1.0e6))
+    :(Normal(0, 1000))
   ),
 
   alpha12 = MCMCStochastic(
-    :(Normal(0.0, 1.0e6))
+    :(Normal(0, 1000))
   ),
 
   s2 = MCMCStochastic(
