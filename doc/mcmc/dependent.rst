@@ -204,7 +204,7 @@ Aliases
 
 .. code-block:: julia
 
-	typealias DistributionStruct Union(Distribution, VecOrMat{Distribution})
+	typealias DistributionStruct Union(Distribution, Array{Distribution})
 
 Constructors
 ^^^^^^^^^^^^
