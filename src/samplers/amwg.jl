@@ -29,6 +29,32 @@ function VariateAMWG(x::Vector{VariateType}, tune=nothing)
 end
 
 
+#################### MCMCSampler Constructor ####################
+
+function AMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
+           adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
+  any(adapt .== [:all, :burnin, :none]) ||
+    error("adapt argument must be one of :all, :burnin, or :none")
+
+  MCMCSampler(params,
+    quote
+      x = unlist(model, block, true)
+      tunepar = tune(model, block)
+      v = VariateAMWG(x, tunepar["sampler"])
+      adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
+              tunepar["adapt"] == :all ? true : false
+      f = x -> logpdf!(model, x, block, true)
+      amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
+            target=tunepar["target"])
+      tunepar["sampler"] = v.tune
+      relist(model, v.value, block, true)
+    end,
+    ["sigma" => sigma, "adapt" => adapt, "batchsize" => batchsize,
+     "target" => target, "sampler" => nothing]
+  )
+end
+
+
 #################### Sampling Functions ####################
 
 function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function;

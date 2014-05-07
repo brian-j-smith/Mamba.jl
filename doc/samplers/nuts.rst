@@ -105,7 +105,7 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SamplerNUTS(params::Vector{T<:String}; dtype::Symbol=:forward, \
+.. function:: NUTS(params::Vector{T<:String}; dtype::Symbol=:forward, \
 				target::Real=0.6)
 
 	Construct an ``MCMCSampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.

@@ -41,6 +41,36 @@ function VariateNUTS(x::Vector{VariateType}, tune=nothing)
 end
 
 
+#################### MCMCSampler Constructor ####################
+
+function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
+           target::Real=0.6)
+  MCMCSampler(params,
+    quote
+      x = unlist(model, block, true)
+      tunepar = tune(model, block)
+      v = VariateNUTS(x, tunepar["sampler"])
+      f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
+      if model.iter == 1
+        tunepar["eps"] = nutseps(v, f)
+      end
+      nuts!(v, tunepar["eps"], f, adapt=model.iter <= model.burnin,
+            target=tunepar["target"])
+      tunepar["sampler"] = v.tune
+      relist(model, v.value, block, true)
+    end,
+    ["eps" => 1.0, "target" => target, "dtype" => dtype, "sampler" => nothing]
+  )
+end
+
+function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
+           transform::Bool, dtype::Symbol)
+  a = logpdf!(m, x, block, transform)
+  b = gradient!(m, x, block, transform, dtype)
+  a, b
+end
+
+
 #################### Sampling Functions ####################
 
 function nutseps(v::VariateNUTS, fx::Function)

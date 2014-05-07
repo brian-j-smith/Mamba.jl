@@ -79,7 +79,7 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SamplerSlice(params::Vector{T<:String}, width::Vector{Float64})
+.. function:: Slice(params::Vector{T<:String}, width::Vector{Float64})
 
 	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.
 	
@@ -124,7 +124,7 @@ Stand-Alone Functions
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SamplerSliceWG(params::Vector{T<:String}, width::Vector{Float64})
+.. function:: SliceWG(params::Vector{T<:String}, width::Vector{Float64})
 
 	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.
 	

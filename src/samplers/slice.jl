@@ -1,6 +1,4 @@
-#################### Multivariate Slice Sampler ####################
-
-#################### Types ####################
+#################### Slice Sampler Types ####################
 
 type TuneSlice
   width::Vector{Float64}
@@ -16,6 +14,26 @@ function VariateSlice(x::Vector{VariateType}, tune=nothing)
     Array(Float64, 0)
   )
   VariateSlice(x, tune)
+end
+
+
+#################### Multivariate Slice Sampler ####################
+
+#################### MCMCSampler Constructor ####################
+
+function Slice{T<:String}(params::Vector{T}, width::Vector{Float64};
+           transform::Bool=true)
+  MCMCSampler(params,
+    quote
+      tunepar = tune(model, block)
+      x = unlist(model, block, tunepar["transform"])
+      f = x -> logpdf!(model, x, block, tunepar["transform"])
+      v = VariateSlice(x)
+      slice!(v, tunepar["width"], f)
+      relist(model, v.value, block, tunepar["transform"])
+    end,
+    ["width" => width, "transform" => transform]
+  )
 end
 
 
@@ -48,6 +66,24 @@ end
 
 
 #################### Slice within Gibbs Sampler ####################
+
+#################### Slice within Gibbs Sampler ####################
+
+function SliceWG{T<:String}(params::Vector{T}, width::Vector{Float64};
+           transform::Bool=true)
+  MCMCSampler(params,
+    quote
+      tunepar = tune(model, block)
+      x = unlist(model, block, tunepar["transform"])
+      f = x -> logpdf!(model, x, block, tunepar["transform"])
+      v = VariateSlice(x)
+      slicewg!(v, tunepar["width"], f)
+      relist(model, v.value, block, tunepar["transform"])
+    end,
+    ["width" => width, "transform" => transform]
+  )
+end
+
 
 #################### Sampling Functions ####################
 

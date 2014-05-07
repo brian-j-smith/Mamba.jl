@@ -170,11 +170,11 @@ export
   update!
 
 export
-  SamplerAMM,
-  SamplerAMWG,
-  SamplerNUTS,
-  SamplerSlice,
-  SamplerSliceWG,
+  AMM,
+  AMWG,
+  NUTS,
+  Slice,
+  SliceWG,
   VariateAMM,
   VariateAMWG,
   VariateNUTS,

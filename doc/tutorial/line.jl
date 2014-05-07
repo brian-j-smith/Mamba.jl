@@ -30,11 +30,11 @@ model = MCMCModel(
 )
 
 ## Hybrid No-U-Turn and Slice Sampling Scheme
-scheme1 = [SamplerNUTS(["beta"]),
-           SamplerSlice(["s2"], [1.0])]
+scheme1 = [NUTS(["beta"]),
+           Slice(["s2"], [1.0])]
 
 ## No-U-Turn Sampling Scheme
-scheme2 = [SamplerNUTS(["beta", "s2"])]
+scheme2 = [NUTS(["beta", "s2"])]
 
 ## User-Defined Samplers
 

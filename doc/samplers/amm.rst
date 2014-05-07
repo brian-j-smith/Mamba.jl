@@ -1,9 +1,9 @@
-.. index:: Sampling Functions; Adaptive Multivariate Metropolis
+.. index:: Sampling Functions; Adaptive Mixture Metropolis
 
-Adaptive Multivariate Metropolis (AMM)
---------------------------------------
+Adaptive Mixture Metropolis (AMM)
+---------------------------------
 
-Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive multivariate Metropolis sampler :cite:`haario:2001:AMA`, :cite:`hastings:1970:MCS`, :cite:`metropolis:1953:ESC` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive (multivariate) mixture Metropolis :cite:`haario:2001:AMA`, :cite:`hastings:1970:MCS`, :cite:`metropolis:1953:ESC` sampler for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
@@ -11,7 +11,7 @@ Stand-Alone Function
 .. function:: amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function; \
                 adapt::Bool=false)
 
-	Simulate one draw from a target distribution using an adaptive multivariate Metropolis sampler.
+	Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.
 	
 	**Arguments**
 	
@@ -51,7 +51,7 @@ Constructors
 .. function:: VariateAMM(x::Vector{VariateType}, tune::TuneAMM)
               VariateAMM(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateAMM`` object that stores values and tuning parameters for adaptive multivariate Metropolis sampling.
+	Construct a ``VariateAMM`` object that stores values and tuning parameters for adaptive mixture Metropolis sampling.
 	
 	**Arguments**
 	
@@ -87,10 +87,10 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SamplerAMM(params::Vector{T<:String}, Sigma::Matrix{U:<Real}; \
+.. function:: AMM(params::Vector{T<:String}, Sigma::Matrix{U:<Real}; \
 				adapt::Symbol=:all)
 
-	Construct an ``MCMCSampler`` object for adaptive multivariate Metropolis sampling.
+	Construct an ``MCMCSampler`` object for adaptive mixture Metropolis sampling.
 	
 	**Arguments**
 	
