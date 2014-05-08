@@ -108,6 +108,7 @@ include("output/stats.jl")
 
 include("samplers/amm.jl")
 include("samplers/amwg.jl")
+include("samplers/miss.jl")
 include("samplers/nuts.jl")
 include("samplers/sampler.jl")
 include("samplers/slice.jl")
@@ -121,9 +122,6 @@ include("variate/numeric.jl")
 #################### Exports ####################
 
 export
-  Flat
-
-export
   MCMCChains,
   MCMCLogical,
   MCMCModel,
@@ -134,6 +132,9 @@ export
   VariateVector,
   VariateMatrix,
   VariateArray
+
+export
+  Flat
 
 export
   @modelexpr,
@@ -172,6 +173,7 @@ export
 export
   AMM,
   AMWG,
+  MISS,
   NUTS,
   Slice,
   SliceWG,

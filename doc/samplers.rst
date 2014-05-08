@@ -8,5 +8,6 @@ Sampling Functions
 
 	samplers/amm.rst
 	samplers/amwg.rst
+	samplers/miss.rst
 	samplers/nuts.rst
 	samplers/slice.rst

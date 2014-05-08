@@ -111,7 +111,8 @@ function Base.showall(io::IO, s::MCMCStochastic)
 end
 
 function setinits!(s::MCMCStochastic, m::MCMCModel, x)
-  s.value = convert(typeof(s.value), x)
+  T = typeof(s.value)
+  s.value = isa(x, T) ? deepcopy(x) : convert(T, x)
   setmonitor!(s, s.monitor)
   update!(s, m)
   if isa(s.distr, Array) && size(s.value) != size(s.distr)
