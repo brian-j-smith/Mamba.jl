@@ -2,7 +2,7 @@
 
 function MCMCChains{T<:Real,U<:String}(value::Array{T,2}, names::Vector{U};
            start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-  MCMCChains(reshape(value, size(value,1), size(value, 2), 1), names,
+  MCMCChains(reshape(value, size(value, 1), size(value, 2), 1), names,
              start=start, thin=thin, model=model)
 end
 
