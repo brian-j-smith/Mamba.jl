@@ -2,7 +2,7 @@
 
 function MCMCSampler{T<:String}(params::Vector{T}, expr::Expr,
            tune::Dict=Dict())
-  MCMCSampler(String[params...], samplerfx(expr), tune, String[])
+  MCMCSampler(String[params...], samplerfx(expr), tune, String[], String[])
 end
 
 
@@ -21,7 +21,9 @@ function Base.showall(io::IO, s::MCMCSampler)
   show(io, s)
   print(io, "\nTuning Parameters:\n")
   show(io, s.tune)
-  print(io, "\nDirectly Linked Nodes:\n")
+  print(io, "\nSource Nodes:\n")
+  show(io, s.sources)
+  print(io, "\nTarget Nodes:\n")
   show(io, s.targets)
   print(io, "\n")
 end
