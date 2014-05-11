@@ -10,7 +10,7 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.name = key
     nodedict[key] = node
   end
-  m = MCMCModel(nodedict, MCMCSampler[], String[], iter, burnin, chain, false,
+  m = MCMCModel(nodedict, String[], MCMCSampler[], iter, burnin, chain, false,
                 false)
   g = graph(m)
   V = vertices(g)
@@ -18,10 +18,10 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
   for v in V
     setindex!(lookup, v.index, v.label)
   end
-  m.targets = intersect(tsort(g), keys(m, :dep))
-  for key in m.targets
+  m.dependents = intersect(tsort(g), keys(m, :dependent))
+  for key in m.dependents
     targets = gettargets(V[lookup[key]], g, m)
-    m[key].targets = intersect(m.targets, targets)
+    m[key].targets = intersect(m.dependents, targets)
   end
   setsamplers!(m, samplers)
 end
@@ -50,14 +50,14 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
       append!(values, m.samplers[b].params)
     end
     values = unique(values)
-  elseif ntype == :dep
+  elseif ntype == :dependent
     for key in keys(m.nodes)
       if isa(m[key], MCMCDependent)
         push!(values, key)
       end
     end
-  elseif ntype == :indep || ntype == :input
-    values = setdiff(keys(m, :all), keys(m, :dep))
+  elseif ntype == :independent || ntype == :input
+    values = setdiff(keys(m, :all), keys(m, :dependent))
   elseif ntype == :logical
     for key in keys(m.nodes)
       if isa(m[key], MCMCLogical)
@@ -71,7 +71,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
         push!(values, key)
       end
     end
-  elseif ntype == :terminal
+  elseif ntype == :output
     g = graph(m)
     for v in vertices(g)
       if isa(m[v.label], MCMCStochastic) && !any_stochastic(v, g, m)
@@ -128,7 +128,7 @@ end
 
 function names(m::MCMCModel, monitoronly::Bool)
   values = String[]
-  for key in keys(m, :dep)
+  for key in keys(m, :dependent)
     node = m[key]
     append!(values, names(node)[!monitoronly | node.monitor])
   end
@@ -144,7 +144,7 @@ function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
 end
 
 function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
-  for key in m.targets
+  for key in m.dependents
     node = m[key]
     if isa(node, MCMCStochastic)
       setinits!(m[key], m, inits[key])
@@ -170,7 +170,8 @@ function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
   for i in 1:length(m.samplers)
     sampler = m.samplers[i]
     targets = mapreduce(key -> m[key].targets, vcat, sampler.params)
-    sampler.targets = intersect(m.targets, targets)
+    sampler.targets = intersect(m.dependents, targets)
+    sampler.sources = setdiff(sampler.params, sampler.targets)
   end
   m
 end
@@ -220,13 +221,18 @@ function gradient!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
 end
 
 function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
-  blocks = block > 0 ? block : 1:length(m.samplers)
-  nkeys = String[]
-  for b in blocks
-    append!(nkeys, m.samplers[b].params)
-    append!(nkeys, m.samplers[b].targets)
+  value = 0
+  if block > 0
+    sampler = m.samplers[block]
+    nkeys = [sampler.sources, sampler.targets]
+  else
+    nkeys = m.dependents
   end
-  mapreduce(key -> logpdf(m[key], transform), +, unique(nkeys))
+  for key in nkeys
+    value += logpdf(m[key], transform)
+    isfinite(value) || break
+  end
+  value
 end
 
 function logpdf{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
@@ -239,14 +245,28 @@ end
 
 function logpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
            transform::Bool=false)
-  nkeys = keys(m, :block, block)
-  m[nkeys] = relist(m, x, nkeys, transform)
-  if all(map(key -> insupport(m[key]), nkeys))
-    update!(m, block)
-    logpdf(m, block, transform)
+  value = 0
+  if block > 0
+    sampler = m.samplers[block]
+    m[sampler.params] = relist(m, x, sampler.params, transform)
+    sources = sampler.sources
+    targets = sampler.targets
   else
-    -Inf
+    params = keys(m, :block)
+    m[params] = relist(m, x, params, transform)
+    sources = String[]
+    targets = m.dependents
   end
+  for key in sources
+    value += logpdf(m[key], transform)
+    isfinite(value) || return value
+  end
+  for key in targets
+    update!(m[key], m)
+    value += logpdf(m[key], transform)
+    isfinite(value) || return value
+  end
+  value
 end
 
 function relist{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
@@ -298,7 +318,7 @@ end
 
 function unlist(m::MCMCModel, monitoronly::Bool)
   values = VariateType[]
-  for key in keys(m, :dep)
+  for key in keys(m, :dependent)
     node = m[key]
     idx = find(!monitoronly | node.monitor)
     if length(idx) > 0
@@ -323,8 +343,8 @@ function unlist{T<:String}(m::MCMCModel, nkeys::Vector{T}, transform::Bool=false
 end
 
 function update!(m::MCMCModel, block::Integer=0)
-  targets = block > 0 ? m.samplers[block].targets : m.targets
-  for key in targets
+  nkeys = block > 0 ? m.samplers[block].targets : m.dependents
+  for key in nkeys
     update!(m[key], m)
   end
   m
