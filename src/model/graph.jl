@@ -35,7 +35,7 @@ function graph(m::MCMCModel)
     v.attributes["style"] = "filled"
     v.attributes["fillcolor"] = "gray85"
   end
-  for key in keys(m, :dep)
+  for key in keys(m, :dependent)
     v = vertices(g)[lookup[key]]
     node = m[key]
     if isa(node, MCMCLogical)
