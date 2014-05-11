@@ -7,7 +7,7 @@ function MISS{T<:String}(params::Vector{T})
       sampler = model.samplers[block]
       node = model[sampler.params[1]]
       value = deepcopy(node.value)
-      if model.iter == 1
+      if !sampler.tune["initialized"]
         sampler.tune["missing"] = find(isnan(node))
       end
       missing = sampler.tune["missing"]
@@ -15,11 +15,14 @@ function MISS{T<:String}(params::Vector{T})
         for i in missing
           value[i] = rand(node.distr[i])
         end
-      else
-        value[missing] = rand(node.distr)[missing]
+      elseif length(missing) > 0
+        pred = rand(node.distr)
+        for i in missing
+          value[i] = pred[i]
+        end
       end
       value
     end,
-    (String => Any)["missing" => nothing]
+    ["initialized" => false, "missing" => Int[]]
   )
 end
