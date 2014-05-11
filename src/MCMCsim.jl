@@ -135,8 +135,7 @@ export
   VariateArray
 
 export
-  Flat,
-  SupportError
+  Flat
 
 export
   @modelexpr,
