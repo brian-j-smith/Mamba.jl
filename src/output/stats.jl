@@ -33,7 +33,7 @@ end
 
 function dic(c::MCMCChains)
   m = c.model
-  nkeys = keys(m, :terminal)
+  nkeys = keys(m, :output)
   idx = indexin(names(m, keys(m, :block)), c)
 
   x0 = unlist(m)
