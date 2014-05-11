@@ -50,10 +50,11 @@ function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       x = unlist(model, block, true)
       tunepar = tune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
-      f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
       if model.iter == 1
+        f = x -> nutsfx(model, x, block, true, tunepar["dtype"])
         tunepar["eps"] = nutseps(v, f)
       end
+      f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
       nuts!(v, tunepar["eps"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
@@ -63,12 +64,21 @@ function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
   )
 end
 
+function nutsfx{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
+           transform::Bool, dtype::Symbol)
+  a = logpdf(m, x, block, transform)
+  b = gradient(m, x, block, transform, dtype)
+  a, b
+end
+
 function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
            transform::Bool, dtype::Symbol)
   a = logpdf!(m, x, block, transform)
   b = gradient!(m, x, block, transform, dtype)
   a, b
 end
+
+export nutsfx, nutsfx!
 
 
 #################### Sampling Functions ####################
@@ -94,7 +104,7 @@ function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
   x += eps * r
   logf, grad = fx(x)
   r += (eps / 2.0) * grad
-  [:x=>x, :r=>r, :logf=>logf, :grad=>grad]
+  [:x => x, :r => r, :logf => logf, :grad => grad]
 end
 
 function nuts!(v::VariateNUTS, eps::Real, fx::Function; adapt::Bool=false,
