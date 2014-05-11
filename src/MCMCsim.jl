@@ -62,6 +62,7 @@ type MCMCSampler
   params::Vector{String}
   eval::Function
   tune::Dict
+  sources::Vector{String}
   targets::Vector{String}
 end
 
@@ -70,8 +71,8 @@ end
 
 type MCMCModel
   nodes::Dict{String,Any}
+  dependents::Vector{String}
   samplers::Vector{MCMCSampler}
-  targets::Vector{String}
   iter::Integer
   burnin::Integer
   chain::Integer
@@ -134,7 +135,8 @@ export
   VariateArray
 
 export
-  Flat
+  Flat,
+  SupportError
 
 export
   @modelexpr,
@@ -187,7 +189,6 @@ export
   amwg!,
   nuts!,
   nutseps,
-  nutsfx!,
   slice!,
   slicewg!
 
