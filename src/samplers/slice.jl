@@ -22,7 +22,7 @@ end
 #################### MCMCSampler Constructor ####################
 
 function Slice{T<:String}(params::Vector{T}, width::Vector{Float64};
-           transform::Bool=true)
+           transform::Bool=false)
   MCMCSampler(params,
     quote
       tunepar = tune(model, block)
@@ -70,7 +70,7 @@ end
 #################### Slice within Gibbs Sampler ####################
 
 function SliceWG{T<:String}(params::Vector{T}, width::Vector{Float64};
-           transform::Bool=true)
+           transform::Bool=false)
   MCMCSampler(params,
     quote
       tunepar = tune(model, block)
