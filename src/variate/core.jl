@@ -31,9 +31,9 @@ function Base.setindex!{N}(v::VariateArray{N}, x, inds...)
 end
 
 function Base.setindex!(v::VariateScalar, x, inds)
-  length(x) == 1 || throw(ErrorException("argument dimensions must match"))
-  (length(inds) == 1 && collect(inds)[1] == 1) || throw(BoundsError())
-  v.value = x[1]
+  length(x) == 1 || error("value to store must be of length 1")
+  collect(Int, inds) == [1] || throw(BoundsError())
+  v.value = x[]
 end
 
 function Base.show(io::IO, v::Variate)
