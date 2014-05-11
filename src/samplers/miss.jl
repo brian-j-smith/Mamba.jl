@@ -6,18 +6,19 @@ function MISS{T<:String}(params::Vector{T})
     quote
       sampler = model.samplers[block]
       node = model[sampler.params[1]]
+      value = deepcopy(node.value)
       if model.iter == 1
-        sampler.tune["missing"] = isnan(node)
+        sampler.tune["missing"] = find(isnan(node))
       end
       missing = sampler.tune["missing"]
       if isa(node.distr, Array)
-        for i in find(missing)
-          node[i] = rand(node.distr[i])
+        for i in missing
+          value[i] = rand(node.distr[i])
         end
       else
-        node[missing] = rand(node.distr)[missing]
+        value[missing] = rand(node.distr)[missing]
       end
-      node.value
+      value
     end,
     (String => Any)["missing" => nothing]
   )
