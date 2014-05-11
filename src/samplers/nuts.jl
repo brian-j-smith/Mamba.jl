@@ -50,7 +50,7 @@ function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       x = unlist(model, block, true)
       tunepar = tune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
-      if model.iter == 1
+      if model.iter <= 1
         f = x -> nutsfx(model, x, block, true, tunepar["dtype"])
         tunepar["eps"] = nutseps(v, f)
       end
@@ -74,7 +74,7 @@ end
 function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
            transform::Bool, dtype::Symbol)
   a = logpdf!(m, x, block, transform)
-  b = gradient!(m, x, block, transform, dtype)
+  b = gradient(m, block, transform, dtype)
   a, b
 end
 
