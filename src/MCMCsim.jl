@@ -95,7 +95,9 @@ end
 #################### Includes ####################
 
 include("distributions/constructors.jl")
+include("distributions/flat.jl")
 include("distributions/methods.jl")
+include("distributions/null.jl")
 
 include("model/graph.jl")
 include("model/mcmc.jl")

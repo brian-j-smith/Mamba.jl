@@ -16,27 +16,6 @@ function logpdf(d::MatrixDistribution, x, transform::Bool)
 end
 
 
-#################### Null Distribution ####################
-
-type NullDistribution <: Distribution end
-
-
-#################### Flat Distribution ####################
-
-immutable Flat <: Distribution
-  length::Integer
-  Flat(length::Real) = new(integer(length))
-end
-
-minimum(d::Flat) = -Inf
-maximum(d::Flat) = Inf
-insupport{T<:Real}(d::Flat, x::Union(T, Vector{T})) = d.length == length(x)
-
-function logpdf{T<:Real}(d::Flat, x::Union(T, Vector{T}), transform::Bool)
-  d.length == length(x) ? 0.0 : throw(BoundsError())
-end
-
-
 #################### TransformDistribution ####################
 
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
