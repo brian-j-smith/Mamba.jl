@@ -3,12 +3,12 @@ using Distributions
 
 ## Data
 salm = (String => Any)[
-  "plate" => 3,
-  "dose" => 6,
   "y" => reshape(
     [15, 21, 29, 16, 18, 21, 16, 26, 33, 27, 41, 60, 33, 38, 41, 20, 27, 42],
      3, 6),
-  "x" => [0, 10, 33, 100, 333, 1000]
+  "x" => [0, 10, 33, 100, 333, 1000],
+  "plate" => 3,
+  "dose" => 6
 ]
 
 
@@ -68,8 +68,8 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerSlice(["alpha", "beta", "gamma"], [1.0, 1.0, 0.1]),
-          SamplerNUTS(["lambda", "s2"])]
+scheme = [Slice(["alpha", "beta", "gamma"], [1.0, 1.0, 0.1]),
+          NUTS(["lambda", "s2"])]
 setsamplers!(model, scheme)
 
 

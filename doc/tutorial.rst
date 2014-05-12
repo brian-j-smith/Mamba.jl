@@ -97,7 +97,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	)
 	
-A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 In the example, nodes ``y``, ``mu``, and ``beta`` are vectors, ``s2`` is a scalar, and the first two are not being monitored.  Further, note that the model could be implemented without the logical node ``mu``.  It is created here primarily for illustrative purposes.
 
@@ -224,7 +224,7 @@ Directed Acyclic Graphs
 
 One of the internal structures created by ``MCMCModel`` is a graph representation of the model nodes and their associations.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `MCMCsim` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
 
-The DAG representation of an ``MCMCModel`` can be printed out at the command-line or saved to an external file in a format that can be displayed in `Graphviz <http://www.graphviz.org/>`_.
+The DAG representation of an ``MCMCModel`` can be printed out at the command-line or saved to an external file in a format that can be displayed with the `Graphviz <http://www.graphviz.org/>`_ software.
 
 .. code-block:: julia
 
@@ -246,7 +246,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command-lin
 	
 	>>> graph2dot(model, "lineDAG.dot")
 
-Either the printed or saved output can be passed to the Graphviz software to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
+Either the printed or saved output can be passed to Graphviz to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
 
 .. figure:: tutorial/LineDAG.png
 	:align: center
@@ -447,13 +447,13 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 
 .. table:: Number of draws per second for select sampling algorithms in `MCMCsim`.
 
-	+---------------------+-----------------------+--------+--------+--------+
-	| Adaptive Metropolis                         |        |        |        |
-	+---------------------+-----------------------+        |        |        |
-	| Within Gibbs        | Multivariate          | Gibbs  | NUTS   | Slice  |
-	+=====================+=======================+========+========+========+
-	| 5,000               | 7,500                 | 15,000 | 1,200  | 4,300  |
-	+---------------------+-----------------------+--------+--------+--------+
+	+---------------------+-----------------------+--------+-------+--------+
+	| Adaptive Metropolis                         |        |       |        |
+	+---------------------+-----------------------+        |       |        |
+	| Within Gibbs        | Multivariate          | Gibbs  | NUTS  | Slice  |
+	+=====================+=======================+========+=======+========+
+	| 10,000              | 11,100                | 20,000 | 900   | 7,300  |
+	+---------------------+-----------------------+--------+-------+--------+
 
 	
 Development and Testing

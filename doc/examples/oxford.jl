@@ -40,6 +40,7 @@ oxford = (String => Any)[
              8, 8, 9, 9, 10],
   "K" => 120
 ]
+oxford["K"] = length(oxford["r1"])
 
 
 ## Model Specification
@@ -111,9 +112,9 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerNUTS(["alpha", "beta1", "beta2", "s2"]),
-          SamplerSlice(["mu"], ones(oxford["K"])),
-          SamplerSlice(["b"], ones(oxford["K"]))]
+scheme = [AMWG(["alpha", "beta1", "beta2", "s2"], fill(0.1, 4)),
+          Slice(["mu"], ones(oxford["K"])),
+          Slice(["b"], ones(oxford["K"]))]
 setsamplers!(model, scheme)
 
 

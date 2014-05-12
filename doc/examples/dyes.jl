@@ -14,6 +14,7 @@ dyes = (String => Any)[
   "batches" => 6,
   "samples" => 5
 ]
+
 dyes["batch"] = vcat([fill(i, dyes["samples"]) for i in 1:dyes["batches"]]...)
 dyes["sample"] = vcat(fill([1:dyes["samples"]], dyes["batches"])...)
 
@@ -61,8 +62,8 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerNUTS(["mu", "theta"]),
-          SamplerSliceWG(["s2_within", "s2_between"], [5.0, 5.0])]
+scheme = [NUTS(["mu", "theta"]),
+          SliceWG(["s2_within", "s2_between"], [1000.0, 1000.0])]
 setsamplers!(model, scheme)
 
 

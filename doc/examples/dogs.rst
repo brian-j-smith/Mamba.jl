@@ -3,7 +3,7 @@
 Dogs: Loglinear Model for Binary Data
 -------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Kalbfleisch :cite:`kalbfleisch:1985:PSI` concerning the Solomon-Wynne experiment on dogs.  In the experiment, 30 dogs were subjected to 25 trials.  On each trial, a barrier was raised, and an electric shock was administered 10 seconds later if the dog did not jump the barrier.
+An example from OpenBUGS :cite:`openbugs:2014:ex1`, Lindley and Smith :cite:`lindley:1972:BEL`, and Kalbfleisch :cite:`kalbfleisch:1985:PSI` concerning the Solomon-Wynne experiment on dogs.  In the experiment, 30 dogs were subjected to 25 trials.  On each trial, a barrier was raised, and an electric shock was administered 10 seconds later if the dog did not jump the barrier.
 
 Model
 ^^^^^

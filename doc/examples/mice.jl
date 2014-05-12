@@ -3,20 +3,19 @@ using Distributions
 
 ## Data
 mice = (String => Any)[
-  "t" => reshape(
-    [12, 1, 21, 25, 11, 26, 27, 30, 13, 12, 21, 20, 23, 25, 23, 29, 35, NaN, 31,
-     36, 32, 27, 23, 12, 18, NaN, NaN, 38, 29, 30, NaN, 32, NaN, NaN, NaN, NaN,
-     25, 30, 37, 27, 22, 26, NaN, 28, 19, 15, 12, 35, 35, 10, 22, 18, NaN, 12,
-     NaN, NaN, 31, 24, 37, 29, 27, 18, 22, 13, 18, 29, 28, NaN, 16, 22, 26, 19,
-     NaN, NaN, 17, 28, 26, 12, 17, 26], 20, 4)',
-  "tcensor" => reshape(
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0,
-     40, 40, 0, 0, 0, 40, 0, 40, 40, 40, 40, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 24, 0, 40, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0,
-     0, 29, 10, 0, 0, 0, 0, 0, 0], 20, 4)',
-   "M" => 4,
-   "N" => 20
+  "t" =>
+    [12  1  21 25 11  26  27  30 13 12  21 20  23  25  23  29 35 NaN 31 36
+     32 27  23 12 18 NaN NaN  38 29 30 NaN 32 NaN NaN NaN NaN 25  30 37 27
+     22 26 NaN 28 19  15  12  35 35 10  22 18 NaN  12 NaN NaN 31  24 37 29
+     27 18  22 13 18  29  28 NaN 16 22  26 19 NaN NaN  17  28 26  12 17 26],
+  "tcensor" =>
+    [0 0  0 0 0  0  0  0 0 0  0 0  0  0  0  0 0 40 0 0
+     0 0  0 0 0 40 40  0 0 0 40 0 40 40 40 40 0  0 0 0
+     0 0 10 0 0  0  0  0 0 0  0 0 24  0 40 40 0  0 0 0
+     0 0  0 0 0  0  0 20 0 0  0 0 29 10  0  0 0  0 0 0]
 ]
+mice["M"] = size(mice["t"], 1)
+mice["N"] = size(mice["t"], 2)
 
 
 ## Model Specification
@@ -39,7 +38,7 @@ model = MCMCModel(
 
   beta = MCMCStochastic(1,
     @modelexpr(M,
-      IsoNormal(M, 100)
+      IsoNormal(M, 10)
     )
   )
 
@@ -48,15 +47,15 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["t" => mice["t"], "tcensor" => mice["tcensor"],
-   "beta" => -ones(mice["M"]), "tau" => 1],
-  ["t" => mice["t"], "tcensor" => mice["tcensor"],
-   "beta" => zeros(mice["M"]), "tau" => 2]
+  ["t" => mice["t"], "beta" => -ones(mice["M"]), "tau" => 1.0],
+  ["t" => mice["t"], "beta" => zeros(mice["M"]), "tau" => 0.1]
 ]
 
 
 ## Sampling Scheme
-scheme = []
+scheme = [MISS(["t"]),
+          AMWG(["beta"], fill(0.1, mice["M"])),
+          Slice(["tau"], [0.1])]
 setsamplers!(model, scheme)
 
 

@@ -8,9 +8,9 @@ seeds = (String => Any)[
   "n" => [39, 62, 81, 51, 39, 6, 74, 72, 51, 79, 13, 16, 30, 28, 45, 4, 12, 41,
           30, 51, 7],
   "x1" => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  "x2" => [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-  "N" => 21
+  "x2" => [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 ]
+seeds["N"] = length(seeds["r"])
 
 
 ## Model Specification
@@ -68,9 +68,9 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerAMM(["alpha0", "alpha1", "alpha2", "alpha12"], 0.01 * eye(4)),
-          SamplerAMWG(["b"], 0.01 * ones(seeds["N"])),
-          SamplerSlice(["s2"], [1.0])]
+scheme = [AMM(["alpha0", "alpha1", "alpha2", "alpha12"], 0.01 * eye(4)),
+          AMWG(["b"], fill(0.01, seeds["N"])),
+          Slice(["s2"], [1.0])]
 setsamplers!(model, scheme)
 
 

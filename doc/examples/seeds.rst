@@ -3,7 +3,7 @@
 Seeds: Random Effect Logistic Regression
 ----------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Crowder :cite:`crowder:1978:BBA` concerning the proportion of seeds that germinated on each of 21 plates arranged according to a 2 by 2 factorial layout by seed and type of root extract.
+An example from OpenBUGS :cite:`openbugs:2014:ex1`, Crowder :cite:`crowder:1978:BBA`, and Breslow and Clayton :cite:`breslow:1993:AIG` concerning the proportion of seeds that germinated on each of 21 plates arranged according to a 2 by 2 factorial layout by seed and type of root extract.
 
 Model
 ^^^^^

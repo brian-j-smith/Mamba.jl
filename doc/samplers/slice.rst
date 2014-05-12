@@ -79,7 +79,8 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: Slice(params::Vector{T<:String}, width::Vector{Float64})
+.. function:: Slice(params::Vector{T<:String}, width::Vector{Float64}; \
+                transform::Bool=false)
 
 	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.
 	
@@ -87,6 +88,7 @@ MCMCSampler Constructor
 	
 		*  ``params`` : named stochastic nodes to be updated with the sampler.
 		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
+		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).
 
 	**Value**
 	
@@ -124,7 +126,8 @@ Stand-Alone Functions
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SliceWG(params::Vector{T<:String}, width::Vector{Float64})
+.. function:: SliceWG(params::Vector{T<:String}, width::Vector{Float64}; \
+                transform::Bool=false)
 
 	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.
 	
@@ -132,6 +135,7 @@ MCMCSampler Constructor
 	
 		*  ``params`` : named stochastic nodes to be updated with the sampler.
 		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial interval widths from which to simulate values.
+		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).
 
 	**Value**
 	

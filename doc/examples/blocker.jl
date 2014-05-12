@@ -10,9 +10,9 @@ blocker = (String => Any)[
   "rc" => [3, 14, 11, 127, 27, 6, 152, 48, 37, 188, 52, 47, 16, 45, 31, 38, 12,
            6, 3, 40, 43, 39],
   "nc" => [39, 116, 93, 1520, 365, 52, 939, 471, 282, 1921, 583, 266, 293, 883,
-           147, 213, 122, 154, 134, 218, 364, 674],
-  "N" =>  22
+           147, 213, 122, 154, 134, 218, 364, 674]
 ]
+blocker["N"] = length(blocker["rt"])
 
 
 ## Model Specification
@@ -80,9 +80,9 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerAMWG(["mu"], 0.1 * ones(blocker["N"])),
-          SamplerAMWG(["delta", "delta_new"], 0.1 * ones(blocker["N"]+1)),
-          SamplerSlice(["d", "s2"], [1.0, 0.1])]
+scheme = [AMWG(["mu"], fill(0.1, blocker["N"])),
+          AMWG(["delta", "delta_new"], fill(0.1, blocker["N"] + 1)),
+          Slice(["d", "s2"], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 

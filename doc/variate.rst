@@ -3,6 +3,8 @@ Variate Types
 
 .. index:: Variate
 
+.. _section-Variate:
+
 Variate
 -------
 
@@ -34,7 +36,7 @@ Aliases
 Field
 ^^^^^
 
-* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
+* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 
 Methods
 ^^^^^^^
@@ -76,9 +78,12 @@ Mathematical Operators and Elementary Functions
 
 The basic numerical `Mathematical Operators and Elementary Functions <http://julia.readthedocs.org/en/release-0.2/manual/mathematical-operations/>`_ of the **julia** language are supported, and the ones below added.
 
-.. code-block:: julia
-
-	invlogit     logit
+=============== ================
+Function        Description
+=============== ================
+``logit(x)``    log-odds
+``invlogit(x)`` inverse log-odds
+=============== ================
 
 Statistics
 ``````````

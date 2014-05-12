@@ -8,12 +8,13 @@ magnesium = (String => Any)[
   "rc" => [2, 23, 7, 1, 8, 9, 3, 118],
   "nc" => [36, 135, 200, 46, 148, 56, 23, 1157]
 ]
+
 magnesium["rtx"] = hcat([magnesium["rt"] for i in 1:6]...)'
 magnesium["rcx"] = hcat([magnesium["rc"] for i in 1:6]...)'
 magnesium["s2"] = 1 / (magnesium["rt"] + 0.5) +
-  1 / (magnesium["nt"] - magnesium["rt"] + 0.5) +
-  1 / (magnesium["rc"] + 0.5) +
-  1 / (magnesium["nc"] - magnesium["rc"] + 0.5)
+                  1 / (magnesium["nt"] - magnesium["rt"] + 0.5) +
+                  1 / (magnesium["rc"] + 0.5) +
+                  1 / (magnesium["nc"] - magnesium["rc"] + 0.5)
 magnesium["s2_0"] = 1 / mean(1 / magnesium["s2"])
 
 
@@ -105,10 +106,10 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerAMWG(["theta"], 0.01 * ones(48)),
-          SamplerAMM(["mu"], 0.01 * eye(6)),
-          SamplerSliceWG(["pc"], fill(0.25, 48)),
-          SamplerSliceWG(["priors"], [1.0, 5.0, 5.0, 0.25, 0.25, 5.0])]
+scheme = [AMWG(["theta"], fill(0.01, 48)),
+          AMM(["mu"], 0.01 * eye(6)),
+          SliceWG(["pc"], fill(0.25, 48)),
+          SliceWG(["priors"], [1.0, 5.0, 5.0, 0.25, 0.25, 5.0])]
 setsamplers!(model, scheme)
 
 

@@ -3,10 +3,10 @@ using Distributions
 
 ## Data
 pumps = (String => Any)[
-  "t" => [94.3, 15.7, 62.9, 126, 5.24, 31.4, 1.05, 1.05, 2.1, 10.5],
   "y" => [5, 1, 5, 14, 3, 19, 1, 1, 4, 22],
-  "N" => 10
+  "t" => [94.3, 15.7, 62.9, 126, 5.24, 31.4, 1.05, 1.05, 2.1, 10.5]
 ]
+pumps["N"] = length(pumps["y"])
 
 
 ## Model Specification
@@ -50,8 +50,8 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerSliceWG(["alpha", "beta"], [1.0, 1.0]),
-          SamplerAMWG(["theta"], ones(pumps["N"]))]
+scheme = [SliceWG(["alpha", "beta"], [1.0, 1.0]),
+          AMWG(["theta"], ones(pumps["N"]))]
 setsamplers!(model, scheme)
 
 

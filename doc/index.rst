@@ -6,7 +6,7 @@ MCMCsim: Markov chain Monte Carlo simulation toolkit for julia (version 0.0.0)
 The package aims to provide:
 
 	* An intuitive, interactive, and extensible interface.
-	* A wide range of model and distributional specifications.
+	* Support for a wide range of model and distributional specifications.
 	* An environment in which all interactions with the software are made through a single, interpreted programming language.
 	
 		* Any **julia** operator, function, type, or package can be used for model specification.
@@ -30,6 +30,7 @@ The package aims to provide:
 	mcmc.rst
 	samplers.rst
 	examples.rst
+	conclusion.rst
 	xrefs.rst
 
 

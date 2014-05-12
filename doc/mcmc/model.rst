@@ -16,8 +16,8 @@ Fields
 ^^^^^^
 
 * ``nodes::Dict{String,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
+* ``dependents::Vector{String}`` : names of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``samplers::Vector{MCMCSampler}`` : sampling functions for updating blocks of stochastic nodes.
-* ``targets::Vector{String}`` : names of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``iter::Integer`` : current MCMC draw from the target distribution.
 * ``burnin::Integer`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
 * ``chain::Integer`` : current run of the MCMC simulator in a possible sequence of runs.
@@ -64,6 +64,8 @@ Methods
 				dtype::Symbol=:central)
               gradient(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false, dtype::Symbol=:central)
+			  gradient!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+				transform::Bool=false, dtype::Symbol=:central)
 			
 	Numerically approximate the gradient for stochastic nodes.
 	
@@ -79,7 +81,7 @@ Methods
 		
 	**Value**
 	
-		The resulting gradient vector.
+		The resulting gradient vector.  Method ``gradient!`` additionally updates model ``m`` with supplied values ``x``.
 
 .. function:: graph(m::MCMCModel)
 
@@ -118,11 +120,11 @@ Methods
 			* ``:all`` : all input, logical, and stochastic model nodes.
 			* ``:assigned`` : nodes that have been assigned values.
 			* ``:block`` : stochastic nodes being block-sampled.
-			* ``:dep`` : logical or stochastic (dependent) nodes.
-			* ``:indep`` or ``:input`` : input (independent) nodes.
+			* ``:dependent`` : logical or stochastic (dependent) nodes.
+			* ``:independent`` or ``:input`` : input (independent) nodes.
 			* ``:logical`` : logical nodes.
 			* ``:monitor`` : stochastic nodes being monitored in MCMC sampler output.
-			* ``:terminal`` : stochastic nodes upon which no other stochastic nodes depend.
+			* ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
 			* ``:stochastic`` : stochastic nodes.
 		* ``block`` : the block for which to return nodes if ``ntype = :block``, or all blocks if ``block = 0`` (default).
 		
@@ -132,6 +134,8 @@ Methods
 
 .. function:: logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
               logpdf(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+				transform::Bool=false)
+			  logpdf!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
 
 	Compute the sum of log-densities for stochastic nodes.
@@ -145,7 +149,7 @@ Methods
 		
 	**Value**
 	
-		The resulting numeric value of summed log-densities.
+		The resulting numeric value of summed log-densities.  Method ``logpdf!`` additionally updates model ``m`` with supplied values ``x``.
 				
 .. function:: mcmc(model::MCMCModel, inputs::Dict{T<:String}, \
 				inits::Vector{Dict{U<:String,Any}}, iter::Integer; \

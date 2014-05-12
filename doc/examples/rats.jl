@@ -32,12 +32,17 @@ rats = (String => Any)[
           169, 216, 261, 295, 333,
           157, 205, 248, 289, 316,
           137, 180, 219, 258, 291,
-          153, 200, 244, 286, 324]
+          153, 200, 244, 286, 324],
+  "x" => [8.0, 15.0, 22.0, 29.0, 36.0]
 ]
+rats["xbar"] = mean(rats["x"])
+rats["N"] = size(rats["y"], 1)
+rats["T"] = size(rats["y"], 2)
+
 rats["rat"] = Integer[div(i - 1, 5) + 1 for i in 1:150]
 rats["week"] = Integer[(i - 1) % 5 + 1 for i in 1:150]
-rats["x"] = [8, 15, 22, 29, 36][rats["week"]]
-rats["xm"] = rats["x"] - 22.0
+rats["X"] = rats["x"][rats["week"]]
+rats["Xm"] = rats["X"] - rats["xbar"]
 
 
 ## Model Specification
@@ -45,9 +50,9 @@ rats["xm"] = rats["x"] - 22.0
 model = MCMCModel(
 
   y = MCMCStochastic(1,
-    @modelexpr(alpha, beta, rat, xm, s2_c,
+    @modelexpr(alpha, beta, rat, Xm, s2_c,
       begin
-        mu = alpha[rat] + beta[rat] .* xm
+        mu = alpha[rat] + beta[rat] .* Xm
         IsoNormal(mu, sqrt(s2_c))
       end
     ),
@@ -62,8 +67,8 @@ model = MCMCModel(
   ),
 
   alpha0 = MCMCLogical(
-    @modelexpr(mu_alpha, mu_beta,
-      mu_alpha - 22.0 * mu_beta
+    @modelexpr(mu_alpha, xbar, mu_beta,
+      mu_alpha - xbar * mu_beta
     )
   ),
 
@@ -112,11 +117,11 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SamplerSlice(["s2_c"], [10.0]),
-          SamplerAMWG(["alpha"], 100 * ones(30)),
-          SamplerSliceWG(["mu_alpha", "s2_alpha"], [100.0, 10.0]),
-          SamplerAMWG(["beta"], ones(30)),
-          SamplerSliceWG(["mu_beta", "s2_beta"], [1.0, 1.0])]
+scheme = [Slice(["s2_c"], [10.0]),
+          AMWG(["alpha"], fill(100.0, 30)),
+          SliceWG(["mu_alpha", "s2_alpha"], [100.0, 10.0]),
+          AMWG(["beta"], ones(30)),
+          SliceWG(["mu_beta", "s2_beta"], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 

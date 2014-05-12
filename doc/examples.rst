@@ -19,4 +19,9 @@ Examples
 	examples/epil.rst
 	examples/blocker.rst
 	examples/oxford.rst
+	examples/lsat.rst
+	examples/bones.rst
+	examples/inhalers.rst
 	examples/mice.rst
+	examples/kidney.rst
+	examples/leuk.rst
