@@ -13,10 +13,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import os, sys
 import juliadoc
-import os
 import sphinx_rtd_theme
-import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -32,11 +31,14 @@ import sys
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.pngmath', 'sphinxcontrib.bibtex', 'juliadoc.julia', 'juliadoc.jlhelp'
+    'sphinx.ext.pngmath',
+	'sphinxcontrib.bibtex',
+	'juliadoc.julia',
+	'juliadoc.jlhelp'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = []
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -83,7 +85,7 @@ exclude_patterns = ['_build']
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+add_module_names = False
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
@@ -135,7 +137,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -158,7 +160,7 @@ html_static_path = ['_static']
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+html_domain_indices = False
 
 # If false, no index is generated.
 #html_use_index = True
@@ -226,7 +228,7 @@ latex_documents = [
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_domain_indices = True
+latex_domain_indices = False
 
 
 # -- Options for manual page output ---------------------------------------
@@ -249,7 +251,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'MCMCsimjl', 'MCMCsim.jl Documentation',
-   'Brian J Smith', 'MCMCsimjl', 'One line description of project.',
+   'Brian J Smith', 'MCMCsimjl', 'Markov chain Monte Carlo simulation toolkit for julia.',
    'Miscellaneous'),
 ]
 

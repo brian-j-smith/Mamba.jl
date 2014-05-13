@@ -254,7 +254,11 @@ Methods
 
 .. function:: link(s::MCMCStochastic, x)
 
-	Apply a link transformation to map values in a constrained distributional support to an unconstrained space. 
+	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions are transformed as follows:
+	
+		* Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
+		* Lower bounded: shifted to zero and log-transformed.
+		* Upper bounded: scaled by -1, shifted to zero, and log-transformed.
 	
 	**Arguments**
 	

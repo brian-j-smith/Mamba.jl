@@ -1,6 +1,15 @@
 MCMCsim: Markov chain Monte Carlo simulation toolkit for julia (version 0.0.0)
 ==============================================================================
 
+:Date: May 12, 2014
+:Author: Brian J Smith
+:Contact: brian-j-smith@uiowa.edu
+:Web site: 
+:License: MCMCsim is released under the MIT License.
+
+Purpose
+-------
+
 `MCMCsim` is a programming environment and toolset for the implementation and inference of Bayesian models using Markov chain Monte Carlo (MCMC) sampling.  The package provides a framework for (1) specification of hierarchical models through stated relationships between data, parameters, and statistical distributions; (2) block-updating of parameters with samplers provided, defined by the user, or available from other packages; (3) execution of MCMC sampling schemes, and (4) posterior inference.  It is designed to give users access to all levels of the design and implementation of MCMC simulators to particularly aid in the development of complex models.
 
 The package aims to provide:
@@ -12,14 +21,15 @@ The package aims to provide:
 		* Any **julia** operator, function, type, or package can be used for model specification.
 		* Custom distributions and samplers can be written in **julia** to extend the package.
 		
-	* Plotting of the graph representations of models.
+	* Plotting of graph representations of models.
 	* Arbitrary blocking of model parameters and designation of block-specific samplers.
 	* Samplers that can be used with the included simulation engine or apart from it.
 	* Command-line access to all package functionality, including its simulation API.
 	* Tools for convergence diagnostics and posterior inference.
 	* Run-time performance on par with compiled MCMC software.
 
-**Contents:**
+Contents
+--------
 
 .. toctree::
 	:maxdepth: 2

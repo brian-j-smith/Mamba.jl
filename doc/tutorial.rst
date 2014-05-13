@@ -6,7 +6,7 @@
 Tutorial
 ========
 
-The complete source code for the examples containing in this tutorial can be found :download:`here <tutorial/line.jl>`.
+The complete source code for the examples containing in this tutorial can be obtained :download:`here <tutorial/line.jl>`.
 
 Bayesian Linear Regression Model
 --------------------------------
@@ -15,14 +15,14 @@ In the sections that follow, the Bayesian simple linear regression example from 
 
 .. math::
 
-	\bm{y} &\sim N\left(\bm{\mu}, \sigma^2 \bm{I}\right) \\
+	\bm{y} &\sim \text{Normal}(\bm{\mu}, \sigma^2 \bm{I}) \\
 	\bm{\mu} &= \bm{X} \bm{\beta}
 
 with prior distribution specifications
 
 .. math::
 
-    \bm{\beta} &\sim N\left(
+    \bm{\beta} &\sim \text{Normal}\left(
       \bm{\mu}_\pi =
       \begin{bmatrix}
         0 \\
@@ -34,7 +34,7 @@ with prior distribution specifications
         0 & 1000 \\
       \end{bmatrix}
     \right) \\
-    \sigma^2 &\sim InvGamma(\alpha_\pi = 0.001, \beta_\pi = 0.001),
+    \sigma^2 &\sim \text{InverseGamma}(\alpha_\pi = 0.001, \beta_\pi = 0.001),
 
 where :math:`\bm{\beta} = (\beta_0, \beta_1)^\top`, and :math:`\bm{X}` is a design matrix with an intercept vector of ones in the first column and :math:`\bm{x}` in the second.  Primary interest lies in making inference about the :math:`\beta_0`, :math:`\beta_1`, and :math:`\sigma^2` parameters, based on their posterior distribution.  A computational consideration in this example is that inference cannot be obtain from the joint posterior directly because of its nonstandard form, derived below up to a constant of proportionality.
 
@@ -192,7 +192,7 @@ The Model Expression Macro
 		
 	**Example**
 	
-		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``MCMCSampler``, as follows.  In essence, they automate the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and return the same quoted expressions as before but with less coding required.
+		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``MCMCSampler``, as shown below.  In essence, the macro automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
 		
 		.. code-block:: julia
 		
@@ -447,13 +447,13 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 
 .. table:: Number of draws per second for select sampling algorithms in `MCMCsim`.
 
-	+---------------------+-----------------------+--------+-------+--------+
-	| Adaptive Metropolis                         |        |       |        |
-	+---------------------+-----------------------+        |       |        |
-	| Within Gibbs        | Multivariate          | Gibbs  | NUTS  | Slice  |
-	+=====================+=======================+========+=======+========+
-	| 10,000              | 11,100                | 20,000 | 900   | 7,300  |
-	+---------------------+-----------------------+--------+-------+--------+
+	+--------------+--------------+--------+------+--------------+--------------+
+	| Adaptive Metropolis         |        |      | Slice                       |
+	+--------------+--------------+        |      +--------------+--------------+
+	| Within Gibbs | Multivariate | Gibbs  | NUTS | Within Gibbs | Multivariate |
+	+==============+==============+========+======+==============+==============+
+	| 10,000       | 11,100       | 20,000 | 900  | 7,300        | 10,000       |
+	+--------------+--------------+--------+------+--------------+--------------+
 
 	
 Development and Testing
