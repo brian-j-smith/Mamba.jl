@@ -26,9 +26,9 @@ function describe(c::MCMCChains; batchsize::Integer=100,
                   q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   println(header(c))
   print("Empirical Posterior Estimates:\n")
-  display(summarystats(c, batchsize=batchsize))
+  show(summarystats(c, batchsize=batchsize))
   print("\nQuantiles:\n")
-  display(quantile(c, q=q))
+  show(quantile(c, q=q))
 end
 
 function dic(c::MCMCChains)
