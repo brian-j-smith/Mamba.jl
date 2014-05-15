@@ -42,8 +42,12 @@ function Base.show(io::IO, s::ChainSummary)
   else
     x = mapslices(x -> annotate(x, s.rownames, s.colnames), s.value, [1,2])
   end
-  showall(io, x)
-  print("\n")
+  # NOTE: showall is not retaining array column alignments.
+  #       println does but does not show all elements.
+  #       Use the latter until a solution can be found.
+  println(io, x)
+  # showall(io, x)
+  # print("\n")
 end
 
 function Base.showall(io::IO, s::ChainSummary)
@@ -52,5 +56,5 @@ function Base.showall(io::IO, s::ChainSummary)
 end
 
 function annotate(x::Matrix, rownames::Vector, colnames::Vector)
-  hcat(["", rownames], vcat(colnames', x))
+  hcat(["", rownames], vcat(colnames.', x))
 end
