@@ -22,7 +22,7 @@ model = MCMCModel(
 
   p = MCMCLogical(1,
     @modelexpr(b,
-      1.0 / (exp(-b) + 1.0)
+      invlogit(b)
     )
   ),
 

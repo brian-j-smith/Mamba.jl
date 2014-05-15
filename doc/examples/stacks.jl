@@ -33,7 +33,7 @@ stacks["p"] = size(stacks["x"], 2)
 
 stacks["z"] = hcat(
   ones(21),
-  mapslices(x -> (x - mean(x)) / std(x), stacks["x"], 1)
+  mapslices(x -> (x .- mean(x)) / std(x), stacks["x"], 1)
 )
 
 

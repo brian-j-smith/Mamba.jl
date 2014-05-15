@@ -59,10 +59,14 @@ model = MCMCModel(
 
   r1 = MCMCStochastic(1,
     @modelexpr(mu, alpha, beta1, beta2, year, b, n1, K,
-      begin
-        p = invlogit(mu + alpha + beta1 * year + beta2 * (year.^2 - 22) + b)
-        Distribution[Binomial(n1[i], p[i]) for i in 1:K]
-      end
+      Distribution[
+        begin
+          p = invlogit(mu[i] + alpha + beta1 * year[i] +
+                       beta2 * (year[i]^2 - 22.0) + b[i])
+          Binomial(n1[i], p)
+        end
+        for i in 1:K
+      ]
     ),
     false
   ),
