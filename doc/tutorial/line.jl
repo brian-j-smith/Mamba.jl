@@ -106,6 +106,10 @@ line = (String => Any)[
 line["xmat"] = [ones(5) line["x"]]
 
 
+## Set Random Number Generator Seed
+srand(123)
+
+
 ## Initial Values
 inits = [["y" => line["y"],
           "beta" => rand(Normal(0, 1), 2),
