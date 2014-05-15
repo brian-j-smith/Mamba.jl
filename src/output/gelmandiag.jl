@@ -19,25 +19,26 @@ function gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false,
   psibar2 = map(i -> mean(psibar[:,i]), 1:p)
 
   var_w = map(i -> var(s2[:,i]), 1:p) / m
-  var_b = (2 / (m - 1)) * b.^2
+  var_b = (2.0 / (m - 1)) * b.^2
   var_wb = (n / m) * (diag(reshape(crosscov(s2, psibar.^2, [0]), p, p)) -
-           2 * psibar2 .* diag(reshape(crosscov(s2, psibar, [0]), p, p)))
+           2.0 * psibar2 .* diag(reshape(crosscov(s2, psibar, [0]), p, p)))
 
   V = ((n - 1) / n) * w + ((m + 1) / (m * n)) * b
   var_V = ((n - 1)^2 * var_w + ((m + 1) / m)^2 * var_b +
-           (2 * (n - 1) * (m + 1) / m) * var_wb) / n^2
-  df = 2 * V.^2 ./ var_V
+           (2.0 * (n - 1) * (m + 1) / m) * var_wb) / n^2
+  df = 2.0 * V.^2 ./ var_V
   B_df = m - 1
-  W_df = 2 * w.^2 ./ var_w
+  W_df = 2.0 * w.^2 ./ var_w
 
   R_fixed = (n - 1) / n
   R_random = ((m + 1) / (m * n)) * b ./ w
-  R_est = R_fixed + R_random
-  q = 1 - alpha / 2
-  R_upper = R_fixed + R_random .*
+  R_est = R_fixed .+ R_random
+  q = 1.0 - alpha / 2.0
+  R_upper = R_fixed .+ R_random .*
             map(df2 -> quantile(FDist(B_df, df2), q), W_df)
 
-  psrf = sqrt((df + 3) / (df + 1) * [R_est R_upper])
+  correction = (df .+ 3.0) ./ (df .+ 1.0)
+  psrf = sqrt([correction .* R_est correction .* R_upper])
   psrf_labels = ["PSRF", string(100 * q) * "%"]
   psrf_names = c.names
 
