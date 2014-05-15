@@ -26,9 +26,9 @@ function describe(c::MCMCChains; batchsize::Integer=100,
                   q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   println(header(c))
   print("Empirical Posterior Estimates:\n")
-  show(summarystats(c, batchsize=batchsize))
+  display(summarystats(c, batchsize=batchsize))
   print("\nQuantiles:\n")
-  show(quantile(c, q=q))
+  display(quantile(c, q=q))
 end
 
 function dic(c::MCMCChains)
@@ -108,8 +108,8 @@ end
 function summarystats(c::MCMCChains; batchsize::Integer=100)
   X = combine(c)
   n, p = size(X)
-  f = (x)->[mean(x), sqrt(var(x)), sem(x), batchSE(x, size=batchsize)]
-  labels =["Mean", "SD", "Naive SE", "Batch SE", "ESS"]
+  f = (x)->[mean(x), std(x), sem(x), batchSE(x, size=batchsize)]
+  labels = ["Mean", "SD", "Naive SE", "Batch SE", "ESS"]
   vals = mapreduce(i -> f(X[:,i]), hcat, 1:p)'
   vals = [vals (n * min(vals[:,3] ./ vals[:,4], 1))]
   ChainSummary(vals, c.names, labels, header(c))
