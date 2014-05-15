@@ -324,11 +324,11 @@ Checks of MCMC output should be performed to assess convergence of simulated dra
 	>>> gelmandiag(sim1, mpsrf=true, transform=true)
 
 	5x3 Array{Any,2}:
-	 ""               "PSRF"      "97.5%"
-	 "beta[1]"       1.15816     1.16025 
-	 "beta[2]"       0.762546    0.763922
-	 "s2"            0.842252    0.843771
-	 "Multivariate"  1.00344   NaN       
+	 ""               "PSRF"     "97.5%"
+	 "beta[1]"       1.08907    1.09251 
+	 "beta[2]"       1.08637    1.08783 
+	 "s2"            1.07827    1.13943 
+	 "Multivariate"  1.03237  NaN       
 
 Values of the diagnostic that are greater than 1.2 are evidence of non-convergence.  The smaller diagnostic values for the regression example suggest that its draws have converged.
  
