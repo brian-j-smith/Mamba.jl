@@ -93,9 +93,9 @@ model = MCMCModel(
 ## Initial Values
 inits = [
   ["t" => kidney["t"], "beta0" => 0, "beta_age" => 0, "beta_sex" => 0,
-   "beta_Dx" => zeros(3), "s2" => 3, "tau" => 1, "b" => zeros(kidney["N"])],
+   "beta_Dx" => zeros(3), "s2" => 3, "tau" => 0.1, "b" => zeros(kidney["N"])],
   ["t" => kidney["t"], "beta0" => 1, "beta_age" => -1, "beta_sex" => 1,
-   "beta_Dx" => ones(3), "s2" => 1, "tau" => 1.5, "b" => zeros(kidney["N"])]
+   "beta_Dx" => ones(3), "s2" => 1, "tau" => 0.5, "b" => zeros(kidney["N"])]
 ]
 
 
@@ -103,7 +103,7 @@ inits = [
 scheme = [MISS(["t"]),
           AMWG(["beta0", "beta_age", "beta_sex", "beta_Dx"], fill(0.1, 6)),
           NUTS(["b"]),
-          SliceWG(["s2", "tau"], [1.0, 1.0])]
+          SliceWG(["s2", "tau"], [1.0, 0.25])]
 setsamplers!(model, scheme)
 
 
