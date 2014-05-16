@@ -111,12 +111,12 @@ Methods
 	
 .. function:: keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
 
-	Return names of node of a specified type.
+	Return names of nodes of a specified type.
 	
 	**Arguments**
 	
 		* ``m`` : a model containing the nodes of interest.
-		* ``ntype`` : the type of node to return.  Options are
+		* ``ntype`` : the type of nodes to return.  Options are
 			* ``:all`` : all input, logical, and stochastic model nodes.
 			* ``:assigned`` : nodes that have been assigned values.
 			* ``:block`` : stochastic nodes being block-sampled.
