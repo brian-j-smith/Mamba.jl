@@ -107,8 +107,9 @@ end
 
 function Base.show(io::IO, m::MCMCModel)
   print(io, "Object of type \"$(summary(m))\"\n")
+  width = Base.tty_cols() - 1
   for node in keys(m)
-    print(io, string("-"^79, "\n", node, ":\n"))
+    print(io, string("-"^width, "\n", node, ":\n"))
     show(io, m[node])
     print(io, "\n")
   end
