@@ -37,13 +37,14 @@ end
 #################### ChainSummary Base Methods ####################
 
 function Base.show(io::IO, s::ChainSummary)
-  value = map(x -> float16(x), s.value)
-  if size(value, 3) == 1
-    x = annotate(value[:,:,1], s.rownames, s.colnames)
+  if size(s.value, 3) == 1
+    x = annotate(s.value[:,:,1], s.rownames, s.colnames)
   else
-    x = mapslices(x -> annotate(x, s.rownames, s.colnames), value, [1,2])
+    x = mapslices(x -> annotate(x, s.rownames, s.colnames), s.value, [1,2])
   end
-  Base.showarray(x, limit=false)
+  Base.with_output_limit(true) do
+    Base.showarray(io, x, limit=false)
+  end
   print("\n")
 end
 
