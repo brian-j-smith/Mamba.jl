@@ -80,7 +80,7 @@ model = MCMCModel(
   ),
 
   beta = MCMCStochastic(
-    :(Uniform(0, 1000))
+    :(Truncated(Flat(), 0, Inf))
   )
 
 )

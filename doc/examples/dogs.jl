@@ -61,7 +61,7 @@ model = MCMCModel(
   ),
 
   alpha = MCMCStochastic(
-    :(Uniform(-1000, 0))
+    :(Truncated(Flat(), -Inf, -1e-5))
   ),
 
   A = MCMCLogical(
@@ -71,7 +71,7 @@ model = MCMCModel(
   ),
 
   beta = MCMCStochastic(
-    :(Uniform(-1000, 0))
+    :(Truncated(Flat(), -Inf, -1e-5))
   ),
 
   B = MCMCLogical(
