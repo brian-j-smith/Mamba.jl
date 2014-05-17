@@ -16,6 +16,8 @@ end
 type VariateAMM <: VariateVector
   value::Vector{VariateType}
   tune::TuneAMM
+
+  VariateAMM(x::Vector{VariateType}, tune::TuneAMM) = new(x, tune)
 end
 
 function VariateAMM(x::Vector{VariateType}, tune=nothing)
@@ -86,7 +88,7 @@ function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
     tune.Mv = p * tune.Mv + (1.0 - p) * v
     tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
     Sigma = (sd / p) * (tune.Mvv - tune.Mv * tune.Mv')
-    F = cholpfact(Sigma)
+    F = cholfact(Sigma, pivot=true)
     if rank(F) == d
       tune.SigmaLm = F[:P] * F[:L]
     end

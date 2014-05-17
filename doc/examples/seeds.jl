@@ -19,11 +19,14 @@ model = MCMCModel(
 
   r = MCMCStochastic(1,
     @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,
-      begin
-        eta = alpha0 + alpha1 * x1 + alpha2 * x2 + alpha12 * x1 .* x2 + b
-        p = 1.0 / (exp(-eta) + 1.0)
-        Distribution[Binomial(n[i], p[i]) for i in 1:N]
-      end
+      Distribution[
+        begin
+          p = invlogit(alpha0 + alpha1 * x1[i] + alpha2 * x2[i] +
+                       alpha12 * x1[i] * x2[i] + b[i])
+          Binomial(n[i], p)
+        end
+        for i in 1:N
+      ]
     ),
     false
   ),

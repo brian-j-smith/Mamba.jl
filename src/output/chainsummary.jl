@@ -42,7 +42,9 @@ function Base.show(io::IO, s::ChainSummary)
   else
     x = mapslices(x -> annotate(x, s.rownames, s.colnames), s.value, [1,2])
   end
-  showall(io, x)
+  Base.with_output_limit(true) do
+    Base.showarray(io, x, limit=false)
+  end
   print("\n")
 end
 
@@ -52,5 +54,5 @@ function Base.showall(io::IO, s::ChainSummary)
 end
 
 function annotate(x::Matrix, rownames::Vector, colnames::Vector)
-  hcat(["", rownames], vcat(colnames', x))
+  hcat(["", rownames], vcat(colnames.', x))
 end

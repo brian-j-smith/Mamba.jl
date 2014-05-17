@@ -7,6 +7,8 @@ end
 type VariateSlice <: VariateVector
   value::Vector{VariateType}
   tune::TuneSlice
+
+  VariateSlice(x::Vector{VariateType}, tune::TuneSlice) = new(x, tune)
 end
 
 function VariateSlice(x::Vector{VariateType}, tune=nothing)

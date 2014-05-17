@@ -33,11 +33,11 @@ function link(d::TransformDistribution, x)
   a, b = minimum(d), maximum(d)
   lowerbounded, upperbounded = isfinite(a), isfinite(b)
   if lowerbounded && upperbounded
-    logit((x - a) ./ (b - a))
+    logit((x .- a) / (b - a))
   elseif lowerbounded
-    log(x - a)
+    log(x .- a)
   elseif upperbounded
-    log(b - x)
+    log(b .- x)
   else
     x
   end
@@ -47,11 +47,11 @@ function invlink(d::TransformDistribution, x)
   a, b = minimum(d), maximum(d)
   lowerbounded, upperbounded = isfinite(a), isfinite(b)
   if lowerbounded && upperbounded
-    (b - a) * invlogit(x) + a
+    (b - a) * invlogit(x) .+ a
   elseif lowerbounded
-    exp(x) + a
+    exp(x) .+ a
   elseif upperbounded
-    b - exp(x)
+    b .- exp(x)
   else
     x
   end

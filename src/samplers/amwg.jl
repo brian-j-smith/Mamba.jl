@@ -14,6 +14,8 @@ end
 type VariateAMWG <: VariateVector
   value::Vector{VariateType}
   tune::TuneAMWG
+
+  VariateAMWG(x::Vector{VariateType}, tune::TuneAMWG) = new(x, tune)
 end
 
 function VariateAMWG(x::Vector{VariateType}, tune=nothing)

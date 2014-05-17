@@ -20,6 +20,8 @@ end
 type VariateNUTS <: VariateVector
   value::Vector{VariateType}
   tune::TuneNUTS
+
+  VariateNUTS(x::Vector{VariateType}, tune::TuneNUTS) = new(x, tune)
 end
 
 function VariateNUTS(x::Vector{VariateType}, tune=nothing)

@@ -140,7 +140,7 @@ Constructors
 Methods
 ^^^^^^^
 
-.. function:: setinits!(l::MCMCLogical, m::MCMCModel, x=nothing)
+.. function:: setinits!(l::MCMCLogical, m::MCMCModel, ::Any=nothing)
 
 	Set initial values for a logical node.
 	
@@ -148,7 +148,6 @@ Methods
 	
 		* ``l`` : a logical node to assign initial values.
 		* ``m`` : a model that contains the node.
-		* ``x`` : unused.
 		
 	**Value**
 	

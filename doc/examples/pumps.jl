@@ -15,10 +15,13 @@ model = MCMCModel(
 
   y = MCMCStochastic(1,
     @modelexpr(theta, t, N,
-      begin
-        lambda = theta .* t
-        Distribution[Poisson(lambda[i]) for i in 1:N]
-      end
+      Distribution[
+        begin
+          lambda = theta[i] * t[i]
+          Poisson(lambda)
+        end
+        for i in 1:N
+      ]
     ),
     false
   ),

@@ -16,7 +16,7 @@ Item responses are modelled as
 	\operatorname{logit}(p_{i,j}) &= \beta \theta_i - \alpha_j \\
 	\theta_i &\sim \text{Normal}(0, 1) \\
 	\alpha_j &\sim \text{Normal}(0, 100) \\
-	\beta &\sim \text{Uniform(0, 1000)},
+	\beta &\sim \text{Flat}(0, \infty),
 	
 where :math:`r_{i,j}` is an indicator for correct response by student :math:`i` to questions :math:`j`.
 	

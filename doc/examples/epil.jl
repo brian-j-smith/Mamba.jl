@@ -89,7 +89,7 @@ epil["T"] = size(epil["y"], 2)
 epil["logBase4"] = log(epil["Base"] / 4)
 epil["BT"] = epil["logBase4"] .* epil["Trt"]
 epil["logAge"] = log(epil["Age"])
-map(key -> epil[key * "bar"] = epil[key] - mean(epil[key]),
+map(key -> epil[key * "bar"] = epil[key] .- mean(epil[key]),
     ["logBase4", "Trt", "BT", "logAge", "V4"])
 
 
@@ -103,9 +103,10 @@ model = MCMCModel(
       logBase4bar, Trtbar, BTbar, logAgebar, V4bar, N, T,
       Distribution[
         begin
-          mu = exp(alpha0 + alpha_Base * logBase4bar[i] + alpha_Trt * Trtbar[i]
-                   + alpha_BT * BTbar[i] + alpha_Age * logAgebar[i]
-                   + alpha_V4 * V4bar[j] + b1[i] + b[i,j])
+          mu = exp(alpha0 + alpha_Base * logBase4bar[i] +
+                   alpha_Trt * Trtbar[i] + alpha_BT * BTbar[i] +
+                   alpha_Age * logAgebar[i] + alpha_V4 * V4bar[j] + b1[i] +
+                   b[i,j])
           Poisson(mu)
         end
         for i in 1:N, j in 1:T

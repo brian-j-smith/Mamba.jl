@@ -66,7 +66,7 @@ end
 
 #################### MCMCLogical Methods ####################
 
-function setinits!(l::MCMCLogical, m::MCMCModel, x=nothing)
+function setinits!(l::MCMCLogical, m::MCMCModel, ::Any=nothing)
   l.value = l.eval(m)
   setmonitor!(l, l.monitor)
 end

@@ -6,6 +6,7 @@ using Distributions
 #################### Imports ####################
 
 import Base: Base, cor, dot
+import Base.LinAlg: Cholesky
 import Calculus: gradient
 import Distributions: Continuous, Distribution, insupport, logpdf, logpdf!,
        minimum, maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
