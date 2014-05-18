@@ -307,8 +307,11 @@ function simulate!(m::MCMCModel, block::Integer=0)
   blocks = block > 0 ? block : 1:length(m.samplers)
   for b in blocks
     sampler = m.samplers[b]
-    m[sampler.params] = sampler.eval(m, b)
-    update!(m, b)
+    value = sampler.eval(m, b)
+    if value != nothing
+      m[sampler.params] = value
+      update!(m, b)
+    end
   end
   m
 end

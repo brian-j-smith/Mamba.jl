@@ -11,7 +11,7 @@ Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gib
 
 	function(model::MCMCModel, block::Integer)
 
-where ``model`` contains all model nodes and ``block`` is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function should return an updated sample for the nodes named in its ``params`` field.  The return value can be a structure of the same type of the node if the block consists of only one node, or a dictionary of node structures with names equal to the block nodes if one or more.
+where ``model`` contains all model nodes and ``block`` is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function may return an updated sample for the nodes named in its ``params`` field.  Such a return value can be a structure of the same type as the node if the block consists of only one node, or a dictionary of node structures with names equal to the block nodes if one or more.  Alternatively, a value of ``nothing`` may be returned.  Return values that are not ``nothing`` will be used to automatically update the node values and propagate them to dependent nodes.  No automatic updating will be done if ``nothing`` is returned.
 
 Declaration
 ^^^^^^^^^^^
