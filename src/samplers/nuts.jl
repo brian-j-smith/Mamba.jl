@@ -87,21 +87,21 @@ export nutsfx, nutsfx!
 
 function nutseps(v::VariateNUTS, fx::Function)
   d = length(v)
-  node0 = leapfrog(v.value, randn(d), 0.0, zeros(d), fx)
+  node0 = leapfrog(v.value, randn(d), zeros(d), 0.0, fx)
   eps = 1.0
-  node = leapfrog(v.value, node0[:r], eps, node0[:grad], fx)
+  node = leapfrog(v.value, node0[:r], node0[:grad], eps, fx)
   p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
-  a = p > 0.5 ? 1 : -1
+  a = 2 * (p > 0.5) - 1
   while p^a > 2.0^-a
     eps *= 2.0^a
-    node = leapfrog(v.value, node0[:r], eps, node0[:grad], fx)
+    node = leapfrog(v.value, node0[:r], node0[:grad], eps, fx)
     p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
   end
   eps
 end
 
 function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
-           eps::Real, grad::Vector{V}, fx::Function)
+           grad::Vector{V}, eps::Real, fx::Function)
   r += (eps / 2.0) * grad
   x += eps * r
   logf, grad = fx(x)
@@ -139,7 +139,7 @@ end
 
 function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
   d = length(v)
-  node0 = leapfrog(v.value, randn(d), 0.0, zeros(d), fx)
+  node0 = leapfrog(v.value, randn(d), zeros(d), 0.0, fx)
   p0 = node0[:logf] - 0.5 * dot(node0[:r])
   logu = p0 + log(rand())
   xminus = xplus = node0[:x]
@@ -150,14 +150,14 @@ function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
   s = true
   node = Dict()
   while s
-    pm = rand() > 0.5 ? 1 : -1
+    pm = 2 * (rand() > 0.5) - 1
     if pm == -1
-      node = buildtree(xminus, rminus, gradminus, logu, pm, j, eps, p0, fx)
+      node = buildtree(xminus, rminus, gradminus, pm, j, eps, fx, p0, logu)
       xminus = node[:xminus]
       rminus = node[:rminus]
       gradminus = node[:gradminus]
     else
-      node = buildtree(xplus, rplus, gradplus, logu, pm, j, eps, p0, fx)
+      node = buildtree(xplus, rplus, gradplus, pm, j, eps, fx, p0, logu)
       xplus = node[:xplus]
       rplus = node[:rplus]
       gradplus = node[:gradplus]
@@ -174,12 +174,12 @@ function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
   v
 end
 
-function buildtree(x::Vector, r::Vector, grad::Vector, logu::Real, pm::Integer,
-           j::Integer, eps::Real, p0::Real, fx::Function)
+function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
+           eps::Real, fx::Function, p0::Real, logu::Real)
   if j == 0
-    node = leapfrog(x, r, pm * eps, grad, fx)
+    node = leapfrog(x, r, grad, pm * eps, fx)
     p = node[:logf] - 0.5 * dot(node[:r])
-    node[:n] = logu <= p ? 1 : 0
+    node[:n] = int(logu <= p)
     node[:s] = logu < p + 1000.0
     node[:xminus] = node[:xplus] = node[:x]
     node[:rminus] = node[:rplus] = node[:r]
@@ -187,17 +187,17 @@ function buildtree(x::Vector, r::Vector, grad::Vector, logu::Real, pm::Integer,
     node[:alpha] = min(1.0, exp(p - p0))
     node[:nalpha] = 1
   else
-    node = buildtree(x, r, grad, logu, pm, j-1, eps, p0, fx)
+    node = buildtree(x, r, grad, pm, j-1, eps, fx, p0, logu)
     if node[:s]
       if pm == -1
         node2 = buildtree(node[:xminus], node[:rminus], node[:gradminus],
-                          logu, pm, j-1, eps, p0, fx)
+                          pm, j-1, eps, fx, p0, logu)
         node[:xminus] = node2[:xminus]
         node[:rminus] = node2[:rminus]
         node[:gradminus] = node2[:gradminus]
       else
         node2 = buildtree(node[:xplus], node[:rplus], node[:gradplus],
-                          logu, pm, j-1, eps, p0, fx)
+                          pm, j-1, eps, fx, p0, logu)
         node[:xplus] = node2[:xplus]
         node[:rplus] = node2[:rplus]
         node[:gradplus] = node2[:gradplus]
@@ -205,9 +205,9 @@ function buildtree(x::Vector, r::Vector, grad::Vector, logu::Real, pm::Integer,
       if rand() < node2[:n] / (node[:n] + node2[:n])
         node[:x] = node2[:x]
       end
+      node[:n] += node2[:n]
       node[:s] = node[:s] && node2[:s] &&
                  nouturn(node[:xminus], node[:xplus], node[:rminus], node[:rplus])
-      node[:n] += node2[:n]
       node[:alpha] += node2[:alpha]
       node[:nalpha] += node2[:nalpha]
     end
@@ -216,6 +216,6 @@ function buildtree(x::Vector, r::Vector, grad::Vector, logu::Real, pm::Integer,
 end
 
 function nouturn(xminus, xplus, rminus, rplus)
-  val = xplus - xminus
-  dot(val, rminus) >= 0 && dot(val, rplus) >= 0
+  xdiff = xplus - xminus
+  dot(xdiff, rminus) >= 0 && dot(xdiff, rplus) >= 0
 end
