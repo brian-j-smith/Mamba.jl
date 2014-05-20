@@ -5,8 +5,8 @@
 type TuneNUTS
   adapt::Bool
   alpha::Float64
-  eps::Float64
-  epsbar::Float64
+  epsilon::Float64
+  epsilonbar::Float64
   gamma::Float64
   Hbar::Float64
   kappa::Float64
@@ -54,30 +54,35 @@ function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       v = VariateNUTS(x, tunepar["sampler"])
       if model.iter <= 1
         f = x -> nutsfx(model, x, block, true, tunepar["dtype"])
-        tunepar["eps"] = nutseps(v, f)
+        tunepar["epsilon"] = nutsepsilon(v, f)
       end
       f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
-      nuts!(v, tunepar["eps"], f, adapt=model.iter <= model.burnin,
+      nuts!(v, tunepar["epsilon"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
       relist(model, v.value, block, true)
     end,
-    ["eps" => 1.0, "target" => target, "dtype" => dtype, "sampler" => nothing]
+    ["epsilon" => 1.0, "target" => target, "dtype" => dtype,
+     "sampler" => nothing]
   )
 end
 
 function nutsfx{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
            transform::Bool, dtype::Symbol)
-  a = logpdf(m, x, block, transform)
-  b = gradient(m, x, block, transform, dtype)
-  a, b
+  logf = logpdf(m, x, block, transform)
+  grad = isfinite(logf) ?
+           gradient(m, x, block, transform, dtype) :
+           zeros(length(x))
+  logf, grad
 end
 
 function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
            transform::Bool, dtype::Symbol)
-  a = logpdf!(m, x, block, transform)
-  b = gradient(m, block, transform, dtype)
-  a, b
+  logf = logpdf!(m, x, block, transform)
+  grad = isfinite(logf) ?
+           gradient!(m, x, block, transform, dtype) :
+           zeros(length(x))
+  logf, grad
 end
 
 export nutsfx, nutsfx!
@@ -85,134 +90,126 @@ export nutsfx, nutsfx!
 
 #################### Sampling Functions ####################
 
-function nutseps(v::VariateNUTS, fx::Function)
-  d = length(v)
-  node0 = leapfrog(v.value, randn(d), zeros(d), 0.0, fx)
-  eps = 1.0
-  node = leapfrog(v.value, node0[:r], node0[:grad], eps, fx)
-  p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
-  a = 2 * (p > 0.5) - 1
-  while p^a > 2.0^-a
-    eps *= 2.0^a
-    node = leapfrog(v.value, node0[:r], node0[:grad], eps, fx)
-    p = exp(node[:logf] - node0[:logf] - 0.5 * (dot(node[:r]) - dot(node0[:r])))
+function nutsepsilon(v::VariateNUTS, fx::Function)
+  n = length(v)
+  _, r0, grad0, logf0 = leapfrog(v.value, randn(n), zeros(n), 0.0, fx)
+  epsilon = 1.0
+  _, rprime, gradprime, logfprime = leapfrog(v.value, r0, grad0, epsilon, fx)
+  prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
+  d = 2 * (prob > 0.5) - 1
+  while prob^d > 0.5^d
+    epsilon *= 2.0^d
+    _, rprime, _, logfprime = leapfrog(v.value, r0, grad0, epsilon, fx)
+    prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
   end
-  eps
+  epsilon
 end
 
 function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
-           grad::Vector{V}, eps::Real, fx::Function)
-  r += (eps / 2.0) * grad
-  x += eps * r
+           grad::Vector{V}, epsilon::Real, fx::Function)
+  r += (0.5 * epsilon) * grad
+  x += epsilon * r
   logf, grad = fx(x)
-  r += (eps / 2.0) * grad
-  [:x => x, :r => r, :logf => logf, :grad => grad]
+  r += (0.5 * epsilon) * grad
+  x, r, grad, logf
 end
 
-function nuts!(v::VariateNUTS, eps::Real, fx::Function; adapt::Bool=false,
+function nuts!(v::VariateNUTS, epsilon::Real, fx::Function; adapt::Bool=false,
            target::Real=0.6)
   tune = v.tune
 
   if adapt
     if !tune.adapt
       tune.adapt = true
-      tune.eps = eps
+      tune.epsilon = epsilon
       tune.m = 0
-      tune.mu = log(10.0 * eps)
+      tune.mu = log(10.0 * epsilon)
       tune.target = target
     end
     tune.m += 1
-    nuts_sub!(v, tune.eps, fx)
+    nuts_sub!(v, tune.epsilon, fx)
     p = 1.0 / (tune.m + tune.t0)
     tune.Hbar = (1 - p) * tune.Hbar +
                 p * (tune.target - tune.alpha / tune.nalpha)
-    tune.eps = exp(tune.mu - sqrt(tune.m) * tune.Hbar / tune.gamma)
+    tune.epsilon = exp(tune.mu - sqrt(tune.m) * tune.Hbar / tune.gamma)
     p = tune.m^-tune.kappa
-    tune.epsbar = exp(p * log(tune.eps) + (1 - p) * log(tune.epsbar))
+    tune.epsilonbar = exp(p * log(tune.epsilon) + (1 - p) * log(tune.epsilonbar))
   else
-    tune.eps = tune.adapt ? tune.epsbar : eps
-    nuts_sub!(v, tune.eps, fx)
+    tune.epsilon = tune.adapt ? tune.epsilonbar : epsilon
+    nuts_sub!(v, tune.epsilon, fx)
   end
 
   v
 end
 
-function nuts_sub!(v::VariateNUTS, eps::Real, fx::Function)
-  d = length(v)
-  node0 = leapfrog(v.value, randn(d), zeros(d), 0.0, fx)
-  p0 = node0[:logf] - 0.5 * dot(node0[:r])
-  logu = p0 + log(rand())
-  xminus = xplus = node0[:x]
-  rminus = rplus = node0[:r]
-  gradminus = gradplus = node0[:grad]
+function nuts_sub!(v::VariateNUTS, epsilon::Real, fx::Function)
+  n = length(v)
+  x, r, grad, logf = leapfrog(v.value, randn(n), zeros(n), 0.0, fx)
+  logp0 = logf - 0.5 * dot(r)
+  logu0 = logp0 + log(rand())
+  xminus = xplus = x
+  rminus = rplus = r
+  gradminus = gradplus = grad
   j = 0
   n = 1
   s = true
-  node = Dict()
   while s
-    pm = 2 * (rand() > 0.5) - 1
-    if pm == -1
-      node = buildtree(xminus, rminus, gradminus, pm, j, eps, fx, p0, logu)
-      xminus = node[:xminus]
-      rminus = node[:rminus]
-      gradminus = node[:gradminus]
+    d = 2 * (rand() > 0.5) - 1
+    if d == -1
+      xminus, rminus, gradminus, _, _, _, xprime, nprime, sprime, alpha, nalpha =
+        buildtree(xminus, rminus, gradminus, d, j, epsilon, fx, logp0, logu0)
     else
-      node = buildtree(xplus, rplus, gradplus, pm, j, eps, fx, p0, logu)
-      xplus = node[:xplus]
-      rplus = node[:rplus]
-      gradplus = node[:gradplus]
+      _, _, _, xplus, rplus, gradplus, xprime, nprime, sprime, alpha, nalpha =
+        buildtree(xplus, rplus, gradplus, d, j, epsilon, fx, logp0, logu0)
     end
-    if node[:s] && rand() < node[:n] / n
-      v[:] = node[:x]
+    if sprime && rand() < nprime / n
+      v[:] = xprime
     end
-    n += node[:n]
-    s = node[:s] && nouturn(xminus, xplus, rminus, rplus)
     j += 1
+    n += nprime
+    s = sprime && nouturn(xminus, xplus, rminus, rplus)
+    v.tune.alpha, v.tune.nalpha = alpha, nalpha
   end
-  v.tune.alpha = node[:alpha]
-  v.tune.nalpha = node[:nalpha]
   v
 end
 
-function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
-           eps::Real, fx::Function, p0::Real, logu::Real)
+function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
+           epsilon::Real, fx::Function, logp0::Real, logu0::Real)
   if j == 0
-    node = leapfrog(x, r, grad, pm * eps, fx)
-    p = node[:logf] - 0.5 * dot(node[:r])
-    node[:n] = int(logu <= p)
-    node[:s] = logu < p + 1000.0
-    node[:xminus] = node[:xplus] = node[:x]
-    node[:rminus] = node[:rplus] = node[:r]
-    node[:gradminus] = node[:gradplus] = node[:grad]
-    node[:alpha] = min(1.0, exp(p - p0))
-    node[:nalpha] = 1
+    xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, d * epsilon, fx)
+    logpprime = logfprime - 0.5 * dot(rprime)
+    nprime = int(logu0 < logpprime)
+    sprime = logu0 < logpprime + 1000.0
+    xminus = xplus = xprime
+    rminus = rplus = rprime
+    gradminus = gradplus = gradprime
+    alphaprime = min(1.0, exp(logpprime - logp0))
+    nalphaprime = 1
   else
-    node = buildtree(x, r, grad, pm, j-1, eps, fx, p0, logu)
-    if node[:s]
-      if pm == -1
-        node2 = buildtree(node[:xminus], node[:rminus], node[:gradminus],
-                          pm, j-1, eps, fx, p0, logu)
-        node[:xminus] = node2[:xminus]
-        node[:rminus] = node2[:rminus]
-        node[:gradminus] = node2[:gradminus]
+    xminus, rminus, gradminus, xplus, rplus, gradplus, xprime, nprime, sprime,
+      alphaprime, nalphaprime =
+        buildtree(x, r, grad, d, j-1, epsilon, fx, logp0, logu0)
+    if sprime
+      if d == -1
+        xminus, rminus, gradminus, _, _, _, xprime2, nprime2, sprime2,
+          alphaprime2, nalphaprime2 =
+            buildtree(xminus, rminus, gradminus, d, j-1, epsilon, fx, logp0, logu0)
       else
-        node2 = buildtree(node[:xplus], node[:rplus], node[:gradplus],
-                          pm, j-1, eps, fx, p0, logu)
-        node[:xplus] = node2[:xplus]
-        node[:rplus] = node2[:rplus]
-        node[:gradplus] = node2[:gradplus]
+        _, _, _, xplus, rplus, gradplus, xprime2, nprime2, sprime2,
+          alphaprime2, nalphaprime2 =
+            buildtree(xplus, rplus, gradplus, d, j-1, epsilon, fx, logp0, logu0)
       end
-      if rand() < node2[:n] / (node[:n] + node2[:n])
-        node[:x] = node2[:x]
+      if rand() < nprime2 / (nprime + nprime2)
+        xprime = xprime2
       end
-      node[:n] += node2[:n]
-      node[:s] = node[:s] && node2[:s] &&
-                 nouturn(node[:xminus], node[:xplus], node[:rminus], node[:rplus])
-      node[:alpha] += node2[:alpha]
-      node[:nalpha] += node2[:nalpha]
+      nprime += nprime2
+      sprime = sprime && sprime2 && nouturn(xminus, xplus, rminus, rplus)
+      alphaprime += alphaprime2
+      nalphaprime += nalphaprime2
     end
   end
-  node
+  xminus, rminus, gradminus, xplus, rplus, gradplus, xprime, nprime, sprime,
+    alphaprime, nalphaprime
 end
 
 function nouturn(xminus, xplus, rminus, rplus)

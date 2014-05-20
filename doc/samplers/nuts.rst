@@ -21,7 +21,7 @@ Stand-Alone Functions
 	
 		A numeric step size value.
 
-.. function:: nuts!(v::VariateNUTS, eps::Real, fx::Function; adapt::Bool=false, \
+.. function:: nuts!(v::VariateNUTS, epsilon::Real, fx::Function; adapt::Bool=false, \
                 target::Real=0.6)
 
 	Simulate one draw from a target distribution using the No-U-Turn sampler.
@@ -29,14 +29,14 @@ Stand-Alone Functions
 	**Arguments**
 	
 		* ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
-		* ``eps`` : the NUTS algorithm step size parameter.
+		* ``epsilon`` : the NUTS algorithm step size parameter.
 		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
-		* ``adapt`` : whether to adaptively update the ``eps`` step size parameter.
+		* ``adapt`` : whether to adaptively update the ``epsilon`` step size parameter.
 		* ``target`` : a target acceptance rate for the algorithm.
 		
 	**Value**
 	
-		Returns ``v`` updated with the simulated values and associated tuning parameters.
+		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
 	**Example**
 
@@ -91,7 +91,7 @@ Fields
 ``````
 * ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
 * ``alpha::Float64`` : cumulative acceptance probabilities :math:`\alpha` from leapfrog steps.
-* ``eps::Float64`` : updated value of the step size parameter :math:`\epsilon_m = \exp\left(\mu - \sqrt{m} \bar{H}_m / \gamma\right)` if ``adapt = true``, and the user-defined value otherwise.
+* ``epsilon::Float64`` : updated value of the step size parameter :math:`\epsilon_m = \exp\left(\mu - \sqrt{m} \bar{H}_m / \gamma\right)` if ``adapt = true``, and the user-defined value otherwise.
 * ``epsbar::Float64`` : dual averaging parameter, defined as :math:`\bar{\epsilon}_m = \exp\left(m^{-\kappa} \log(\epsilon_m) + (1 - m^{-\kappa}) \log(\bar{\epsilon}_{m-1})\right)`.
 * ``gamma::Float64`` : dual averaging parameter, fixed at :math:`\gamma = 0.05`.
 * ``Hbar::Float64`` : dual averaging parameter, defied as :math:`\bar{H}_m = \left(1 - \frac{1}{m + t_0}\right) \bar{H}_{m-1} + \frac{1}{m + t_0} \left(\text{target} - \frac{\alpha}{n_\alpha}\right)`.

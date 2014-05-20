@@ -35,9 +35,9 @@ n = 5000
 burnin = 1000
 sim = MCMCChains(n - burnin, ["b0", "b1", "s2"], start = (burnin + 1))
 theta = VariateNUTS([0.0, 0.0, 0.0])
-eps = nutseps(theta, fx)
+epsilon = nutsepsilon(theta, fx)
 for i in 1:n
-  nuts!(theta, eps, fx, adapt = (i <= burnin))
+  nuts!(theta, epsilon, fx, adapt = (i <= burnin))
   if i > burnin
     sim.value[i - burnin,:,1] = [theta[1:2], exp(theta[3])]
   end

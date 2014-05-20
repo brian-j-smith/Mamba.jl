@@ -190,7 +190,7 @@ export
   amm!,
   amwg!,
   nuts!,
-  nutseps,
+  nutsepsilon,
   slice!,
   slicewg!
 
