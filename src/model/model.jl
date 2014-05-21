@@ -148,9 +148,9 @@ function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
   for key in m.dependents
     node = m[key]
     if isa(node, MCMCStochastic)
-      setinits!(m[key], m, inits[key])
+      setinits!(node, m, inits[key])
     else
-      setinits!(m[key], m)
+      setinits!(node, m)
     end
   end
   m
