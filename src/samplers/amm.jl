@@ -62,7 +62,7 @@ end
 #################### Sampling Functions ####################
 
 function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
-           adapt::Bool=false)
+           adapt::Bool=true)
   tune = v.tune
 
   d = length(v)
