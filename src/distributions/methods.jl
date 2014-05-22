@@ -4,15 +4,15 @@ link(d::Distribution, x) = x
 invlink(d::Distribution, x) = x
 
 function logpdf(d::UnivariateDistribution, x, transform::Bool)
-  insupport(d, x) ? logpdf(d, x) : -Inf
+  all(insupport(d, x)) ? logpdf(d, x) : -Inf
 end
 
 function logpdf(d::MultivariateDistribution, x, transform::Bool)
-  insupport(d, x) ? logpdf(d, x) : -Inf
+  all(insupport(d, x)) ? logpdf(d, x) : -Inf
 end
 
 function logpdf(d::MatrixDistribution, x, transform::Bool)
-  insupport(d, x) ? logpdf(d, x) : -Inf
+  all(insupport(d, x)) ? logpdf(d, x) : -Inf
 end
 
 
