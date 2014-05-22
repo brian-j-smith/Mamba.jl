@@ -11,24 +11,17 @@ function autocor(c::MCMCChains; lags::Vector=[1,5,10,50], relative::Bool=true)
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function batchSE{T<:Real}(x::Vector{T}; size::Integer=100)
-  m = div(length(x), size)
-  m >= 2 || error("2 or more batches needed to compute SE")
-  mbar = [mean(x[i * size + (1:size)]) for i in 0:m-1]
-  sem(mbar)
-end
-
 function cor(c::MCMCChains)
   ChainSummary(cor(combine(c)), c.names, c.names, header(c))
 end
 
-function describe(c::MCMCChains; batchsize::Integer=100,
-                  q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+function describe(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
+           etype=:bm, args...)
   println(header(c))
   print("Empirical Posterior Estimates:\n")
-  show(summarystats(c, batchsize=batchsize))
+  showall(summarystats(c; etype=etype, args...), false)
   print("\nQuantiles:\n")
-  show(quantile(c, q=q))
+  showall(quantile(c, q=q), false)
 end
 
 function dic(c::MCMCChains)
@@ -104,10 +97,10 @@ function quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function summarystats(c::MCMCChains; batchsize::Integer=100)
+function summarystats(c::MCMCChains; etype=:bm, args...)
   cc = combine(c)
-  f = x -> [mean(x), std(x), sem(x), batchSE(x, size=batchsize)]
-  labels = ["Mean", "SD", "Naive SE", "Batch SE", "ESS"]
+  f = x -> [mean(x), std(x), sem(x), mcse(x, etype; args...)]
+  labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]
   vals = mapslices(x -> f(x), cc, 1)'
   vals = [vals  size(cc, 1) * min(vals[:,3] ./ vals[:,4], 1.0)]
   ChainSummary(vals, c.names, labels, header(c))
