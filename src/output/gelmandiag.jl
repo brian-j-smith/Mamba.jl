@@ -2,7 +2,7 @@
 
 function gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false,
            transform::Bool=false)
-  n, p, m = size(c.value)
+  n, p, m = size(c)
   m >= 2 || error("2 or more chains needed to run gelman diagnostic")
 
   psi = transform ? link(c) : c.value
@@ -38,7 +38,7 @@ function gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false,
             map(df2 -> quantile(FDist(B_df, df2), q), W_df)
 
   correction = (df .+ 3.0) ./ (df .+ 1.0)
-  psrf = sqrt([correction .* R_est correction .* R_upper])
+  psrf = sqrt([correction .* R_est  correction .* R_upper])
   psrf_labels = ["PSRF", string(100 * q) * "%"]
   psrf_names = c.names
 
