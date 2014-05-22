@@ -35,7 +35,7 @@ end
 
 function AMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
            adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
-  any(adapt .== [:all, :burnin, :none]) ||
+  in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   MCMCSampler(params,

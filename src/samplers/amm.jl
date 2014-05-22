@@ -39,7 +39,7 @@ end
 
 function AMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
            adapt::Symbol=:all)
-  any(adapt .== [:all, :burnin, :none]) ||
+  in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   MCMCSampler(params,
