@@ -108,6 +108,7 @@ include("output/chains.jl")
 include("output/chainsummary.jl")
 include("output/gelmandiag.jl")
 include("output/gewekediag.jl")
+include("output/mcse.jl")
 include("output/stats.jl")
 
 include("samplers/amm.jl")
@@ -161,6 +162,7 @@ export
   logpdf,
   logpdf!,
   mcmc,
+  mcse,
   plot,
   quantile,
   relist,
