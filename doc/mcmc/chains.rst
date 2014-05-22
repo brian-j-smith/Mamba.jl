@@ -17,8 +17,7 @@ Fields
 
 * ``value::Array{VariateType,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``names::Vector{String}`` : names assigned to the parameter elements.
-* ``start::Integer`` : number of the iteration stored in the first row of the ``value`` array.
-* ``thin::Integer`` : number of steps between consecutive iterations stored in the ``value`` array.
+* ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
 * ``model::MCMCModel`` : the model from which the sampled values were generated.
 
 Constructors
@@ -120,7 +119,7 @@ Methods
 .. function:: gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
 	
-	Compute the convergence diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM`, :cite:`gelman:1992:IIS` for MCMC sampler output.
+	Compute the convergence diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.
 	
 	**Arguments**
 	
@@ -145,6 +144,22 @@ Methods
 	
 		Returns an ``MCMCChains`` object with the subsetted sampler output.
 		
+.. function:: gewekediag(c::MCMCChains; first::Real=0.1, last::Real=0.5, \
+                batchsize::Integer=100)
+	
+	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.
+	
+	**Arguments**
+	
+		* ``c`` : sampler output on which to perform calculations.
+		* ``first`` : Proportion of iterations to include in the first window.
+		* ``last`` : Proportion of iterations to include in the last window.
+		* ``batchsize`` : number of iterations to include in a partitioning of the output for calculation of batch standard errors.
+		
+	**Value**
+	
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
+
 .. function:: hpd(c::MCMCChains; alpha::Real=0.05)
 
 	Compute highest posterior density (HPD) intervals of Chen and Shao :cite:`chen:1999:MCE` for MCMC sampler output.

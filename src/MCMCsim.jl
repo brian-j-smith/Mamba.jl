@@ -87,8 +87,7 @@ end
 immutable MCMCChains
   value::Array{VariateType,3}
   names::Vector{String}
-  start::Integer
-  thin::Integer
+  range::Range{Int}
   model::MCMCModel
 end
 
@@ -108,6 +107,7 @@ include("model/nodes.jl")
 include("output/chains.jl")
 include("output/chainsummary.jl")
 include("output/gelmandiag.jl")
+include("output/gewekediag.jl")
 include("output/stats.jl")
 
 include("samplers/amm.jl")
@@ -147,6 +147,7 @@ export
   describe,
   dic,
   gelmandiag,
+  gewekediag,
   gradient,
   gradient!,
   graph,
