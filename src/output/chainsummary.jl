@@ -37,20 +37,26 @@ end
 #################### ChainSummary Base Methods ####################
 
 function Base.show(io::IO, s::ChainSummary)
-  if size(s.value, 3) == 1
-    x = annotate(s.value[:,:,1], s.rownames, s.colnames)
-  else
-    x = mapslices(x -> annotate(x, s.rownames, s.colnames), s.value, [1,2])
-  end
+  Base.showlimited(annotate(s.value, s.rownames, s.colnames))
+  print("\n")
+end
+
+Base.showall(s::ChainSummary, header::Bool=true) = showall(STDOUT, s, header)
+
+function Base.showall(io::IO, s::ChainSummary, header::Bool=true)
+  !header || println(io, s.header)
   Base.with_output_limit(true) do
-    Base.showarray(io, x, limit=false)
+    Base.showarray(io, annotate(s.value, s.rownames, s.colnames), limit=false)
   end
   print("\n")
 end
 
-function Base.showall(io::IO, s::ChainSummary)
-  println(io, s.header)
-  show(io, s)
+function annotate{T}(x::Array{T,3}, rownames::Vector, colnames::Vector)
+  if size(x, 3) == 1
+    annotate(x[:,:,1], rownames, colnames)
+  else
+    mapslices(y -> annotate(y, rownames, colnames), x, [1,2])
+  end
 end
 
 function annotate(x::Matrix, rownames::Vector, colnames::Vector)
