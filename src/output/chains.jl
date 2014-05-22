@@ -11,7 +11,8 @@ function MCMCChains{T<:Real,U<:String}(value::Array{T,3}, names::Vector{U};
   length(names) == size(value, 2) ||
     error("value column and names dimensions must match")
   varval = convert(Array{VariateType, 3}, value)
-  MCMCChains(varval, String[names...], start, thin, model)
+  MCMCChains(varval, String[names...], range(start, thin, size(varval, 1)),
+             model)
 end
 
 function MCMCChains{T<:String}(iter::Integer, names::Vector{T};
@@ -27,18 +28,19 @@ end
 
 function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
            chains::Vector)
-  dim = size(c.value)
-
-  from = max(iceil((first(iter) - c.start) / c.thin + 1), 1)
+  from = max(iceil((first(iter) - first(c.range)) / step(c.range) + 1), 1)
   thin = step(iter)
-  to = min(ifloor((last(iter) - c.start) / c.thin + 1), dim[1])
+  to = min(ifloor((last(iter) - first(c.range)) / step(c.range) + 1),
+           length(c.range))
 
   idx1 = from:thin:to
   idx2 = findin(c.names, names)
-  idx3 = findin(1:dim[3], chains)
+  idx3 = findin(1:size(c, 3), chains)
 
   value = c.value[idx1, idx2, idx3]
-  MCMCChains(value, c.names[idx2], c.start + (from - 1) * c.thin, c.thin * thin,
+  MCMCChains(value, c.names[idx2],
+             range(first(c.range) + (from - 1) * step(c.range),
+                   thin * step(c.range), length(idx1)),
              c.model)
 end
 
@@ -79,8 +81,7 @@ function Base.show(io::IO, c::MCMCChains)
 end
 
 function Base.size(c::MCMCChains)
-  dim = size(c.value)
-  (c.start + (dim[1] - 1) * c.thin, dim[2], dim[3])
+  size(c.value)
 end
 
 function Base.size(c::MCMCChains, ind)
@@ -88,36 +89,43 @@ function Base.size(c::MCMCChains, ind)
 end
 
 function combine(c::MCMCChains)
-  mapreduce(i -> c.value[:,:,i], vcat, 1:size(c.value, 3))
+  n, p, m = size(c)
+  value = Array(VariateType, n * m, p)
+  for j in 1:p
+    idx = 1
+    for i in 1:n, k in 1:m
+      value[idx, j] = c.value[i, j, k]
+      idx += 1
+    end
+  end
+  value
 end
 
 function header(c::MCMCChains)
-  dim = size(c.value)
-  n = c.start + (dim[1] - 1) * c.thin
   string(
-    "Iterations = $(c.start):$n\n",
-    "Thinning interval = $(c.thin)\n",
-    "Number of chains = $(dim[3])\n",
-    "Samples per chain = $(dim[1])\n"
+    "Iterations = $(first(c.range)):$(last(c.range))\n",
+    "Thinning interval = $(step(c.range))\n",
+    "Number of chains = $(size(c, 3))\n",
+    "Samples per chain = $(size(c, 1))\n"
   )
 end
 
 function link(c::MCMCChains)
-  X = deepcopy(c.value)
+  cc = deepcopy(c.value)
   idx0 = 1:length(c.names)
   for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
     node = c.model[key]
     idx = nonzeros(indexin(names(node), c.names))
     if length(idx) > 0
-      X[:,idx,:] = mapslices(x -> link(node, x), X[:,idx,:], 2)
+      cc[:,idx,:] = mapslices(x -> link(node, x), cc[:,idx,:], 2)
       idx0 = setdiff(idx0, idx)
     end
   end
   for j in idx0
-    x = X[:,j,:]
+    x = cc[:,j,:]
     if minimum(x) > 0.0
-      X[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
+      cc[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
     end
   end
-  X
+  cc
 end
