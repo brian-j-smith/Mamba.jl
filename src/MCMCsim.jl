@@ -12,8 +12,8 @@ import Distributions: Continuous, Distribution, insupport, logpdf, logpdf!,
        minimum, maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
-import StatsBase: autocor, crosscov, describe, quantile, sem, StatsBase,
-       summarystats
+import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
+       StatsBase, summarystats
 
 
 #################### Variate Types ####################
