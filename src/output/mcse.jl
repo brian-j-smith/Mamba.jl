@@ -1,7 +1,7 @@
 function mcse{T<:Real}(x::Vector{T}, method::Symbol=:imse; args...)
+  method == :bm ? mcse_bm(x; args...) :
   method == :imse ? mcse_imse(x) :
   method == :ipse ? mcse_ipse(x) :
-  method == :bm ? mcse_bm(x; args...) :
     error("unsupported mcse method $method")
 end
 

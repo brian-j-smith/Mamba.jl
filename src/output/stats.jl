@@ -16,7 +16,7 @@ function cor(c::MCMCChains)
 end
 
 function describe(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
-           etype=:imse, args...)
+           etype=:bm, args...)
   println(header(c))
   print("Empirical Posterior Estimates:\n")
   showall(summarystats(c; etype=etype, args...), false)
@@ -97,7 +97,7 @@ function quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function summarystats(c::MCMCChains; etype=:imse, args...)
+function summarystats(c::MCMCChains; etype=:bm, args...)
   cc = combine(c)
   f = x -> [mean(x), std(x), sem(x), mcse(x, etype; args...)]
   labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]
