@@ -81,7 +81,8 @@ function Base.show(io::IO, c::MCMCChains)
 end
 
 function Base.size(c::MCMCChains)
-  size(c.value)
+  dim = size(c.value)
+  last(c.range), dim[2], dim[3]
 end
 
 function Base.size(c::MCMCChains, ind)
@@ -89,7 +90,7 @@ function Base.size(c::MCMCChains, ind)
 end
 
 function combine(c::MCMCChains)
-  n, p, m = size(c)
+  n, p, m = size(c.value)
   value = Array(VariateType, n * m, p)
   for j in 1:p
     idx = 1
@@ -106,7 +107,7 @@ function header(c::MCMCChains)
     "Iterations = $(first(c.range)):$(last(c.range))\n",
     "Thinning interval = $(step(c.range))\n",
     "Number of chains = $(size(c, 3))\n",
-    "Samples per chain = $(size(c, 1))\n"
+    "Samples per chain = $(length(c.range))\n"
   )
 end
 

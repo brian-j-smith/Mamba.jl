@@ -2,7 +2,7 @@
 
 function gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false,
            transform::Bool=false)
-  n, p, m = size(c)
+  n, p, m = size(c.value)
   m >= 2 || error("2 or more chains needed to run gelman diagnostic")
 
   psi = transform ? link(c) : c.value

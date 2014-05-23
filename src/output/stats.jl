@@ -68,7 +68,7 @@ function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
 
   x0 = unlist(m)
 
-  iter, p, chains = size(c)
+  iter, p, chains = size(c.value)
   values = Array(Float64, iter, 1, chains)
   for k in 1:chains
     print("\nPROCESSING MCMCChains $(k)/$(chains)\n")

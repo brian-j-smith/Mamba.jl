@@ -10,7 +10,7 @@ end
 
 function gewekediag(c::MCMCChains; first::Real=0.1, last::Real=0.5,
            etype=:imse, args...)
-  _, p, m = size(c)
+  _, p, m = size(c.value)
   vals = Array(Float64, p, 2, m)
   for j in 1:p, k in 1:m
     vals[j,:,k] = gewekediag(c.value[:,j,k], first=first, last=last;
