@@ -9,6 +9,7 @@ function MISS{T<:String}(params::Vector{T})
       value = deepcopy(node.value)
       if !sampler.tune["initialized"]
         sampler.tune["missing"] = find(isnan(node))
+        sampler.tune["initialized"] = true
       end
       missing = sampler.tune["missing"]
       if isa(node.distr, Array)
