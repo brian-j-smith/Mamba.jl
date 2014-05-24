@@ -247,6 +247,14 @@ Distributions.EdgeworthZ(d::UnivariateDistribution, n) =
 
 
 ######################################################################
+# Truncated Distributions
+######################################################################
+
+Distributions.Truncated{S<:ValueSupport}(d::UnivariateDistribution{S}, l, u) =
+  Truncated(d, convert(Float64, l), convert(Float64, u))
+
+
+######################################################################
 # Multivariate Distributions
 ######################################################################
 
