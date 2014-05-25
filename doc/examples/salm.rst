@@ -1,5 +1,7 @@
 .. index:: Examples; Salm: Extra-Poisson Variation in a Dose-Response Study
 
+.. _example-Salm:
+
 Salm: Extra-Poisson Variation in a Dose-Response Study
 ------------------------------------------------------
 

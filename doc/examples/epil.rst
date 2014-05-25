@@ -1,5 +1,7 @@
 .. index:: Examples; Epilepsy: Repeated Measures on Poisson Counts
 
+.. _example-Epilepsy:
+
 Epilepsy: Repeated Measures on Poisson Counts
 ---------------------------------------------
 

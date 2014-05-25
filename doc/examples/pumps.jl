@@ -27,8 +27,8 @@ model = MCMCModel(
   ),
 
   theta = MCMCStochastic(1,
-    @modelexpr(alpha, beta, N,
-      Distribution[Gamma(alpha, beta) for i in 1:N]
+    @modelexpr(alpha, beta,
+      Gamma(alpha, 1 / beta)
     )
   ),
 

@@ -40,22 +40,20 @@ model = MCMCModel(
   ),
 
   mu = MCMCStochastic(1,
-    @modelexpr(N,
-      IsoNormal(N, 1000)
-    ),
+    :(Normal(0, 1000)),
     false
   ),
 
   delta = MCMCStochastic(1,
-    @modelexpr(d, N, s2,
-      IsoNormal(d * ones(N), s2)
+    @modelexpr(d, s2,
+      Normal(d, sqrt(s2))
     ),
     false
   ),
 
   delta_new = MCMCStochastic(
     @modelexpr(d, s2,
-      Normal(d, s2)
+      Normal(d, sqrt(s2))
     )
   ),
 
@@ -75,7 +73,7 @@ inits = [
   ["rc" => blocker["rc"], "rt" => blocker["rt"], "d" => 0, "delta_new" => 0,
    "s2" => 1, "mu" => zeros(blocker["N"]), "delta" => zeros(blocker["N"])],
   ["rc" => blocker["rc"], "rt" => blocker["rt"], "d" => 2, "delta_new" => 2,
-  "s2" => 10, "mu" => fill(2, blocker["N"]), "delta" => fill(2, blocker["N"])]
+   "s2" => 10, "mu" => fill(2, blocker["N"]), "delta" => fill(2, blocker["N"])]
 ]
 
 

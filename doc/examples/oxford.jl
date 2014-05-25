@@ -72,16 +72,14 @@ model = MCMCModel(
   ),
 
   b = MCMCStochastic(1,
-    @modelexpr(s2, K,
-      IsoNormal(K, sqrt(s2))
+    @modelexpr(s2,
+      Normal(0, sqrt(s2))
     ),
     false
   ),
 
   mu = MCMCStochastic(1,
-    @modelexpr(K,
-      IsoNormal(K, 1000)
-    ),
+    :(Normal(0, 1000)),
     false
   ),
 
@@ -116,7 +114,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [AMWG(["alpha", "beta1", "beta2", "s2"], fill(0.1, 4)),
+scheme = [AMWG(["alpha", "beta1", "beta2", "s2"], fill(1.0, 4)),
           Slice(["mu"], ones(oxford["K"])),
           Slice(["b"], ones(oxford["K"]))]
 setsamplers!(model, scheme)

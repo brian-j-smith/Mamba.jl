@@ -21,7 +21,7 @@ leuk["Y"] = Array(Integer, N, T)
 leuk["dN"] = Array(Integer, N, T)
 for i in 1:N
   for j in 1:T
-    leuk["dN"][i,j] = leuk["fail"][i] * int(leuk["t_obs"][i] == leuk["t"][j])
+    leuk["dN"][i,j] = leuk["fail"][i] * (leuk["t_obs"][i] == leuk["t"][j])
     leuk["Y"][i,j] = int(leuk["t_obs"][i] >= leuk["t"][j])
   end
 end
@@ -53,7 +53,7 @@ model = MCMCModel(
 
   dL0 = MCMCStochastic(1,
     @modelexpr(mu, c, T,
-      Distribution[Gamma(mu[j], c) for j in 1:T]
+      Distribution[Gamma(mu[j], 1 / c) for j in 1:T]
     ),
     false
   ),

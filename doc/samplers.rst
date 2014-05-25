@@ -3,6 +3,8 @@
 Sampling Functions
 ==================
 
+A collection of functions are provided for simulating draws from from distributions that can be specified up to constants of proportionalities.  Included are :ref:`section-MCMCSampler` constructors for use with the :func:`mcmc` engine, and stand-alone sampling functions.
+
 .. toctree::
 	:maxdepth: 1
 

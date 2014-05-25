@@ -1,5 +1,7 @@
 .. index:: Examples; Surgical: Institutional Ranking
 
+.. _example-Surgical:
+
 Surgical: Institutional Ranking
 -------------------------------
 
@@ -18,7 +20,7 @@ Number of deaths are modelled as
 	\mu &\sim \text{Normal}(0, 1000) \\
 	\sigma^2 &\sim \text{InverseGamma}(0.001, 0001),
 	
-where :math:`r_i` are the number of deaths, out of :math:`n_i` operations, at hospital :math:`i`.
+where :math:`r_i` is the number of deaths, out of :math:`n_i` operations, at hospital :math:`i`.
 	
 
 Analysis Program

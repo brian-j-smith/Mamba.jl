@@ -54,15 +54,15 @@ Model Specification
 Nodes
 ^^^^^
 
-In the `MCMCsim` package, terms that appear in the Bayesian model specification are referred to as *nodes*.  Nodes are classified as one of three types: stochastic, logical, or input.
+In the `MCMCsim` package, terms that appear in the Bayesian model specification are referred to as *nodes*.  Nodes are classified as one of three types:
 
 	* **Stochastic nodes** are any model terms that have likelihood or prior distributional specifications.  In the regression example, :math:`\bm{y}`, :math:`\bm{\beta}`, and :math:`\sigma^2` are stochastic nodes.
 	* **Logical nodes** are terms, like :math:`\bm{\mu}`, that are deterministic functions of other nodes.
 	* **Input nodes** are any remaining model terms (:math:`\bm{X}`) and are considered to be fixed quantities in the analysis.
 
-Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `MCMCsim` because of the distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
+Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `MCMCsim` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
-For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being character strings.  The regression nodes will be named ``"y"``, ``"beta"``, ``"s2"``, ``"mu"``, and ``"xmat"`` to correspond to the stochastic, logical, and input nodes identified in the previous paragraph.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Logical and stochastic nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
+For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being character strings.  The regression nodes will be named ``"y"``, ``"beta"``, ``"s2"``, ``"mu"``, and ``"xmat"`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Stochastic and logical nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
 
 .. code-block:: julia
 
@@ -97,10 +97,36 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	)
 	
-A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted expression that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  The dimensions of a stochastic node and its distribution object must match.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/release-0.2/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
-In the example, nodes ``y``, ``mu``, and ``beta`` are vectors, ``s2`` is a scalar, and the first two are not being monitored.  Further, note that the model could be implemented without the logical node ``mu``.  It is created here primarily for illustrative purposes.
+Stochastic expressions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distribution specifications for the ``beta`` node are shown below.
 
+.. code-block:: julia
+
+	# Case 1: Multivariate Normal with independence covariance matrix
+	beta = MCMCStochastic(1,
+	  :(IsoNormal(2, sqrt(1000)))
+	)
+
+	# Case 2: One common univariate Normal 
+	beta = MCMCStochastic(1,
+	  :(Normal(0, sqrt(1000)))
+	)
+  
+	# Case 3: Array of univariate Normals
+	beta = MCMCStochastic(1,
+	  :(Distribution[Normal(0, sqrt(1000)), Normal(0, sqrt(1000))])
+	)
+
+	# Case 4: Array of univariate Normals
+	beta = MCMCStochastic(1,
+	  :(Distribution[Normal(0, sqrt(1000)) for i in 1:2])
+	)
+
+Case 1 is one of the `multivariate normal distributions <http://distributionsjl.readthedocs.org/en/latest/multivariate.html#multivariate-normal-distribution>`_ available in the `Distributions` package, and the specification used in the example model implementation.  In Case 2, a single `univariate normal distribution <http://distributionsjl.readthedocs.org/en/latest/univariate.html#normal>`_ is specified to imply independent priors of the same type for all elements of ``beta``.  Cases 3 and 4 explicitly specify a univariate prior for each element of ``beta`` and allow for the possibility of differences among the priors.  Both return `arrays <http://docs.julialang.org/en/release-0.2/manual/arrays/>`_ of Distribution objects, with the last case automating the specification of array elements.
+
+In summary, ``y`` and ``beta`` are stochastic vectors, ``s2`` is a stochastic scalar, and ``mu`` is a logical vector.  We note that the model could have been implemented without ``mu``.  It is included here primarily to illustrate use of a logical node.  Finally, note that nodes ``y`` and ``mu`` are not being monitored.
+	
 
 Sampling Schemes
 ^^^^^^^^^^^^^^^^
@@ -122,14 +148,14 @@ Additionally, users are free to create their own samplers with the generic ``MCM
   p(\bm{\beta} | \sigma^2, \bm{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\bm{\beta}) \\
   &\propto \exp\left\{-\frac{1}{2} (\bm{\beta} - \bm{\mu})^\top \bm{\Sigma}^{-1} (\bm{\beta} - \bm{\mu})\right\},
 
-where :math:`\bm{\Sigma} = \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{X} + \bm{\Sigma}_\pi^{-1}\right)^{-1}` and :math:`\bm{\mu} = \bm{\Sigma} \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{y} + \bm{\Sigma}_\pi^{-1} \bm{\mu}_\pi\right)`, which is recognizable as multivariate normal.  Likewise, 
+where :math:`\bm{\Sigma} = \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{X} + \bm{\Sigma}_\pi^{-1}\right)^{-1}` and :math:`\bm{\mu} = \bm{\Sigma} \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{y} + \bm{\Sigma}_\pi^{-1} \bm{\mu}_\pi\right)`, and is recognizable as multivariate normal.  Likewise, 
 
 .. math::
 
 	p(\sigma^2 | \bm{\beta}, \mathbf{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\sigma^2) \\
     &\propto \left(\sigma^2\right)^{-(n/2 + \alpha_\pi) - 1} \exp\left\{-\frac{1}{\sigma^2} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right) \right\},
 
-whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) / 2 + \beta_\pi` scale parameters.  A user-defined sampling scheme to generate draws from these full conditions is constructed below.
+whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) / 2 + \beta_\pi` scale parameters.  A user-defined sampling scheme to generate draws from these full conditionals is constructed below.
 
 .. code-block:: julia
 
@@ -173,7 +199,7 @@ A sampling scheme can be assigned to an existing model with a call to the ``sets
 	## Sampling Scheme Assignment
 	setsamplers!(model, scheme1)
 
-Alternative, a predefined scheme can be passed in to the ``MCMCModel`` constructor at the time of model implementation as the value to its ``samplers`` argument.
+Alternatively, a predefined scheme can be passed in to the ``MCMCModel`` constructor at the time of model implementation as the value to its ``samplers`` argument.
 
 The Model Expression Macro
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -192,7 +218,7 @@ The Model Expression Macro
 		
 	**Example**
 	
-		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``MCMCSampler``, as shown below.  In essence, the macro automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
+		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``MCMCSampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
 		
 		.. code-block:: julia
 		
@@ -276,7 +302,7 @@ For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia**
 Initial Values
 ^^^^^^^^^^^^^^
 
-A **julia** vector of dictionaries containing initial values for all stochastic nodes must be created.  The dictionary keys should match the node names, and their values should be vectors whose elements are the same type of structures as the nodes.  Vector elements are cycled through to initialize nodes when multiple runs of the MCMC simulator are performed.  Initial values for the regression example are as given below.
+A **julia** vector of dictionaries containing initial values for all stochastic nodes must be created.  The dictionary keys should match the node names, and their values should be vectors whose elements are the same type of structures as the nodes.  Three sets of initial values for the regression example are created in with the following code.
 
 .. code-block:: julia
 
@@ -286,13 +312,13 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 	          "s2" => rand(Gamma(1, 1))]
 	         for i in 1:3]
 
-Initial values for ``y`` are those in the observed response vector.  Likewise, the node is not updated in the sampling schemes defined earlier and thus retains its initial values throughout MCMC simulations.  Three different sets of initial values are generated for ``beta`` from a normal distribution and for ``s2`` from a gamma distribution.
+Initial values for ``y`` are those in the observed response vector.  Likewise, the node is not updated in the sampling schemes defined earlier and thus retains its initial values throughout MCMC simulations.  Initial values are generated for ``beta`` from a normal distribution and for ``s2`` from a gamma distribution.
 
 
 MCMC Engine
 ^^^^^^^^^^^
 
-MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the ``mcmc`` function.  As shown below, the first three arguments are an ``MCMCModel`` object, a dictionary of values for input nodes, and a dictionary of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.
+MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the ``mcmc`` function.  As shown below, the first three arguments are an ``MCMCModel`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.
 
 .. code-block:: julia
 
@@ -316,7 +342,7 @@ Posterior Inference
 Convergence Diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Checks of MCMC output should be performed to assess convergence of simulated draws to the posterior distribution.  One popular check is the diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM`, :cite:`gelman:1992:IIS`.  It is available through the ``gelmandiag`` function.
+Checks of MCMC output should be performed to assess convergence of simulated draws to the posterior distribution.  One popular check is the diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM,gelman:1992:IIS`.  It is available through the ``gelmandiag`` function.
 
 .. code-block:: julia
 
@@ -336,7 +362,7 @@ Values of the diagnostic that are greater than 1.2 are evidence of non-convergen
 Posterior Summaries
 ^^^^^^^^^^^^^^^^^^^
 
-Once convergence has been assessed, sample statistics can be computed on the MCMC output to estimate features of the posterior distribution.  Some of the available posterior summaries are illustrated in the code block below.
+Once convergence has been assessed, sample statistics may be computed on the MCMC output to estimate features of the posterior distribution.  Some of the available posterior summaries are illustrated in the code block below.
 
 .. code-block:: julia
 
@@ -350,13 +376,12 @@ Once convergence has been assessed, sample statistics can be computed on the MCM
 
 	Empirical Posterior Estimates:
 	4x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "Batch SE"      "ESS"
-	 "beta[1]"  0.62304   1.36139   0.0112573    0.020375     8080.37  
-	 "beta[2]"  0.791204  0.415459  0.00343542   0.00603667   8322.98  
-	 "s2"       1.67718   3.03168   0.0250689    0.238592     1536.65  
+	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
+	 "beta[1]"  0.62304   1.36139   0.0112573    0.0190558   8639.77  
+	 "beta[2]"  0.791204  0.415459  0.00343542   0.00536403  9366.67  
+	 "s2"       1.67718   3.03168   0.0250689    0.13544     2706.98  
 
 	Quantiles:
-	4x6 Array{Any,2}:
 	 ""           "2.5%"     "25.0%"   "50.0%"   "75.0%"    "97.5%"
 	 "beta[1]"  -2.06987    0.017145  0.601943  1.22092    3.49299 
 	 "beta[2]"  -0.0672923  0.614058  0.801942  0.975351   1.59617 
@@ -428,12 +453,12 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 
 	Empirical Posterior Estimates:
 	3x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "Batch SE"      "ESS"
-	 "beta[1]"  0.668175  1.34189   0.0173194    0.0334802    3105.36  
-	 "beta[2]"  0.779001  0.402028  0.00518886   0.00970701   3208.89  
+	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
+	 "beta[1]"  0.668175  1.34189   0.0173194    0.0308641   3368.58  
+	 "beta[2]"  0.779001  0.402028  0.00518886   0.00882264  3530.55  
 
 	Quantiles:
-	3x6 Array{Any,2}:
+	3x6 Array{Any,2}
 	 ""           "2.5%"    "25.0%"    "50.0%"   "75.0%"   "97.5%"
 	 "beta[1]"  -1.94608   0.0228286  0.601943  1.29243   3.74592 
 	 "beta[2]"  -0.128758  0.598377   0.800894  0.976567  1.55979 
@@ -442,17 +467,17 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 Computational Performance
 -------------------------
 
-Computing runtimes were recorded for different sampling algorithms applied to the regression example.  Runs wer performed on a desktop computer with an Intel i5-2500 CPU @ 3.30GHz.  Results are summarized in the table below.  Note that these are only intended to measure the raw computing performance of the package, and do not account for different efficiencies in the sampling algorithms.
+Computing runtimes were recorded for different sampling algorithms applied to the regression example.  Runs wer performed on a desktop computer with an Intel i5-2500 CPU @ 3.30GHz.  Results are summarized in the table below.  Note that these are only intended to measure the raw computing performance of the package, and do not account for different efficiencies in output generated by the sampling algorithms.
 
 .. table:: Number of draws per second for select sampling algorithms in `MCMCsim`.
 
-	+--------------+--------------+--------+------+--------------+--------------+
-	| Adaptive Metropolis         |        |      | Slice                       |
-	+--------------+--------------+        |      +--------------+--------------+
-	| Within Gibbs | Multivariate | Gibbs  | NUTS | Within Gibbs | Multivariate |
-	+==============+==============+========+======+==============+==============+
-	| 10,000       | 11,100       | 20,000 | 900  | 7,300        | 10,000       |
-	+--------------+--------------+--------+------+--------------+--------------+
+	+--------------+--------------+--------+-------+--------------+--------------+
+	| Adaptive Metropolis         |        |       | Slice                       |
+	+--------------+--------------+        |       +--------------+--------------+
+	| Within Gibbs | Multivariate | Gibbs  | NUTS  | Within Gibbs | Multivariate |
+	+==============+==============+========+=======+==============+==============+
+	| 10,000       | 11,100       | 20,000 | 1,100 | 7,300        | 10,000       |
+	+--------------+--------------+--------+-------+--------------+--------------+
 
 	
 Development and Testing

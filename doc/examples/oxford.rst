@@ -1,9 +1,11 @@
 .. index:: Examples; Oxford: Smooth Fit to Log-Odds Ratios
 
+.. _example-Oxford:
+
 Oxford: Smooth Fit to Log-Odds Ratios
 -------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Breslow and Clayton :cite:`breslow:1993:AIG` concerning the association between death from childhood cancer and maternal exposure to X-rays, for subjects partitioned into 120 age and birth year strata. 
+An example from OpenBUGS :cite:`openbugs:2014:ex1` and Breslow and Clayton :cite:`breslow:1993:AIG` concerning the association between death from childhood cancer and maternal exposure to X-rays, for subjects partitioned into 120 age and birth-year strata. 
 
 Model
 ^^^^^

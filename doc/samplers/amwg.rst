@@ -3,15 +3,15 @@
 Adaptive Metropolis within Gibbs (AMWG)
 ---------------------------------------
 
-Implementation of a Metropolis-within-Gibbs sampler :cite:`metropolis:1953:ESC`, :cite:`robert:2009:EAM`, :cite:`tierney:1994:MCE` for iteratively simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of a Metropolis-within-Gibbs sampler :cite:`metropolis:1953:ESC,robert:2009:EAM,tierney:1994:MCE` for iteratively simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
 .. function:: amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function; \
-                adapt::Bool=false, batchsize::Integer=50, target::Real=0.44)
+                adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
 
-	Simulate one draw from a target distribution using an adaptive Metropolis-within-Gibbs sampler.
+	Simulate one draw from a target distribution using an adaptive Metropolis-within-Gibbs sampler.  Parameters are assumed to be continuous and unconstrained.
 	
 	**Arguments**
 	
@@ -19,12 +19,12 @@ Stand-Alone Function
 		* ``sigma`` : initial standard deviations for the univariate normal proposal distributions.
 		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 		* ``adapt`` : whether to adaptively update the proposal distribution.
-		* ``batchsize`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
+		* ``batchsize`` : number of samples that must be newly accumulated before applying an adaptive update to the proposal distributions.
 		* ``target`` : a target acceptance rate for the adaptive algorithm.
 		
 	**Value**
 	
-		Returns ``v`` updated with the simulated values and associated tuning parameters.
+		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
 	**Example**
 
@@ -53,7 +53,7 @@ Constructors
 .. function:: VariateAMWG(x::Vector{VariateType}, tune::TuneAMWG)
               VariateAMWG(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateAMWG`` object that stores values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
+	Construct a ``VariateAMWG`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
 	
 	**Arguments**
 	
@@ -91,12 +91,12 @@ MCMCSampler Constructor
 .. function:: AMWG(params::Vector{T<:String}, sigma::Vector{U<:Real}; \
 				adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
 
-	Construct an ``MCMCSampler`` object for adaptive Metropolis-within-Gibbs sampling.
+	Construct an ``MCMCSampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		* ``params`` : named stochastic nodes to be updated with the sampler.
-		* ``sigma`` : initial standard deviations for the univariate normal proposal distributions.
+		* ``params`` : named stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``sigma`` : initial standard deviations for the univariate normal proposal distributions.  The standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
 		* ``adapt`` : type of adaptation phase.  Options are
 			* ``:all`` : adapt proposals during all iterations.
 			* ``:burnin`` : adapt proposals during burn-in iterations.

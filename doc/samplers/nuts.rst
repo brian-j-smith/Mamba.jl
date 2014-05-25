@@ -3,14 +3,14 @@
 No-U-Turn Sampler (NUTS)
 ------------------------
 
-Implementation of the NUTS extension :cite:`hoffman:2011:nuts` to Hamiltonian Monte Carlo :cite:`neal:2011:hmc` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2011:nuts` to Hamiltonian Monte Carlo :cite:`neal:2011:hmc` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: nutseps(v::VariateNUTS, fx::Function)
 	
-	Generate an initial value for the step size parameter of the No-U-Turn sampler.
+	Generate an initial value for the step size parameter of the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 	
 	**Arguments**
 	
@@ -24,7 +24,7 @@ Stand-Alone Functions
 .. function:: nuts!(v::VariateNUTS, epsilon::Real, fx::Function; adapt::Bool=false, \
                 target::Real=0.6)
 
-	Simulate one draw from a target distribution using the No-U-Turn sampler.
+	Simulate one draw from a target distribution using the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 	
 	**Arguments**
 	
@@ -65,7 +65,7 @@ Constructors
 .. function:: VariateNUTS(x::Vector{VariateType}, tune::TuneNUTS)
               VariateNUTS(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateNUTS`` object that stores values and tuning parameters for No-U-Turn sampling.
+	Construct a ``VariateNUTS`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
 	
 	**Arguments**
 	
@@ -108,11 +108,11 @@ MCMCSampler Constructor
 .. function:: NUTS(params::Vector{T<:String}; dtype::Symbol=:forward, \
 				target::Real=0.6)
 
-	Construct an ``MCMCSampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.
+	Construct an ``MCMCSampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		* ``params`` : named stochastic nodes to be updated with the sampler.
+		* ``params`` : named stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
 		* ``dtype`` : type of differentiation for gradient calculations.  Options are
 			* ``:central`` : central differencing.
 			* ``:forward`` : forward differencing.

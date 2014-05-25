@@ -1,5 +1,7 @@
 .. index:: Examples; LSAT: Item Response
 
+.. _example-LSAT:
+
 LSAT: Item Response
 -------------------
 

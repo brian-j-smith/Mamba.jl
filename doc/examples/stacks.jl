@@ -31,10 +31,12 @@ stacks = (String => Any)[
 stacks["N"] = size(stacks["x"], 1)
 stacks["p"] = size(stacks["x"], 2)
 
-stacks["z"] = hcat(
-  ones(21),
-  mapslices(x -> (x .- mean(x)) / std(x), stacks["x"], 1)
-)
+stacks["meanx"] = map(j -> mean(stacks["x"][:,j]), 1:stacks["p"])
+stacks["sdx"] = map(j -> std(stacks["x"][:,j]), 1:stacks["p"])
+stacks["z"] = Float64[
+  (stacks["x"][i,j] .- stacks["meanx"][j]) / stacks["sdx"][j]
+  for i in 1:stacks["N"], j in 1:stacks["p"]
+]
 
 
 ## Model Specification
@@ -42,38 +44,78 @@ stacks["z"] = hcat(
 model = MCMCModel(
 
   y = MCMCStochastic(1,
-    @modelexpr(z, beta, s2,
+    @modelexpr(mu, sigma, N,
       begin
-        mu = z * beta
-        sigma = sqrt(s2)
-        Distribution[Laplace(mu[i], sigma) for i in 1:length(mu)]
+        Distribution[Laplace(mu[i], sigma) for i in 1:N]
       end
     ),
     false
   ),
 
+  beta0 = MCMCStochastic(
+    :(Normal(0, 1000)),
+    false
+  ),
+
   beta = MCMCStochastic(1,
-    @modelexpr(p,
-      IsoNormal(1 + p, 1000)
-    )
+    :(Normal(0, 1000)),
+    false
+  ),
+
+  mu = MCMCLogical(1,
+    @modelexpr(beta0, z, beta,
+      beta0 .+ z * beta
+    ),
+    false
   ),
 
   s2 = MCMCStochastic(
-    :(InverseGamma(0.001, 0.001))
+    :(InverseGamma(0.001, 0.001)),
+    false
+  ),
+
+  sigma = MCMCLogical(
+    @modelexpr(s2,
+      sqrt(2.0 * s2)
+    )
+  ),
+
+  b0 = MCMCLogical(
+    @modelexpr(beta0, b, meanx,
+      beta0 - dot(b, meanx)
+    )
+  ),
+
+  b = MCMCLogical(1,
+    @modelexpr(beta, sdx,
+      beta ./ sdx
+    )
+  ),
+
+  outlier = MCMCLogical(1,
+    @modelexpr(y, mu, sigma, N,
+      Float64[abs((y[i] - mu[i]) / sigma) > 2.5 for i in 1:N]
+    )
   )
 
 )
 
 
+## Monitor Select Outliers
+monitor = fill(false, stacks["N"])
+monitor[[1,3,4,21]] = true
+setmonitor!(model["outlier"], monitor)
+
+
 ## Initial Values
 inits = [
-  ["y" => stacks["y"], "beta" => [10, 0, 0, 0], "s2" => 10],
-  ["y" => stacks["y"], "beta" => [1, 1, 1, 1], "s2" => 1]
+  ["y" => stacks["y"], "beta0" => 10, "beta" => [0, 0, 0], "s2" => 10],
+  ["y" => stacks["y"], "beta0" => 1, "beta" => [1, 1, 1], "s2" => 1]
 ]
 
 
 ## Sampling Scheme
-scheme = [NUTS(["beta"]),
+scheme = [NUTS(["beta0", "beta"]),
           Slice(["s2"], [1.0])]
 setsamplers!(model, scheme)
 

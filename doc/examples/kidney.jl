@@ -47,7 +47,8 @@ model = MCMCModel(
           begin
             mu = beta0 + beta_age * age[i,j] + beta_sex * sex[i] + beta_dis[i] +
                  b[i]
-            Truncated(Weibull(tau, exp(-mu)), tcensor[i,j], Inf)
+            lambda = exp(-mu / tau)
+            Truncated(Weibull(tau, lambda), tcensor[i,j], Inf)
           end
           for i in 1:N, j in 1:M
         ]
@@ -57,8 +58,8 @@ model = MCMCModel(
   ),
 
   b = MCMCStochastic(1,
-    @modelexpr(s2, N,
-      IsoNormal(N, sqrt(s2))
+    @modelexpr(s2,
+      Normal(0, sqrt(s2))
     ),
     false
   ),
@@ -80,11 +81,11 @@ model = MCMCModel(
   ),
 
   beta_Dx = MCMCStochastic(1,
-    :(IsoNormal(3, 100))
+    :(Normal(0, 100))
   ),
 
   tau = MCMCStochastic(
-    :(Gamma(1, 0.001))
+    :(Gamma(1, 1000))
   )
 
 )
@@ -102,8 +103,8 @@ inits = [
 ## Sampling Scheme
 scheme = [MISS(["t"]),
           AMWG(["beta0", "beta_age", "beta_sex", "beta_Dx"], fill(0.1, 6)),
-          NUTS(["b"]),
-          SliceWG(["s2", "tau"], [1.0, 0.25])]
+          SliceWG(["b"], fill(1.0, kidney["N"])),
+          SliceWG(["s2", "tau"], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 

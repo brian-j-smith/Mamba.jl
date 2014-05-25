@@ -89,16 +89,17 @@ Methods
 	
 		A ``ChainSummary`` type object with the first and second dimensions of the ``value`` field indexing the model parameters between which correlations.  Results are for all chains combined.
 
-.. function:: describe(c::MCMCChains; batchsize::Integer=100, \
-				q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+.. function:: describe(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975], \
+                etype=:bm, args...)
 				
 	Compute summary statistics for MCMC sampler output.
 	
 	**Arguments**
 	
 		* ``c`` : sampler output on which to perform calculations.
-		* ``batchsize`` : number of iterations to include in a partitioning of the output for calculation of batch standard errors.
 		* ``q`` : probabilities at which to calculate quantiles.
+		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+		* ``args...`` : additional arguments to be passed to the ``etype`` method.
 		
 	**Value**
 	
@@ -145,7 +146,7 @@ Methods
 		Returns an ``MCMCChains`` object with the subsetted sampler output.
 		
 .. function:: gewekediag(c::MCMCChains; first::Real=0.1, last::Real=0.5, \
-                batchsize::Integer=100)
+                etype=:imse, args...)
 	
 	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.
 	
@@ -154,7 +155,8 @@ Methods
 		* ``c`` : sampler output on which to perform calculations.
 		* ``first`` : Proportion of iterations to include in the first window.
 		* ``last`` : Proportion of iterations to include in the last window.
-		* ``batchsize`` : number of iterations to include in a partitioning of the output for calculation of batch standard errors.
+		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+		* ``args...`` : additional arguments to be passed to the ``etype`` method.
 		
 	**Value**
 	
@@ -173,6 +175,23 @@ Methods
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and lower and upper intervals in the first and second columns.  Results are for all chains combined.
 
+.. function:: mcse(x::Vector{T<:Real}, method::Symbol=:imse; args...)
+
+	Compute Monte Carlo standard errors.
+	
+	**Arguments**
+	
+		* ``x`` : a time series of values on which to perform calculations.
+		* ``method`` : method used for the calculations.  Options are
+			* ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.
+			* ``imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
+			* ``ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
+		* ``args...`` : additional arguments for the calculation method.
+		
+	**Value**
+	
+		The numeric standard error value.
+
 .. function:: quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
 	Compute posterior quantiles for MCMC sampler output.
@@ -186,14 +205,15 @@ Methods
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
 
-.. function:: summarystats(c::MCMCChains; batchsize::Integer=100)
+.. function:: summarystats(c::MCMCChains; etype=:bm, args...)
 
 	Compute posterior summary statistics for MCMC sampler output.
 	
 	**Arguments**
 	
 		* ``c`` : sampler output on which to perform calculations.
-		* ``batchsize`` : number of iterations to include in a partitioning of the output for calculation of batch standard errors.
+		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+		* ``args...`` : additional arguments to be passed to the ``etype`` method.
 		
 	**Value**
 	

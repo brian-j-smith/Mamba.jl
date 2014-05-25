@@ -43,10 +43,7 @@ model = MCMCModel(
 
   lambda = MCMCStochastic(2,
     @modelexpr(s2,
-      begin
-        sigma = sqrt(s2)
-        Distribution[Normal(0, sigma) for i in 1:3, j in 1:6]
-      end
+      Normal(0, sqrt(s2))
     ),
     false
   ),

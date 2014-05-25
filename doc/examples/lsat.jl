@@ -67,15 +67,18 @@ model = MCMCModel(
   ),
 
   theta = MCMCStochastic(1,
-    @modelexpr(N,
-      IsoNormal(N, 1)
-    ),
+    :(Normal(0, 1)),
     false
   ),
 
   alpha = MCMCStochastic(1,
-    @modelexpr(T,
-      IsoNormal(T, 100)
+    :(Normal(0, 100)),
+    false
+  ),
+
+  a = MCMCLogical(1,
+    @modelexpr(alpha,
+      alpha .- mean(alpha)
     )
   ),
 
@@ -97,7 +100,7 @@ inits = [
 
 ## Sampling Scheme
 scheme = [AMWG(["alpha", "beta"], fill(0.1, lsat["T"] + 1)),
-          AMM(["theta"], 0.1 * eye(lsat["N"]))]
+          Slice(["theta"], fill(1.0, lsat["N"]))]
 setsamplers!(model, scheme)
 
 

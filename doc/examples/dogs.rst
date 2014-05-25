@@ -1,5 +1,7 @@
 .. index:: Examples; Dogs: Loglinear Model for Binary Data
 
+.. _example-Dogs:
+
 Dogs: Loglinear Model for Binary Data
 -------------------------------------
 
@@ -14,7 +16,7 @@ Failures to jump the barriers in time are modelled as
 
 	y_{i,j} &= \text{Bernoulli}(\pi_{i,j}) \quad\quad i=1,\ldots,30; j=2,\ldots,25 \\
 	\log(\pi_{i,j}) &= \alpha x_{i,j-1} + \beta (j - 1 - x_{i,j-1}) \\
-	\alpha, \beta &\sim \text{Flat}(-\infty, -1e-5) \\
+	\alpha, \beta &\sim \text{Flat}(-\infty, -0.00001) \\
 	
 where :math:`y_{i,j} = 1` if dog :math:`i` fails to jump the barrier before the shock on trial :math:`j`, and 0 otherwise; :math:`x_{i,j-1}` is the number of successful jumps prior to trial :math:`j`; and :math:`\pi_{i,j}` is the probability of failure.
 

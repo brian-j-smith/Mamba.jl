@@ -1,5 +1,7 @@
 .. index:: Examples; Equiv: Bioequivalence in a Cross-Over Trial
 
+.. _example-Equiv:
+
 Equiv: Bioequivalence in a Cross-Over Trial
 -------------------------------------------
 

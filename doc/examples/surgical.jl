@@ -27,8 +27,8 @@ model = MCMCModel(
   ),
 
   b = MCMCStochastic(1,
-    @modelexpr(mu, N, s2,
-      IsoNormal(mu * ones(N), sqrt(s2))
+    @modelexpr(mu, s2,
+      Normal(mu, sqrt(s2))
     ),
     false
   ),
@@ -39,7 +39,7 @@ model = MCMCModel(
 
   pop_mean = MCMCLogical(
     @modelexpr(mu,
-      1.0 / (exp(-mu) + 1.0)
+      invlogit(mu)
     )
   ),
 
@@ -49,11 +49,14 @@ model = MCMCModel(
 
 )
 
+srand(123)
 
 ## Initial Values
 inits = [
-  ["r" => surgical["r"], "b" => fill(0.1, surgical["N"]), "s2" => 1, "mu" => 0],
-  ["r" => surgical["r"], "b" => fill(0.5, surgical["N"]), "s2" => 10, "mu" => 1]
+  ["r" => surgical["r"], "b" => fill(0.1, surgical["N"]), "s2" => 1,
+   "mu" => 0],
+  ["r" => surgical["r"], "b" => fill(0.5, surgical["N"]), "s2" => 10,
+   "mu" => 1]
 ]
 
 

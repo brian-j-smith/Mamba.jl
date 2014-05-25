@@ -1,5 +1,7 @@
 .. index:: Examples; Mice: Weibull Regression
 
+.. _example-Mice:
+
 Mice: Weibull Regression
 ------------------------
 
@@ -12,10 +14,10 @@ Time to events are modelled as
 
 .. math::
 
-	t_i &\sim \text{Weibull}(\tau, \mu_i) \quad\quad i=1,\ldots,20 \\
-	\mu_i &= \exp(-\bm{z}_i^\top \bm{\beta}) \\
+	t_i &\sim \text{Weibull}(\tau, 1 / \mu_i^\tau) \quad\quad i=1,\ldots,20 \\
+	\log(\mu_i) &= \bm{z}_i^\top \bm{\beta} \\
 	\beta_k &\sim \text{Normal}(0, 10) \\
-	\tau &\sim \text{Gamma}(1, 0.001),
+	\tau &\sim \text{Exponential}(1000),
 	
 where :math:`t_i` is the time of death for mouse :math:`i`, and :math:`\bm{z}_i` is a vector of covariates.
 	

@@ -45,10 +45,7 @@ model = MCMCModel(
 
   delta = MCMCStochastic(2,
     @modelexpr(s2_2,
-      begin
-        sigma = sqrt(s2_2)
-        Distribution[Normal(0, sigma) for i in 1:10, j in 1:2]
-      end
+      Normal(0, sqrt(s2_2))
     ),
     false
   ),

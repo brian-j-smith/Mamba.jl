@@ -32,7 +32,7 @@ model = MCMCModel(
 
   mu = MCMCStochastic(1,
     @modelexpr(theta, batches, s2_between,
-      IsoNormal(theta * ones(batches), sqrt(s2_between))
+      Normal(theta, sqrt(s2_between))
     ),
     false
   ),

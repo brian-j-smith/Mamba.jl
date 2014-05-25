@@ -32,8 +32,8 @@ model = MCMCModel(
   ),
 
   b = MCMCStochastic(1,
-    @modelexpr(N, s2,
-      IsoNormal(N, sqrt(s2))
+    @modelexpr(s2,
+      Normal(0, sqrt(s2))
     ),
     false
   ),

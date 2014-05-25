@@ -30,7 +30,7 @@ model = MCMCModel(
   ),
 
   pc = MCMCStochastic(2,
-    :(Distribution[Uniform(0, 1) for i in 1:6, j in 1:8]),
+    :(Uniform(0, 1)),
     false
   ),
 
@@ -56,7 +56,7 @@ model = MCMCModel(
   ),
 
   mu = MCMCStochastic(1,
-    :(Distribution[Uniform(-10, 10) for i in 1:6]),
+    :(Uniform(-10, 10)),
     false
   ),
 
@@ -68,7 +68,7 @@ model = MCMCModel(
 
   tau = MCMCLogical(1,
     @modelexpr(priors, s2_0,
-      [ sqrt(1 / priors[1]),
+      [ sqrt(priors[1]),
         sqrt(priors[2]),
         priors[3],
         sqrt(s2_0 * (1 / priors[4] - 1)),
@@ -80,7 +80,7 @@ model = MCMCModel(
   priors = MCMCStochastic(1,
     @modelexpr(s2_0,
       Distribution[
-        Gamma(0.001, 0.001),
+        InverseGamma(0.001, 0.001),
         Uniform(0, 50),
         Uniform(0, 50),
         Uniform(0, 1),

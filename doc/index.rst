@@ -1,7 +1,8 @@
-MCMCsim: Markov chain Monte Carlo simulation toolkit for julia (version 0.0.0)
-==============================================================================
+MCMCsim: Markov chain Monte Carlo simulation toolkit for julia (version |release|)
+==================================================================================
 
-:Date: May 12, 2014
+:Version: |release|
+:Date: |today|
 :Author: Brian J Smith
 :Contact: brian-j-smith@uiowa.edu
 :Web site: 

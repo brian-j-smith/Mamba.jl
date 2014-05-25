@@ -3,15 +3,15 @@
 Adaptive Mixture Metropolis (AMM)
 ---------------------------------
 
-Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive (multivariate) mixture Metropolis :cite:`haario:2001:AMA`, :cite:`hastings:1970:MCS`, :cite:`metropolis:1953:ESC` sampler for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive (multivariate) mixture Metropolis :cite:`haario:2001:AMA,hastings:1970:MCS,metropolis:1953:ESC` sampler for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
 .. function:: amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function; \
-                adapt::Bool=false)
+                adapt::Bool=true)
 
-	Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.
+	Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.  Parameters are assumed to be continuous and unconstrained.
 	
 	**Arguments**
 	
@@ -22,7 +22,7 @@ Stand-Alone Function
 		
 	**Value**
 	
-		Returns ``v`` updated with the simulated values and associated tuning parameters.
+		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
 	**Example**
 	
@@ -51,7 +51,7 @@ Constructors
 .. function:: VariateAMM(x::Vector{VariateType}, tune::TuneAMM)
               VariateAMM(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateAMM`` object that stores values and tuning parameters for adaptive mixture Metropolis sampling.
+	Construct a ``VariateAMM`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
 	
 	**Arguments**
 	
@@ -90,12 +90,12 @@ MCMCSampler Constructor
 .. function:: AMM(params::Vector{T<:String}, Sigma::Matrix{U:<Real}; \
 				adapt::Symbol=:all)
 
-	Construct an ``MCMCSampler`` object for adaptive mixture Metropolis sampling.
+	Construct an ``MCMCSampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		* ``params`` : named stochastic nodes to be updated with the sampler.
-		* ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.
+		* ``params`` : named stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
 		* ``adapt`` : type of adaptation phase.  Options are
 			* ``:all`` : adapt proposal during all iterations.
 			* ``:burnin`` : adapt proposal during burn-in iterations.

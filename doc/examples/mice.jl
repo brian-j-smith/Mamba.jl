@@ -25,7 +25,10 @@ model = MCMCModel(
   t = MCMCStochastic(2,
     @modelexpr(tau, beta, tcensor, M, N,
       Distribution[
-        Truncated(Weibull(tau, exp(-beta[i])), tcensor[i,j], Inf)
+        begin
+          lambda = exp(-beta[i] / tau)
+          Truncated(Weibull(tau, lambda), tcensor[i,j], Inf)
+        end
         for i in 1:M, j in 1:N
       ]
     ),
@@ -33,13 +36,11 @@ model = MCMCModel(
   ),
 
   tau = MCMCStochastic(
-    :(Gamma(1, 0.001))
+    :(Exponential(1000))
   ),
 
   beta = MCMCStochastic(1,
-    @modelexpr(M,
-      IsoNormal(M, 10)
-    )
+    :(Normal(0, 10))
   )
 
 )
@@ -47,15 +48,15 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["t" => mice["t"], "beta" => -ones(mice["M"]), "tau" => 1.0],
-  ["t" => mice["t"], "beta" => zeros(mice["M"]), "tau" => 0.1]
+  ["t" => mice["t"], "beta" => fill(-2.5, mice["M"]), "tau" => 1.0],
+  ["t" => mice["t"], "beta" => fill(-5, mice["M"]), "tau" => 0.1]
 ]
 
 
 ## Sampling Scheme
 scheme = [MISS(["t"]),
-          AMWG(["beta"], fill(0.1, mice["M"])),
-          Slice(["tau"], [0.1])]
+          SliceWG(["beta"], fill(1.0, mice["M"])),
+          Slice(["tau"], [1.0])]
 setsamplers!(model, scheme)
 
 

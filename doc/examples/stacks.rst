@@ -1,5 +1,7 @@
 .. index:: Examples; Stacks: Robust Regression
 
+.. _example-Stacks:
+
 Stacks: Robust Regression
 -------------------------
 

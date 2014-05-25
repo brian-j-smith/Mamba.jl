@@ -78,9 +78,7 @@ model = MCMCModel(
   ),
 
   theta = MCMCStochastic(1,
-    @modelexpr(nChild,
-      IsoNormal(nChild, 100)
-    )
+    :(Normal(0, 100))
   )
 
 )

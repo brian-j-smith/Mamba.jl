@@ -5,12 +5,12 @@ Multivariate Slice (Slice)
 
 Implementation of the multivariate shrinkage slice sampler of Neal :cite:`neal:2003:SS` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
-Stand-Alone Functions
-^^^^^^^^^^^^^^^^^^^^^
+Stand-Alone Function
+^^^^^^^^^^^^^^^^^^^^
 
 .. function:: slice!(v::VariateSlice, width::Vector{Float64}, logf::Function)
 
-	Simulate one draw from a target distribution using a multivariate (shrinkage) slice sampler.
+	Simulate one draw from a target distribution using a multivariate (shrinkage) slice sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -20,7 +20,7 @@ Stand-Alone Functions
 		
 	**Value**
 	
-		Returns ``v`` updated with the simulated values and associated tuning parameters.
+		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
 	**Example**
 
@@ -50,7 +50,7 @@ Constructors
 .. function:: VariateSlice(x::Vector{VariateType}, tune::TuneSlice)
               VariateSlice(x::Vector{VariateType}, tune=nothing)
 
-  	Construct a ``VariateSlice`` object that stores values and tuning parameters for slice sampling.
+  	Construct a ``VariateSlice`` object that stores sampled values and tuning parameters for slice sampling.
 	
 	**Arguments**
 	
@@ -82,13 +82,13 @@ MCMCSampler Constructor
 .. function:: Slice(params::Vector{T<:String}, width::Vector{Float64}; \
                 transform::Bool=false)
 
-	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.
+	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
 		*  ``params`` : named stochastic nodes to be updated with the sampler.
 		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
-		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).
+		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
 
 	**Value**
 	
@@ -101,12 +101,12 @@ Slice within Gibbs (SliceWG)
 
 Implementation of the univariate shrinkage slice sampler of Neal :cite:`neal:2003:SS` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
-Stand-Alone Functions
-^^^^^^^^^^^^^^^^^^^^^
+Stand-Alone Function
+^^^^^^^^^^^^^^^^^^^^
 
 .. function:: slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
 
-	Simulate one draw from a target distribution using a univariate (shrinkage) slice-within-Gibbs sampler.
+	Simulate one draw from a target distribution using a univariate (shrinkage) slice-within-Gibbs sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -116,7 +116,7 @@ Stand-Alone Functions
 		
 	**Value**
 	
-		Returns ``v`` updated with the simulated values and associated tuning parameters.
+		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
 	**Example**
 
@@ -129,13 +129,13 @@ MCMCSampler Constructor
 .. function:: SliceWG(params::Vector{T<:String}, width::Vector{Float64}; \
                 transform::Bool=false)
 
-	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.
+	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
 		*  ``params`` : named stochastic nodes to be updated with the sampler.
 		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial interval widths from which to simulate values.
-		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).
+		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
 
 	**Value**
 	

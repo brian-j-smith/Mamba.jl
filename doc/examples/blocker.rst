@@ -1,5 +1,7 @@
 .. index:: Examples; Blocker: Random Effects Meta-Analysis of Clinical Trials
 
+.. _example-Blocker:
+
 Blocker: Random Effects Meta-Analysis of Clinical Trials
 --------------------------------------------------------
 

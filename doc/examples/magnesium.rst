@@ -1,5 +1,7 @@
 .. index:: Examples; Magnesium: Meta-Analysis Prior Sensitivity
 
+.. _example-Magnesium:
+
 Magnesium: Meta-Analysis Prior Sensitivity
 ------------------------------------------
 
@@ -8,7 +10,7 @@ An example from OpenBUGS :cite:`openbugs:2014:ex1`.
 Model
 ^^^^^
 
-Number of events reported for treatment and control subjects in 8 studies as
+Number of events reported for treatment and control subjects in 8 studies is modelled as
 
 .. math::
 

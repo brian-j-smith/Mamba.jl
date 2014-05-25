@@ -61,7 +61,7 @@ model = MCMCModel(
 
   alpha = MCMCStochastic(1,
     @modelexpr(mu_alpha, s2_alpha,
-      IsoNormal(mu_alpha * ones(30), sqrt(s2_alpha))
+      Normal(mu_alpha, sqrt(s2_alpha))
     ),
     false
   ),
@@ -84,7 +84,7 @@ model = MCMCModel(
 
   beta = MCMCStochastic(1,
     @modelexpr(mu_beta, s2_beta,
-      IsoNormal(mu_beta * ones(30), sqrt(s2_beta))
+      Normal(mu_beta, sqrt(s2_beta))
     ),
     false
   ),

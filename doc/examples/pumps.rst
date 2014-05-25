@@ -1,5 +1,7 @@
 .. index:: Examples; Pumps: Gamma-Poisson Hierarchical Model
 
+.. _example-Pumps:
+
 Pumps: Gamma-Poisson Hierarchical Model
 ---------------------------------------
 
@@ -13,7 +15,7 @@ Pump failure are modelled as
 .. math::
 
 	y_i &\sim \text{Poisson}(\theta_i t_i) \quad\quad i=1,\ldots,10 \\
-	\theta_i &\sim \text{Gamma}(\alpha, \beta) \\
+	\theta_i &\sim \text{Gamma}(\alpha, 1 / \beta) \\
 	\alpha &\sim \text{Gamma}(1, 1) \\
 	\beta &\sim \text{Gamma}(0.1, 1),
 	

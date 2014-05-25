@@ -1,5 +1,7 @@
 .. index:: Examples; Rats: A Normal Hierarchical Model
 
+.. _example-Rats:
+
 Rats: A Normal Hierarchical Model
 ---------------------------------
 
@@ -16,7 +18,7 @@ Weights are modeled as
 	\alpha_i &\sim \text{Normal}(\mu_\alpha, \sigma_\alpha) \\
 	\beta_i &\sim \text{Normal}(\mu_\beta, \sigma_\beta) \\
 	\mu_\alpha, \mu_\beta &\sim \text{Normal}(0, 1000) \\
-	\sigma^2_\alpha, \sigma^2_\beta &\sim \text{InverseGamma}(0.001, 0.001),
+	\sigma^2_\alpha, \sigma^2_\beta, \sigma^2_c &\sim \text{InverseGamma}(0.001, 0.001),
 	
 where :math:`y_{i,j}` is repeated weight measurement :math:`j` on rat :math:`i`, and :math:`x_j` is the day on which the measurement was taken.
 	
@@ -28,3 +30,5 @@ Analysis Program
 
 Results
 ^^^^^^^
+
+.. code-block:: julia

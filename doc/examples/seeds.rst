@@ -1,5 +1,7 @@
 .. index:: Examples; Seeds: Random Effect Logistic Regression
 
+.. _example-Seeds:
+
 Seeds: Random Effect Logistic Regression
 ----------------------------------------
 

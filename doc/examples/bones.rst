@@ -1,5 +1,7 @@
 .. index:: Examples; Bones: Latent Trait Model for Multiple Ordered Categorical Responses
 
+.. _example-Bones:
+
 Bones: Latent Trait Model for Multiple Ordered Categorical Responses
 --------------------------------------------------------------------
 

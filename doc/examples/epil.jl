@@ -89,7 +89,7 @@ epil["T"] = size(epil["y"], 2)
 epil["logBase4"] = log(epil["Base"] / 4)
 epil["BT"] = epil["logBase4"] .* epil["Trt"]
 epil["logAge"] = log(epil["Age"])
-map(key -> epil[key * "bar"] = epil[key] .- mean(epil[key]),
+map(key -> epil[key * "bar"] = mean(epil[key]),
     ["logBase4", "Trt", "BT", "logAge", "V4"])
 
 
@@ -98,14 +98,15 @@ map(key -> epil[key * "bar"] = epil[key] .- mean(epil[key]),
 model = MCMCModel(
 
   y = MCMCStochastic(2,
-    @modelexpr(
-      alpha0, alpha_Base, alpha_Trt, alpha_BT, alpha_Age, alpha_V4, b1, b,
-      logBase4bar, Trtbar, BTbar, logAgebar, V4bar, N, T,
+    @modelexpr(a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,
+               alpha_BT, BT, BTbar, alpha_Age, logAge, logAgebar, alpha_V4, V4,
+               V4bar, b1, b, N, T,
       Distribution[
         begin
-          mu = exp(alpha0 + alpha_Base * logBase4bar[i] +
-                   alpha_Trt * Trtbar[i] + alpha_BT * BTbar[i] +
-                   alpha_Age * logAgebar[i] + alpha_V4 * V4bar[j] + b1[i] +
+          mu = exp(a0 + alpha_Base * (logBase4[i] - logBase4bar) +
+                   alpha_Trt * (Trt[i] - Trtbar) + alpha_BT * (BT[i] - BTbar) +
+                   alpha_Age * (logAge[i] - logAgebar) +
+                   alpha_V4 * (V4[j] - V4bar) + b1[i] +
                    b[i,j])
           Poisson(mu)
         end
@@ -116,24 +117,22 @@ model = MCMCModel(
   ),
 
   b1 = MCMCStochastic(1,
-    @modelexpr(s2_b1, N,
-      IsoNormal(N, sqrt(s2_b1))
+    @modelexpr(s2_b1,
+      Normal(0, sqrt(s2_b1))
     ),
     false
   ),
 
   b = MCMCStochastic(2,
-    @modelexpr(s2_b, N, T,
-      begin
-        sigma = sqrt(s2_b)
-        Distribution[Normal(0, sigma) for i in 1:N, j in 1:T]
-      end
+    @modelexpr(s2_b,
+      Normal(0, sqrt(s2_b))
     ),
     false
   ),
 
-  alpha0 = MCMCStochastic(
-    :(Normal(0, 100))
+  a0 = MCMCStochastic(
+    :(Normal(0, 100)),
+    false
   ),
 
   alpha_Base = MCMCStochastic(
@@ -156,6 +155,14 @@ model = MCMCModel(
     :(Normal(0, 100))
   ),
 
+  alpha0 = MCMCLogical(
+    @modelexpr(a0, alpha_Base, logBase4bar, alpha_Trt, Trtbar, alpha_BT, BTbar,
+               alpha_Age, logAgebar, alpha_V4, V4bar,
+      a0 - alpha_Base * logBase4bar - alpha_Trt * Trtbar - alpha_BT * BTbar -
+        alpha_Age * logAgebar - alpha_V4 * V4bar
+    )
+  ),
+
   s2_b1 = MCMCStochastic(
     :(InverseGamma(0.001, 0.001))
   ),
@@ -169,17 +176,17 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["y" => epil["y"], "alpha0" => 0, "alpha_Base" => 0, "alpha_Trt" => 0,
+  ["y" => epil["y"], "a0" => 0, "alpha_Base" => 0, "alpha_Trt" => 0,
    "alpha_BT" => 0, "alpha_Age" => 0, "alpha_V4" => 0, "s2_b1" => 1,
    "s2_b" => 1, "b1" => zeros(epil["N"]), "b" => zeros(epil["N"], epil["T"])],
-  ["y" => epil["y"], "alpha0" => 1, "alpha_Base" => 1, "alpha_Trt" => 1,
+  ["y" => epil["y"], "a0" => 1, "alpha_Base" => 1, "alpha_Trt" => 1,
    "alpha_BT" => 1, "alpha_Age" => 1, "alpha_V4" => 1, "s2_b1" => 10,
    "s2_b" => 10, "b1" => zeros(epil["N"]), "b" => zeros(epil["N"], epil["T"])]
 ]
 
 
 ## Sampling Scheme
-scheme = [AMWG(["alpha0", "alpha_Base", "alpha_Trt", "alpha_BT", "alpha_Age",
+scheme = [AMWG(["a0", "alpha_Base", "alpha_Trt", "alpha_BT", "alpha_Age",
                 "alpha_V4"], fill(0.1, 6)),
           Slice(["b1"], ones(epil["N"])),
           Slice(["b"], ones(epil["N"] * epil["T"])),
