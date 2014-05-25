@@ -5,7 +5,7 @@
 MCMCModel
 ---------
 
-The ``MCMCModel`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``MCMCDependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``MCMCSampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}`.
+The ``MCMCModel`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``MCMCDependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``MCMCSampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}.`
 
 Declaration
 ^^^^^^^^^^^
@@ -38,7 +38,7 @@ Constructor
 		* ``burnin`` : number of initial draws to be discarded as a burn-in sequence to allow for convergence.
 		* ``chain`` : current run of the MCMC simulator in a possible sequence of runs.
 		* ``samplers`` : a vector of block-specific sampling functions.
-		* ``nodes...`` : a variable number of user specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``MCMCLogical`` or ``MCMCStochastic`` type objects.  Node names in the model will be taken from the argument names.
+		* ``nodes...`` : an arbitrary number of user-specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``MCMCLogical`` or ``MCMCStochastic`` type objects.  Their names in the model will be taken from the argument names.
 		
 	**Value**
 	
@@ -67,12 +67,12 @@ Methods
 			  gradient!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false, dtype::Symbol=:central)
 			
-	Numerically approximate the gradient for stochastic nodes.
+	Compute the gradient for stochastic nodes.
 	
 	**Arguments**
 	
 		* ``m`` : a model containing the stochastic nodes for which to compute the gradient.
-		* ``x`` : a value (other than the current one) at which to compute the gradient.
+		* ``x`` : a value (possibly different than the current one) at which to compute the gradient.
 		* ``block`` : the sampling block of stochastic nodes for which to compute the gradient, if specified; otherwise, all sampling blocks are included.
 		* ``transform`` : whether to compute the gradient on the link–transformed scale.
 		* ``dtype`` : type of differentiation for gradient calculations.  Options are
@@ -81,7 +81,7 @@ Methods
 		
 	**Value**
 	
-		The resulting gradient vector.  Method ``gradient!`` additionally updates model ``m`` with supplied values ``x``.
+		The resulting gradient vector.  Method ``gradient!()`` additionally updates model ``m`` with supplied values ``x``.
 
 .. function:: graph(m::MCMCModel)
 
@@ -143,13 +143,13 @@ Methods
 	**Arguments**
 	
 		* ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
-		* ``x`` : a value (other than the current one) at which to evaluate densities.
-		* ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all sampling blocks are included.
+		* ``x`` : a value (possibly different than the current one) at which to evaluate densities.
+		* ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all stochastic nodes are included.
 		* ``transform`` : whether to evaluate evaluate log-densities on the link–transformed scale.
 		
 	**Value**
 	
-		The resulting numeric value of summed log-densities.  Method ``logpdf!`` additionally updates model ``m`` with supplied values ``x``.
+		The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 				
 .. function:: mcmc(model::MCMCModel, inputs::Dict{T<:String}, \
 				inits::Vector{Dict{U<:String,Any}}, iter::Integer; \

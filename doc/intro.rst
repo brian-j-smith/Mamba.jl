@@ -20,7 +20,7 @@ MCMCsim Package
 .. figure:: images/gibbs.png
 	:align: center
 
-	*MCMCsim* Gibbs sampling scheme.
+	*MCMCsim* Gibbs sampling scheme
 	
 A summary of the steps involved in using the package to perform MCMC simulation for a Bayesian model is given below.
 

@@ -12,6 +12,10 @@ The *MCMC* types and their relationships are depicted below with a Unified Model
 
 The relationships are as follows.  Type ``MCMCModel`` contains a dictionary field (``Dict{String,Any}``) of model nodes and a field (``Vector{MCMCSampler}``) of one or more sampling functions.  Nodes can be one of three types:
 
+	.. index:: Nodes; Stochastic
+	.. index:: Nodes; Logical
+	.. index:: Nodes; Input
+	
 	* **Stochastic nodes** (``MCMCStochastic``) are any model terms that have likelihood or prior distributional specifications.
 	* **Logical nodes** (``MCMCLogical``) are terms that are deterministic functions of other nodes.
 	* **Input nodes** (not shown) are any other model terms and data types that are considered to be fixed quantities in the analysis.

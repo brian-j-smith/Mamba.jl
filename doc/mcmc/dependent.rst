@@ -7,7 +7,7 @@ MCMCDependent
 
 ``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
 
-Since parameter values in the ``MCMCNode`` structure are stored as a scalar, vector, or matrix, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the three being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter vector, with one corresponding instance of ``MCMCDependent``.  Whether to formulate parameters as scalar, vector, or matrix nodes depends on the application at hand.  Vector and matrix formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parameterizations may be preferable.  Situations in which parameter vectors are often used include the specification of regression coefficients and random effects.
+Since parameter values in the ``MCMCDependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``MCMCDependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
 
 Declaration
 ^^^^^^^^^^^
@@ -17,8 +17,8 @@ Declaration
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
-* ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
+* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
+* ``name::String`` : a name for the node.
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{String}`` : names of other nodes upon whom the values of this one depends.
@@ -29,11 +29,11 @@ Methods
 
 .. function:: invlink(d::MCMCDependent, x)
 
-	Apply a node-specific inverse-link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDependent`` to implement other link functions. 
+	Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``MCMCDependent`` to implement different link transformations. 
 	
 	**Arguments**
 	
-		* ``d`` : a node on which a ``link`` transformation method is defined.
+		* ``d`` : a node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
 	
 	**Value**
@@ -42,11 +42,11 @@ Methods
 
 .. function:: link(d::MCMCDependent, x)
 
-	Apply a node-specific link transformation.  In this method, the link function is defined to be the identity function.  The method function may be redefined for subtypes of ``MCMCDependent`` to implement other link functions. 
+	Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``MCMCDependent`` to implement different link transformations. 
 	
 	**Arguments**
 	
-		* ``d`` : a node on which a ``link`` transformation method is defined.
+		* ``d`` : a node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
 	
 	**Value**
@@ -55,7 +55,7 @@ Methods
 
 .. function:: logpdf(d::MCMCDependent, transform::Bool=false)
 
-	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a value of 0 is thus returned.  The method function may be redefined for subtypes of ``MCMCDependent`` that have distributional specifications.
+	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``MCMCDependent`` that have distributional specifications.
 	
 	**Arguments**
 	
@@ -111,8 +111,8 @@ Declaration
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
-* ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
+* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
+* ``name::String`` : a name for the node.
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{String}`` : names of other nodes upon whom the values of this one depends.
@@ -128,7 +128,6 @@ Constructors
 	
 	**Arguments**
 	
-		* ``length`` : number of vector elements in the node.
 		* ``d`` : number of dimensions for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
 		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
@@ -146,12 +145,12 @@ Methods
 	
 	**Arguments**
 	
-		* ``l`` : a logical node to assign initial values.
+		* ``l`` : a logical node to which to assign initial values.
 		* ``m`` : a model that contains the node.
 		
 	**Value**
 	
-		Returns the result of a call to `update!(l, m)``.
+		Returns the result of a call to ``update!(l, m)``.
 
 .. function:: update!(l::MCMCLogical, m::MCMCModel)
 
@@ -190,8 +189,8 @@ Declaration
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar, vector, or matrix of ``VariateType`` values that represent samples from a target distribution.
-* ``names::Vector{String}`` : element-specific names corresponding to values in the ``value`` field.
+* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
+* ``name::String`` : a name for the node.
 * ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{String}`` : names of other nodes upon whom the distributional specification for this one depends.
@@ -244,7 +243,7 @@ Methods
 	
 	**Arguments**
 	
-		* ``s`` : a stochastic node on which a ``link`` transformation method is defined.
+		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
 	
 	**Value**
@@ -261,7 +260,7 @@ Methods
 	
 	**Arguments**
 	
-		* ``s`` : a stochastic node on which a ``link`` transformation method is defined.
+		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
 	
 	**Value**
@@ -287,7 +286,7 @@ Methods
 	
 	**Arguments**
 	
-		* ``s`` : a stochastic node to assign initial values.
+		* ``s`` : a stochastic node to which to assign initial values.
 		* ``m`` : a model that contains the node.
 		* ``x`` : values to assign to the node.
 		
