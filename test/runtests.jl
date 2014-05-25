@@ -9,12 +9,12 @@ examples = [
   "dyes",
   "epil",
   "equiv",
-  "inhalers",
-  "kidney",
+#  "inhalers",
+#  "kidney",
   "leuk",
   "lsat",
   "magnesium",
-  "mice",
+#  "mice",
   "oxford",
   "pumps",
   "rats",
@@ -27,7 +27,7 @@ examples = [
 macro runtest(dir, prefix)
   quote
     fname = $dir * $prefix * ".jl"
-    println(" * $fname")
+    print("\n>>> Testing $fname\n\n")
     include(fname)
   end
 end
