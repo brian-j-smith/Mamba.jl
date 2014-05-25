@@ -1,5 +1,5 @@
-julia 0.2-
-Calculus 0.1-
-Distributions 0.3-
-Graphs 0.3-
-StatsBase 0.3-
+julia 0.3-
+Calculus 0.1.3-
+Distributions 0.4.7-
+Graphs 0.4.2-
+StatsBase 0.4.0-
