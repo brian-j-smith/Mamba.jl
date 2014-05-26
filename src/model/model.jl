@@ -200,7 +200,7 @@ end
 #################### MCMCModel Simulation Methods ####################
 
 function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false,
-           dtype::Symbol=:central)
+           dtype::Symbol=:forward)
   x0 = unlist(m, block, transform)
   value = gradient!(m, x0, block, transform, dtype)
   relist!(m, x0, block, transform)
@@ -208,7 +208,7 @@ function gradient(m::MCMCModel, block::Integer=0, transform::Bool=false,
 end
 
 function gradient{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
-           transform::Bool=false, dtype::Symbol=:central)
+           transform::Bool=false, dtype::Symbol=:forward)
   x0 = unlist(m, block)
   value = gradient!(m, x, block, transform, dtype)
   relist!(m, x0, block)
@@ -216,7 +216,7 @@ function gradient{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
 end
 
 function gradient!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
-           transform::Bool=false, dtype::Symbol=:central)
+           transform::Bool=false, dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
   gradient(f, x, dtype)
 end

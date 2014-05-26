@@ -61,11 +61,11 @@ Methods
 		The specified node.
 	
 .. function:: gradient(m::MCMCModel, block::Integer=0, transform::Bool=false, \
-				dtype::Symbol=:central)
+				dtype::Symbol=:forward)
               gradient(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
-				transform::Bool=false, dtype::Symbol=:central)
+				transform::Bool=false, dtype::Symbol=:forward)
 			  gradient!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
-				transform::Bool=false, dtype::Symbol=:central)
+				transform::Bool=false, dtype::Symbol=:forward)
 			
 	Compute the gradient for stochastic nodes.
 	
