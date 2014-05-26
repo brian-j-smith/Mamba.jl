@@ -53,10 +53,10 @@ function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
       tunepar = tune(model, block)
       v = VariateNUTS(x, tunepar["sampler"])
       if model.iter <= 1
-        f = x -> nutsfx(model, x, block, true, tunepar["dtype"])
+        f = x -> nutsfx(model, x, block, tunepar["dtype"])
         tunepar["epsilon"] = nutsepsilon(v, f)
       end
-      f = x -> nutsfx!(model, x, block, true, tunepar["dtype"])
+      f = x -> nutsfx!(model, x, block, tunepar["dtype"])
       nuts!(v, tunepar["epsilon"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
@@ -68,19 +68,19 @@ function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
 end
 
 function nutsfx{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
-           transform::Bool, dtype::Symbol)
-  logf = logpdf(m, x, block, transform)
+           dtype::Symbol)
+  logf = logpdf(m, x, block, true)
   grad = isfinite(logf) ?
-           gradient(m, x, block, transform, dtype) :
+           gradient(m, x, block, true, dtype) :
            zeros(length(x))
   logf, grad
 end
 
 function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
-           transform::Bool, dtype::Symbol)
-  logf = logpdf!(m, x, block, transform)
+           dtype::Symbol)
+  logf = logpdf!(m, x, block, true)
   grad = isfinite(logf) ?
-           gradient!(m, x, block, transform, dtype) :
+           gradient!(m, x, block, true, dtype) :
            zeros(length(x))
   logf, grad
 end
