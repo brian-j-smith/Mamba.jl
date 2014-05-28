@@ -1,6 +1,7 @@
 module MCMCsim
 
 using Distributions
+using Gadfly
 
 
 #################### Imports ####################
@@ -14,6 +15,8 @@ import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
+import Gadfly: Plot, plot
+import Color: distinguishable_colors
 
 
 #################### Variate Types ####################
@@ -123,6 +126,8 @@ include("utils.jl")
 include("variate/core.jl")
 include("variate/numeric.jl")
 
+include("plots/chain_plot.jl")
+
 
 #################### Exports ####################
 
@@ -196,5 +201,8 @@ export
   nutsepsilon,
   slice!,
   slicewg!
+  
+export
+  chain_plot
 
 end
