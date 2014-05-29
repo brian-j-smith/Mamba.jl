@@ -2,15 +2,15 @@ using MCMCsim
 using Distributions
 
 ## Data
-seeds = (String => Any)[
-  "r" => [10, 23, 23, 26, 17, 5, 53, 55, 32, 46, 10, 8, 10, 8, 23, 0, 3, 22, 15,
-          32, 3],
-  "n" => [39, 62, 81, 51, 39, 6, 74, 72, 51, 79, 13, 16, 30, 28, 45, 4, 12, 41,
-          30, 51, 7],
-  "x1" => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  "x2" => [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+seeds = (Symbol => Any)[
+  :r => [10, 23, 23, 26, 17, 5, 53, 55, 32, 46, 10, 8, 10, 8, 23, 0, 3, 22, 15,
+         32, 3],
+  :n => [39, 62, 81, 51, 39, 6, 74, 72, 51, 79, 13, 16, 30, 28, 45, 4, 12, 41,
+         30, 51, 7],
+  :x1 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  :x2 => [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 ]
-seeds["N"] = length(seeds["r"])
+seeds[:N] = length(seeds[:r])
 
 
 ## Model Specification
@@ -63,17 +63,17 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["r" => seeds["r"], "alpha0" => 0, "alpha1" => 0, "alpha2" => 0,
-   "alpha12" => 0, "s2" => 0.01, "b" => zeros(seeds["N"])],
-  ["r" => seeds["r"], "alpha0" => 0, "alpha1" => 0, "alpha2" => 0,
-   "alpha12" => 0, "s2" => 1, "b" => zeros(seeds["N"])]
+  [:r => seeds[:r], :alpha0 => 0, :alpha1 => 0, :alpha2 => 0,
+   :alpha12 => 0, :s2 => 0.01, :b => zeros(seeds[:N])],
+  [:r => seeds[:r], :alpha0 => 0, :alpha1 => 0, :alpha2 => 0,
+   :alpha12 => 0, :s2 => 1, :b => zeros(seeds[:N])]
 ]
 
 
 ## Sampling Scheme
-scheme = [AMM(["alpha0", "alpha1", "alpha2", "alpha12"], 0.01 * eye(4)),
-          AMWG(["b"], fill(0.01, seeds["N"])),
-          Slice(["s2"], [1.0])]
+scheme = [AMM([:alpha0, :alpha1, :alpha2, :alpha12], 0.01 * eye(4)),
+          AMWG([:b], fill(0.01, seeds[:N])),
+          Slice([:s2], [1.0])]
 setsamplers!(model, scheme)
 
 

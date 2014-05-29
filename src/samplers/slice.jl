@@ -23,7 +23,7 @@ end
 
 #################### MCMCSampler Constructor ####################
 
-function Slice{T<:String}(params::Vector{T}, width::Vector{Float64};
+function Slice(params::Vector{Symbol}, width::Vector{Float64};
            transform::Bool=false)
   MCMCSampler(params,
     quote
@@ -71,7 +71,7 @@ end
 
 #################### Slice within Gibbs Sampler ####################
 
-function SliceWG{T<:String}(params::Vector{T}, width::Vector{Float64};
+function SliceWG(params::Vector{Symbol}, width::Vector{Float64};
            transform::Bool=false)
   MCMCSampler(params,
     quote

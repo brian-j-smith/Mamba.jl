@@ -62,7 +62,7 @@ function hpd(c::MCMCChains; alpha::Real=0.05)
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
+function logpdf(c::MCMCChains, nkeys::Vector{Symbol})
   m = c.model
   idx = indexin(names(m, keys(m, :block)), c)
 

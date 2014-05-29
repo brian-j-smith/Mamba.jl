@@ -2,8 +2,8 @@ using MCMCsim
 using Distributions
 
 ## Data
-dogs = (String => Any)[
-  "Y" =>
+dogs = (Symbol => Any)[
+  :Y =>
     [0 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
      0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1
      0 0 0 0 0 1 1 0 1 1 0 0 1 1 0 1 0 1 1 1 1 1 1 1 1
@@ -35,12 +35,12 @@ dogs = (String => Any)[
      0 0 0 0 1 1 0 0 1 1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1
      0 0 0 0 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1]
 ]
-dogs["Dogs"] = size(dogs["Y"], 1)
-dogs["Trials"] = size(dogs["Y"], 2)
+dogs[:Dogs] = size(dogs[:Y], 1)
+dogs[:Trials] = size(dogs[:Y], 2)
 
-dogs["xa"] = mapslices(cumsum, dogs["Y"], 2)
-dogs["xs"] = mapslices(x -> [1:25] .- x, dogs["xa"], 2)
-dogs["y"] = 1 .- dogs["Y"][:, 2:25]
+dogs[:xa] = mapslices(cumsum, dogs[:Y], 2)
+dogs[:xs] = mapslices(x -> [1:25] .- x, dogs[:xa], 2)
+dogs[:y] = 1 .- dogs[:Y][:, 2:25]
 
 
 ## Model Specification
@@ -85,13 +85,13 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["y" => dogs["y"], "alpha" => -1, "beta" => -1],
-  ["y" => dogs["y"], "alpha" => -2, "beta" => -2]
+  [:y => dogs[:y], :alpha => -1, :beta => -1],
+  [:y => dogs[:y], :alpha => -2, :beta => -2]
 ]
 
 
 ## Sampling Scheme
-scheme = [Slice(["alpha", "beta"], [1.0, 1.0])]
+scheme = [Slice([:alpha, :beta], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 

@@ -10,7 +10,7 @@ import Base.LinAlg: Cholesky
 import Calculus: gradient
 import Distributions: Continuous, Distribution, insupport, logpdf, logpdf!,
        minimum, maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
-import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
+import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
@@ -39,20 +39,20 @@ abstract MCMCDependent{T} <: Variate{T}
 
 type MCMCLogical{T} <: MCMCDependent{T}
   value::T
-  name::String
+  symbol::Symbol
   monitor::Vector{Bool}
   eval::Function
-  sources::Vector{String}
-  targets::Vector{String}
+  sources::Vector{Symbol}
+  targets::Vector{Symbol}
 end
 
 type MCMCStochastic{T} <: MCMCDependent{T}
   value::T
-  name::String
+  symbol::Symbol
   monitor::Vector{Bool}
   eval::Function
-  sources::Vector{String}
-  targets::Vector{String}
+  sources::Vector{Symbol}
+  targets::Vector{Symbol}
   distr::DistributionStruct
 end
 
@@ -60,19 +60,19 @@ end
 #################### MCMCSampler Type ####################
 
 type MCMCSampler
-  params::Vector{String}
+  params::Vector{Symbol}
   eval::Function
   tune::Dict
-  sources::Vector{String}
-  targets::Vector{String}
+  sources::Vector{Symbol}
+  targets::Vector{Symbol}
 end
 
 
 #################### MCMCModel Type ####################
 
 type MCMCModel
-  nodes::Dict{String,Any}
-  dependents::Vector{String}
+  nodes::Dict{Symbol,Any}
+  dependents::Vector{Symbol}
   samplers::Vector{MCMCSampler}
   iter::Integer
   burnin::Integer

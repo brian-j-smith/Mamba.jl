@@ -20,7 +20,7 @@ function MCMCChains{T<:String}(iter::Integer, names::Vector{T};
            model::MCMCModel=MCMCModel())
   varval = Array(VariateType, iter, length(names), chains)
   fill!(varval, NaN)
-  MCMCChains(varval, String[names...], start, thin, model)
+  MCMCChains(varval, String[names...], start=start, thin=thin, model=model)
 end
 
 

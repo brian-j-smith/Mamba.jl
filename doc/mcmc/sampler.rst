@@ -11,7 +11,7 @@ Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gib
 
 	function(model::MCMCModel, block::Integer)
 
-where ``model`` contains all model nodes, and ``block`` is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function may return an updated sample for the nodes named in its ``params`` field.  Such a return value can be a structure of the same type as the node if the block consists of only one node, or a dictionary of node structures with names equal to the block nodes if one or more.  Alternatively, a value of ``nothing`` may be returned.  Return values that are not ``nothing`` will be used to automatically update the node values and propagate them to dependent nodes.  No automatic updating will be done if ``nothing`` is returned.
+where ``model`` contains all model nodes, and ``block`` is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function may return an updated sample for the nodes identified in its ``params`` field.  Such a return value can be a structure of the same type as the node if the block consists of only one node, or a dictionary of node structures with keys equal to the block node symbols if one or more.  Alternatively, a value of ``nothing`` may be returned.  Return values that are not ``nothing`` will be used to automatically update the node values and propagate them to dependent nodes.  No automatic updating will be done if ``nothing`` is returned.
 
 Declaration
 ^^^^^^^^^^^
@@ -21,22 +21,22 @@ Declaration
 Fields
 ^^^^^^
 
-* ``params::Vector{String}`` : names of the stochastic nodes in the block being updated by the sampler.
+* ``params::Vector{Symbol}`` : symbols of stochastic nodes in the block being updated by the sampler.
 * ``eval::Function`` : a sampling function that updates values of the ``params`` nodes.
 * ``tune::Dict`` : any tuning parameters needed by the sampling function.
-* ``sources::Vector{String}`` : subset of ``params`` nodes that are independent of one-another.  These do not need to have their dependencies updated when sampling values for the block, but do need to be included in the full conditional density calculation.
-* ``targets::Vector{String}`` : names of ``MCMCDependent`` nodes that depend on and whose states must be updated after ``params``.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``sources::Vector{Symbol}`` : subset of ``params`` nodes that are independent of one-another.  These do not need to have their dependencies updated when sampling values for the block, but do need to be included in the full conditional density calculation.
+* ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on and whose states must be updated after ``params``.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructor
 ^^^^^^^^^^^
 
-.. function:: MCMCSampler(params::Vector{T<:String}, expr::Expr, tune::Dict=Dict())
+.. function:: MCMCSampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
 
 	Construct an ``MCMCSampler`` object that defines a sampling function for a block of stochastic nodes.
 	
 	**Arguments**
 	
-		* ``params`` : names of nodes that are being block-updated by the sampler.
+		* ``params`` : symbols of nodes that are being block-updated by the sampler.
 		* ``expr`` : a quoted expression that makes up the body of the sampling function whose definition is described above.
 		* ``tune`` : tuning parameters needed by the sampling function.
 		

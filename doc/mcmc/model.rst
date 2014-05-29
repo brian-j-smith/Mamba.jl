@@ -15,8 +15,8 @@ Declaration
 Fields
 ^^^^^^
 
-* ``nodes::Dict{String,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
-* ``dependents::Vector{String}`` : names of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``nodes::Dict{Symbol,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
+* ``dependents::Vector{Symbol}`` : symbols of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``samplers::Vector{MCMCSampler}`` : sampling functions for updating blocks of stochastic nodes.
 * ``iter::Integer`` : current MCMC draw from the target distribution.
 * ``burnin::Integer`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
@@ -47,14 +47,14 @@ Constructor
 Methods
 ^^^^^^^
 
-.. function:: getindex(m::MCMCModel, key::String)
+.. function:: getindex(m::MCMCModel, key::Symbol)
 
-	Returns a named model node.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
+	Returns a model node identified by its symbol.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
 	
 	**Arguments**
 	
 		* ``m`` : a model contining the node to get.
-		* ``key`` : name of the node to get.
+		* ``key`` : symbol of the node to get.
 		
 	**Value**
 	
@@ -111,7 +111,7 @@ Methods
 	
 .. function:: keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
 
-	Return names of nodes of a specified type.
+	Return the symbols of nodes of a specified type.
 	
 	**Arguments**
 	
@@ -130,7 +130,7 @@ Methods
 		
 	**Value**
 	
-		Node names returned as a vector of character strings.
+		A vector of node symbols.
 
 .. function:: logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
               logpdf(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
@@ -151,8 +151,8 @@ Methods
 	
 		The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 				
-.. function:: mcmc(model::MCMCModel, inputs::Dict{T<:String}, \
-				inits::Vector{Dict{U<:String,Any}}, iter::Integer; \
+.. function:: mcmc(model::MCMCModel, inputs::Dict{Symbol}, \
+				inits::Vector{Dict{Symbol,Any}}, iter::Integer; \
 				burnin::Integer=0, thin::Integer=1, chains::Integer=1)
 
 	Simulate MCMC draws for a specified model.
@@ -173,7 +173,7 @@ Methods
 		
 .. function:: relist(m::MCMCModel, values::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
-              relist(m::MCMCModel, values::Vector{T<:Real}, nkeys::Vector{U<:String}, \
+              relist(m::MCMCModel, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
 				transform::Bool=false)
 				
 	Convert a vector of values to a set of logical and/or stochastic node values.
@@ -183,16 +183,16 @@ Methods
 		* ``m`` : a model with nodes to serve as the template for conversion.
 		* ``values`` : values to convert.
 		* ``block`` : the sampling block of nodes to which to convert ``values``.  Defaults to all blocks.
-		* ``nkeys`` : a vector of names specifying the nodes to which to convert ``values``.
+		* ``nkeys`` : a vector of symbols identifying the nodes to which to convert ``values``.
 		* ``transform`` : whether to apply an inverse-link transformation in the conversion.
 		
 	**Value**
 	
-		A dictionary of node names and converted values.
+		A dictionary of node symbols and converted values.
 
 .. function:: relist!(m::MCMCModel, values::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
-              relist!(m::MCMCModel, values::Vector{T<:Real}, nkeys::Vector{U<:String}, \
+              relist!(m::MCMCModel, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
 				transform::Bool=false)
 				
 	Copy a vector of values to a set of logical and/or stochastic nodes.
@@ -202,14 +202,14 @@ Methods
 		* ``m`` : a model with nodes to which values will be copied.
 		* ``values`` : values to copy.
 		* ``block`` : the sampling block of nodes to which to copy ``values``.  Defaults to all blocks.
-		* ``nkeys`` : a vector of names specifying the nodes to which to copy ``values``.
+		* ``nkeys`` : a vector of symbols identifying the nodes to which to copy ``values``.
 		* ``transform`` : whether to apply an inverse-link transformation in the copy.
 		
 	**Value**
 	
 		Returns the model with copied node values.
 							
-.. function:: setinits!(m::MCMCModel, inits::Dict{T<:String,Any})
+.. function:: setinits!(m::MCMCModel, inits::Dict{Symbol,Any})
 
 	Set the initial values of stochastic model nodes.
 	
@@ -222,7 +222,7 @@ Methods
 	
 		Returns the model with initialized stochastic nodes.
 
-.. function:: setinputs!(m::MCMCModel, inputs::Dict{T<:String,Any})
+.. function:: setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
 
 	Set the values of input model nodes.
 	
@@ -283,7 +283,7 @@ Methods
 		If ``block = 0``, a vector of dictionaries containing block-specific tuning parameters; otherwise, one block-specific dictionary.
 
 .. function:: unlist(m::MCMCModel, block::Integer=0, transform::Bool=false)
-              unlist(m::MCMCModel, nkeys::Vector{T<:String}, transform::Bool=false)
+              unlist(m::MCMCModel, nkeys::Vector{Symbol}, transform::Bool=false)
 			  
 	Convert a set of logical and/or stochastic node values to a vector.
 	
@@ -291,7 +291,7 @@ Methods
 	
 		* ``m`` : a model with nodes to be converted.
 		* ``block`` : the sampling block of nodes to be converted.  Defaults to all blocks.
-		* ``nkeys`` : a vector of names specifying the nodes to be converted.
+		* ``nkeys`` : a vector of symbols identifying the nodes to be converted.
 		* ``transform`` : whether to apply a link transformation in the conversion.
 		
 	**Value**

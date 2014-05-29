@@ -105,14 +105,14 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: NUTS(params::Vector{T<:String}; dtype::Symbol=:forward, \
+.. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
 				target::Real=0.6)
 
 	Construct an ``MCMCSampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		* ``params`` : named stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
 		* ``dtype`` : type of differentiation for gradient calculations.  Options are
 			* ``:central`` : central differencing.
 			* ``:forward`` : forward differencing.

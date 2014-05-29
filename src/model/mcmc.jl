@@ -1,7 +1,7 @@
 #################### MCMC Simulation Engine ####################
 
-function mcmc{T<:String,U<:String}(model::MCMCModel, inputs::Dict{T},
-           inits::Vector{Dict{U,Any}}, iter::Integer; burnin::Integer=0,
+function mcmc(model::MCMCModel, inputs::Dict{Symbol},
+           inits::Vector{Dict{Symbol,Any}}, iter::Integer; burnin::Integer=0,
            thin::Integer=1, chains::Integer=1)
 
   iter > burnin || error("iter <= burnin")
