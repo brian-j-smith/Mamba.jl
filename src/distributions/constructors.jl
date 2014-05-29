@@ -44,8 +44,8 @@ end
 
 #################### Categorical ####################
 
-Distributions.Categorical(p::VariateVector) = Categorical(p.value)
-Distributions.Categorical(k::VariateScalar) = Categorical(int(k))
+Distributions.Categorical(p::AbstractVariateVector) = Categorical(p.value)
+Distributions.Categorical(k::AbstractVariateScalar) = Categorical(int(k))
 
 
 #################### Cauchy ####################
@@ -270,7 +270,8 @@ Distributions.DiagNormal(μ, C::PDiagMat) =
 Distributions.DiagNormal(μ, σ) =
   DiagNormal(convert(Vector{Float64}, μ), convert(Vector{Float64}, σ))
 
-Distributions.IsoNormal(d::Integer, σ::VariateScalar) = IsoNormal(d, σ.value)
+Distributions.IsoNormal(d::Integer, σ::AbstractVariateScalar) =
+  IsoNormal(d, σ.value)
 Distributions.IsoNormal(μ, C::ScalMat) =
   IsoNormal(convert(Vector{Float64}, μ), C)
 Distributions.IsoNormal(μ, σ) =
@@ -279,7 +280,7 @@ Distributions.IsoNormal(μ, σ) =
 
 #################### Dirichlet ####################
 
-Distributions.Dirichlet(d::Integer, alpha::VariateScalar) =
+Distributions.Dirichlet(d::Integer, alpha::AbstractVariateScalar) =
   Dirichlet(d, alpha.value)
 Distributions.Dirichlet(alpha) = Dirichlet(convert(Vector{Float64}, alpha))
 
@@ -304,7 +305,7 @@ Distributions.DiagNormalCanon(J) = DiagNormalCanon(convert(Vector{Float64}, J))
 Distributions.DiagNormalCanon(h, J) =
   DiagNormalCanon(convert(Vector{Float64}, h), convert(Vector{Float64}, J))
 
-Distributions.IsoNormalCanon(d::Integer, prec::VariateScalar) =
+Distributions.IsoNormalCanon(d::Integer, prec::AbstractVariateScalar) =
   IsoNormalCanon(d, prec.value)
 Distributions.IsoNormalCanon(h, J::ScalMat) =
   IsoNormalCanon(convert(Vector{Float64}, h), J)
@@ -331,7 +332,7 @@ Distributions.DiagTDist(df, μ, σ) =
   DiagTDist(convert(Float64, df), convert(Vector{Float64}, μ),
             convert(Vector{Float64}, σ))
 
-Distributions.IsoTDist(df, d::Integer, σ::Union(Real, VariateScalar)) =
+Distributions.IsoTDist(df, d::Integer, σ::Union(Real, AbstractVariateScalar)) =
   IsoTDist(convert(Float64, df), d, convert(Float64, σ))
 Distributions.IsoTDist(df, μ, C::ScalMat) =
   IsoTDist(convert(Float64, df), convert(Vector{Float64}, μ), C)

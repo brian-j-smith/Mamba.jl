@@ -51,7 +51,7 @@ VariateNUTS Type
 Declaration
 ```````````
 
-``VariateNUTS <: VariateVector``
+``VariateNUTS <: AbstractVariateVector``
 
 Fields
 ``````

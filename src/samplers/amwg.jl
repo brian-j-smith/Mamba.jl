@@ -11,7 +11,7 @@ type TuneAMWG
   target::Real
 end
 
-type VariateAMWG <: VariateVector
+type VariateAMWG <: AbstractVariateVector
   value::Vector{VariateType}
   tune::TuneAMWG
 

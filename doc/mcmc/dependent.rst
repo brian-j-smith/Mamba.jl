@@ -5,14 +5,14 @@
 MCMCDependent
 -------------
 
-``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
+``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``AbstractVariate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``AbstractVariate`` type objects.
 
 Since parameter values in the ``MCMCDependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``MCMCDependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
 
 Declaration
 ^^^^^^^^^^^
 
-``abstract MCMCDependent{T} <: Variate{T}``
+``abstract MCMCDependent{T} <: AbstractVariate{T}``
 
 Fields
 ^^^^^^
