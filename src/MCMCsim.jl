@@ -2,6 +2,7 @@ module MCMCsim
 
 using Distributions
 using Gadfly
+using KernelDensity
 
 
 #################### Imports ####################
@@ -17,6 +18,7 @@ import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
 import Gadfly: Plot, plot
 import Color: distinguishable_colors
+import KernelDensity: kde
 
 
 #################### Variate Types ####################
