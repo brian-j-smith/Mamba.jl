@@ -2,6 +2,14 @@ tutorials = [
   "line"
 ]
 
+samplers = [
+  "amm",
+  "amwg",
+  "nuts",
+  "slice",
+  "slicewg"
+]
+
 examples = [
   "blocker",
   "bones",
@@ -36,6 +44,10 @@ println("Running tests:")
 
 for t in tutorials
   @runtest "../doc/tutorial/" t
+end
+
+for t in samplers
+  @runtest "../doc/samplers/" t
 end
 
 for t in examples
