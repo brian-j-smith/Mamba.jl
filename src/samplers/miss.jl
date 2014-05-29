@@ -1,6 +1,6 @@
 #################### Missing Value Sampler ####################
 
-function MISS{T<:String}(params::Vector{T})
+function MISS(params::Vector{Symbol})
   length(params) == 1 || error("must specify a single node to sample")
   MCMCSampler(params,
     quote

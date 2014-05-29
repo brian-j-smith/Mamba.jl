@@ -2,21 +2,20 @@
 
 function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
            samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
-  nodedict = Dict{String,Any}()
-  for (arg, value) in nodes
+  nodedict = (Symbol => Any)[]
+  for (key, value) in nodes
     isa(value, MCMCDependent) || error("nodes must be MCMCDependent types")
     node = deepcopy(value)
-    key = string(arg)
-    node.name = key
+    node.symbol = key
     nodedict[key] = node
   end
-  m = MCMCModel(nodedict, String[], MCMCSampler[], iter, burnin, chain, false,
+  m = MCMCModel(nodedict, Symbol[], MCMCSampler[], iter, burnin, chain, false,
                 false)
   g = graph(m)
   V = vertices(g)
-  lookup = Dict{String,Integer}()
+  lookup = (Symbol => Integer)[]
   for v in V
-    setindex!(lookup, v.index, v.label)
+    setindex!(lookup, v.index, v.key)
   end
   m.dependents = intersect(tsort(g), keys(m, :dependent))
   for key in m.dependents
@@ -29,12 +28,12 @@ end
 
 #################### MCMCModel Base Methods ####################
 
-function Base.getindex(m::MCMCModel, key::String)
+function Base.getindex(m::MCMCModel, key::Symbol)
   m.nodes[key]
 end
 
 function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
-  values = String[]
+  values = Symbol[]
   if ntype == :all
     for key in keys(m.nodes)
       if isa(m[key], MCMCDependent)
@@ -74,8 +73,8 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :output
     g = graph(m)
     for v in vertices(g)
-      if isa(m[v.label], MCMCStochastic) && !any_stochastic(v, g, m)
-        push!(values, v.label)
+      if isa(m[v.key], MCMCStochastic) && !any_stochastic(v, g, m)
+        push!(values, v.key)
       end
     end
   elseif ntype == :stochastic
@@ -85,24 +84,24 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
       end
     end
   else
-    error("unsupported ntype")
+    error("unsupported node type $ntype")
   end
   values
 end
 
-function Base.setindex!{T<:String}(m::MCMCModel, values::Dict, nkeys::Vector{T})
+function Base.setindex!(m::MCMCModel, values::Dict, nkeys::Vector{Symbol})
   for key in nkeys
     m[key][:] = values[key]
   end
 end
 
-function Base.setindex!{T<:String}(m::MCMCModel, value, nkeys::Vector{T})
+function Base.setindex!(m::MCMCModel, value, nkeys::Vector{Symbol})
   length(nkeys) == 1 || throw(BoundsError())
   m[nkeys[1]][:] = value
 end
 
-function Base.setindex!{T<:String}(m::MCMCModel, value, key::T)
-  m[key][:] = value
+function Base.setindex!(m::MCMCModel, value, nkey::Symbol)
+  m[nkey][:] = value
 end
 
 function Base.show(io::IO, m::MCMCModel)
@@ -136,7 +135,7 @@ function names(m::MCMCModel, monitoronly::Bool)
   values
 end
 
-function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
+function names(m::MCMCModel, nkeys::Vector{Symbol})
   values = String[]
   for key in nkeys
     append!(values, names(m[key]))
@@ -144,7 +143,7 @@ function names{T<:String}(m::MCMCModel, nkeys::Vector{T})
   values
 end
 
-function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
+function setinits!(m::MCMCModel, inits::Dict{Symbol,Any})
   for key in m.dependents
     node = m[key]
     if isa(node, MCMCStochastic)
@@ -156,7 +155,7 @@ function setinits!{T<:String}(m::MCMCModel, inits::Dict{T,Any})
   m
 end
 
-function setinputs!{T<:String}(m::MCMCModel, inputs::Dict{T,Any})
+function setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
   for key in keys(m, :input)
     isa(inputs[key], MCMCDependent) &&
       error("inputs must not be MCMCDependent types")
@@ -255,7 +254,7 @@ function logpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
   else
     params = keys(m, :block)
     m[params] = relist(m, x, params, transform)
-    sources = String[]
+    sources = Symbol[]
     targets = m.dependents
   end
   for key in sources
@@ -275,10 +274,10 @@ function relist{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
   relist(m, values, keys(m, :block, block), transform)
 end
 
-function relist{T<:Real,U<:String}(m::MCMCModel, values::Vector{T},
-           nkeys::Vector{U}, transform::Bool=false)
+function relist{T<:Real}(m::MCMCModel, values::Vector{T}, nkeys::Vector{Symbol},
+           transform::Bool=false)
   f =  transform ? invlink : identity
-  x = Dict{String,Any}()
+  x = (Symbol => Any)[]
   j = 0
   for key in nkeys
     node = m[key]
@@ -297,8 +296,8 @@ function relist!{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
   update!(m, block)
 end
 
-function relist!{T<:Real,U<:String}(m::MCMCModel, values::Vector{T},
-           nkeys::Vector{U}, transform::Bool=false)
+function relist!{T<:Real}(m::MCMCModel, values::Vector{T},
+           nkeys::Vector{Symbol}, transform::Bool=false)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m)
 end
@@ -332,7 +331,7 @@ function unlist(m::MCMCModel, monitoronly::Bool)
   values
 end
 
-function unlist{T<:String}(m::MCMCModel, nkeys::Vector{T}, transform::Bool=false)
+function unlist(m::MCMCModel, nkeys::Vector{Symbol}, transform::Bool=false)
   f = transform ? link : identity
   N = map(key -> length(m[key]), nkeys)
   values = Array(VariateType, sum(N))

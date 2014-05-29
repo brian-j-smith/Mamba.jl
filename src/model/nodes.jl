@@ -26,7 +26,7 @@ link(d::MCMCDependent, x) = x
 logpdf(d::MCMCDependent, transform::Bool=false) = 0.0
 
 function names(d::MCMCDependent)
-  names(d, d.name)
+  names(d, d.symbol)
 end
 
 function setmonitor!(d::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
@@ -47,8 +47,8 @@ end
 #################### MCMCLogical Constructors ####################
 
 function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Bool}))
-  MCMCLogical(value, string(), [monitor...], paramfx(expr), paramsrc(expr),
-              String[])
+  MCMCLogical(value, :nothing, [monitor...], depfx(expr), depsrc(expr),
+              Symbol[])
 end
 
 function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
@@ -81,8 +81,8 @@ end
 
 function MCMCStochastic{T}(value::T, expr::Expr,
            monitor::Union(Bool,Vector{Bool}))
-  MCMCStochastic(value, string(), [monitor...], paramfx(expr), paramsrc(expr),
-                 String[], NullDistribution())
+  MCMCStochastic(value, :nothing, [monitor...], depfx(expr), depsrc(expr),
+                 Symbol[], NullDistribution())
 end
 
 function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
@@ -152,18 +152,18 @@ end
 
 #################### Utility Functions ####################
 
-function paramsrc(expr::Expr)
-  if expr.head == :ref && expr.args[1] == :model && isa(expr.args[2], String)
-    String[expr.args[2]]
+function depsrc(expr::Expr)
+  if expr.head == :ref && expr.args[1] == :model && isa(expr.args[2], QuoteNode)
+    Symbol[expr.args[2].value]
   else
-    mapreduce(paramsrc, union, expr.args)
+    mapreduce(depsrc, union, expr.args)
   end
 end
 
-function paramsrc(expr)
-  String[]
+function depsrc(expr)
+  Symbol[]
 end
 
-function paramfx(expr::Expr)
+function depfx(expr::Expr)
   eval(Main, Expr(:function, :(model::MCMCModel,), expr))
 end

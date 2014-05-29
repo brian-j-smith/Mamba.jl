@@ -2,8 +2,8 @@ using MCMCsim
 using Distributions
 
 ## Data
-epil = (String => Any)[
-  "y" =>
+epil = (Symbol => Any)[
+  :y =>
     [ 5  3  3  3
       3  5  3  3
       2  4  0  5
@@ -63,34 +63,30 @@ epil = (String => Any)[
       2  3  0  1
       0  0  0  0
       1  4  3  2],
-  "Trt" => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1],
-  "Base" => [11, 11,  6,  8, 66, 27, 12, 52, 23, 10,
-             52, 33, 18, 42, 87, 50, 18,111, 18, 20,
-             12,  9, 17, 28, 55,  9, 10, 47, 76, 38,
-             19, 10, 19, 24, 31, 14, 11, 67, 41,  7,
-             22, 13, 46, 36, 38,  7, 36, 11,151, 22,
-             41, 32, 56, 24, 16, 22, 25, 13, 12],
-  "Age" => [31, 30, 25, 36, 22, 29, 31, 42, 37, 28,
-            36, 24, 23, 36, 26, 26, 28, 31, 32, 21,
-            29, 21, 32, 25, 30, 40, 19, 22, 18, 32,
-            20, 30, 18, 24, 30, 35, 27, 20, 22, 28,
-            23, 40, 33, 21, 35, 25, 26, 25, 22, 32,
-            25, 35, 21, 41, 32, 26, 21, 36, 37],
-  "V4" => [0, 0, 0, 1]
+  :Trt =>
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+     1, 1, 1, 1, 1, 1, 1, 1, 1],
+  :Base =>
+    [11, 11, 6, 8, 66, 27, 12, 52, 23, 10, 52, 33, 18, 42, 87, 50, 18, 111, 18,
+     20, 12, 9, 17, 28, 55, 9, 10, 47, 76, 38, 19, 10, 19, 24, 31, 14, 11, 67,
+     41, 7, 22, 13, 46, 36, 38, 7, 36, 11, 151, 22, 41, 32, 56, 24, 16, 22, 25,
+     13, 12],
+  :Age =>
+    [31, 30, 25, 36, 22, 29, 31, 42, 37, 28, 36, 24, 23, 36, 26, 26, 28, 31, 32,
+     21, 29, 21, 32, 25, 30, 40, 19, 22, 18, 32, 20, 30, 18, 24, 30, 35, 27, 20,
+     22, 28, 23, 40, 33, 21, 35, 25, 26, 25, 22, 32, 25, 35, 21, 41, 32, 26, 21,
+     36, 37],
+  :V4 => [0, 0, 0, 1]
 ]
-epil["N"] = size(epil["y"], 1)
-epil["T"] = size(epil["y"], 2)
+epil[:N] = size(epil[:y], 1)
+epil[:T] = size(epil[:y], 2)
 
-epil["logBase4"] = log(epil["Base"] / 4)
-epil["BT"] = epil["logBase4"] .* epil["Trt"]
-epil["logAge"] = log(epil["Age"])
-map(key -> epil[key * "bar"] = mean(epil[key]),
-    ["logBase4", "Trt", "BT", "logAge", "V4"])
+epil[:logBase4] = log(epil[:Base] / 4)
+epil[:BT] = epil[:logBase4] .* epil[:Trt]
+epil[:logAge] = log(epil[:Age])
+map(key -> epil[symbol(string(key, "bar"))] = mean(epil[key]),
+    [:logBase4, :Trt, :BT, :logAge, :V4])
 
 
 ## Model Specification
@@ -176,21 +172,21 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["y" => epil["y"], "a0" => 0, "alpha_Base" => 0, "alpha_Trt" => 0,
-   "alpha_BT" => 0, "alpha_Age" => 0, "alpha_V4" => 0, "s2_b1" => 1,
-   "s2_b" => 1, "b1" => zeros(epil["N"]), "b" => zeros(epil["N"], epil["T"])],
-  ["y" => epil["y"], "a0" => 1, "alpha_Base" => 1, "alpha_Trt" => 1,
-   "alpha_BT" => 1, "alpha_Age" => 1, "alpha_V4" => 1, "s2_b1" => 10,
-   "s2_b" => 10, "b1" => zeros(epil["N"]), "b" => zeros(epil["N"], epil["T"])]
+  [:y => epil[:y], :a0 => 0, :alpha_Base => 0, :alpha_Trt => 0,
+   :alpha_BT => 0, :alpha_Age => 0, :alpha_V4 => 0, :s2_b1 => 1,
+   :s2_b => 1, :b1 => zeros(epil[:N]), :b => zeros(epil[:N], epil[:T])],
+  [:y => epil[:y], :a0 => 1, :alpha_Base => 1, :alpha_Trt => 1,
+   :alpha_BT => 1, :alpha_Age => 1, :alpha_V4 => 1, :s2_b1 => 10,
+   :s2_b => 10, :b1 => zeros(epil[:N]), :b => zeros(epil[:N], epil[:T])]
 ]
 
 
 ## Sampling Scheme
-scheme = [AMWG(["a0", "alpha_Base", "alpha_Trt", "alpha_BT", "alpha_Age",
-                "alpha_V4"], fill(0.1, 6)),
-          Slice(["b1"], ones(epil["N"])),
-          Slice(["b"], ones(epil["N"] * epil["T"])),
-          SliceWG(["s2_b1", "s2_b"], [1.0, 1.0])]
+scheme = [AMWG([:a0, :alpha_Base, :alpha_Trt, :alpha_BT, :alpha_Age,
+                :alpha_V4], fill(0.1, 6)),
+          Slice([:b1], ones(epil[:N])),
+          Slice([:b], ones(epil[:N] * epil[:T])),
+          SliceWG([:s2_b1, :s2_b], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 

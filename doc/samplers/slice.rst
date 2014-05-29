@@ -79,14 +79,14 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: Slice(params::Vector{T<:String}, width::Vector{Float64}; \
+.. function:: Slice(params::Vector{Symbol}, width::Vector{Float64}; \
                 transform::Bool=false)
 
 	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		*  ``params`` : named stochastic nodes to be updated with the sampler.
+		*  ``params`` : stochastic nodes to be updated with the sampler.
 		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
 		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
 
@@ -126,14 +126,14 @@ Stand-Alone Function
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SliceWG(params::Vector{T<:String}, width::Vector{Float64}; \
+.. function:: SliceWG(params::Vector{Symbol}, width::Vector{Float64}; \
                 transform::Bool=false)
 
 	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		*  ``params`` : named stochastic nodes to be updated with the sampler.
+		*  ``params`` : stochastic nodes to be updated with the sampler.
 		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial interval widths from which to simulate values.
 		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
 

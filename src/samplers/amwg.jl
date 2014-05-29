@@ -33,7 +33,7 @@ end
 
 #################### MCMCSampler Constructor ####################
 
-function AMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
+function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
            adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")

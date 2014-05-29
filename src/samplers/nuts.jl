@@ -45,8 +45,7 @@ end
 
 #################### MCMCSampler Constructor ####################
 
-function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
-           target::Real=0.6)
+function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)

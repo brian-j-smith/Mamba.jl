@@ -37,7 +37,7 @@ end
 
 #################### MCMCSampler Constructor ####################
 
-function AMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
+function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
            adapt::Symbol=:all)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")

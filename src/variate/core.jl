@@ -46,11 +46,11 @@ function Base.showcompact(io::IO, v::Variate)
   showcompact(io, v.value)
 end
 
-function names{T<:String}(v::VariateScalar, prefix::T)
-  String[prefix]
+function names(v::VariateScalar, prefix)
+  String[string(prefix)]
 end
 
-function names{N,T<:String}(v::VariateArray{N}, prefix::T)
+function names{N}(v::VariateArray{N}, prefix)
   n = length(v)
   values = Array(String, n)
   dims = size(v)

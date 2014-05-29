@@ -2,17 +2,21 @@ using MCMCsim
 using Distributions
 
 ## Data
-blocker = (String => Any)[
-  "rt" => [3,  7,  5,  102,  28, 4,  98,  60, 25, 138, 64, 45,  9, 57, 25, 33,
-           28, 8, 6, 32, 27, 22],
-  "nt" => [38, 114, 69, 1533, 355, 59, 945, 632, 278, 1916, 873, 263, 291, 858,
-           154, 207, 251, 151, 174, 209, 391, 680],
-  "rc" => [3, 14, 11, 127, 27, 6, 152, 48, 37, 188, 52, 47, 16, 45, 31, 38, 12,
-           6, 3, 40, 43, 39],
-  "nc" => [39, 116, 93, 1520, 365, 52, 939, 471, 282, 1921, 583, 266, 293, 883,
-           147, 213, 122, 154, 134, 218, 364, 674]
+blocker = (Symbol => Any)[
+  :rt =>
+    [3, 7, 5, 102, 28, 4, 98, 60, 25, 138, 64, 45, 9, 57, 25, 33, 28, 8, 6, 32,
+     27, 22],
+  :nt =>
+    [38, 114, 69, 1533, 355, 59, 945, 632, 278, 1916, 873, 263, 291, 858, 154,
+     207, 251, 151, 174, 209, 391, 680],
+  :rc =>
+    [3, 14, 11, 127, 27, 6, 152, 48, 37, 188, 52, 47, 16, 45, 31, 38, 12, 6, 3,
+     40, 43, 39],
+  :nc =>
+    [39, 116, 93, 1520, 365, 52, 939, 471, 282, 1921, 583, 266, 293, 883, 147,
+     213, 122, 154, 134, 218, 364, 674]
 ]
-blocker["N"] = length(blocker["rt"])
+blocker[:N] = length(blocker[:rt])
 
 
 ## Model Specification
@@ -70,17 +74,17 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["rc" => blocker["rc"], "rt" => blocker["rt"], "d" => 0, "delta_new" => 0,
-   "s2" => 1, "mu" => zeros(blocker["N"]), "delta" => zeros(blocker["N"])],
-  ["rc" => blocker["rc"], "rt" => blocker["rt"], "d" => 2, "delta_new" => 2,
-   "s2" => 10, "mu" => fill(2, blocker["N"]), "delta" => fill(2, blocker["N"])]
+  [:rc => blocker[:rc], :rt => blocker[:rt], :d => 0, :delta_new => 0,
+   :s2 => 1, :mu => zeros(blocker[:N]), :delta => zeros(blocker[:N])],
+  [:rc => blocker[:rc], :rt => blocker[:rt], :d => 2, :delta_new => 2,
+   :s2 => 10, :mu => fill(2, blocker[:N]), :delta => fill(2, blocker[:N])]
 ]
 
 
 ## Sampling Scheme
-scheme = [AMWG(["mu"], fill(0.1, blocker["N"])),
-          AMWG(["delta", "delta_new"], fill(0.1, blocker["N"] + 1)),
-          Slice(["d", "s2"], [1.0, 1.0])]
+scheme = [AMWG([:mu], fill(0.1, blocker[:N])),
+          AMWG([:delta, :delta_new], fill(0.1, blocker[:N] + 1)),
+          Slice([:d, :s2], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 
