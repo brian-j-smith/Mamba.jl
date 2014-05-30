@@ -1,7 +1,7 @@
 #################### MCMCSampler Constructor ####################
 
 function MCMCSampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
-  MCMCSampler(params, samplerfx(expr), tune, Symbol[], Symbol[])
+  MCMCSampler(params, samplerfx(expr), tune, Symbol[])
 end
 
 

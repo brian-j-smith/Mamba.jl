@@ -67,7 +67,6 @@ type MCMCSampler
   params::Vector{Symbol}
   eval::Function
   tune::Dict
-  sources::Vector{Symbol}
   targets::Vector{Symbol}
 end
 

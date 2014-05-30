@@ -24,7 +24,6 @@ Fields
 * ``params::Vector{Symbol}`` : symbols of stochastic nodes in the block being updated by the sampler.
 * ``eval::Function`` : a sampling function that updates values of the ``params`` nodes.
 * ``tune::Dict`` : any tuning parameters needed by the sampling function.
-* ``sources::Vector{Symbol}`` : subset of ``params`` nodes that are independent of one-another.  These do not need to have their dependencies updated when sampling values for the block, but do need to be included in the full conditional density calculation.
 * ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on and whose states must be updated after ``params``.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructor

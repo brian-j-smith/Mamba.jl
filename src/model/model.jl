@@ -170,7 +170,6 @@ function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
     sampler = m.samplers[i]
     targets = mapreduce(key -> m[key].targets, vcat, sampler.params)
     sampler.targets = intersect(m.dependents, targets)
-    sampler.sources = setdiff(sampler.params, sampler.targets)
   end
   m
 end
@@ -223,12 +222,14 @@ function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
   value = 0
   if block > 0
     sampler = m.samplers[block]
-    nkeys = [sampler.sources, sampler.targets]
+    params = sampler.params
+    nkeys = [setdiff(params, sampler.targets), sampler.targets]
   else
+    params = keys(m, :block)
     nkeys = m.dependents
   end
   for key in nkeys
-    value += logpdf(m[key], transform)
+    value += logpdf(m[key], transform && in(key, params))
     isfinite(value) || break
   end
   value
@@ -247,22 +248,20 @@ function logpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
   value = 0
   if block > 0
     sampler = m.samplers[block]
-    m[sampler.params] = relist(m, x, sampler.params, transform)
-    sources = sampler.sources
+    params = sampler.params
     targets = sampler.targets
   else
     params = keys(m, :block)
-    m[params] = relist(m, x, params, transform)
-    sources = Symbol[]
     targets = m.dependents
   end
-  for key in sources
+  m[params] = relist(m, x, params, transform)
+  for key in setdiff(params, targets)
     value += logpdf(m[key], transform)
     isfinite(value) || return value
   end
   for key in targets
     update!(m[key], m)
-    value += logpdf(m[key], transform)
+    value += logpdf(m[key], transform && in(key, params))
     isfinite(value) || return value
   end
   value

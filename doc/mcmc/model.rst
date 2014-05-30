@@ -74,7 +74,7 @@ Methods
 		* ``m`` : a model containing the stochastic nodes for which to compute the gradient.
 		* ``x`` : a value (possibly different than the current one) at which to compute the gradient.
 		* ``block`` : the sampling block of stochastic nodes for which to compute the gradient, if specified; otherwise, all sampling blocks are included.
-		* ``transform`` : whether to compute the gradient on the link–transformed scale.
+		* ``transform`` : whether to compute the gradient of block parameters on the link–transformed scale.
 		* ``dtype`` : type of differentiation for gradient calculations.  Options are
 			* ``:central`` : central differencing.
 			* ``:forward`` : forward differencing.
@@ -145,7 +145,7 @@ Methods
 		* ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
 		* ``x`` : a value (possibly different than the current one) at which to evaluate densities.
 		* ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all stochastic nodes are included.
-		* ``transform`` : whether to evaluate evaluate log-densities on the link–transformed scale.
+		* ``transform`` : whether to evaluate evaluate log-densities of block parameters on the link–transformed scale.
 		
 	**Value**
 	
