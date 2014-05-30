@@ -37,10 +37,10 @@ function autocorplot(c::MCMCChains; maxlag::Integer=100)
 	plots=Array(Plot, nvars)
 	ac = autocor(c,lags=[1:maxlag])
 	for i in 1:nvars
-		plots[i] = plot(y=[[ac.value[i,:,j] for j in 1:nchains]...],
+		plots[i] = plot(y=[[ac.value[i,:,j]' for j in 1:nchains]...],
 						x=[[1:maxlag for j in 1:nchains]...], 
 						Geom.line, 
-						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						color=repeat([j for j in 1:nchains], inner=[maxlag]),
 						Scale.discrete_color(),	Guide.colorkey("Chain"), 
 						Guide.xlabel("Lag"),Guide.ylabel("Autocorrelation"),
 						Guide.title(c.names[i]))
