@@ -9,14 +9,13 @@ end
 function traceplot(c::MCMCChains)
 	nrows, nvars, nchains = size(c)
 	plots=Array(Plot, nvars)
-	dcols=distinguishable_colors(nchains,LCHab(70,60,240))
 	for i in 1:nvars
-		pl = Array(Layer,nchains)
-		for j in 1:nchains
-		   pl[j] = layer(y=c.value[:,i,j],x=c.range, Geom.line, 
-						 Theme(default_color=dcols[j]))
-		end
-		plots[i] = plot(pl...,Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
+		plots[i] = plot(y=[[c.value[:,i,j] for j in 1:nchains]...],
+						x=[[c.range for j in 1:nchains]...], 
+						Geom.line, 
+						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						Scale.discrete_color(),	Guide.colorkey("Chain"), 
+						Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
 	end
 	return(plots)	
 end
@@ -24,14 +23,11 @@ end
 function densityplot(c::MCMCChains)
 	nrows, nvars, nchains = size(c)
 	plots=Array(Plot, nvars)
-	dcols=distinguishable_colors(nchains,LCHab(70,60,240))
 	for i in 1:nvars
-		pl = Array(Layer,nchains)
-		for j in 1:nchains
-		   pl[j] = layer(x=c.value[:,i,j], Geom.density, 
-						 Theme(default_color=dcols[j]))
-		end
-		plots[i] = plot(pl...,Guide.xlabel(c.names[i]),Guide.ylabel("Density"))
+		plots[i] = plot(x=[[c.value[:,i,j] for j in 1:nchains]...], Geom.density, 
+						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						Scale.discrete_color(),	Guide.colorkey("Chain"), 
+						Guide.xlabel(c.names[i]),Guide.ylabel("Density"))
 	end
 	return(plots)
 end
@@ -39,15 +35,15 @@ end
 function autocorplot(c::MCMCChains; maxlag::Integer=100)
 	nrows, nvars, nchains = size(c)
 	plots=Array(Plot, nvars)
-	dcols=distinguishable_colors(nchains,LCHab(70,60,240))
+	ac = autocor(c,lags=[1:maxlag])
 	for i in 1:nvars
-		pl = Array(Layer,nchains)
-		for j in 1:nchains
-			ac = autocor(c,lags=[1:maxlag])
-			pl[j] = layer(y=ac.value[i,:,j], x=1:maxlag, Geom.line, 
-						 Theme(default_color=dcols[j]))
-		end
-		plots[i] = plot(pl..., Guide.xlabel("Lag"), Guide.ylabel("Autocorrelation"))
+		plots[i] = plot(y=[[ac.value[i,:,j] for j in 1:nchains]...],
+						x=[[1:maxlag for j in 1:nchains]...], 
+						Geom.line, 
+						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						Scale.discrete_color(),	Guide.colorkey("Chain"), 
+						Guide.xlabel("Lag"),Guide.ylabel("Autocorrelation"),
+						Guide.title(c.names[i]))
 	end
 	return(plots)
 end
@@ -55,14 +51,13 @@ end
 function meanplot(c::MCMCChains)
 	nrows, nvars, nchains = size(c)
 	plots=Array(Plot, nvars)
-	dcols=distinguishable_colors(nchains,LCHab(70,60,240))
 	for i in 1:nvars
-		pl = Array(Layer,nchains)
-		for j in 1:nchains
-		   pl[j] = layer(y=cumsum(c.value[:,i,j])/nrows, x=c.range, Geom.line, 
-						 Theme(default_color=dcols[j]))
-		end
-		plots[i] = plot(pl...,Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
+		plots[i] = plot(y=[[cumsum(c.value[:,i,j])/nrows for j in 1:nchains]...],
+						x=[[c.range for j in 1:nchains]...], 
+						Geom.line, 
+						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						Scale.discrete_color(),	Guide.colorkey("Chain"), 
+						Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
 	end
 	return(plots)
 end
