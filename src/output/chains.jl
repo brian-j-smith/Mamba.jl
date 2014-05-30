@@ -77,7 +77,6 @@ function Base.show(io::IO, c::MCMCChains)
   print(io, "Object of type \"$(summary(c))\"\n\n")
   println(io, header(c))
   show(io, c.value)
-  print(io, "\n")
 end
 
 function Base.size(c::MCMCChains)

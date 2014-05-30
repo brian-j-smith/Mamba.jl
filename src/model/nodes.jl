@@ -5,16 +5,16 @@ function Base.show(io::IO, d::MCMCDependent)
                "monitored node of type \"", summary(d), "\"\n")
   print(io, msg)
   show(io, d.value)
-  print(io, "\n")
 end
 
 function Base.showall(io::IO, d::MCMCDependent)
   show(io, d)
   print(io, "\nFunction:\n")
   show(io, d.eval.code)
-  print(io, "\n\nNode Dependencies:\n")
+  print(io, "\n\nSource Nodes:\n")
   show(io, d.sources)
-  print(io, "\n")
+  print(io, "\n\nTarget Nodes:\n")
+  show(io, d.targets)
 end
 
 identity(d::MCMCDependent, x) = x
@@ -109,7 +109,6 @@ function Base.showall(io::IO, s::MCMCStochastic)
   show(io, s.sources)
   print(io, "\n\nTarget Nodes:\n")
   show(io, s.targets)
-  print(io, "\n")
 end
 
 function setinits!(s::MCMCStochastic, m::MCMCModel, x)

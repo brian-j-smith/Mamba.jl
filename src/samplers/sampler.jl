@@ -13,18 +13,17 @@ function Base.show(io::IO, s::MCMCSampler)
   show(io, s.params)
   print(io, "\n\n")
   show(io, s.eval.code)
-  print(io, "\n")
+  println(io)
 end
 
 function Base.showall(io::IO, s::MCMCSampler)
   show(io, s)
   print(io, "\nTuning Parameters:\n")
   show(io, s.tune)
-  print(io, "\nSource Nodes:\n")
+  print(io, "\n\nSource Nodes:\n")
   show(io, s.sources)
-  print(io, "\nTarget Nodes:\n")
+  print(io, "\n\nTarget Nodes:\n")
   show(io, s.targets)
-  print(io, "\n")
 end
 
 

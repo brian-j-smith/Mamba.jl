@@ -105,21 +105,20 @@ function Base.setindex!(m::MCMCModel, value, nkey::Symbol)
 end
 
 function Base.show(io::IO, m::MCMCModel)
+  showf(io, m, Base.show)
+end
+
+function Base.showall(io::IO, m::MCMCModel)
+  showf(io, m, Base.showall)
+end
+
+function showf(io::IO, m::MCMCModel, f::Function)
   print(io, "Object of type \"$(summary(m))\"\n")
   width = Base.tty_cols() - 1
   for node in keys(m)
     print(io, string("-"^width, "\n", node, ":\n"))
-    show(io, m[node])
-    print(io, "\n")
-  end
-end
-
-function Base.showall(io::IO, m::MCMCModel)
-  print(io, "Object of type \"$(summary(m))\"\n")
-  for node in keys(m)
-    print(io, string("-"^79, "\n", node, ":\n"))
-    showall(io, m[node])
-    print(io, "\n")
+    f(io, m[node])
+    println(io)
   end
 end
 

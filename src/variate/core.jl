@@ -39,7 +39,6 @@ end
 function Base.show(io::IO, v::AbstractVariate)
   print(io, "Object of type \"$(summary(v))\"\n")
   show(io, v.value)
-  print(io, "\n")
 end
 
 function Base.showcompact(io::IO, v::AbstractVariate)
