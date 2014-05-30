@@ -7,7 +7,7 @@ function plot(c::MCMCChains, ptype::Symbol=:trace; args...)
 end
 
 function traceplot(c::MCMCChains)
-	nrows, nvars, nchains = size(c)
+  nrows, nvars, nchains = size(c.value)
 	plots=Array(Plot, nvars)
 	for i in 1:nvars
 		plots[i] = plot(y=[[c.value[:,i,j] for j in 1:nchains]...],
@@ -21,7 +21,7 @@ function traceplot(c::MCMCChains)
 end
 
 function densityplot(c::MCMCChains)
-	nrows, nvars, nchains = size(c)
+  nrows, nvars, nchains = size(c.value)
 	plots=Array(Plot, nvars)
 	for i in 1:nvars
 		plots[i] = plot(x=[[c.value[:,i,j] for j in 1:nchains]...], Geom.density, 
@@ -33,7 +33,7 @@ function densityplot(c::MCMCChains)
 end
 
 function autocorplot(c::MCMCChains; maxlag::Integer=100)
-	nrows, nvars, nchains = size(c)
+  nrows, nvars, nchains = size(c.value)
 	plots=Array(Plot, nvars)
 	lags = [1:maxlag]*step(c.range)
 	ac = autocor(c,lags=[1:maxlag])
@@ -50,10 +50,10 @@ function autocorplot(c::MCMCChains; maxlag::Integer=100)
 end
 
 function meanplot(c::MCMCChains)
-	nrows, nvars, nchains = size(c)
+  nrows, nvars, nchains = size(c.value)
 	plots=Array(Plot, nvars)
 	for i in 1:nvars
-		plots[i] = plot(y=[[cumsum(c.value[:,i,j])/nrows for j in 1:nchains]...],
+    plots[i] = plot(y=[[cumsum(c.value[:,i,j])./[1:nrows] for j in 1:nchains]...],
 						x=[[c.range for j in 1:nchains]...], 
 						Geom.line, 
 						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
