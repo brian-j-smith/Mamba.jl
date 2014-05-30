@@ -1,8 +1,8 @@
 module MCMCsim
 
 using Distributions
-using Gadfly
-using KernelDensity
+
+
 
 
 #################### Imports ####################
@@ -16,9 +16,9 @@ import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
-import Gadfly: Plot, plot
-import Color: distinguishable_colors
-import KernelDensity: kde
+import Gadfly: Plot, plot, Layer, layer, Geom, Guide, Theme
+import Color: distinguishable_colors, LCHab
+
 
 
 #################### Variate Types ####################
@@ -115,6 +115,7 @@ include("output/gelmandiag.jl")
 include("output/gewekediag.jl")
 include("output/mcse.jl")
 include("output/stats.jl")
+include("output/plot.jl")
 
 include("samplers/amm.jl")
 include("samplers/amwg.jl")
@@ -128,7 +129,7 @@ include("utils.jl")
 include("variate/core.jl")
 include("variate/numeric.jl")
 
-include("plots/chain_plot.jl")
+
 
 
 #################### Exports ####################
@@ -204,7 +205,6 @@ export
   slice!,
   slicewg!
   
-export
-  chain_plot
+
 
 end
