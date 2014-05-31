@@ -51,7 +51,7 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
       tunepar["sampler"] = v.tune
       relist(model, v.value, block, true)
     end,
-    ["sigma" => sigma, "adapt" => adapt, "batchsize" => batchsize,
+    ["sigma" => Float64[sigma...], "adapt" => adapt, "batchsize" => batchsize,
      "target" => target, "sampler" => nothing]
   )
 end
