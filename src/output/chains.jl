@@ -1,26 +1,31 @@
 #################### MCMCChains Constructor ####################
 
-function MCMCChains{T<:Real,U<:String}(value::Array{T,2}, names::Vector{U};
-           start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-  MCMCChains(reshape(value, size(value, 1), size(value, 2), 1), names,
-             start=start, thin=thin, model=model)
-end
-
-function MCMCChains{T<:Real,U<:String}(value::Array{T,3}, names::Vector{U};
-           start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-  length(names) == size(value, 2) ||
-    error("value column and names dimensions must match")
-  varval = convert(Array{VariateType, 3}, value)
-  MCMCChains(varval, String[names...], range(start, thin, size(varval, 1)),
-             model)
-end
-
-function MCMCChains{T<:String}(iters::Integer, names::Vector{T};
-           start::Integer=1, thin::Integer=1, chains::Integer=1,
+function MCMCChains{T<:Real,U<:String}(value::Array{T,2};
+           start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
            model::MCMCModel=MCMCModel())
-  varval = Array(VariateType, iters, length(names), chains)
-  fill!(varval, NaN)
-  MCMCChains(varval, String[names...], start=start, thin=thin, model=model)
+  MCMCChains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
+             thin=thin, names=names, model=model)
+end
+
+function MCMCChains{T<:Real,U<:String}(value::Array{T,3};
+           start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
+           model::MCMCModel=MCMCModel())
+  n, p, m = size(value)
+  if length(names) == 0
+    names = String[string("Param", i) for i in 1:p]
+  elseif length(names) != p
+    error("value column and names dimensions must match")
+  end
+  vvalue = convert(Array{VariateType, 3}, value)
+  MCMCChains(vvalue, String[names...], range(start, thin, n), model)
+end
+
+function MCMCChains{T<:String}(iters::Integer, params::Integer;
+           start::Integer=1, thin::Integer=1, chains::Integer=1,
+           names::Vector{T}=String[], model::MCMCModel=MCMCModel())
+  value = Array(VariateType, iters, params, chains)
+  fill!(value, NaN)
+  MCMCChains(value, start=start, thin=thin, names=names, model=model)
 end
 
 

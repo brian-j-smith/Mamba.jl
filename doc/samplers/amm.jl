@@ -27,7 +27,7 @@ end
 ## MCMC Simulation with Adaptive Multivariate Metopolis Sampling
 n = 5000
 burnin = 1000
-sim = MCMCChains(n, ["b0", "b1", "s2"])
+sim = MCMCChains(n, 3, names = ["b0", "b1", "s2"])
 theta = VariateAMM([0.0, 0.0, 0.0])
 SigmaF = cholfact(eye(3))
 for i in 1:n

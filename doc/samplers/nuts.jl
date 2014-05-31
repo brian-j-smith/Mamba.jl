@@ -33,11 +33,12 @@ end
 ## MCMC Simulation with No-U-Turn Sampling
 n = 5000
 burnin = 1000
-sim = MCMCChains(n - burnin, ["b0", "b1", "s2"], start = (burnin + 1))
+sim = MCMCChains(n - burnin, 3, start = (burnin + 1),
+                 names = ["b0", "b1", "s2"])
 theta = VariateNUTS([0.0, 0.0, 0.0])
 epsilon = nutsepsilon(theta, fx)
 for i in 1:n
-  nuts!(theta, epsilon, fx, adapt = (i <= burnin))
+  nuts!(theta, epsilon, fx, adapt=(i <= burnin))
   if i > burnin
     sim.value[i - burnin,:,1] = [theta[1:2], exp(theta[3])]
   end

@@ -23,12 +23,15 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCChains(value::Array{T<:Real,2}, names::Vector{U<:String}; \
-                start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-		      MCMCChains(value::Array{T<:Real,3}, names::Vector{U<:String}; \
-                start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-              MCMCChains(iter::Integer, names::Vector{T<:String}; start::Integer=1, \
-                thin::Integer=1, chains::Integer=1, model::MCMCModel=MCMCModel())
+.. function:: MCMCChains{T<:Real,U<:String}(value::Array{T,2}; \
+			    start::Integer=1, thin::Integer=1, names::Vector{U}=Array(String,0), \
+			    model::MCMCModel=MCMCModel())
+		      MCMCChains{T<:Real,U<:String}(value::Array{T,3}; \
+			    start::Integer=1, thin::Integer=1, names::Vector{U}=Array(String,0), \
+			    model::MCMCModel=MCMCModel())
+              MCMCChains{T<:String}(iters::Integer, params::Integer; \
+			    start::Integer=1, thin::Integer=1, chains::Integer=1, \
+			    names::Vector{T}=Array(String,0), model::MCMCModel=MCMCModel())
               
 		
 	Construct an ``MCMCChains`` object that stores MCMC sampler output.
@@ -36,11 +39,12 @@ Constructors
 	**Arguments**
 	
 		* ``value`` : simulated values whose first, second, and third (optional) dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
-		* ``iter`` : number of simulation-specific iterations to store.
-		* ``names`` : names to assign to the parameter elements.
+		* ``iters`` : number of simulation-specific iterations to store.
+		* ``params`` : number of parameters to store.
 		* ``start`` : number of the first iteration to be stored.
 		* ``thin`` : number of steps between consecutive iterations to be stored.
 		* ``chains`` : number of simulation runs for which to store output.
+		* ``names`` : names to assign to the parameter elements (default: ``Param1``, ``Param2``, ..., ``Param<params>``).
 		* ``model`` : the model for which the simulation was run.
 		
 	**Value**
