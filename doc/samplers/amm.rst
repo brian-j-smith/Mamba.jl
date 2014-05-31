@@ -87,7 +87,7 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T:<Real}; \
+.. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
 				adapt::Symbol=:all)
 
 	Construct an ``MCMCSampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
