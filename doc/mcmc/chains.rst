@@ -23,15 +23,15 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCChains{T<:Real,U<:String}(value::Array{T,2}; \
-			    start::Integer=1, thin::Integer=1, names::Vector{U}=Array(String,0), \
+.. function:: MCMCChains(value::Array{T<:Real,2}; \
+			    start::Integer=1, thin::Integer=1, names::Vector{U<:String}=Array(String,0), \
 			    model::MCMCModel=MCMCModel())
-		      MCMCChains{T<:Real,U<:String}(value::Array{T,3}; \
-			    start::Integer=1, thin::Integer=1, names::Vector{U}=Array(String,0), \
+		      MCMCChains(value::Array{T<:Real,3}; \
+			    start::Integer=1, thin::Integer=1, names::Vector{U<:String}=Array(String,0), \
 			    model::MCMCModel=MCMCModel())
-              MCMCChains{T<:String}(iters::Integer, params::Integer; \
+              MCMCChains(iters::Integer, params::Integer; \
 			    start::Integer=1, thin::Integer=1, chains::Integer=1, \
-			    names::Vector{T}=Array(String,0), model::MCMCModel=MCMCModel())
+			    names::Vector{T<:String}=Array(String,0), model::MCMCModel=MCMCModel())
               
 		
 	Construct an ``MCMCChains`` object that stores MCMC sampler output.
