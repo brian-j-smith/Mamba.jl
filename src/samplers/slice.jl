@@ -23,7 +23,7 @@ end
 
 #################### MCMCSampler Constructor ####################
 
-function Slice(params::Vector{Symbol}, width::Vector{Float64};
+function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T};
            transform::Bool=false)
   MCMCSampler(params,
     quote
@@ -34,7 +34,7 @@ function Slice(params::Vector{Symbol}, width::Vector{Float64};
       slice!(v, tunepar["width"], f)
       relist(model, v.value, block, tunepar["transform"])
     end,
-    ["width" => width, "transform" => transform]
+    ["width" => Float64[width...], "transform" => transform]
   )
 end
 
@@ -71,7 +71,7 @@ end
 
 #################### Slice within Gibbs Sampler ####################
 
-function SliceWG(params::Vector{Symbol}, width::Vector{Float64};
+function SliceWG{T<:Real}(params::Vector{Symbol}, width::Vector{T};
            transform::Bool=false)
   MCMCSampler(params,
     quote
@@ -82,7 +82,7 @@ function SliceWG(params::Vector{Symbol}, width::Vector{Float64};
       slicewg!(v, tunepar["width"], f)
       relist(model, v.value, block, tunepar["transform"])
     end,
-    ["width" => width, "transform" => transform]
+    ["width" => Float64[width...], "transform" => transform]
   )
 end
 

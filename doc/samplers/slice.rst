@@ -79,7 +79,7 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: Slice(params::Vector{Symbol}, width::Vector{Float64}; \
+.. function:: Slice(params::Vector{Symbol}, width::Vector{T<:Real}; \
                 transform::Bool=false)
 
 	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
@@ -126,7 +126,7 @@ Stand-Alone Function
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SliceWG(params::Vector{Symbol}, width::Vector{Float64}; \
+.. function:: SliceWG(params::Vector{Symbol}, width::Vector{T<:Real}; \
                 transform::Bool=false)
 
 	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
