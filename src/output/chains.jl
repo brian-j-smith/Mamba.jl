@@ -15,10 +15,10 @@ function MCMCChains{T<:Real,U<:String}(value::Array{T,3}, names::Vector{U};
              model)
 end
 
-function MCMCChains{T<:String}(iter::Integer, names::Vector{T};
+function MCMCChains{T<:String}(iters::Integer, names::Vector{T};
            start::Integer=1, thin::Integer=1, chains::Integer=1,
            model::MCMCModel=MCMCModel())
-  varval = Array(VariateType, iter, length(names), chains)
+  varval = Array(VariateType, iters, length(names), chains)
   fill!(varval, NaN)
   MCMCChains(varval, String[names...], start=start, thin=thin, model=model)
 end
@@ -26,11 +26,11 @@ end
 
 #################### MCMCChains Base/Utility Methods ####################
 
-function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
+function Base.getindex{T<:String}(c::MCMCChains, iters::Range, names::Vector{T},
            chains::Vector)
-  from = max(iceil((first(iter) - first(c.range)) / step(c.range) + 1), 1)
-  thin = step(iter)
-  to = min(ifloor((last(iter) - first(c.range)) / step(c.range) + 1),
+  from = max(iceil((first(iters) - first(c.range)) / step(c.range) + 1), 1)
+  thin = step(iters)
+  to = min(ifloor((last(iters) - first(c.range)) / step(c.range) + 1),
            length(c.range))
 
   idx1 = from:thin:to
@@ -44,19 +44,19 @@ function Base.getindex{T<:String}(c::MCMCChains, iter::Range, names::Vector{T},
              c.model)
 end
 
-function Base.getindex(c::MCMCChains, iter::Range, names::Vector, chains::Vector)
-  c[iter, c.names[names], chains]
+function Base.getindex(c::MCMCChains, iters::Range, names::Vector, chains::Vector)
+  c[iters, c.names[names], chains]
 end
 
 function Base.getindex(c::MCMCChains, inds...)
   length(inds) == 3 ||
-    error("must supply 3-dimensional index for iter, names, and chains")
+    error("must supply 3-dimensional index for iters, names, and chains")
   idx = inds[1]
-  iter = isa(idx, Range1) ? (first(idx):1:last(idx)) :
-         isa(idx, Range) ? idx : throw(TypeError())
+  iters = isa(idx, Range1) ? (first(idx):1:last(idx)) :
+          isa(idx, Range) ? idx : throw(TypeError())
   names = collect(inds[2])
   chains = collect(inds[3])
-  c[iter, names, chains]
+  c[iters, names, chains]
 end
 
 function Base.indexin(names::Vector{String}, c::MCMCChains)

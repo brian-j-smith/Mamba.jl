@@ -1,10 +1,10 @@
 #################### MCMC Simulation Engine ####################
 
 function mcmc(model::MCMCModel, inputs::Dict{Symbol},
-           inits::Vector{Dict{Symbol,Any}}, iter::Integer; burnin::Integer=0,
+           inits::Vector{Dict{Symbol,Any}}, iters::Integer; burnin::Integer=0,
            thin::Integer=1, chains::Integer=1)
 
-  iter > burnin || error("iter <= burnin")
+  iters > burnin || error("iters <= burnin")
 
   m = deepcopy(model)
 
@@ -19,18 +19,18 @@ function mcmc(model::MCMCModel, inputs::Dict{Symbol},
     settune!(m, tune0)
     m.chain = k
 
-    sims[k] = Array(VariateType, div(iter - burnin - 1, thin) + 1,
+    sims[k] = Array(VariateType, div(iters - burnin - 1, thin) + 1,
                     length(unlist(m, true)))
 
     print("\nSAMPLING FROM CHAIN $(k)/$(chains)\n")
     pct = 0
     i = 1
-    for t in 1:iter
+    for t in 1:iters
       m.iter = t
 
-      if floor(100 * t / iter) >= pct
-        print(string("Iteration: ", lpad(t, length(string(iter)), ' '),
-          "/$(iter) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
+      if floor(100 * t / iters) >= pct
+        print(string("Iteration: ", lpad(t, length(string(iters)), ' '),
+          "/$(iters) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
         pct += 10
       end
 

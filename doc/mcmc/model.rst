@@ -152,7 +152,7 @@ Methods
 		The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 				
 .. function:: mcmc(model::MCMCModel, inputs::Dict{Symbol}, \
-				inits::Vector{Dict{Symbol,Any}}, iter::Integer; \
+				inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
 				burnin::Integer=0, thin::Integer=1, chains::Integer=1)
 
 	Simulate MCMC draws for a specified model.
@@ -162,7 +162,7 @@ Methods
 		* ``model`` : a specified mode.
 		* ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
 		* ``inits`` : a vector of dictionaries that contain initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.  Consecutive runs of the simulator will iterate through the vector's dictionary elements.
-		* ``iter`` : number of draws to generate for each simulation run.
+		* ``iters`` : number of draws to generate for each simulation run.
 		* ``burnin`` : numer of initial draws to discard as a burn-in sequence to allow for convergence.
 		* ``thin`` : step-size between draws to output.
 		* ``chains`` : number of simulation runs to perform.
