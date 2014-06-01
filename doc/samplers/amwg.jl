@@ -28,7 +28,7 @@ end
 n = 5000
 burnin = 1000
 sim = MCMCChains(n, 3, names = ["b0", "b1", "s2"])
-theta = VariateAMWG([0.0, 0.0, 0.0])
+theta = AMWGVariate([0.0, 0.0, 0.0])
 sigma = ones(3)
 for i in 1:n
   amwg!(theta, sigma, logf, adapt = (i <= burnin))

@@ -185,7 +185,7 @@ export
   Slice,
   SliceWG,
   AMMVariate,
-  VariateAMWG,
+  AMWGVariate,
   VariateNUTS,
   VariateSlice
 
