@@ -56,9 +56,8 @@ end
 function Base.getindex(c::MCMCChains, inds...)
   length(inds) == 3 ||
     error("must supply 3-dimensional index for iters, names, and chains")
-  idx = inds[1]
-  iters = isa(idx, Range1) ? (first(idx):1:last(idx)) :
-          isa(idx, Range) ? idx : throw(TypeError())
+  iters = inds[1]
+  isa(iters, Range) || throw(TypeError())
   names = collect(inds[2])
   chains = collect(inds[3])
   c[iters, names, chains]
