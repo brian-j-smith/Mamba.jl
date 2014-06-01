@@ -20,11 +20,11 @@ Declaration
 Aliases
 ^^^^^^^
 
-.. index:: MultiVariate
-.. index:: MatrixVariate
-.. index:: UniVariate
-.. index:: VectorVariate
 .. index:: VariateType
+.. index:: UniVariate
+.. index:: MultiVariate
+.. index:: VectorVariate
+.. index:: MatrixVariate
 
 .. code-block:: julia
 

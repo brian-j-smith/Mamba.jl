@@ -126,17 +126,19 @@ include("variate/numeric.jl")
 #################### Exports ####################
 
 export
-  MultiVariate,
   MatrixVariate,
+  MultiVariate,
   UniVariate,
-  VectorVariate,
+  Variate,
+  VariateType,
+  VectorVariate
+
+export
   MCMCChains,
   MCMCLogical,
   MCMCModel,
   MCMCSampler,
-  MCMCStochastic,
-  VariateType,
-  Variate
+  MCMCStochastic
 
 export
   Flat
@@ -178,23 +180,21 @@ export
   update!
 
 export
-  AMM,
-  AMWG,
-  MISS,
-  NUTS,
-  Slice,
-  SliceWG,
-  AMMVariate,
-  AMWGVariate,
-  NUTSVariate,
-  SliceVariate
-
-export
   amm!,
+  AMM,
+  AMMVariate,
   amwg!,
+  AMWG,
+  AMWGVariate,
+  MISS,
   nuts!,
   nutsepsilon,
+  NUTS,
+  NUTSVariate,
   slice!,
-  slicewg!
+  Slice,
+  slicewg!,
+  SliceWG,
+  SliceVariate
 
 end
