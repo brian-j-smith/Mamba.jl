@@ -38,8 +38,8 @@ Constructors
 	
 	**Arguments**
 	
-		* ``value`` : simulated values whose first, second, and third (optional) dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
-		* ``iters`` : number of simulation-specific iterations to store.
+		* ``value`` : an array whose first, second, and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
+		* ``iters`` : total number of iterations in each sampler run, of which ``length(start:thin:iters)`` outputted iterations will be stored in the object.
 		* ``params`` : number of parameters to store.
 		* ``start`` : number of the first iteration to be stored.
 		* ``thin`` : number of steps between consecutive iterations to be stored.
