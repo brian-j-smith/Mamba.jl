@@ -20,7 +20,7 @@ Declaration
 Aliases
 ^^^^^^^
 
-.. index:: VariateArray
+.. index:: MultiVariate
 .. index:: VariateMatrix
 .. index:: UniVariate
 .. index:: VariateVector
@@ -33,7 +33,7 @@ Aliases
 	typealias UniVariate Variate{VariateType}
 	typealias VariateVector Variate{Vector{VariateType}}
 	typealias VariateMatrix Variate{Matrix{VariateType}}
-	typealias VariateArray{N} Variate{Array{VariateType,N}}
+	typealias MultiVariate{N} Variate{Array{VariateType,N}}
 
 Field
 ^^^^^

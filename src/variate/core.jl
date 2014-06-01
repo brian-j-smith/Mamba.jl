@@ -6,7 +6,7 @@ end
 
 Base.size(v::Variate, d) = Base.size(v)[d]
 
-function Base.convert{T<:Real,N}(::Type{Array{T,N}}, v::VariateArray{N})
+function Base.convert{T<:Real,N}(::Type{Array{T,N}}, v::MultiVariate{N})
   convert(Array{T,N}, v.value)
 end
 
@@ -14,7 +14,7 @@ function Base.convert{T<:Real}(::Type{T}, v::UniVariate)
   convert(T, v.value)
 end
 
-function Base.getindex{N}(v::VariateArray{N}, inds...)
+function Base.getindex{N}(v::MultiVariate{N}, inds...)
   getindex(v.value, inds...)
 end
 
@@ -26,7 +26,7 @@ function Base.getindex(v::UniVariate, inds)
   map(i -> v.value[i], inds)
 end
 
-function Base.setindex!{N}(v::VariateArray{N}, x, inds...)
+function Base.setindex!{N}(v::MultiVariate{N}, x, inds...)
   setindex!(v.value, x, inds...)
 end
 
@@ -49,7 +49,7 @@ function names(v::UniVariate, prefix)
   String[string(prefix)]
 end
 
-function names{N}(v::VariateArray{N}, prefix)
+function names{N}(v::MultiVariate{N}, prefix)
   n = length(v)
   values = Array(String, n)
   dims = size(v)

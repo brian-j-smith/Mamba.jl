@@ -25,7 +25,7 @@ abstract Variate{T<:Union(VariateType, Array{VariateType})}
 typealias UniVariate Variate{VariateType}
 typealias VariateVector Variate{Vector{VariateType}}
 typealias VariateMatrix Variate{Matrix{VariateType}}
-typealias VariateArray{N} Variate{Array{VariateType,N}}
+typealias MultiVariate{N} Variate{Array{VariateType,N}}
 
 
 #################### Distribution Types ####################
@@ -126,7 +126,7 @@ include("variate/numeric.jl")
 #################### Exports ####################
 
 export
-  VariateArray,
+  MultiVariate,
   VariateMatrix,
   UniVariate,
   VariateVector,
