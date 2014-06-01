@@ -22,7 +22,7 @@ Aliases
 
 .. index:: VariateArray
 .. index:: VariateMatrix
-.. index:: VariateScalar
+.. index:: UniVariate
 .. index:: VariateVector
 .. index:: VariateType
 
@@ -30,7 +30,7 @@ Aliases
 
 	typealias VariateType Float64
 
-	typealias VariateScalar Variate{VariateType}
+	typealias UniVariate Variate{VariateType}
 	typealias VariateVector Variate{Vector{VariateType}}
 	typealias VariateMatrix Variate{Matrix{VariateType}}
 	typealias VariateArray{N} Variate{Array{VariateType,N}}

@@ -22,7 +22,7 @@ typealias VariateType Float64
 
 abstract Variate{T<:Union(VariateType, Array{VariateType})}
 
-typealias VariateScalar Variate{VariateType}
+typealias UniVariate Variate{VariateType}
 typealias VariateVector Variate{Vector{VariateType}}
 typealias VariateMatrix Variate{Matrix{VariateType}}
 typealias VariateArray{N} Variate{Array{VariateType,N}}
@@ -128,7 +128,7 @@ include("variate/numeric.jl")
 export
   VariateArray,
   VariateMatrix,
-  VariateScalar,
+  UniVariate,
   VariateVector,
   MCMCChains,
   MCMCLogical,
