@@ -63,10 +63,9 @@ inits = [
    :lambda => zeros(3, 6)]
 ]
 
-
 ## Sampling Scheme
 scheme = [Slice([:alpha, :beta, :gamma], [1.0, 1.0, 0.1]),
-          NUTS([:lambda, :s2])]
+          AMWG([:lambda, :s2], fill(0.1, 19))]
 setsamplers!(model, scheme)
 
 
