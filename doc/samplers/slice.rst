@@ -8,7 +8,7 @@ Implementation of the multivariate shrinkage slice sampler of Neal :cite:`neal:2
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: slice!(v::VariateSlice, width::Vector{Float64}, logf::Function)
+.. function:: slice!(v::SliceVariate, width::Vector{Float64}, logf::Function)
 
 	Simulate one draw from a target distribution using a multivariate (shrinkage) slice sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
@@ -28,29 +28,29 @@ Stand-Alone Function
 			:language: julia
 
 
-.. index:: VariateSlice
+.. index:: SliceVariate
 
-VariateSlice Type
+SliceVariate Type
 ^^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``VariateSlice <: VectorVariate``
+``SliceVariate <: VectorVariate``
 
 Fields
 ``````
 
 * ``value::Vector{VariateType}`` : vector of sampled values.
-* ``tune::TuneSlice`` : tuning parameters for the sampling algorithm.
+* ``tune::SliceTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: VariateSlice(x::Vector{VariateType}, tune::TuneSlice)
-              VariateSlice(x::Vector{VariateType}, tune=nothing)
+.. function:: SliceVariate(x::Vector{VariateType}, tune::SliceTune)
+              SliceVariate(x::Vector{VariateType}, tune=nothing)
 
-  	Construct a ``VariateSlice`` object that stores sampled values and tuning parameters for slice sampling.
+  	Construct a ``SliceVariate`` object that stores sampled values and tuning parameters for slice sampling.
 	
 	**Arguments**
 	
@@ -59,17 +59,17 @@ Constructors
 		
 	**Value**
 	
-		Returns a ``VariateSlice`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+		Returns a ``SliceVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
-.. index:: TuneSlice
+.. index:: SliceTune
 
-TuneSlice Type
+SliceTune Type
 ^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type TuneSlice``
+``type SliceTune``
 
 Fields
 ``````
@@ -104,7 +104,7 @@ Implementation of the univariate shrinkage slice sampler of Neal :cite:`neal:200
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
+.. function:: slicewg!(v::SliceVariate, width::Vector{Float64}, logf::Function)
 
 	Simulate one draw from a target distribution using a univariate (shrinkage) slice-within-Gibbs sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
