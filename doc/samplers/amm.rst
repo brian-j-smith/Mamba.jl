@@ -8,7 +8,7 @@ Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive (mu
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function; \
+.. function:: amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function; \
                 adapt::Bool=true)
 
 	Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.  Parameters are assumed to be continuous and unconstrained.
@@ -29,29 +29,29 @@ Stand-Alone Function
 		.. literalinclude:: amm.jl
 			:language: julia
 					
-.. index:: VariateAMM
+.. index:: AMMVariate
 
-VariateAMM Type
+AMMVariate Type
 ^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``VariateAMM <: VectorVariate``
+``AMMVariate <: VectorVariate``
 
 Fields
 ``````
 
 * ``value::Vector{VariateType}`` : vector of sampled values.
-* ``tune::TuneAMM`` : tuning parameters for the sampling algorithm.
+* ``tune::AMMTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: VariateAMM(x::Vector{VariateType}, tune::TuneAMM)
-              VariateAMM(x::Vector{VariateType}, tune=nothing)
+.. function:: AMMVariate(x::Vector{VariateType}, tune::AMMTune)
+              AMMVariate(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateAMM`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
+	Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
 	
 	**Arguments**
 	
@@ -60,18 +60,18 @@ Constructors
 		
 	**Value**
 	
-		Returns a ``VariateAMM`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+		Returns a ``AMMVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 		
 
-.. index:: TuneAMM
+.. index:: AMMTune
 
-TuneAMM Type
+AMMTune Type
 ^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type TuneAMM``
+``type AMMTune``
 
 Fields
 ``````
