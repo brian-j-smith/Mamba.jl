@@ -19,7 +19,7 @@ function mcmc(model::MCMCModel, inputs::Dict{Symbol},
     settune!(m, tune0)
     m.chain = k
 
-    sims[k] = Array(VariateType, div(iters - burnin - 1, thin) + 1,
+    sims[k] = Array(VariateType, length(burnin+1:thin:iters),
                     length(unlist(m, true)))
 
     print("\nSAMPLING FROM CHAIN $(k)/$(chains)\n")
