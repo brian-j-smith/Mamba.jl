@@ -97,8 +97,6 @@ Statistics
 	mean     stdm
 
 
-.. index:: Variate
-
 Subtypes
 ----------
 

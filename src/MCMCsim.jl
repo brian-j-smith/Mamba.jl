@@ -27,10 +27,6 @@ typealias AbstractVariateVector AbstractVariate{Vector{VariateType}}
 typealias AbstractVariateMatrix AbstractVariate{Matrix{VariateType}}
 typealias AbstractVariateArray{N} AbstractVariate{Array{VariateType,N}}
 
-type Variate{T} <: AbstractVariate{T}
-  value::T
-end
-
 
 #################### Distribution Types ####################
 

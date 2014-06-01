@@ -8,8 +8,6 @@ digraph Variate {
 
 	AbstractVariate [label = "{AbstractVariate\{T\}|+ value : T\l}"]
 
-	Variate [label = "{Variate\{T\}}"]
-
 	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
@@ -18,7 +16,6 @@ digraph Variate {
 
 	VariateSampler [label = "{VariateSampler\{Vector\{VariateType\}\}|+ tune : TuneSampler\l}"]
 	
-	AbstractVariate -> Variate
 	AbstractVariate -> MCMCDependent
 	MCMCDependent -> MCMCLogical
 	MCMCDependent -> MCMCStochastic
