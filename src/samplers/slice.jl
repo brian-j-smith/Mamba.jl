@@ -4,7 +4,7 @@ type TuneSlice
   width::Vector{Float64}
 end
 
-type VariateSlice <: AbstractVariateVector
+type VariateSlice <: VariateVector
   value::Vector{VariateType}
   tune::TuneSlice
 

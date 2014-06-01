@@ -37,7 +37,7 @@ VariateAMM Type
 Declaration
 ```````````
 
-``VariateAMM <: AbstractVariateVector``
+``VariateAMM <: VariateVector``
 
 Fields
 ``````

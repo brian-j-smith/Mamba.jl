@@ -36,7 +36,7 @@ VariateSlice Type
 Declaration
 ```````````
 
-``VariateSlice <: AbstractVariateVector``
+``VariateSlice <: VariateVector``
 
 Fields
 ``````

@@ -13,7 +13,7 @@ type TuneAMM
   SigmaLm::Matrix{Float64}
 end
 
-type VariateAMM <: AbstractVariateVector
+type VariateAMM <: VariateVector
   value::Vector{VariateType}
   tune::TuneAMM
 

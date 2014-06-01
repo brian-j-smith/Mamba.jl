@@ -3,37 +3,37 @@
 Variate Types
 =============
 
-.. index:: AbstractVariate
+.. index:: Variate
 
-.. _section-AbstractVariate:
+.. _section-Variate:
 
-AbstractVariate
----------------
+Variate
+-------
 
-``AbstractVariate`` is an abstract type that serves as the basis for several concrete types in the *MCMCsim* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``AbstractVariate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type (see `julia Types <http://docs.julialang.org/en/release-0.2/manual/types/>`_).  Accordingly, a core set of functionality is defined for the ``AbstractVariate`` type through the field and method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``value`` field shown.
+``Variate`` is an abstract type that serves as the basis for several concrete types in the *MCMCsim* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``Variate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type (see `julia Types <http://docs.julialang.org/en/release-0.2/manual/types/>`_).  Accordingly, a core set of functionality is defined for the ``Variate`` type through the field and method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``value`` field shown.
 
 Declaration
 ^^^^^^^^^^^
 
-``abstract AbstractVariate{T<:Union(VariateType, Array{VariateType})}``
+``abstract Variate{T<:Union(VariateType, Array{VariateType})}``
 
 Aliases
 ^^^^^^^
 
-.. index:: AbstractVariateArray
-.. index:: AbstractVariateMatrix
-.. index:: AbstractVariateScalar
-.. index:: AbstractVariateVector
+.. index:: VariateArray
+.. index:: VariateMatrix
+.. index:: VariateScalar
+.. index:: VariateVector
 .. index:: VariateType
 
 .. code-block:: julia
 
 	typealias VariateType Float64
 
-	typealias AbstractVariateScalar AbstractVariate{VariateType}
-	typealias AbstractVariateVector AbstractVariate{Vector{VariateType}}
-	typealias AbstractVariateMatrix AbstractVariate{Matrix{VariateType}}
-	typealias AbstractVariateArray{N} AbstractVariate{Array{VariateType,N}}
+	typealias VariateScalar Variate{VariateType}
+	typealias VariateVector Variate{Vector{VariateType}}
+	typealias VariateMatrix Variate{Matrix{VariateType}}
+	typealias VariateArray{N} Variate{Array{VariateType,N}}
 
 Field
 ^^^^^
@@ -43,7 +43,7 @@ Field
 Methods
 ^^^^^^^
 
-Method functions supported on all ``AbstractVariate`` types are summarized in the following sections; and, unless otherwise specified, are detailed in `The Julia Standard Library <http://docs.julialang.org/en/release-0.2/stdlib/base>`_ documentation.
+Method functions supported on all ``Variate`` types are summarized in the following sections; and, unless otherwise specified, are detailed in `The Julia Standard Library <http://docs.julialang.org/en/release-0.2/stdlib/base>`_ documentation.
 
 Array Functions
 ```````````````
@@ -100,9 +100,9 @@ Statistics
 Subtypes
 ----------
 
-Subtypes of ``AbstractVariate`` include the :ref:`section-MCMCDependent`, :ref:`section-MCMCLogical`, and :ref:`section-MCMCStochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
+Subtypes of ``Variate`` include the :ref:`section-MCMCDependent`, :ref:`section-MCMCLogical`, and :ref:`section-MCMCStochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
 
 .. figure:: images/variateUML.png
 	:align: center
 
-	UML relational diagram of ``AbstractVariate`` types and their fields.
+	UML relational diagram of ``Variate`` types and their fields.

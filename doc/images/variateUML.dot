@@ -6,7 +6,7 @@ digraph Variate {
 
 	edge [fontname = "Helvetica", fontsize = 11, dir = back, arrowtail = empty]
 
-	AbstractVariate [label = "{AbstractVariate\{T\}|+ value : T\l}"]
+	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
 	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
@@ -16,9 +16,9 @@ digraph Variate {
 
 	VariateSampler [label = "{VariateSampler\{Vector\{VariateType\}\}|+ tune : TuneSampler\l}"]
 	
-	AbstractVariate -> MCMCDependent
+	Variate -> MCMCDependent
 	MCMCDependent -> MCMCLogical
 	MCMCDependent -> MCMCStochastic
-	AbstractVariate -> VariateSampler
+	Variate -> VariateSampler
 
 }

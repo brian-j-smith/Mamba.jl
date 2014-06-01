@@ -18,7 +18,7 @@ const ArithMethods2 = [
   :(Base.dot)
 ]
 
-Base.(:^)(v::AbstractVariate, n::Integer) = Base.(:^)(v.value, n)
+Base.(:^)(v::Variate, n::Integer) = Base.(:^)(v.value, n)
 
 const ArrayMethods = [
   :(Base.cummax),
@@ -216,19 +216,19 @@ const UnaryMethods = [
 for op in [ArithMethods2, CompareMethods2, DivideMethods2, MathMethods2,
            PowerMethods2, SignMethods2, StatMethods2, TrigMethods2]
   @eval begin
-    ($op)(x::Array, v::AbstractVariate) = ($op)(x, v.value)
-    ($op)(x::Number, v::AbstractVariate) = ($op)(x, v.value)
-    ($op)(v::AbstractVariate, x::Array) = ($op)(v.value, x)
-    ($op)(v::AbstractVariate, x::Number) = ($op)(v.value, x)
-    ($op)(u::AbstractVariate, v::AbstractVariate) = ($op)(u.value, v.value)
+    ($op)(x::Array, v::Variate) = ($op)(x, v.value)
+    ($op)(x::Number, v::Variate) = ($op)(x, v.value)
+    ($op)(v::Variate, x::Array) = ($op)(v.value, x)
+    ($op)(v::Variate, x::Number) = ($op)(v.value, x)
+    ($op)(u::Variate, v::Variate) = ($op)(u.value, v.value)
   end
 end
 
 for op in [ArrayMethods, MathMethods, PowerMethods, RoundMethods,
            SignMethods, StatMethods, TrigMethods, UnaryMethods]
-  @eval ($op)(v::AbstractVariate) = ($op)(v.value)
+  @eval ($op)(v::Variate) = ($op)(v.value)
 end
 
 for op in RoundMethods2
-  @eval ($op)(v::AbstractVariate, digits::Integer) = ($op)(v.value, digits)
+  @eval ($op)(v::Variate, digits::Integer) = ($op)(v.value, digits)
 end

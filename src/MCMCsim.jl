@@ -20,12 +20,12 @@ import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
 
 typealias VariateType Float64
 
-abstract AbstractVariate{T<:Union(VariateType, Array{VariateType})}
+abstract Variate{T<:Union(VariateType, Array{VariateType})}
 
-typealias AbstractVariateScalar AbstractVariate{VariateType}
-typealias AbstractVariateVector AbstractVariate{Vector{VariateType}}
-typealias AbstractVariateMatrix AbstractVariate{Matrix{VariateType}}
-typealias AbstractVariateArray{N} AbstractVariate{Array{VariateType,N}}
+typealias VariateScalar Variate{VariateType}
+typealias VariateVector Variate{Vector{VariateType}}
+typealias VariateMatrix Variate{Matrix{VariateType}}
+typealias VariateArray{N} Variate{Array{VariateType,N}}
 
 
 #################### Distribution Types ####################
@@ -35,7 +35,7 @@ typealias DistributionStruct Union(Distribution, Array{Distribution})
 
 #################### MCMCDependent Types ####################
 
-abstract MCMCDependent{T} <: AbstractVariate{T}
+abstract MCMCDependent{T} <: Variate{T}
 
 type MCMCLogical{T} <: MCMCDependent{T}
   value::T
@@ -126,10 +126,10 @@ include("variate/numeric.jl")
 #################### Exports ####################
 
 export
-  AbstractVariateArray,
-  AbstractVariateMatrix,
-  AbstractVariateScalar,
-  AbstractVariateVector,
+  VariateArray,
+  VariateMatrix,
+  VariateScalar,
+  VariateVector,
   MCMCChains,
   MCMCLogical,
   MCMCModel,
