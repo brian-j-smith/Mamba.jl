@@ -48,11 +48,10 @@ model = MCMCModel(
     @modelexpr(a1, a2, a3, mu, group, b, N, T,
       begin
         a = Float64[a1, a2, a3]
-        p = Array(Float64, 4)
         Distribution[
           begin
             eta = mu[group[i],t] + b[i]
-            p[1] = 1.0
+            p = ones(4)
             for j in 1:3
               Q = invlogit(-(a[j] + eta))
               p[j] -= Q
@@ -134,5 +133,5 @@ setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(model, inhalers, inits, 5000, burnin=1000, thin=2, chains=1)
+sim = mcmc(model, inhalers, inits, 5000, burnin=1000, thin=2, chains=2)
 describe(sim)

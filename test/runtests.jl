@@ -17,7 +17,7 @@ examples = [
   "dyes",
   "epil",
   "equiv",
-#  "inhalers",
+  "inhalers",
 #  "kidney",
   "leuk",
   "lsat",
