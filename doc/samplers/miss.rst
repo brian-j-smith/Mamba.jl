@@ -14,7 +14,7 @@ MCMCSampler Constructor
 	
 	**Arguments**
 	
-		* ``params`` : a single stochastic node that contains missing values (``NaN``) to be updated with the sampler.
+		* ``params`` : stochastic nodes that contain missing values (``NaN``) to be updated with the sampler.
 
 	**Value**
 	

@@ -1,29 +1,32 @@
 #################### Missing Value Sampler ####################
 
 function MISS(params::Vector{Symbol})
-  length(params) == 1 || error("must specify a single node to sample")
   MCMCSampler(params,
     quote
+      value = (Symbol => Any)[]
       sampler = model.samplers[block]
-      node = model[sampler.params[1]]
-      value = deepcopy(node.value)
-      if !sampler.tune["initialized"]
-        sampler.tune["missing"] = find(isnan(node))
-        sampler.tune["initialized"] = true
-      end
-      missing = sampler.tune["missing"]
-      if isa(node.distr, Array)
-        for i in missing
-          value[i] = rand(node.distr[i])
+      for key in sampler.params
+        node = model[key]
+        v = deepcopy(node.value)
+        if !sampler.tune["initialized"]
+          sampler.tune["missing"][key] = find(isnan(node))
         end
-      elseif length(missing) > 0
-        pred = rand(node.distr)
-        for i in missing
-          value[i] = pred[i]
+        missing = sampler.tune["missing"][key]
+        if isa(node.distr, Array)
+          for i in missing
+            v[i] = rand(node.distr[i])
+          end
+        elseif length(missing) > 0
+          pred = rand(node.distr)
+          for i in missing
+            v[i] = pred[i]
+          end
         end
+        value[key] = v
       end
+      sampler.tune["initialized"] = true
       value
     end,
-    ["initialized" => false, "missing" => Int[]]
+    ["initialized" => false, "missing" => Dict{Symbol,Vector{Int}}()]
   )
 end
