@@ -36,7 +36,7 @@ VariateSlice Type
 Declaration
 ```````````
 
-``VariateSlice <: VariateVector``
+``VariateSlice <: VectorVariate``
 
 Fields
 ``````

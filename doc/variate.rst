@@ -23,7 +23,7 @@ Aliases
 .. index:: MultiVariate
 .. index:: VariateMatrix
 .. index:: UniVariate
-.. index:: VariateVector
+.. index:: VectorVariate
 .. index:: VariateType
 
 .. code-block:: julia
@@ -31,9 +31,9 @@ Aliases
 	typealias VariateType Float64
 
 	typealias UniVariate Variate{VariateType}
-	typealias VariateVector Variate{Vector{VariateType}}
 	typealias VariateMatrix Variate{Matrix{VariateType}}
 	typealias MultiVariate{N} Variate{Array{VariateType,N}}
+	typealias VectorVariate MultiVariate{1}
 
 Field
 ^^^^^

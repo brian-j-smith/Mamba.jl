@@ -23,9 +23,9 @@ typealias VariateType Float64
 abstract Variate{T<:Union(VariateType, Array{VariateType})}
 
 typealias UniVariate Variate{VariateType}
-typealias VariateVector Variate{Vector{VariateType}}
 typealias VariateMatrix Variate{Matrix{VariateType}}
 typealias MultiVariate{N} Variate{Array{VariateType,N}}
+typealias VectorVariate MultiVariate{1}
 
 
 #################### Distribution Types ####################
@@ -129,7 +129,7 @@ export
   MultiVariate,
   VariateMatrix,
   UniVariate,
-  VariateVector,
+  VectorVariate,
   MCMCChains,
   MCMCLogical,
   MCMCModel,

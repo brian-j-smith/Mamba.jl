@@ -17,7 +17,7 @@ type TuneNUTS
   target::Float64
 end
 
-type VariateNUTS <: VariateVector
+type VariateNUTS <: VectorVariate
   value::Vector{VariateType}
   tune::TuneNUTS
 

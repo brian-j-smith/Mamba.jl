@@ -39,7 +39,7 @@ VariateAMWG Type
 Declaration
 ```````````
 
-``VariateAMWG <: VariateVector``
+``VariateAMWG <: VectorVariate``
 
 Fields
 ``````

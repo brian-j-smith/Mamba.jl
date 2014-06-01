@@ -44,7 +44,7 @@ end
 
 #################### Categorical ####################
 
-Distributions.Categorical(p::VariateVector) = Categorical(p.value)
+Distributions.Categorical(p::VectorVariate) = Categorical(p.value)
 Distributions.Categorical(k::UniVariate) = Categorical(int(k))
 
 
