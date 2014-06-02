@@ -50,17 +50,15 @@ function Base.getindex(c::MCMCChains, iters::Range, names, chains)
              model = c.model)
 end
 
-function Base.getindex(c::MCMCChains, iters::Range, names::Range, chains)
-  c[iters, collect(names), chains]
-end
-
-function Base.getindex{T<:String}(c::MCMCChains, iters::Range, names::T, chains)
-  c[iters, [names], chains]
+function Base.getindex(c::MCMCChains, iters::Range, names::String, chains)
+  getindex(c, iters, [names], chains)
 end
 
 function Base.getindex{T<:String}(c::MCMCChains, iters::Range, names::Vector{T},
            chains)
-  c[iters, findin(c.names, names), chains]
+  idx = findin(c.names, names)
+  length(idx) == length(names) || throw(BoundsError())
+  getindex(c, iters, idx, chains)
 end
 
 function Base.indexin(names::Vector{String}, c::MCMCChains)
