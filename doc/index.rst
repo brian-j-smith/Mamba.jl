@@ -3,8 +3,7 @@ MCMCsim: Markov chain Monte Carlo simulation toolkit for julia (version |release
 
 :Version: |release|
 :Date: |today|
-:Author: Brian J Smith
-:Contact: brian-j-smith@uiowa.edu
+:Author: Brian J Smith (brian-j-smith@uiowa.edu)
 :Web site: 
 :License: MCMCsim is released under the MIT License.
 
