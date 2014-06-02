@@ -1,10 +1,11 @@
 #################### MCMCChains Constructor ####################
 
-function MCMCChains{T<:Real,U<:String}(value::Array{T,2};
-           start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           model::MCMCModel=MCMCModel())
-  MCMCChains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
-             thin=thin, names=names, model=model)
+function MCMCChains{T<:String}(iters::Integer, params::Integer;
+           start::Integer=1, thin::Integer=1, chains::Integer=1,
+           names::Vector{T}=String[], model::MCMCModel=MCMCModel())
+  value = Array(VariateType, length(start:thin:iters), params, chains)
+  fill!(value, NaN)
+  MCMCChains(value, start=start, thin=thin, names=names, model=model)
 end
 
 function MCMCChains{T<:Real,U<:String}(value::Array{T,3};
@@ -20,47 +21,46 @@ function MCMCChains{T<:Real,U<:String}(value::Array{T,3};
   MCMCChains(vvalue, String[names...], range(start, thin, n), model)
 end
 
-function MCMCChains{T<:String}(iters::Integer, params::Integer;
-           start::Integer=1, thin::Integer=1, chains::Integer=1,
-           names::Vector{T}=String[], model::MCMCModel=MCMCModel())
-  value = Array(VariateType, length(start:thin:iters), params, chains)
-  fill!(value, NaN)
-  MCMCChains(value, start=start, thin=thin, names=names, model=model)
+function MCMCChains{T<:Real,U<:String}(value::Matrix{T};
+           start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
+           model::MCMCModel=MCMCModel())
+  MCMCChains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
+             thin=thin, names=names, model=model)
+end
+
+function MCMCChains{T<:Real}(value::Vector{T};
+           start::Integer=1, thin::Integer=1, names::String="Param1",
+           model::MCMCModel=MCMCModel())
+  MCMCChains(reshape(value, length(value), 1, 1), start=start, thin=thin,
+             names=String[names], model=model)
 end
 
 
 #################### MCMCChains Base/Utility Methods ####################
 
-function Base.getindex{T<:String}(c::MCMCChains, iters::Range, names::Vector{T},
-           chains::Vector)
+function Base.getindex(c::MCMCChains, iters::Range, names, chains)
   from = max(iceil((first(iters) - first(c.range)) / step(c.range) + 1), 1)
   thin = step(iters)
   to = min(ifloor((last(iters) - first(c.range)) / step(c.range) + 1),
            length(c.range))
 
-  idx1 = from:thin:to
-  idx2 = findin(c.names, names)
-  idx3 = findin(1:size(c, 3), chains)
-
-  value = c.value[idx1, idx2, idx3]
-  MCMCChains(value, c.names[idx2],
-             range(first(c.range) + (from - 1) * step(c.range),
-                   thin * step(c.range), length(idx1)),
-             c.model)
+  MCMCChains(c.value[from:thin:to, names, chains],
+             start = first(c.range) + (from - 1) * step(c.range),
+             thin = thin * step(c.range), names = c.names[names],
+             model = c.model)
 end
 
-function Base.getindex(c::MCMCChains, iters::Range, names::Vector, chains::Vector)
-  c[iters, c.names[names], chains]
+function Base.getindex(c::MCMCChains, iters::Range, names::Range, chains)
+  c[iters, collect(names), chains]
 end
 
-function Base.getindex(c::MCMCChains, inds...)
-  length(inds) == 3 ||
-    error("must supply 3-dimensional index for iters, names, and chains")
-  iters = inds[1]
-  isa(iters, Range) || throw(TypeError())
-  names = collect(inds[2])
-  chains = collect(inds[3])
-  c[iters, names, chains]
+function Base.getindex{T<:String}(c::MCMCChains, iters::Range, names::T, chains)
+  c[iters, [names], chains]
+end
+
+function Base.getindex{T<:String}(c::MCMCChains, iters::Range, names::Vector{T},
+           chains)
+  c[iters, findin(c.names, names), chains]
 end
 
 function Base.indexin(names::Vector{String}, c::MCMCChains)
