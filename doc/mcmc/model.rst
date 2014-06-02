@@ -220,7 +220,7 @@ Methods
 		
 	**Value**
 	
-		Returns the model with initialized stochastic nodes.
+		Returns the model with stochastic nodes initialized and the ``iter`` field set equal to 0.
 
 .. function:: setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
 
@@ -267,7 +267,7 @@ Methods
 		
 	**Value**
 	
-		Returns the model updated with the MCMC draw.
+		Returns the model updated with the MCMC draw and, in the case of ``block=0``, the ``iter`` field incremented by 1.
 
 .. function:: tune(m::MCMCModel, block::Integer=0)
 

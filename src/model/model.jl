@@ -143,6 +143,7 @@ function names(m::MCMCModel, nkeys::Vector{Symbol})
 end
 
 function setinits!(m::MCMCModel, inits::Dict{Symbol,Any})
+  m.iter = 0
   for key in m.dependents
     node = m[key]
     if isa(node, MCMCStochastic)
@@ -301,7 +302,12 @@ function relist!{T<:Real}(m::MCMCModel, values::Vector{T},
 end
 
 function simulate!(m::MCMCModel, block::Integer=0)
-  blocks = block > 0 ? block : 1:length(m.samplers)
+  if block > 0
+    blocks = block
+  else
+    m.iter += 1
+    blocks = 1:length(m.samplers)
+  end
   for b in blocks
     sampler = m.samplers[b]
     value = sampler.eval(m, b)

@@ -26,7 +26,6 @@ function mcmc(model::MCMCModel, inputs::Dict{Symbol},
     pct = 0
     i = 1
     for t in 1:iters
-      m.iter = t
 
       if floor(100 * t / iters) >= pct
         print(string("Iteration: ", lpad(t, length(string(iters)), ' '),
