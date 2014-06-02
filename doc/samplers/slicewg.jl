@@ -31,6 +31,6 @@ theta = SliceVariate([0.0, 0.0, 0.0])
 width = [1.0, 1.0, 2.0]
 for i in 1:n
   slicewg!(theta, width, logf)
-  sim.value[i,:,1] = [theta[1:2], exp(theta[3])]
+  sim[i,:,1] = [theta[1:2], exp(theta[3])]
 end
 describe(sim)

@@ -32,6 +32,6 @@ theta = AMMVariate([0.0, 0.0, 0.0])
 SigmaF = cholfact(eye(3))
 for i in 1:n
   amm!(theta, SigmaF, logf, adapt = (i <= burnin))
-  sim.value[i,:,1] = [theta[1:2], exp(theta[3])]
+  sim[i,:,1] = [theta[1:2], exp(theta[3])]
 end
 describe(sim)

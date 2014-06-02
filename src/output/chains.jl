@@ -63,7 +63,7 @@ end
 
 function Base.indexin(names::Vector{String}, c::MCMCChains)
   idx = indexin(names, c.names)
-  all(idx .!= 0) || error("node name matches not found in MCMCChains")
+  in(0, idx) && error("node name matches not found in MCMCChains")
   idx
 end
 
@@ -73,6 +73,33 @@ end
 
 function Base.ndims(c::MCMCChains)
   ndims(c.value)
+end
+
+function Base.setindex!(c::MCMCChains, value, iters::Range, names, chains)
+  setindex!(c, value, collect(iters), names, chains)
+end
+
+function Base.setindex!(c::MCMCChains, value, iters::Real, names, chains)
+  setindex!(c, value, [iters], names, chains)
+end
+
+function Base.setindex!{T<:Real}(c::MCMCChains, value, iters::Vector{T}, names,
+           chains)
+  start, thin = first(c.range), step(c.range)
+  idx = Int[(x - start) / thin + 1.0 for x in iters]
+  setindex!(c.value, value, idx, names, chains)
+end
+
+function Base.setindex!{T<:Real}(c::MCMCChains, value, iters::Vector{T},
+           names::String, chains)
+  setindex!(c, value, iters, [names], chains)
+end
+
+function Base.setindex!{T<:Real,U<:String}(c::MCMCChains, value,
+           iters::Vector{T}, names::Vector{U}, chains)
+  idx = findin(c.names, names)
+  length(idx) == length(names) || throw(BoundsError())
+  setindex!(c, value, iters, idx, chains)
 end
 
 function Base.show(io::IO, c::MCMCChains)

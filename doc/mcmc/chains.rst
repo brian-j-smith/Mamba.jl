@@ -211,6 +211,21 @@ Methods
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
 
+.. function:: setindex!(c::MCMCChains, value, inds...)
+
+	Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
+	
+	**Arguments**
+	
+		* ``c`` : object within which to store sampler output.
+		* ``value`` : sampler output.
+		* ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
+		
+	**Value**
+	
+		Returns an ``MCMCChains`` object with the sampler output stored in the specified indices.
+
+		
 .. function:: summarystats(c::MCMCChains; etype=:bm, args...)
 
 	Compute posterior summary statistics for MCMC sampler output.

@@ -39,7 +39,7 @@ epsilon = nutsepsilon(theta, fx)
 for i in 1:n
   nuts!(theta, epsilon, fx, adapt=(i <= burnin))
   if i > burnin
-    sim.value[i - burnin,:,1] = [theta[1:2], exp(theta[3])]
+    sim[i,:,1] = [theta[1:2], exp(theta[3])]
   end
 end
 describe(sim)
