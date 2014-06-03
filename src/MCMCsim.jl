@@ -17,7 +17,6 @@ import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
 import Gadfly: Plot, plot, Layer, layer, Geom, Guide, Theme, Scale
-import Color: distinguishable_colors, LCHab
 
 
 
