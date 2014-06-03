@@ -2,7 +2,7 @@
 
 #################### Types ####################
 
-type TuneNUTS
+type NUTSTune
   adapt::Bool
   alpha::Float64
   epsilon::Float64
@@ -17,15 +17,15 @@ type TuneNUTS
   target::Float64
 end
 
-type VariateNUTS <: VariateVector
+type NUTSVariate <: VectorVariate
   value::Vector{VariateType}
-  tune::TuneNUTS
+  tune::NUTSTune
 
-  VariateNUTS(x::Vector{VariateType}, tune::TuneNUTS) = new(x, tune)
+  NUTSVariate(x::Vector{VariateType}, tune::NUTSTune) = new(x, tune)
 end
 
-function VariateNUTS(x::Vector{VariateType}, tune=nothing)
-  tune = TuneNUTS(
+function NUTSVariate(x::Vector{VariateType}, tune=nothing)
+  tune = NUTSTune(
     false,
     0.0,
     NaN,
@@ -39,19 +39,18 @@ function VariateNUTS(x::Vector{VariateType}, tune=nothing)
     10.0,
     0.44
   )
-  VariateNUTS(x, tune)
+  NUTSVariate(x, tune)
 end
 
 
 #################### MCMCSampler Constructor ####################
 
-function NUTS{T<:String}(params::Vector{T}; dtype::Symbol=:forward,
-           target::Real=0.6)
+function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   MCMCSampler(params,
     quote
       x = unlist(model, block, true)
       tunepar = tune(model, block)
-      v = VariateNUTS(x, tunepar["sampler"])
+      v = NUTSVariate(x, tunepar["sampler"])
       if model.iter <= 1
         f = x -> nutsfx(model, x, block, tunepar["dtype"])
         tunepar["epsilon"] = nutsepsilon(v, f)
@@ -90,7 +89,7 @@ export nutsfx, nutsfx!
 
 #################### Sampling Functions ####################
 
-function nutsepsilon(v::VariateNUTS, fx::Function)
+function nutsepsilon(v::NUTSVariate, fx::Function)
   n = length(v)
   _, r0, grad0, logf0 = leapfrog(v.value, randn(n), zeros(n), 0.0, fx)
   epsilon = 1.0
@@ -114,7 +113,7 @@ function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
   x, r, grad, logf
 end
 
-function nuts!(v::VariateNUTS, epsilon::Real, fx::Function; adapt::Bool=false,
+function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
            target::Real=0.6)
   tune = v.tune
 
@@ -142,7 +141,7 @@ function nuts!(v::VariateNUTS, epsilon::Real, fx::Function; adapt::Bool=false,
   v
 end
 
-function nuts_sub!(v::VariateNUTS, epsilon::Real, fx::Function)
+function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   n = length(v)
   x, r, grad, logf = leapfrog(v.value, randn(n), zeros(n), 0.0, fx)
   logp0 = logf - 0.5 * dot(r)

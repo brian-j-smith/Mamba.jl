@@ -2,11 +2,11 @@ using MCMCsim
 using Distributions
 
 ## Data
-surgical = (String => Any)[
-  "r" => [0, 18, 8, 46, 8, 13, 9, 31, 14, 8, 29, 24],
-  "n" => [47, 148, 119, 810, 211, 196, 148, 215, 207, 97, 256, 360]
+surgical = (Symbol => Any)[
+  :r => [0, 18, 8, 46, 8, 13, 9, 31, 14, 8, 29, 24],
+  :n => [47, 148, 119, 810, 211, 196, 148, 215, 207, 97, 256, 360]
 ]
-surgical["N"] = length(surgical["r"])
+surgical[:N] = length(surgical[:r])
 
 
 ## Model Specification
@@ -53,16 +53,14 @@ srand(123)
 
 ## Initial Values
 inits = [
-  ["r" => surgical["r"], "b" => fill(0.1, surgical["N"]), "s2" => 1,
-   "mu" => 0],
-  ["r" => surgical["r"], "b" => fill(0.5, surgical["N"]), "s2" => 10,
-   "mu" => 1]
+  [:r => surgical[:r], :b => fill(0.1, surgical[:N]), :s2 => 1, :mu => 0],
+  [:r => surgical[:r], :b => fill(0.5, surgical[:N]), :s2 => 10, :mu => 1]
 ]
 
 
 ## Sampling Scheme
-scheme = [NUTS(["b"]),
-          Slice(["mu", "s2"], [1.0, 1.0])]
+scheme = [NUTS([:b]),
+          Slice([:mu, :s2], [1.0, 1.0])]
 setsamplers!(model, scheme)
 
 

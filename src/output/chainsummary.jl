@@ -38,7 +38,7 @@ end
 
 function Base.show(io::IO, s::ChainSummary)
   Base.showlimited(annotate(s.value, s.rownames, s.colnames))
-  print("\n")
+  println(io)
 end
 
 Base.showall(s::ChainSummary, header::Bool=true) = showall(STDOUT, s, header)
@@ -48,7 +48,7 @@ function Base.showall(io::IO, s::ChainSummary, header::Bool=true)
   Base.with_output_limit(true) do
     Base.showarray(io, annotate(s.value, s.rownames, s.colnames), limit=false)
   end
-  print("\n")
+  println(io)
 end
 
 function annotate{T}(x::Array{T,3}, rownames::Vector, colnames::Vector)

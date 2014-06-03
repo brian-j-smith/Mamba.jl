@@ -2,7 +2,7 @@
 
 #################### Types ####################
 
-type TuneAMWG
+type AMWGTune
   adapt::Bool
   accept::Vector{Integer}
   batchsize::Integer
@@ -11,15 +11,15 @@ type TuneAMWG
   target::Real
 end
 
-type VariateAMWG <: VariateVector
+type AMWGVariate <: VectorVariate
   value::Vector{VariateType}
-  tune::TuneAMWG
+  tune::AMWGTune
 
-  VariateAMWG(x::Vector{VariateType}, tune::TuneAMWG) = new(x, tune)
+  AMWGVariate(x::Vector{VariateType}, tune::AMWGTune) = new(x, tune)
 end
 
-function VariateAMWG(x::Vector{VariateType}, tune=nothing)
-  tune = TuneAMWG(
+function AMWGVariate(x::Vector{VariateType}, tune=nothing)
+  tune = AMWGTune(
     false,
     zeros(Integer, length(x)),
     50,
@@ -27,13 +27,13 @@ function VariateAMWG(x::Vector{VariateType}, tune=nothing)
     Array(Float64, 0),
     0.44
   )
-  VariateAMWG(x, tune)
+  AMWGVariate(x, tune)
 end
 
 
 #################### MCMCSampler Constructor ####################
 
-function AMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
+function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
            adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
@@ -42,7 +42,7 @@ function AMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
     quote
       x = unlist(model, block, true)
       tunepar = tune(model, block)
-      v = VariateAMWG(x, tunepar["sampler"])
+      v = AMWGVariate(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
       f = x -> logpdf!(model, x, block, true)
@@ -51,7 +51,7 @@ function AMWG{T<:String,U<:Real}(params::Vector{T}, sigma::Vector{U};
       tunepar["sampler"] = v.tune
       relist(model, v.value, block, true)
     end,
-    ["sigma" => sigma, "adapt" => adapt, "batchsize" => batchsize,
+    ["sigma" => Float64[sigma...], "adapt" => adapt, "batchsize" => batchsize,
      "target" => target, "sampler" => nothing]
   )
 end
@@ -59,7 +59,7 @@ end
 
 #################### Sampling Functions ####################
 
-function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function;
+function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
            adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
   tune = v.tune
 
@@ -91,7 +91,7 @@ function amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function;
   v
 end
 
-function amwg_sub!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function)
+function amwg_sub!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function)
   logf0 = logf(v.value)
   d = length(v)
   z = randn(d) .* sigma

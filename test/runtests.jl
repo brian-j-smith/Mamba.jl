@@ -2,6 +2,14 @@ tutorials = [
   "line"
 ]
 
+samplers = [
+  "amm",
+  "amwg",
+  "nuts",
+  "slice",
+  "slicewg"
+]
+
 examples = [
   "blocker",
   "bones",
@@ -9,7 +17,7 @@ examples = [
   "dyes",
   "epil",
   "equiv",
-#  "inhalers",
+  "inhalers",
 #  "kidney",
   "leuk",
   "lsat",
@@ -36,6 +44,10 @@ println("Running tests:")
 
 for t in tutorials
   @runtest "../doc/tutorial/" t
+end
+
+for t in samplers
+  @runtest "../doc/samplers/" t
 end
 
 for t in examples

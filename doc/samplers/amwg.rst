@@ -8,7 +8,7 @@ Implementation of a Metropolis-within-Gibbs sampler :cite:`metropolis:1953:ESC,r
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: amwg!(v::VariateAMWG, sigma::Vector{Float64}, logf::Function; \
+.. function:: amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function; \
                 adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
 
 	Simulate one draw from a target distribution using an adaptive Metropolis-within-Gibbs sampler.  Parameters are assumed to be continuous and unconstrained.
@@ -31,29 +31,29 @@ Stand-Alone Function
 		.. literalinclude:: amwg.jl
 			:language: julia
 			
-.. index:: VariateAMWG
+.. index:: AMWGVariate
 
-VariateAMWG Type
+AMWGVariate Type
 ^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``VariateAMWG <: VariateVector``
+``AMWGVariate <: VectorVariate``
 
 Fields
 ``````
 
 * ``value::Vector{VariateType}`` : vector of sampled values.
-* ``tune::TuneAMWG`` : tuning parameters for the sampling algorithm.
+* ``tune::AMWGTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: VariateAMWG(x::Vector{VariateType}, tune::TuneAMWG)
-              VariateAMWG(x::Vector{VariateType}, tune=nothing)
+.. function:: AMWGVariate(x::Vector{VariateType}, tune::AMWGTune)
+              AMWGVariate(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateAMWG`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
+	Construct a ``AMWGVariate`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
 	
 	**Arguments**
 	
@@ -62,18 +62,18 @@ Constructors
 		
 	**Value**
 	
-		Returns a ``VariateAMWG`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+		Returns a ``AMWGVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 		
-.. index:: TuneAMWG
+.. index:: AMWGTune
 
-TuneAMWG Type
+AMWGTune Type
 ^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type TuneAMWG``
+``type AMWGTune``
 
 Fields
 ``````
@@ -88,14 +88,14 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: AMWG(params::Vector{T<:String}, sigma::Vector{U<:Real}; \
+.. function:: AMWG(params::Vector{Symbol}, sigma::Vector{T<:Real}; \
 				adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
 
 	Construct an ``MCMCSampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		* ``params`` : named stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
 		* ``sigma`` : initial standard deviations for the univariate normal proposal distributions.  The standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
 		* ``adapt`` : type of adaptation phase.  Options are
 			* ``:all`` : adapt proposals during all iterations.

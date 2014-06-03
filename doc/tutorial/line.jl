@@ -7,15 +7,15 @@ model = MCMCModel(
 
   y = MCMCStochastic(1,
     quote
-      mu = model["mu"]
-      s2 = model["s2"]
+      mu = model[:mu]
+      s2 = model[:s2]
       IsoNormal(mu, sqrt(s2))
     end,
     false
   ),
 
   mu = MCMCLogical(1,
-    :(model["xmat"] * model["beta"]),
+    :(model[:xmat] * model[:beta]),
     false
   ),
 
@@ -30,20 +30,20 @@ model = MCMCModel(
 )
 
 ## Hybrid No-U-Turn and Slice Sampling Scheme
-scheme1 = [NUTS(["beta"]),
-           Slice(["s2"], [1.0])]
+scheme1 = [NUTS([:beta]),
+           Slice([:s2], [1.0])]
 
 ## No-U-Turn Sampling Scheme
-scheme2 = [NUTS(["beta", "s2"])]
+scheme2 = [NUTS([:beta, :s2])]
 
 ## User-Defined Samplers
 
-Gibbs_beta = MCMCSampler(["beta"],
+Gibbs_beta = MCMCSampler([:beta],
   quote
-    beta = model["beta"]
-    s2 = model["s2"]
-    xmat = model["xmat"]
-    y = model["y"]
+    beta = model[:beta]
+    s2 = model[:s2]
+    xmat = model[:xmat]
+    y = model[:y]
     beta_mean = mean(beta.distr)
     beta_invcov = invcov(beta.distr)
     Sigma = inv(xmat' * xmat / s2 + beta_invcov)
@@ -52,7 +52,7 @@ Gibbs_beta = MCMCSampler(["beta"],
   end
 )
 
-Gibbs_beta = MCMCSampler(["beta"],
+Gibbs_beta = MCMCSampler([:beta],
   @modelexpr(beta, s2, xmat, y,
     begin
       beta_mean = mean(beta.distr)
@@ -64,19 +64,19 @@ Gibbs_beta = MCMCSampler(["beta"],
   )
 )
 
-Gibbs_s2 = MCMCSampler(["s2"],
+Gibbs_s2 = MCMCSampler([:s2],
   quote
-    beta = model["beta"]
-    s2 = model["s2"]
-    xmat = model["xmat"]
-    y = model["y"]
+    beta = model[:beta]
+    s2 = model[:s2]
+    xmat = model[:xmat]
+    y = model[:y]
     a = length(y) / 2.0 + s2.distr.shape
     b = sum((y - xmat * beta).^2) / 2.0 + s2.distr.scale
     rand(InverseGamma(a, b))
   end
 )
 
-Gibbs_s2 = MCMCSampler(["s2"],
+Gibbs_s2 = MCMCSampler([:s2],
   @modelexpr(beta, s2, xmat, y,
     begin
       a = length(y) / 2.0 + s2.distr.shape
@@ -99,11 +99,11 @@ graph2dot(model, "lineDAG.dot")
 
 
 ## Data
-line = (String => Any)[
-  "x" => [1, 2, 3, 4, 5],
-  "y" => [1, 3, 3, 3, 5]
+line = (Symbol => Any)[
+  :x => [1, 2, 3, 4, 5],
+  :y => [1, 3, 3, 3, 5]
 ]
-line["xmat"] = [ones(5) line["x"]]
+line[:xmat] = [ones(5) line[:x]]
 
 
 ## Set Random Number Generator Seed
@@ -111,9 +111,9 @@ srand(123)
 
 
 ## Initial Values
-inits = [["y" => line["y"],
-          "beta" => rand(Normal(0, 1), 2),
-          "s2" => rand(Gamma(1, 1))]
+inits = [[:y => line[:y],
+          :beta => rand(Normal(0, 1), 2),
+          :s2 => rand(Gamma(1, 1))]
          for i in 1:3]
 
 

@@ -2,7 +2,7 @@
 
 #################### Types ####################
 
-type TuneAMM
+type AMMTune
   adapt::Bool
   beta::Real
   m::Integer
@@ -13,15 +13,15 @@ type TuneAMM
   SigmaLm::Matrix{Float64}
 end
 
-type VariateAMM <: VariateVector
+type AMMVariate <: VectorVariate
   value::Vector{VariateType}
-  tune::TuneAMM
+  tune::AMMTune
 
-  VariateAMM(x::Vector{VariateType}, tune::TuneAMM) = new(x, tune)
+  AMMVariate(x::Vector{VariateType}, tune::AMMTune) = new(x, tune)
 end
 
-function VariateAMM(x::Vector{VariateType}, tune=nothing)
-  tune = TuneAMM(
+function AMMVariate(x::Vector{VariateType}, tune=nothing)
+  tune = AMMTune(
     false,
     0.05,
     0,
@@ -31,13 +31,13 @@ function VariateAMM(x::Vector{VariateType}, tune=nothing)
     Cholesky(Array(Float64, 0, 0), 'U'),
     Array(Float64, 0, 0)
   )
-  VariateAMM(x, tune)
+  AMMVariate(x, tune)
 end
 
 
 #################### MCMCSampler Constructor ####################
 
-function AMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
+function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
            adapt::Symbol=:all)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
@@ -46,7 +46,7 @@ function AMM{T<:String,U<:Real}(params::Vector{T}, Sigma::Matrix{U};
     quote
       x = unlist(model, block, true)
       tunepar = tune(model, block)
-      v = VariateAMM(x, tunepar["sampler"])
+      v = AMMVariate(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
       f = x -> logpdf!(model, x, block, true)
@@ -61,7 +61,7 @@ end
 
 #################### Sampling Functions ####################
 
-function amm!(v::VariateAMM, SigmaF::Cholesky{Float64}, logf::Function;
+function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
            adapt::Bool=true)
   tune = v.tune
 

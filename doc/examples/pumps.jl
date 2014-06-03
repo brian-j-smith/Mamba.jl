@@ -2,11 +2,11 @@ using MCMCsim
 using Distributions
 
 ## Data
-pumps = (String => Any)[
-  "y" => [5, 1, 5, 14, 3, 19, 1, 1, 4, 22],
-  "t" => [94.3, 15.7, 62.9, 126, 5.24, 31.4, 1.05, 1.05, 2.1, 10.5]
+pumps = (Symbol => Any)[
+  :y => [5, 1, 5, 14, 3, 19, 1, 1, 4, 22],
+  :t => [94.3, 15.7, 62.9, 126, 5.24, 31.4, 1.05, 1.05, 2.1, 10.5]
 ]
-pumps["N"] = length(pumps["y"])
+pumps[:N] = length(pumps[:y])
 
 
 ## Model Specification
@@ -45,16 +45,16 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  ["y" => pumps["y"], "alpha" => 1.0, "beta" => 1.0,
-   "theta" => rand(Gamma(1.0, 1.0), pumps["N"])],
-  ["y" => pumps["y"], "alpha" => 10.0, "beta" => 10.0,
-   "theta" => rand(Gamma(10.0, 10.0), pumps["N"])]
+  [:y => pumps[:y], :alpha => 1.0, :beta => 1.0,
+   :theta => rand(Gamma(1.0, 1.0), pumps[:N])],
+  [:y => pumps[:y], :alpha => 10.0, :beta => 10.0,
+   :theta => rand(Gamma(10.0, 10.0), pumps[:N])]
 ]
 
 
 ## Sampling Scheme
-scheme = [SliceWG(["alpha", "beta"], [1.0, 1.0]),
-          AMWG(["theta"], ones(pumps["N"]))]
+scheme = [SliceWG([:alpha, :beta], [1.0, 1.0]),
+          AMWG([:theta], ones(pumps[:N]))]
 setsamplers!(model, scheme)
 
 

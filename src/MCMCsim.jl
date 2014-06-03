@@ -12,7 +12,7 @@ import Base.LinAlg: Cholesky
 import Calculus: gradient
 import Distributions: Continuous, Distribution, insupport, logpdf, logpdf!,
        minimum, maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
-import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, ExVertex, graph,
+import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
@@ -27,10 +27,10 @@ typealias VariateType Float64
 
 abstract Variate{T<:Union(VariateType, Array{VariateType})}
 
-typealias VariateScalar Variate{VariateType}
-typealias VariateVector Variate{Vector{VariateType}}
-typealias VariateMatrix Variate{Matrix{VariateType}}
-typealias VariateArray{N} Variate{Array{VariateType,N}}
+typealias UniVariate Variate{VariateType}
+typealias MultiVariate{N} Variate{Array{VariateType,N}}
+typealias VectorVariate MultiVariate{1}
+typealias MatrixVariate MultiVariate{2}
 
 
 #################### Distribution Types ####################
@@ -44,20 +44,20 @@ abstract MCMCDependent{T} <: Variate{T}
 
 type MCMCLogical{T} <: MCMCDependent{T}
   value::T
-  name::String
+  symbol::Symbol
   monitor::Vector{Bool}
   eval::Function
-  sources::Vector{String}
-  targets::Vector{String}
+  sources::Vector{Symbol}
+  targets::Vector{Symbol}
 end
 
 type MCMCStochastic{T} <: MCMCDependent{T}
   value::T
-  name::String
+  symbol::Symbol
   monitor::Vector{Bool}
   eval::Function
-  sources::Vector{String}
-  targets::Vector{String}
+  sources::Vector{Symbol}
+  targets::Vector{Symbol}
   distr::DistributionStruct
 end
 
@@ -65,19 +65,18 @@ end
 #################### MCMCSampler Type ####################
 
 type MCMCSampler
-  params::Vector{String}
+  params::Vector{Symbol}
   eval::Function
   tune::Dict
-  sources::Vector{String}
-  targets::Vector{String}
+  targets::Vector{Symbol}
 end
 
 
 #################### MCMCModel Type ####################
 
 type MCMCModel
-  nodes::Dict{String,Any}
-  dependents::Vector{String}
+  nodes::Dict{Symbol,Any}
+  dependents::Vector{Symbol}
   samplers::Vector{MCMCSampler}
   iter::Integer
   burnin::Integer
@@ -135,16 +134,19 @@ include("variate/numeric.jl")
 #################### Exports ####################
 
 export
+  MatrixVariate,
+  MultiVariate,
+  UniVariate,
+  Variate,
+  VariateType,
+  VectorVariate
+
+export
   MCMCChains,
   MCMCLogical,
   MCMCModel,
   MCMCSampler,
-  MCMCStochastic,
-  VariateType,
-  VariateScalar,
-  VariateVector,
-  VariateMatrix,
-  VariateArray
+  MCMCStochastic
 
 export
   Flat
@@ -186,25 +188,21 @@ export
   update!
 
 export
-  AMM,
-  AMWG,
-  MISS,
-  NUTS,
-  Slice,
-  SliceWG,
-  VariateAMM,
-  VariateAMWG,
-  VariateNUTS,
-  VariateSlice
-
-export
   amm!,
+  AMM,
+  AMMVariate,
   amwg!,
+  AMWG,
+  AMWGVariate,
+  MISS,
   nuts!,
   nutsepsilon,
+  NUTS,
+  NUTSVariate,
   slice!,
-  slicewg!
-  
-
+  Slice,
+  slicewg!,
+  SliceWG,
+  SliceVariate
 
 end

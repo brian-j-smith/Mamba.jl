@@ -62,7 +62,7 @@ In the `MCMCsim` package, terms that appear in the Bayesian model specification 
 
 Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `MCMCsim` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
-For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being character strings.  The regression nodes will be named ``"y"``, ``"beta"``, ``"s2"``, ``"mu"``, and ``"xmat"`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Stochastic and logical nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
+For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being symbols.  The regression nodes will be named ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Stochastic and logical nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
 
 .. code-block:: julia
 
@@ -75,15 +75,15 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	  y = MCMCStochastic(1,
 	    quote
-	      mu = model["mu"]
-	      s2 = model["s2"]
+	      mu = model[:mu]
+	      s2 = model[:s2]
 	      IsoNormal(mu, sqrt(s2))
 	    end,
 	    false
 	  ),
 
 	  mu = MCMCLogical(1,
-	    :(model["xmat"] * model["beta"]),
+	    :(model[:xmat] * model[:beta]),
 	    false
 	  ),
 
@@ -136,11 +136,11 @@ The package provides a flexible system for the specification of schemes to sampl
 .. code-block:: julia
 
 	## Hybrid No-U-Turn and Slice Sampling Scheme
-	scheme1 = [NUTS(["beta"]),
-	           Slice(["s2"], [1.0])]
+	scheme1 = [NUTS([:beta]),
+	           Slice([:s2], [1.0])]
 
 	## No-U-Turn Sampling Scheme
-	scheme2 = [NUTS(["beta", "s2"])]
+	scheme2 = [NUTS([:beta, :s2])]
 
 Additionally, users are free to create their own samplers with the generic ``MCMCSampler`` constructor.  This is particularly useful in settings were full conditional distributions are of standard forms for some nodes and can be sampled from directly.  Such is the case for the full conditional of :math:`\bm{\beta}` which can be written as
 
@@ -161,12 +161,12 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
 
 	## User-Defined Samplers
 
-	Gibbs_beta = MCMCSampler(["beta"],
+	Gibbs_beta = MCMCSampler([:beta],
 	  quote
-	    beta = model["beta"]
-	    s2 = model["s2"]
-	    xmat = model["xmat"]
-	    y = model["y"]
+	    beta = model[:beta]
+	    s2 = model[:s2]
+	    xmat = model[:xmat]
+	    y = model[:y]
 	    beta_mean = mean(beta.distr)
 	    beta_invcov = invcov(beta.distr)
 	    Sigma = inv(xmat' * xmat / s2 + beta_invcov)
@@ -175,12 +175,12 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
 	  end
 	)
 
-	Gibbs_s2 = MCMCSampler(["s2"],
+	Gibbs_s2 = MCMCSampler([:s2],
 	  quote
-	    beta = model["beta"]
-	    s2 = model["s2"]
-	    xmat = model["xmat"]
-	    y = model["y"]
+	    beta = model[:beta]
+	    s2 = model[:s2]
+	    xmat = model[:xmat]
+	    y = model[:y]
 	    a = length(y) / 2.0 + s2.distr.shape
 	    b = sum((y - xmat * beta).^2) / 2.0 + s2.distr.scale
 	    rand(InverseGamma(a, b))
@@ -222,7 +222,7 @@ The Model Expression Macro
 		
 		.. code-block:: julia
 		
-			Gibbs_beta = MCMCSampler(["beta"],
+			Gibbs_beta = MCMCSampler([:beta],
 			  @modelexpr(beta, s2, xmat, y,
 			    begin
 			      beta_mean = mean(beta.distr)
@@ -234,7 +234,7 @@ The Model Expression Macro
 			  )
 			)
 
-			Gibbs_s2 = MCMCSampler(["s2"],
+			Gibbs_s2 = MCMCSampler([:s2],
 			  @modelexpr(beta, s2, xmat, y,
 			    begin
 			      a = length(y) / 2.0 + s2.distr.shape
@@ -288,16 +288,16 @@ MCMC Simulation
 Data
 ^^^^
 
-For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia** dictionary defined in the code block below.  Included are predictor and response vectors ``"x"`` and ``"y"`` as well as a design matrix ``"xmat"`` corresponding to the model matrix :math:`\bm{X}`.
+For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia** dictionary defined in the code block below.  Included are predictor and response vectors ``:x`` and ``:y`` as well as a design matrix ``:xmat`` corresponding to the model matrix :math:`\bm{X}`.
 
 .. code-block:: julia
 
 	## Data
-	line = (String => Any)[
-	  "x" => [1, 2, 3, 4, 5],
-	  "y" => [1, 3, 3, 3, 5]
+	line = (Symbol => Any)[
+	  :x => [1, 2, 3, 4, 5],
+	  :y => [1, 3, 3, 3, 5]
 	]
-	line["xmat"] = [ones(5) line["x"]]
+	line[:xmat] = [ones(5) line[:x]]
 
 Initial Values
 ^^^^^^^^^^^^^^
@@ -307,9 +307,9 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 .. code-block:: julia
 
 	## Initial Values
-	inits = [["y" => line["y"],
-	          "beta" => rand(Normal(0, 1), 2),
-	          "s2" => rand(Gamma(1, 1))]
+	inits = [[:y => line[:y],
+	          :beta => rand(Normal(0, 1), 2),
+	          :s2 => rand(Gamma(1, 1))]
 	         for i in 1:3]
 
 Initial values for ``y`` are those in the observed response vector.  Likewise, the node is not updated in the sampling schemes defined earlier and thus retains its initial values throughout MCMC simulations.  Initial values are generated for ``beta`` from a normal distribution and for ``s2`` from a gamma distribution.
@@ -476,7 +476,7 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 	+--------------+--------------+        |       +--------------+--------------+
 	| Within Gibbs | Multivariate | Gibbs  | NUTS  | Within Gibbs | Multivariate |
 	+==============+==============+========+=======+==============+==============+
-	| 10,000       | 11,100       | 20,000 | 1,100 | 7,300        | 10,000       |
+	| 16,700       | 11,100       | 27,300 | 2,600 | 13,600       | 17,600       |
 	+--------------+--------------+--------+-------+--------------+--------------+
 
 	

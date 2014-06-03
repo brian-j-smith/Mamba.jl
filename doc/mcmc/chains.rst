@@ -23,24 +23,30 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCChains(value::Array{T<:Real,2}, names::Vector{U<:String}; \
-                start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-		      MCMCChains(value::Array{T<:Real,3}, names::Vector{U<:String}; \
-                start::Integer=1, thin::Integer=1, model::MCMCModel=MCMCModel())
-              MCMCChains(iter::Integer, names::Vector{T<:String}; start::Integer=1, \
-                thin::Integer=1, chains::Integer=1, model::MCMCModel=MCMCModel())
-              
+.. function:: MCMCChains(iters::Integer, params::Integer; \
+			    start::Integer=1, thin::Integer=1, chains::Integer=1, \
+			    names::Vector{T<:String}=Array(String,0), model::MCMCModel=MCMCModel())
+              MCMCChains(value::Array{T<:Real,3}; \
+			    start::Integer=1, thin::Integer=1, names::Vector{U<:String}=Array(String,0), \
+			    model::MCMCModel=MCMCModel())
+			  MCMCChains(value::Matrix{T<:Real}; \
+			    start::Integer=1, thin::Integer=1, names::Vector{U<:String}=Array(String,0), \
+			    model::MCMCModel=MCMCModel())
+			  MCMCChains(value::Vector{T<:Real}; \
+			    start::Integer=1, thin::Integer=1, names::String="Param1", \
+			    model::MCMCModel=MCMCModel())
 		
 	Construct an ``MCMCChains`` object that stores MCMC sampler output.
 	
 	**Arguments**
 	
-		* ``value`` : simulated values whose first, second, and third (optional) dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
-		* ``iter`` : number of simulation-specific iterations to store.
-		* ``names`` : names to assign to the parameter elements.
+		* ``iters`` : total number of iterations in each sampler run, of which ``length(start:thin:iters)`` outputted iterations will be stored in the object.
+		* ``params`` : number of parameters to store.
+		* ``value`` : an array whose first, second (optional), and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
 		* ``start`` : number of the first iteration to be stored.
 		* ``thin`` : number of steps between consecutive iterations to be stored.
 		* ``chains`` : number of simulation runs for which to store output.
+		* ``names`` : names to assign to the parameter elements (default: ``"Param1"``, ``"Param2"``, ...).
 		* ``model`` : the model for which the simulation was run.
 		
 	**Value**
@@ -139,7 +145,7 @@ Methods
 	**Arguments**
 	
 		* ``c`` : sampler output to subset.
-		* ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as a vector of strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be a vector of integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
+		* ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
 		
 	**Value**
 	
@@ -205,6 +211,21 @@ Methods
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
 
+.. function:: setindex!(c::MCMCChains, value, inds...)
+
+	Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
+	
+	**Arguments**
+	
+		* ``c`` : object within which to store sampler output.
+		* ``value`` : sampler output.
+		* ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
+		
+	**Value**
+	
+		Returns an ``MCMCChains`` object with the sampler output stored in the specified indices.
+
+		
 .. function:: summarystats(c::MCMCChains; etype=:bm, args...)
 
 	Compute posterior summary statistics for MCMC sampler output.

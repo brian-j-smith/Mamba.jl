@@ -62,21 +62,21 @@ function hpd(c::MCMCChains; alpha::Real=0.05)
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function logpdf{T<:String}(c::MCMCChains, nkeys::Vector{T})
+function logpdf(c::MCMCChains, nkeys::Vector{Symbol})
   m = c.model
   idx = indexin(names(m, keys(m, :block)), c)
 
   x0 = unlist(m)
 
-  iter, p, chains = size(c.value)
-  values = Array(Float64, iter, 1, chains)
+  iters, p, chains = size(c.value)
+  values = Array(Float64, iters, 1, chains)
   for k in 1:chains
     print("\nPROCESSING MCMCChains $(k)/$(chains)\n")
     pct = 0
-    for i in 1:iter
-      if floor(100 * i / iter) >= pct
-        print(string("Row: ", lpad(i, length(string(iter)), ' '),
-          "/$(iter) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
+    for i in 1:iters
+      if floor(100 * i / iters) >= pct
+        print(string("Row: ", lpad(i, length(string(iters)), ' '),
+          "/$(iters) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
         pct += 10
       end
       relist!(m, c.value[i,idx,k][:])

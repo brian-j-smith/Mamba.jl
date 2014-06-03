@@ -2,10 +2,10 @@ using MCMCsim
 using Distributions
 
 ## Data
-stacks = (String => Any)[
-  "y" => [42, 37, 37, 28, 18, 18, 19, 20, 15, 14, 14, 13, 11, 12, 8, 7, 8, 8, 9,
-          15, 15],
-  "x" =>
+stacks = (Symbol => Any)[
+  :y => [42, 37, 37, 28, 18, 18, 19, 20, 15, 14, 14, 13, 11, 12, 8, 7, 8, 8, 9,
+         15, 15],
+  :x =>
     [80 27 89
      80 27 88
      75 25 90
@@ -28,14 +28,14 @@ stacks = (String => Any)[
      56 20 82
      70 20 91]
 ]
-stacks["N"] = size(stacks["x"], 1)
-stacks["p"] = size(stacks["x"], 2)
+stacks[:N] = size(stacks[:x], 1)
+stacks[:p] = size(stacks[:x], 2)
 
-stacks["meanx"] = map(j -> mean(stacks["x"][:,j]), 1:stacks["p"])
-stacks["sdx"] = map(j -> std(stacks["x"][:,j]), 1:stacks["p"])
-stacks["z"] = Float64[
-  (stacks["x"][i,j] .- stacks["meanx"][j]) / stacks["sdx"][j]
-  for i in 1:stacks["N"], j in 1:stacks["p"]
+stacks[:meanx] = map(j -> mean(stacks[:x][:,j]), 1:stacks[:p])
+stacks[:sdx] = map(j -> std(stacks[:x][:,j]), 1:stacks[:p])
+stacks[:z] = Float64[
+  (stacks[:x][i,j] .- stacks[:meanx][j]) / stacks[:sdx][j]
+  for i in 1:stacks[:N], j in 1:stacks[:p]
 ]
 
 
@@ -102,21 +102,21 @@ model = MCMCModel(
 
 
 ## Monitor Select Outliers
-monitor = fill(false, stacks["N"])
+monitor = fill(false, stacks[:N])
 monitor[[1,3,4,21]] = true
-setmonitor!(model["outlier"], monitor)
+setmonitor!(model[:outlier], monitor)
 
 
 ## Initial Values
 inits = [
-  ["y" => stacks["y"], "beta0" => 10, "beta" => [0, 0, 0], "s2" => 10],
-  ["y" => stacks["y"], "beta0" => 1, "beta" => [1, 1, 1], "s2" => 1]
+  [:y => stacks[:y], :beta0 => 10, :beta => [0, 0, 0], :s2 => 10],
+  [:y => stacks[:y], :beta0 => 1, :beta => [1, 1, 1], :s2 => 1]
 ]
 
 
 ## Sampling Scheme
-scheme = [NUTS(["beta0", "beta"]),
-          Slice(["s2"], [1.0])]
+scheme = [NUTS([:beta0, :beta]),
+          Slice([:s2], [1.0])]
 setsamplers!(model, scheme)
 
 

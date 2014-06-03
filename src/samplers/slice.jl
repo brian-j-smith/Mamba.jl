@@ -1,21 +1,21 @@
 #################### Slice Sampler Types ####################
 
-type TuneSlice
+type SliceTune
   width::Vector{Float64}
 end
 
-type VariateSlice <: VariateVector
+type SliceVariate <: VectorVariate
   value::Vector{VariateType}
-  tune::TuneSlice
+  tune::SliceTune
 
-  VariateSlice(x::Vector{VariateType}, tune::TuneSlice) = new(x, tune)
+  SliceVariate(x::Vector{VariateType}, tune::SliceTune) = new(x, tune)
 end
 
-function VariateSlice(x::Vector{VariateType}, tune=nothing)
-  tune = TuneSlice(
+function SliceVariate(x::Vector{VariateType}, tune=nothing)
+  tune = SliceTune(
     Array(Float64, 0)
   )
-  VariateSlice(x, tune)
+  SliceVariate(x, tune)
 end
 
 
@@ -23,25 +23,25 @@ end
 
 #################### MCMCSampler Constructor ####################
 
-function Slice{T<:String}(params::Vector{T}, width::Vector{Float64};
+function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T};
            transform::Bool=false)
   MCMCSampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, tunepar["transform"])
       f = x -> logpdf!(model, x, block, tunepar["transform"])
-      v = VariateSlice(x)
+      v = SliceVariate(x)
       slice!(v, tunepar["width"], f)
       relist(model, v.value, block, tunepar["transform"])
     end,
-    ["width" => width, "transform" => transform]
+    ["width" => Float64[width...], "transform" => transform]
   )
 end
 
 
 #################### Sampling Functions ####################
 
-function slice!(v::VariateSlice, width::Vector{Float64}, logf::Function)
+function slice!(v::SliceVariate, width::Vector{Float64}, logf::Function)
   p0 = logf(v.value) + log(rand())
 
   n = length(v)
@@ -71,25 +71,25 @@ end
 
 #################### Slice within Gibbs Sampler ####################
 
-function SliceWG{T<:String}(params::Vector{T}, width::Vector{Float64};
+function SliceWG{T<:Real}(params::Vector{Symbol}, width::Vector{T};
            transform::Bool=false)
   MCMCSampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, tunepar["transform"])
       f = x -> logpdf!(model, x, block, tunepar["transform"])
-      v = VariateSlice(x)
+      v = SliceVariate(x)
       slicewg!(v, tunepar["width"], f)
       relist(model, v.value, block, tunepar["transform"])
     end,
-    ["width" => width, "transform" => transform]
+    ["width" => Float64[width...], "transform" => transform]
   )
 end
 
 
 #################### Sampling Functions ####################
 
-function slicewg!(v::VariateSlice, width::Vector{Float64}, logf::Function)
+function slicewg!(v::SliceVariate, width::Vector{Float64}, logf::Function)
   logf0 = logf(v.value)
   for i in 1:length(v)
     p0 = logf0 + log(rand())

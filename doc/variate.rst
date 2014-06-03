@@ -1,3 +1,5 @@
+.. index:: Variate Types
+
 Variate Types
 =============
 
@@ -19,19 +21,19 @@ Aliases
 ^^^^^^^
 
 .. index:: VariateType
-.. index:: VariateScalar
-.. index:: VariateVector
-.. index:: VariateMatrix
-.. index:: VariateArray
+.. index:: UniVariate
+.. index:: MultiVariate
+.. index:: VectorVariate
+.. index:: MatrixVariate
 
 .. code-block:: julia
 
 	typealias VariateType Float64
 
-	typealias VariateScalar Variate{VariateType}
-	typealias VariateVector Variate{Vector{VariateType}}
-	typealias VariateMatrix Variate{Matrix{VariateType}}
-	typealias VariateArray{N} Variate{Array{VariateType,N}}
+	typealias UniVariate Variate{VariateType}
+	typealias MultiVariate{N} Variate{Array{VariateType,N}}
+	typealias VectorVariate MultiVariate{1}
+	typealias MatrixVariate MultiVariate{2}
 
 Field
 ^^^^^

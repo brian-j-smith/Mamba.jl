@@ -8,7 +8,7 @@ Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2011:nuts` to 
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: nutseps(v::VariateNUTS, fx::Function)
+.. function:: nutseps(v::NUTSVariate, fx::Function)
 	
 	Generate an initial value for the step size parameter of the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 	
@@ -21,7 +21,7 @@ Stand-Alone Functions
 	
 		A numeric step size value.
 
-.. function:: nuts!(v::VariateNUTS, epsilon::Real, fx::Function; adapt::Bool=false, \
+.. function:: nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false, \
                 target::Real=0.6)
 
 	Simulate one draw from a target distribution using the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
@@ -43,29 +43,29 @@ Stand-Alone Functions
 		.. literalinclude:: nuts.jl
 			:language: julia
 
-.. index:: VariateNUTS
+.. index:: NUTSVariate
 
-VariateNUTS Type
+NUTSVariate Type
 ^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``VariateNUTS <: VariateVector``
+``NUTSVariate <: VectorVariate``
 
 Fields
 ``````
 
 * ``value::Vector{VariateType}`` : vector of sampled values.
-* ``tune::TuneNUTS`` : tuning parameters for the sampling algorithm.
+* ``tune::NUTSTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: VariateNUTS(x::Vector{VariateType}, tune::TuneNUTS)
-              VariateNUTS(x::Vector{VariateType}, tune=nothing)
+.. function:: NUTSVariate(x::Vector{VariateType}, tune::NUTSTune)
+              NUTSVariate(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``VariateNUTS`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
+	Construct a ``NUTSVariate`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
 	
 	**Arguments**
 	
@@ -74,18 +74,18 @@ Constructors
 		
 	**Value**
 	
-		Returns a ``VariateNUTS`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+		Returns a ``NUTSVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 
-.. index:: TuneNUTS
+.. index:: NUTSTune
 
-TuneNUTS Type
+NUTSTune Type
 ^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type TuneNUTS``
+``type NUTSTune``
 
 Fields
 ``````
@@ -105,14 +105,14 @@ Fields
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: NUTS(params::Vector{T<:String}; dtype::Symbol=:forward, \
+.. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
 				target::Real=0.6)
 
 	Construct an ``MCMCSampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
-		* ``params`` : named stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
 		* ``dtype`` : type of differentiation for gradient calculations.  Options are
 			* ``:central`` : central differencing.
 			* ``:forward`` : forward differencing.
