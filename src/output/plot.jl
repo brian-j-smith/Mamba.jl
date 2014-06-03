@@ -13,7 +13,7 @@ function traceplot(c::MCMCChains)
 		plots[i] = plot(y=[[c.value[:,i,j] for j in 1:nchains]...],
 						x=[[c.range for j in 1:nchains]...], 
 						Geom.line, 
-						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						color=repeat([1:nchains], inner=[length(c.range)]),
 						Scale.discrete_color(),	Guide.colorkey("Chain"), 
 						Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
 	end
@@ -25,7 +25,7 @@ function densityplot(c::MCMCChains)
 	plots=Array(Plot, nvars)
 	for i in 1:nvars
 		plots[i] = plot(x=[[c.value[:,i,j] for j in 1:nchains]...], Geom.density, 
-						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						color=repeat([1:nchains], inner=[length(c.range)]),
 						Scale.discrete_color(),	Guide.colorkey("Chain"), 
 						Guide.xlabel(c.names[i]),Guide.ylabel("Density"))
 	end
@@ -41,7 +41,7 @@ function autocorplot(c::MCMCChains; maxlag::Integer=100)
 		plots[i] = plot(y=[[ac.value[i,:,j]' for j in 1:nchains]...],
 						x=[[lags for j in 1:nchains]...], 
 						Geom.line, 
-						color=repeat([j for j in 1:nchains], inner=[maxlag]),
+						color=repeat([1:nchains], inner=[maxlag]),
 						Scale.discrete_color(),	Guide.colorkey("Chain"), 
 						Guide.xlabel("Lag"),Guide.ylabel("Autocorrelation"),
 						Guide.title(c.names[i]))
@@ -56,7 +56,7 @@ function meanplot(c::MCMCChains)
     plots[i] = plot(y=[[cumsum(c.value[:,i,j])./[1:nrows] for j in 1:nchains]...],
 						x=[[c.range for j in 1:nchains]...], 
 						Geom.line, 
-						color=repeat([j for j in 1:nchains], inner=[length(c.range)]),
+						color=repeat([1:nchains], inner=[length(c.range)]),
 						Scale.discrete_color(),	Guide.colorkey("Chain"), 
 						Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
 	end
