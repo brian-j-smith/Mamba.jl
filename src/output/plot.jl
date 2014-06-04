@@ -62,3 +62,45 @@ function meanplot(c::MCMCChains)
   end
   return(plots)
 end
+
+function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg, 
+                                     filename::String="chainplot."string(fmt), 
+                                     width::MeasureOrNumber=12cm, 
+                                     height::MeasureOrNumber=8cm,
+                                     nrow::Integer=2, ncol::Integer=2, 
+                                     byrow::Bool=false)
+  if !(fmt in [:png, :svg, :pdf, :ps])
+    error("$(fmt) is not a supported plot format")
+  end
+  ppp = nrow*ncol       ## plots per page
+  ps = length(p)        ## number of plots
+  np = div(ps,ppp)+1    ## number of pages
+  ex = ppp - (ps % ppp) ## number of blank plots
+
+  for page in 1:np
+    nrem = ps - (page-1)*ppp
+    mat = Canvas[]
+
+    for j in 1:min(nrem,ppp)
+      push!(mat, render(p[(page-1)*ppp+j]))
+    end
+    while length(mat) < ppp
+      push!(mat, canvas())
+    end
+    if page > 1
+      println("Press any key to see next plot")
+      key = readline(STDIN)
+    end
+    if fmt == :png
+      draw(PNG(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+    elseif fmt == :svg
+      draw(SVG(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+    elseif fmt == :pdf
+      draw(PDF(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+    elseif fmt == :ps
+      draw(PS(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+    end
+  end
+
+end
+
