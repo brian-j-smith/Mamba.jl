@@ -72,19 +72,19 @@ function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg,
   if !(fmt in [:png, :svg, :pdf, :ps])
     error("$(fmt) is not a supported plot format")
   end
-  ppp = nrow*ncol       ## plots per page
-  ps = length(p)        ## number of plots
-  np = div(ps,ppp)+1    ## number of pages
-  ex = ppp - (ps % ppp) ## number of blank plots
+  pp = nrow*ncol       ## plots per page
+  ps = length(p)       ## number of plots
+  np = div(ps,pp)+1    ## number of pages
+  ex = pp - (ps % pp)  ## number of blank plots
 
   for page in 1:np
-    nrem = ps - (page-1)*ppp
+    nrem = ps - (page-1)*pp
     mat = Canvas[]
 
-    for j in 1:min(nrem,ppp)
-      push!(mat, render(p[(page-1)*ppp+j]))
+    for j in 1:min(nrem,pp)
+      push!(mat, render(p[(page-1)*pp+j]))
     end
-    while length(mat) < ppp
+    while length(mat) < pp
       push!(mat, canvas())
     end
     if page > 1
