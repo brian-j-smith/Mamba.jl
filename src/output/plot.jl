@@ -65,8 +65,8 @@ end
 
 function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg, 
                                      filename::String="chainplot."string(fmt), 
-                                     width::MeasureOrNumber=12cm, 
-                                     height::MeasureOrNumber=8cm,
+                                     width::MeasureOrNumber=12inch, 
+                                     height::MeasureOrNumber=8inch,
                                      nrow::Integer=2, ncol::Integer=2, 
                                      byrow::Bool=false)
   if !(fmt in [:png, :svg, :pdf, :ps])
@@ -76,16 +76,17 @@ function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg,
   ps = length(p)       ## number of plots
   np = div(ps,pp)+1    ## number of pages
   ex = pp - (ps % pp)  ## number of blank plots
-
+  
+  mat = Array(Canvas, pp)
   for page in 1:np
     nrem = ps - (page-1)*pp
-    mat = Canvas[]
 
-    for j in 1:min(nrem,pp)
-      push!(mat, render(p[(page-1)*pp+j]))
-    end
-    while length(mat) < pp
-      push!(mat, canvas())
+    for j in 1:pp
+      if j <= nrem
+        mat[j] = render(p[(page-1)*pp+j])
+      else
+        mat[j] = canvas()
+      end
     end
     if page > 1
       println("Press any key to see next plot")
