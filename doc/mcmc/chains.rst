@@ -123,6 +123,29 @@ Methods
 	
 		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
 
+.. function:: draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg, filename::String="chainplot."string(fmt), width::MeasureOrNumber=12inch, height::MeasureOrNumber=8inch, nrow::Integer=2, ncol::Integer=2, byrow::Bool=false)
+
+  Draw (i.e. write to file) plots produced by :func:`plot`. Plots are drawn in a matrix (default 2x2).
+	
+	**Arguments**
+	
+		* ``p`` : An array of plots which are to be drawn. 
+		* ``fmt`` : Plotting format. One of the following.
+			* ``:SVG`` : Write to a Scalable Vector Graphics (.svg) file.
+			* ``:PDF`` : Write to a Portable Document Format (.pdf) file.
+			* ``:PNG`` : Write to a Portable Network Graphics (.png) file.
+			* ``:PS``  : Write to a Postscript (.ps) file.
+		* ``filename`` : Produces output in a file with this name.
+		* ``width`` : Width of output file.
+		* ``height`` : Height of output file.
+		* ``nrow`` : Number of rows in output grid.
+		* ``ncol`` : Number of columns in output grid.
+		* ``byrow`` : Should the grid be filled out by row?
+		
+	**Value**
+	
+  Draws plots to file
+
 .. function:: gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
 	
@@ -190,13 +213,31 @@ Methods
 		* ``x`` : a time series of values on which to perform calculations.
 		* ``method`` : method used for the calculations.  Options are
 			* ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.
-			* ``imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
-			* ``ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
+			* ``:imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
+			* ``:ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
 		* ``args...`` : additional arguments for the calculation method.
 		
 	**Value**
 	
 		The numeric standard error value.
+
+.. function:: plot(c::MCMCChains, ptype::Symbol=:trace; args...)
+
+  Various plots to summarize a ``MCMCChains`` object. Separate plots are produced for each variable. 
+	
+	**Arguments**
+	
+		* ``c`` : sampler output on which to perform calculations.
+		* ``ptype`` : Plot type.  Options are
+			* ``:trace`` : Trace of each variable. (Default)
+			* ``:density`` : Density estimate of each variable
+			* ``:autocor`` : Autocorrelation plot of each variable
+			* ``:mean`` : Running mean plot of each variable
+		* ``args...`` : additional arguments for the calculation method.
+		
+	**Value**
+	
+		An array of plots.
 
 .. function:: quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
