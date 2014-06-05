@@ -63,7 +63,7 @@ function meanplot(c::MCMCChains)
   return(plots)
 end
 
-function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg, 
+function draw(p::Vector{Plot}; fmt::Symbol=:svg, 
                                      filename::String="chainplot."string(fmt), 
                                      width::MeasureOrNumber=12inch, 
                                      height::MeasureOrNumber=8inch,
