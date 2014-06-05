@@ -74,7 +74,7 @@ function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg,
   end
   pp = nrow*ncol       ## plots per page
   ps = length(p)       ## number of plots
-  np = div(ps,pp)+1    ## number of pages
+  np = iceil(ps/pp)    ## number of pages
   ex = pp - (ps % pp)  ## number of blank plots
   
   mat = Array(Canvas, pp)
@@ -85,21 +85,25 @@ function draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg,
       if j <= nrem
         mat[j] = render(p[(page-1)*pp+j])
       else
-        mat[j] = canvas()
+        mat[j] = canvas() ## pad with blank plots
       end
     end
     if page > 1
       println("Press any key to see next plot")
       key = readline(STDIN)
     end
+    result = reshape(mat,nrow,ncol)
+    if byrow
+      result = result.'
+    end
     if fmt == :png
-      draw(PNG(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+      draw(PNG(filename,width,height),gridstack(result))
     elseif fmt == :svg
-      draw(SVG(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+      draw(SVG(filename,width,height),gridstack(result))
     elseif fmt == :pdf
-      draw(PDF(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+      draw(PDF(filename,width,height),gridstack(result))
     elseif fmt == :ps
-      draw(PS(filename,width,height),gridstack(reshape(mat,nrow,ncol)))
+      draw(PS(filename,width,height),gridstack(result))
     end
   end
 
