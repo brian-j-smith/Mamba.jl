@@ -123,7 +123,7 @@ Methods
 	
 		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
 
-.. function:: draw{T<:Plot}(p::Vector{T}; fmt::Symbol=:svg, filename::String="chainplot."string(fmt), width::MeasureOrNumber=12inch, height::MeasureOrNumber=8inch, nrow::Integer=2, ncol::Integer=2, byrow::Bool=false)
+.. function:: draw(p::Vector{Plot}; fmt::Symbol=:svg, filename::String="chainplot."string(fmt), width::MeasureOrNumber=12inch, height::MeasureOrNumber=8inch, nrow::Integer=2, ncol::Integer=2, byrow::Bool=true)
 
   Draw (i.e. write to file) plots produced by :func:`plot`. Plots are drawn in a matrix (default 2x2).
 	
@@ -140,7 +140,7 @@ Methods
 		* ``height`` : Height of output file.
 		* ``nrow`` : Number of rows in output grid.
 		* ``ncol`` : Number of columns in output grid.
-		* ``byrow`` : Should the grid be filled out by row?
+		* ``byrow`` : Should the grid be filled out by row? (Default is true)
 		
 	**Value**
 	
@@ -221,7 +221,7 @@ Methods
 	
 		The numeric standard error value.
 
-.. function:: plot(c::MCMCChains, ptype::Symbol=:trace; args...)
+.. function:: plot(c::MCMCChains, ptype::Symbol=:summary; args...)
 
   Various plots to summarize a ``MCMCChains`` object. Separate plots are produced for each variable. 
 	
@@ -229,7 +229,8 @@ Methods
 	
 		* ``c`` : sampler output on which to perform calculations.
 		* ``ptype`` : Plot type.  Options are
-			* ``:trace`` : Trace of each variable. (Default)
+			* ``:summary`` : Trace and density plots of each variable. (Default)
+			* ``:trace`` : Trace of each variable. 
 			* ``:density`` : Density estimate of each variable
 			* ``:autocor`` : Autocorrelation plot of each variable
 			* ``:mean`` : Running mean plot of each variable
