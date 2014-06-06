@@ -3,11 +3,16 @@ compiler:
   - clang
 notifications:
   email: false
+env:
+  matrix:
+#    - JULIAVERSION="juliareleases"
+    - JULIAVERSION="julianightlies"
 before_install:
   - sudo add-apt-repository ppa:staticfloat/julia-deps -y
-  - sudo add-apt-repository ppa:staticfloat/julianightlies -y
+  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
   - sudo apt-get update -qq -y
   - sudo apt-get install libpcre3-dev julia -y
 script:
-  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("MCMCSim"))`); Pkg.pin("MCMCSim"); Pkg.resolve()'
-  - julia -e 'using MCMCSim; @assert isdefined(:MCMCSim); @assert typeof(MCMCSim) === Module'
+  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("MCMCsim"))`); Pkg.pin("MCMCsim"); Pkg.resolve()'
+  - julia -e 'using MCMCsim; @assert isdefined(:MCMCsim); @assert typeof(MCMCsim) === Module'
+  - julia ./test/runtests.jl
