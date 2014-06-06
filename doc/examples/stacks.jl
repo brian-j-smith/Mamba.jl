@@ -95,16 +95,11 @@ model = MCMCModel(
   outlier = MCMCLogical(1,
     @modelexpr(y, mu, sigma, N,
       Float64[abs((y[i] - mu[i]) / sigma) > 2.5 for i in 1:N]
-    )
+    ),
+    [1,3,4,21]
   )
 
 )
-
-
-## Monitor Select Outliers
-monitor = fill(false, stacks[:N])
-monitor[[1,3,4,21]] = true
-setmonitor!(model[:outlier], monitor)
 
 
 ## Initial Values

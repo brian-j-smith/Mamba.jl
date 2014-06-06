@@ -1,7 +1,7 @@
 #################### MCMCDependent Methods ####################
 
 function Base.show(io::IO, d::MCMCDependent)
-  msg = string(ifelse(any(d.monitor), "A ", "An un"),
+  msg = string(ifelse(length(d.monitor) > 0, "A ", "An un"),
                "monitored node of type \"", summary(d), "\"\n")
   print(io, msg)
   show(io, d.value)
@@ -29,14 +29,19 @@ function names(d::MCMCDependent)
   names(d, d.symbol)
 end
 
-function setmonitor!(d::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
-  values = [monitor...]
+function setmonitor!(d::MCMCDependent, monitor::Bool)
+  value = monitor ? Int[0] : Int[]
+  setmonitor!(d, value)
+end
+
+function setmonitor!(d::MCMCDependent, monitor::Vector{Int})
+  values = monitor
   n = length(d)
-  if n > 0
-    if length(monitor) == 1
-      values = fill(values[1], n)
-    elseif length(monitor) != n
-      error("node and monitor dimensions must match")
+  if n > 0 && length(monitor) > 0
+    if monitor[1] == 0
+      values = [1:n]
+    elseif minimum(values) < 1 || maximum(values) > n
+      throw(BoundsError())
     end
   end
   d.monitor = values
@@ -46,18 +51,19 @@ end
 
 #################### MCMCLogical Constructors ####################
 
-function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Bool}))
-  MCMCLogical(value, :nothing, [monitor...], depfx(expr), depsrc(expr),
-              Symbol[])
+function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
+  d = MCMCLogical(value, :nothing, Int[], depfx(expr), depsrc(expr),
+                  Symbol[])
+  setmonitor!(d, monitor)
 end
 
-function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
+function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
   value = convert(VariateType, NaN)
   MCMCLogical(value, expr, monitor)
 end
 
 function MCMCLogical(d::Integer, expr::Expr,
-           monitor::Union(Bool,Vector{Bool})=true)
+                     monitor::Union(Bool,Vector{Int})=true)
   value = Array(VariateType, tuple(zeros(Integer, d)...))
   MCMCLogical(value, expr, monitor)
 end
@@ -79,19 +85,19 @@ end
 
 #################### MCMCStochastic Constructors ####################
 
-function MCMCStochastic{T}(value::T, expr::Expr,
-           monitor::Union(Bool,Vector{Bool}))
-  MCMCStochastic(value, :nothing, [monitor...], depfx(expr), depsrc(expr),
-                 Symbol[], NullDistribution())
+function MCMCStochastic(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
+  d = MCMCStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
+                     Symbol[], NullDistribution())
+  setmonitor!(d, monitor)
 end
 
-function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
+function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
   value = convert(VariateType, NaN)
   MCMCStochastic(value, expr, monitor)
 end
 
 function MCMCStochastic(d::Integer, expr::Expr,
-           monitor::Union(Bool,Vector{Bool})=true)
+                        monitor::Union(Bool,Vector{Int})=true)
   value = Array(VariateType, tuple(zeros(Integer, d)...))
   MCMCStochastic(value, expr, monitor)
 end

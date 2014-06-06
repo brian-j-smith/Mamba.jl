@@ -19,7 +19,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
+* ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
@@ -66,14 +66,15 @@ Methods
 	
 		The resulting numeric value of the log-density.
 
-.. function:: setmonitor!(d::MCMCDependent, monitor::Union(Bool,Vector{Bool}))
+.. function:: setmonitor!(d::MCMCDependent, monitor::Bool)
+              setmonitor!(d::MCMCDependent, monitor::Vector{Int})
 
 	Specify node elements to be included in monitored MCMC sampler output.
 	
 	**Arguments**
 	
 		* ``d`` : a node whose elements contain sampled MCMC values.
-		* ``momitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
+		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 		
 	**Value**
 	
@@ -113,7 +114,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
+* ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
@@ -121,8 +122,8 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-              MCMCLogical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
+.. function:: MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+              MCMCLogical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
 	Construct an ``MCMCLogical`` object that defines a logical model node.
 	
@@ -130,7 +131,7 @@ Constructors
 	
 		* ``d`` : number of dimensions for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
-		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
+		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 		
 	**Value**
 	
@@ -191,7 +192,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``monitor::Vector{Bool}`` : element-specific boolean values indicating whether to include corresponding ``value`` field values in monitored MCMC sampler output.
+* ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
@@ -207,8 +208,8 @@ Aliases
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
-              MCMCStochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Bool})=true)
+.. function:: MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+              MCMCStochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
 	Construct an ``MCMCStochastic`` object that defines a stochastic model node.
 	
@@ -216,7 +217,7 @@ Constructors
 	
 		* ``d`` : number of dimensions for array nodes.
 		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
-		* ``monitor`` : a scalar indicating whether all elements are monitored, or a vector of element-wise indicators.
+		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 		
 	**Value**
 	

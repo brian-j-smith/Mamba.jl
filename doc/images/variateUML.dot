@@ -8,7 +8,7 @@ digraph Variate {
 
 	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Bool\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
+	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	

@@ -66,7 +66,7 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :monitor
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, MCMCDependent) && any(node.monitor)
+      if isa(node, MCMCDependent) && length(node.monitor) > 0
         push!(values, key)
       end
     end
@@ -129,7 +129,8 @@ function names(m::MCMCModel, monitoronly::Bool)
   values = String[]
   for key in keys(m, :dependent)
     node = m[key]
-    append!(values, names(node)[!monitoronly | node.monitor])
+    v = monitoronly ? names(node)[node.monitor] : names(node)
+    append!(values, v)
   end
   values
 end
@@ -327,10 +328,8 @@ function unlist(m::MCMCModel, monitoronly::Bool)
   values = VariateType[]
   for key in keys(m, :dependent)
     node = m[key]
-    idx = find(!monitoronly | node.monitor)
-    if length(idx) > 0
-      append!(values, node[idx])
-    end
+    v = monitoronly ? node[node.monitor] : node[:]
+    append!(values, v)
   end
   values
 end

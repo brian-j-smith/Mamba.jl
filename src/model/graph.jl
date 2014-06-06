@@ -51,7 +51,7 @@ function graph2dot(m::MCMCModel)
       elseif isa(node, MCMCStochastic)
         attr["shape"] = "ellipse"
       end
-      if !any(node.monitor)
+      if length(node.monitor) == 0
         attr["style"] = "filled"
         attr["fillcolor"] = "gray85"
       end

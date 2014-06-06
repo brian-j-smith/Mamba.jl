@@ -40,7 +40,7 @@ abstract MCMCDependent{T} <: Variate{T}
 type MCMCLogical{T} <: MCMCDependent{T}
   value::T
   symbol::Symbol
-  monitor::Vector{Bool}
+  monitor::Vector{Int}
   eval::Function
   sources::Vector{Symbol}
   targets::Vector{Symbol}
@@ -49,7 +49,7 @@ end
 type MCMCStochastic{T} <: MCMCDependent{T}
   value::T
   symbol::Symbol
-  monitor::Vector{Bool}
+  monitor::Vector{Int}
   eval::Function
   sources::Vector{Symbol}
   targets::Vector{Symbol}
