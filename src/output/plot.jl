@@ -1,5 +1,5 @@
 function plot(c::MCMCChains, ptype::Symbol=:trace; args...)
-  ptype == :summary ? reshape([ traceplot(c) densityplot(c)].', 2*size(c.value, 2), 1)[:]
+  ptype == :summary ? reshape([ traceplot(c) densityplot(c)].', 2*size(c.value, 2), 1)[:] :
   ptype == :trace   ? traceplot(c) :
   ptype == :density ? densityplot(c) :
   ptype == :autocor ? autocorplot(c; args...) :
@@ -69,7 +69,7 @@ function draw(p::Vector{Plot}; fmt::Symbol=:svg,
                                      width::MeasureOrNumber=12inch, 
                                      height::MeasureOrNumber=8inch,
                                      nrow::Integer=2, ncol::Integer=2, 
-                                     byrow::Bool=false)
+                                     byrow::Bool=true)
   if !(fmt in [:png, :svg, :pdf, :ps])
     error("$(fmt) is not a supported plot format")
   end
@@ -93,9 +93,10 @@ function draw(p::Vector{Plot}; fmt::Symbol=:svg,
       println("Press any key to see next plot")
       key = readline(STDIN)
     end
-    result = reshape(mat,nrow,ncol)
     if byrow
-      result = result.'
+      result = reshape(mat,ncol,nrow).'
+    else
+      result = reshape(mat,nrow,ncol)
     end
     if fmt == :png
       draw(PNG(filename,width,height),gridstack(result))
