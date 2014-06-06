@@ -1,4 +1,5 @@
 function plot(c::MCMCChains, ptype::Symbol=:trace; args...)
+  ptype == :summary ? reshape([ traceplot(c) densityplot(c)].', 2*size(c.value, 2), 1)[:]
   ptype == :trace   ? traceplot(c) :
   ptype == :density ? densityplot(c) :
   ptype == :autocor ? autocorplot(c; args...) :
