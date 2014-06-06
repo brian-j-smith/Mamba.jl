@@ -23,11 +23,11 @@ mice[:N] = size(mice[:t], 2)
 model = MCMCModel(
 
   t = MCMCStochastic(2,
-    @modelexpr(tau, beta, tcensor, M, N,
+    @modelexpr(r, beta, tcensor, M, N,
       Distribution[
         begin
-          lambda = exp(-beta[i] / tau)
-          Truncated(Weibull(tau, lambda), tcensor[i,j], Inf)
+          lambda = exp(-beta[i] / r)
+          Truncated(Weibull(r, lambda), tcensor[i,j], Inf)
         end
         for i in 1:M, j in 1:N
       ]
@@ -35,12 +35,37 @@ model = MCMCModel(
     false
   ),
 
-  tau = MCMCStochastic(
+  r = MCMCStochastic(
     :(Exponential(1000))
   ),
 
   beta = MCMCStochastic(1,
-    :(Normal(0, 10))
+    :(Normal(0, 10)),
+    false
+  ),
+
+  median = MCMCLogical(1,
+    @modelexpr(beta, r,
+      exp(-beta / r) * log(2)^(1/r)
+    )
+  ),
+
+  veh_control = MCMCLogical(
+    @modelexpr(beta,
+      beta[2] - beta[1]
+    )
+  ),
+
+  test_sub = MCMCLogical(
+    @modelexpr(beta,
+      beta[3] - beta[1]
+    )
+  ),
+
+  pos_control = MCMCLogical(
+    @modelexpr(beta,
+      beta[4] - beta[1]
+    )
   )
 
 )
@@ -48,18 +73,18 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  [:t => mice[:t], :beta => fill(-2.5, mice[:M]), :tau => 1.0],
-  [:t => mice[:t], :beta => fill(-5, mice[:M]), :tau => 0.1]
+  [:t => mice[:t], :beta => fill(-1, mice[:M]), :r => 1.0],
+  [:t => mice[:t], :beta => fill(-2, mice[:M]), :r => 1.0]
 ]
 
 
 ## Sampling Scheme
 scheme = [MISS([:t]),
           SliceWG([:beta], fill(1.0, mice[:M])),
-          Slice([:tau], [1.0])]
+          Slice([:r], [0.25])]
 setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(model, mice, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, mice, inits, 20000, burnin=2500, thin=2, chains=2)
 describe(sim)
