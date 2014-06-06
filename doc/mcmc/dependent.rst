@@ -197,7 +197,6 @@ Fields
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``distr::DistributionStruct`` : the distributional specification for the node.
-* ``missing::Vector{Int}`` : indices identifying missing (``NaN``) elements in the ``value`` fields of output stochastic nodes --- stochastic nodes upon which no other stochastic nodes depend.  Missing values are replaced with draws from ``distr`` at every update of the node.
 
 Aliases
 ^^^^^^^

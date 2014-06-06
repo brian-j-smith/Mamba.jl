@@ -54,7 +54,6 @@ type MCMCStochastic{T} <: MCMCDependent{T}
   sources::Vector{Symbol}
   targets::Vector{Symbol}
   distr::DistributionStruct
-  missing::Vector{Int}
 end
 
 
@@ -115,6 +114,7 @@ include("output/stats.jl")
 
 include("samplers/amm.jl")
 include("samplers/amwg.jl")
+include("samplers/miss.jl")
 include("samplers/nuts.jl")
 include("samplers/sampler.jl")
 include("samplers/slice.jl")
@@ -188,6 +188,7 @@ export
   amwg!,
   AMWG,
   AMWGVariate,
+  MISS,
   nuts!,
   nutsepsilon,
   NUTS,

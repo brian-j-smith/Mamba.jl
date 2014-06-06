@@ -10,5 +10,6 @@ A collection of functions are provided for simulating draws from from distributi
 
 	samplers/amm.rst
 	samplers/amwg.rst
+	samplers/miss.rst
 	samplers/nuts.rst
 	samplers/slice.rst
