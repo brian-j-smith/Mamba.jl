@@ -12,7 +12,7 @@ digraph Variate {
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	
-	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
+	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l+ missing : Vector\{Int\}\l}"]
 
 	SamplerVariate [label = "{SamplerVariate\{Vector\{VariateType\}\}|+ tune : SamplerTune\l}"]
 	

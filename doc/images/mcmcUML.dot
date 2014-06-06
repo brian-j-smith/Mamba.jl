@@ -10,11 +10,11 @@ graph MCMC {
 
 	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
+	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol \l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	
-	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
+	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l+ missing : Vector\{Int\}\l}"]
 
 	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\l+ targets : Vector\{Symbol\}\l}"]
 	

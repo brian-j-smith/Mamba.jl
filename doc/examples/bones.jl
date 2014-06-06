@@ -92,8 +92,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [MISS([:grade]),
-          AMWG([:theta], fill(0.1, bones[:nChild]))]
+scheme = [AMWG([:theta], fill(0.1, bones[:nChild]))]
 setsamplers!(model, scheme)
 
 

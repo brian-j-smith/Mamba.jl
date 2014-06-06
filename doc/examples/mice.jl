@@ -79,8 +79,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [MISS([:t]),
-          SliceWG([:beta], fill(1.0, mice[:M])),
+scheme = [SliceWG([:beta], fill(1.0, mice[:M])),
           Slice([:r], [0.25])]
 setsamplers!(model, scheme)
 

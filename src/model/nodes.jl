@@ -41,7 +41,7 @@ function setmonitor!(d::MCMCDependent, monitor::Vector{Int})
     if monitor[1] == 0
       values = [1:n]
     elseif minimum(values) < 1 || maximum(values) > n
-      throw(BoundsError())
+      error("monitor indices are out of bounds")
     end
   end
   d.monitor = values
@@ -87,7 +87,7 @@ end
 
 function MCMCStochastic(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
   d = MCMCStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
-                     Symbol[], NullDistribution())
+                     Symbol[], NullDistribution(), Int[])
   setmonitor!(d, monitor)
 end
 
@@ -125,7 +125,8 @@ function setinits!(s::MCMCStochastic, m::MCMCModel, x)
   if isa(s.distr, Array) && size(s.value) != size(s.distr)
     error("stochastic parameter and distribution dimensions must match")
   end
-  s
+  s.missing = in(s.symbol, keys(m, :output)) ? find(isnan(s.value)) : Int[]
+  updatemissing!(s)
 end
 
 insupport(s::MCMCStochastic) = all(mapdistr(insupport, s, s.value))
@@ -151,6 +152,20 @@ end
 
 function update!(s::MCMCStochastic, m::MCMCModel)
   s.distr = s.eval(m)
+  updatemissing!(s)
+end
+
+function updatemissing!(s::MCMCStochastic)
+  if isa(s.distr, Array)
+    for i in s.missing
+      s.value[i] = rand(s.distr[i])
+    end
+  elseif length(s.missing) > 0
+    pred = rand(s.distr)
+    for i in s.missing
+      s.value[i] = pred[i]
+    end
+  end
   s
 end
 

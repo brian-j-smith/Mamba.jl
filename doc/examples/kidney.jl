@@ -103,8 +103,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [MISS([:t]),
-          SliceWG([:alpha, :beta_age, :beta_sex, :beta_Dx], fill(0.1, 6)),
+scheme = [SliceWG([:alpha, :beta_age, :beta_sex, :beta_Dx], fill(0.1, 6)),
           SliceWG([:b], fill(0.1, kidney[:N])),
           Slice([:s2], [0.1], transform=true),
           Slice([:r], [0.01], transform=true)]
