@@ -99,10 +99,12 @@ include("distributions/flat.jl")
 include("distributions/methods.jl")
 include("distributions/null.jl")
 
+include("model/core.jl")
 include("model/dependent.jl")
 include("model/graph.jl")
+include("model/initialization.jl")
 include("model/mcmc.jl")
-include("model/model.jl")
+include("model/simulation.jl")
 
 include("output/chains.jl")
 include("output/chainsummary.jl")
