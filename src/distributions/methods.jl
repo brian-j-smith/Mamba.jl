@@ -16,6 +16,22 @@ function logpdf(d::MatrixDistribution, x, transform::Bool)
 end
 
 
+#################### TrancatedDistribution ####################
+
+function rand(d::Truncated)
+  if d.nc > 0.25
+    while true
+      r = rand(d.untruncated)
+      if d.lower <= r <= d.upper
+        return r
+      end
+    end
+  else
+    return quantile(d.untruncated, cdf(d.untruncated, d.lower) + rand() * d.nc)
+  end
+end
+
+
 #################### TransformDistribution ####################
 
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}

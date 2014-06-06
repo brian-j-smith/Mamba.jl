@@ -9,7 +9,7 @@ import Base: Base, cor, dot
 import Base.LinAlg: Cholesky
 import Calculus: gradient
 import Distributions: Continuous, Distribution, insupport, logpdf, logpdf!,
-       minimum, maximum, PDiagMat, PDMat, quantile, ScalMat, Truncated
+       minimum, maximum, PDiagMat, PDMat, quantile, rand, ScalMat, Truncated
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
