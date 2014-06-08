@@ -1,5 +1,5 @@
-function plot(c::MCMCChains, ptype::Symbol=:trace; args...)
-  ptype == :summary ? reshape([ traceplot(c) densityplot(c)].', 2*size(c.value, 2), 1)[:] :
+function plot(c::MCMCChains, ptype::Symbol=:summary; args...)
+  ptype == :summary ? hcat(traceplot(c), densityplot(c)).' :
   ptype == :trace   ? traceplot(c) :
   ptype == :density ? densityplot(c) :
   ptype == :autocor ? autocorplot(c; args...) :
@@ -9,75 +9,74 @@ end
 
 function traceplot(c::MCMCChains)
   nrows, nvars, nchains = size(c.value)
-  plots=Array(Plot, nvars)
+  plots = Array(Plot, nvars)
   for i in 1:nvars
     plots[i] = plot(y=[[c.value[:,i,j] for j in 1:nchains]...],
-                    x=[[c.range for j in 1:nchains]...], 
-                    Geom.line, 
+                    x=[[c.range for j in 1:nchains]...],
+                    Geom.line,
                     color=repeat([1:nchains], inner=[length(c.range)]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"), 
-                    Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
+                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Guide.xlabel("Iteration"), Guide.ylabel(c.names[i]))
   end
-  return(plots)  
+  return plots
 end
 
 function densityplot(c::MCMCChains)
   nrows, nvars, nchains = size(c.value)
-  plots=Array(Plot, nvars)
+  plots = Array(Plot, nvars)
   for i in 1:nvars
-    plots[i] = plot(x=[[c.value[:,i,j] for j in 1:nchains]...], Geom.density, 
+    plots[i] = plot(x=[[c.value[:,i,j] for j in 1:nchains]...], Geom.density,
                     color=repeat([1:nchains], inner=[length(c.range)]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"), 
-                    Guide.xlabel(c.names[i]),Guide.ylabel("Density"))
+                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Guide.xlabel(c.names[i]), Guide.ylabel("Density"))
   end
-  return(plots)
+  return plots
 end
 
 function autocorplot(c::MCMCChains; maxlag::Integer=100)
   nrows, nvars, nchains = size(c.value)
-  plots=Array(Plot, nvars)
-  lags = [1:maxlag]*step(c.range)
-  ac = autocor(c,lags=[1:maxlag])
+  plots = Array(Plot, nvars)
+  lags = [(1:maxlag) * step(c.range)]
+  ac = autocor(c, lags=[1:maxlag])
   for i in 1:nvars
     plots[i] = plot(y=[[ac.value[i,:,j]' for j in 1:nchains]...],
-                    x=[[lags for j in 1:nchains]...], 
-                    Geom.line, 
+                    x=[[lags for j in 1:nchains]...],
+                    Geom.line,
                     color=repeat([1:nchains], inner=[maxlag]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"), 
-                    Guide.xlabel("Lag"),Guide.ylabel("Autocorrelation"),
+                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Guide.xlabel("Lag"), Guide.ylabel("Autocorrelation"),
                     Guide.title(c.names[i]))
   end
-  return(plots)
+  return plots
 end
 
 function meanplot(c::MCMCChains)
   nrows, nvars, nchains = size(c.value)
-  plots=Array(Plot, nvars)
+  plots = Array(Plot, nvars)
   for i in 1:nvars
     plots[i] = plot(y=[[cumsum(c.value[:,i,j])./[1:nrows] for j in 1:nchains]...],
-                    x=[[c.range for j in 1:nchains]...], 
-                    Geom.line, 
+                    x=[[c.range for j in 1:nchains]...],
+                    Geom.line,
                     color=repeat([1:nchains], inner=[length(c.range)]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"), 
-                    Guide.xlabel("Iteration"),Guide.ylabel(c.names[i]))
+                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Guide.xlabel("Iteration"), Guide.ylabel(c.names[i]))
   end
-  return(plots)
+  return plots
 end
 
-function draw(p::Vector{Plot}; fmt::Symbol=:svg, 
-                                     filename::String="chainplot."string(fmt), 
-                                     width::MeasureOrNumber=12inch, 
-                                     height::MeasureOrNumber=8inch,
-                                     nrow::Integer=2, ncol::Integer=2, 
-                                     byrow::Bool=true)
-  if !(fmt in [:png, :svg, :pdf, :ps])
+function draw(p::Array{Plot}; fmt::Symbol=:svg,
+              filename::String="chainplot."string(fmt),
+              width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch,
+              nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
+
+  in(fmt, [:png, :svg, :pdf, :ps]) ||
     error("$(fmt) is not a supported plot format")
-  end
+
   pp = nrow*ncol       ## plots per page
   ps = length(p)       ## number of plots
   np = iceil(ps/pp)    ## number of pages
   ex = pp - (ps % pp)  ## number of blank plots
-  
+
   mat = Array(Canvas, pp)
   for page in 1:np
     nrem = ps - (page-1)*pp
@@ -110,4 +109,3 @@ function draw(p::Vector{Plot}; fmt::Symbol=:svg,
   end
 
 end
-
