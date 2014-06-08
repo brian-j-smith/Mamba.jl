@@ -36,8 +36,8 @@ end
 function autocorplot(c::MCMCChains; maxlag::Integer=100)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
-  lags = [(1:maxlag) * step(c.range)]
-  ac = autocor(c, lags=[1:maxlag])
+  lags = [(0:maxlag) * step(c.range)]
+  ac = autocor(c, lags=[0:maxlag])
   for i in 1:nvars
     plots[i] = plot(y=[[ac.value[i,:,j]' for j in 1:nchains]...],
                     x=[[lags for j in 1:nchains]...],
