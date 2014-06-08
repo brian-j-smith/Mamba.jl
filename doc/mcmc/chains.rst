@@ -109,7 +109,7 @@ Methods
 		
 	**Value**
 	
-		A tuple of results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)``, respectively.    Results are for all chains combined.
+		A tuple of results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)``, respectively.  Results are for all chains combined.
 
 .. function:: dic(c::MCMCChains)
 
@@ -123,28 +123,31 @@ Methods
 	
 		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
 
-.. function:: draw(p::Vector{Plot}; fmt::Symbol=:svg, filename::String="chainplot."string(fmt), width::MeasureOrNumber=12inch, height::MeasureOrNumber=8inch, nrow::Integer=2, ncol::Integer=2, byrow::Bool=true)
+.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, \
+			    filename::String="chainplot."string(fmt), \
+			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
+			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
 
-  Draw (i.e. write to file) plots produced by :func:`plot`. Plots are drawn in a matrix (default 2x2).
+  Draw (write to a file) plots produced by :func:`plot`.  Plots are arranged in a matrix (default: 3x2).
 	
 	**Arguments**
 	
-		* ``p`` : An array of plots which are to be drawn. 
-		* ``fmt`` : Plotting format. One of the following.
-			* ``:SVG`` : Write to a Scalable Vector Graphics (.svg) file.
-			* ``:PDF`` : Write to a Portable Document Format (.pdf) file.
-			* ``:PNG`` : Write to a Portable Network Graphics (.png) file.
-			* ``:PS``  : Write to a Postscript (.ps) file.
-		* ``filename`` : Produces output in a file with this name.
-		* ``width`` : Width of output file.
-		* ``height`` : Height of output file.
-		* ``nrow`` : Number of rows in output grid.
-		* ``ncol`` : Number of columns in output grid.
-		* ``byrow`` : Should the grid be filled out by row? (Default is true)
+		* ``p`` : array of plots to be drawn.
+		* ``fmt`` : plotting format. Options are
+			* ``:svg`` : Scalable Vector Graphics (.svg).
+			* ``:pdf`` : Portable Document Format (.pdf).
+			* ``:png`` : Portable Network Graphics (.png).
+			* ``:ps``  : Postscript (.ps).
+		* ``filename`` : produces output in a file with this name.
+		* ``width`` : plot width.
+		* ``height`` : plot height.
+		* ``nrow`` : number of rows in output matrix.
+		* ``ncol`` : number of columns in output matrix.
+		* ``byrow`` : whether the matrix should be filled by row.
 		
 	**Value**
 	
-  Draws plots to file
+		Draws plots to file
 
 .. function:: gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
@@ -223,22 +226,22 @@ Methods
 
 .. function:: plot(c::MCMCChains, ptype::Symbol=:summary; args...)
 
-  Various plots to summarize a ``MCMCChains`` object. Separate plots are produced for each variable. 
+	Various plots to summarize a ``MCMCChains`` object.  Separate plots are produced for each parameter. 
 	
 	**Arguments**
 	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``ptype`` : Plot type.  Options are
-			* ``:summary`` : Trace and density plots of each variable. (Default)
-			* ``:trace`` : Trace of each variable. 
-			* ``:density`` : Density estimate of each variable
-			* ``:autocor`` : Autocorrelation plot of each variable
-			* ``:mean`` : Running mean plot of each variable
-		* ``args...`` : additional arguments for the calculation method.
+		* ``c`` : sampler output to plot.
+		* ``ptype`` : plot type.  Options are
+			* ``:summary`` : trace and density plots.
+			* ``:trace`` : trace plots.
+			* ``:density`` : density plots.
+			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=100`` determining the maximum autocorrelation lag to plot.
+			* ``:mean`` : running mean plots.
+		* ``args...`` : additional arguments to be passed to the ``ptype`` method.
 		
 	**Value**
 	
-		An array of plots.
+		An array of plots that can be saved to a file with :func:`draw`.
 
 .. function:: quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
