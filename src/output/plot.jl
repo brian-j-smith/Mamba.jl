@@ -89,8 +89,8 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg,
       end
     end
     if page > 1
-      println("Press any key to see next plot")
-      key = readline(STDIN)
+      println("Press ENTER to draw next plot")
+      readline(STDIN)
     end
     if byrow
       result = reshape(mat,ncol,nrow).'
