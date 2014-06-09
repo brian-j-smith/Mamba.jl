@@ -232,11 +232,11 @@ Methods
 	
 		* ``c`` : sampler output to plot.
 		* ``ptype`` : plot type.  Options are
+			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=100`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
+			* ``:density`` : density plots.
+			* ``:mean`` : running mean plots.
 			* ``:summary`` : trace and density plots.
 			* ``:trace`` : trace plots.
-			* ``:density`` : density plots.
-			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=100`` determining the maximum autocorrelation lag to plot.
-			* ``:mean`` : running mean plots.
 		* ``args...`` : additional arguments to be passed to the ``ptype`` method.
 		
 	**Value**
