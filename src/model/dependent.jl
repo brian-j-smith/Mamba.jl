@@ -40,7 +40,7 @@ function setmonitor!(d::MCMCDependent, monitor::Vector{Int})
   if n > 0 && length(monitor) > 0
     if monitor[1] == 0
       values = [1:n]
-    elseif minimum(values) < 1 || maximum(values) > n
+    elseif minimum(monitor) < 1 || maximum(monitor) > n
       throw(BoundsError())
     end
   end
@@ -135,17 +135,19 @@ invlink(s::MCMCStochastic, x) = mapdistr(invlink, s, x)
 link(s::MCMCStochastic, x) =  mapdistr(link, s, x)
 
 function logpdf(s::MCMCStochastic, transform::Bool=false)
-  sum(mapdistr(logpdf, s, s.value, transform))
+  f(d, x) = logpdf(d, x, transform)
+  sum(mapdistr(f, s, s.value))
 end
 
-function mapdistr(f::Function, s::MCMCStochastic, x, args...)
+function mapdistr(f::Function, s::MCMCStochastic, x)
   if isa(s.distr, Array)
-    n = length(s.distr)
-    length(x) == n ||
-      error("dimension of stochastic distribution and argument must match")
-    map(i -> f(s.distr[i], x[i], args...), 1:n)
+    y = similar(x)
+    for i in 1:length(y)
+      y[i] = f(s.distr[i], x[i])
+    end
+    y
   else
-    f(s.distr, x, args...)
+    f(s.distr, x)
   end
 end
 
