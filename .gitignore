@@ -1,3 +1,4 @@
 test/lineDAG.dot
 tmp/
 usr/
+doc/_build/

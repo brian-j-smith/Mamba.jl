@@ -16,7 +16,8 @@ function traceplot(c::MCMCChains)
                     Geom.line,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel("Iteration"), Guide.ylabel(c.names[i]))
+                    Guide.xlabel("Iteration"), Guide.ylabel("Value"),
+                    Guide.title(c.names[i]))
   end
   return plots
 end
@@ -28,7 +29,8 @@ function densityplot(c::MCMCChains)
     plots[i] = plot(x=[[c.value[:,i,j] for j in 1:nchains]...], Geom.density,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel(c.names[i]), Guide.ylabel("Density"))
+                    Guide.xlabel("Value"), Guide.ylabel("Density"),
+                    Guide.title(c.names[i]))
   end
   return plots
 end
@@ -59,7 +61,8 @@ function meanplot(c::MCMCChains)
                     Geom.line,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel("Iteration"), Guide.ylabel(c.names[i]))
+                    Guide.xlabel("Iteration"), Guide.ylabel("Mean"),
+                    Guide.title(c.names[i]))
   end
   return plots
 end
