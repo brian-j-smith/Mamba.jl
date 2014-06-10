@@ -18,8 +18,7 @@ import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
 import Gadfly: Plot, plot, Layer, layer, Geom, Guide, Theme, Scale, render,
        SVG, PNG, PS, PDF, draw
-import Compose: MeasureOrNumber, Canvas, canvas, gridstack, cm, inch, inch, 
-       mm, cm, px, pt
+import Compose: MeasureOrNumber, Canvas, canvas, gridstack, inch, mm, cm, px, pt
 
 
 
