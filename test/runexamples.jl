@@ -8,7 +8,7 @@ examples = [
   "epil",
   "equiv",
   "inhalers",
-#  "kidney",
+  "kidney",
   "leuk",
   "lsat",
   "magnesium",
@@ -23,6 +23,8 @@ examples = [
 ]
 
 println("Running examples:")
+
+srand(123)
 
 for t in examples
   @runtest "../doc/examples/" t
