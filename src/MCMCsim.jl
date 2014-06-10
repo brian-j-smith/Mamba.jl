@@ -3,6 +3,8 @@ module MCMCsim
 using Distributions
 
 
+
+
 #################### Imports ####################
 
 import Base: Base, cor, dot
@@ -14,6 +16,10 @@ import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
+import Gadfly: Plot, plot, Layer, layer, Geom, Guide, Theme, Scale, render,
+       SVG, PNG, PS, PDF, draw
+import Compose: MeasureOrNumber, Canvas, canvas, gridstack, inch, mm, cm, px, pt
+
 
 
 #################### Variate Types ####################
@@ -111,6 +117,7 @@ include("output/gelmandiag.jl")
 include("output/gewekediag.jl")
 include("output/mcse.jl")
 include("output/stats.jl")
+include("output/plot.jl")
 
 include("samplers/amm.jl")
 include("samplers/amwg.jl")
@@ -123,6 +130,8 @@ include("utils.jl")
 
 include("variate/core.jl")
 include("variate/numeric.jl")
+
+
 
 
 #################### Exports ####################
@@ -151,6 +160,7 @@ export
   cor,
   describe,
   dic,
+  draw,
   gelmandiag,
   gewekediag,
   gradient,

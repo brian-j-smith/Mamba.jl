@@ -109,7 +109,7 @@ Methods
 		
 	**Value**
 	
-		A tuple of results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)``, respectively.    Results are for all chains combined.
+		A tuple of results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)``, respectively.  Results are for all chains combined.
 
 .. function:: dic(c::MCMCChains)
 
@@ -122,6 +122,32 @@ Methods
 	**Value**
 	
 		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
+
+.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, \
+			    filename::String="chainplot."string(fmt), \
+			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
+			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
+
+  Draw (write to a file) plots produced by :func:`plot`.  Plots are arranged in a matrix (default: 3x2).
+	
+	**Arguments**
+	
+		* ``p`` : array of plots to be drawn.
+		* ``fmt`` : plotting format. Options are
+			* ``:svg`` : Scalable Vector Graphics (.svg).
+			* ``:pdf`` : Portable Document Format (.pdf).
+			* ``:png`` : Portable Network Graphics (.png).
+			* ``:ps``  : Postscript (.ps).
+		* ``filename`` : produces output in a file with this name.
+		* ``width`` : plot width.
+		* ``height`` : plot height.
+		* ``nrow`` : number of rows in output matrix.
+		* ``ncol`` : number of columns in output matrix.
+		* ``byrow`` : whether the matrix should be filled by row.
+		
+	**Value**
+	
+		Draws plots to file
 
 .. function:: gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
@@ -190,13 +216,32 @@ Methods
 		* ``x`` : a time series of values on which to perform calculations.
 		* ``method`` : method used for the calculations.  Options are
 			* ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.
-			* ``imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
-			* ``ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
+			* ``:imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
+			* ``:ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
 		* ``args...`` : additional arguments for the calculation method.
 		
 	**Value**
 	
 		The numeric standard error value.
+
+.. function:: plot(c::MCMCChains, ptype::Symbol=:summary; args...)
+
+	Various plots to summarize a ``MCMCChains`` object.  Separate plots are produced for each parameter. 
+	
+	**Arguments**
+	
+		* ``c`` : sampler output to plot.
+		* ``ptype`` : plot type.  Options are
+			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=100`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
+			* ``:density`` : density plots.
+			* ``:mean`` : running mean plots.
+			* ``:summary`` : trace and density plots.
+			* ``:trace`` : trace plots.
+		* ``args...`` : additional arguments to be passed to the ``ptype`` method.
+		
+	**Value**
+	
+		An array of plots that can be saved to a file with :func:`draw`.
 
 .. function:: quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
