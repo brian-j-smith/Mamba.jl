@@ -67,7 +67,7 @@ model = MCMCModel(
   ),
 
   s2 = MCMCStochastic(
-    :(InverseGamma(0.0001, 0.0001))
+    :(InverseGamma(0.001, 0.001))
   ),
 
   alpha = MCMCStochastic(
@@ -95,19 +95,19 @@ model = MCMCModel(
 
 ## Initial Values
 inits = [
-  [:t => kidney[:t], :alpha => -1, :beta_age => -0.1, :beta_sex => 0,
+  [:t => kidney[:t], :alpha => 0, :beta_age => 0, :beta_sex => 0,
    :beta_Dx => zeros(3), :s2 => 3, :r => 1.0, :b => zeros(kidney[:N])],
-  [:t => kidney[:t], :alpha => -5, :beta_age => 0, :beta_sex => 1,
-   :beta_Dx => ones(3), :s2 => 1, :r => 0.5, :b => zeros(kidney[:N])]
+  [:t => kidney[:t], :alpha => 1, :beta_age => -1, :beta_sex => 1,
+   :beta_Dx => ones(3), :s2 => 1, :r => 1.5, :b => zeros(kidney[:N])]
 ]
 
 
 ## Sampling Scheme
 scheme = [MISS([:t]),
-          SliceWG([:alpha, :beta_age, :beta_sex, :beta_Dx], fill(0.1, 6)),
-          SliceWG([:b], fill(0.1, kidney[:N])),
-          Slice([:s2], [0.1], transform=true),
-          Slice([:r], [0.01], transform=true)]
+          Slice([:alpha, :beta_age, :beta_sex, :beta_Dx], fill(0.1, 6)),
+          Slice([:b], fill(0.01, kidney[:N])),
+          Slice([:s2], [0.1]),
+          Slice([:r], [0.001])]
 setsamplers!(model, scheme)
 
 
@@ -116,5 +116,5 @@ setinits!(model, inits[1])
 
 
 ## MCMC Simulations
-sim = mcmc(model, kidney, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, kidney, inits, 20000, burnin=2500, thin=2, chains=2)
 describe(sim)
