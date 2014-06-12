@@ -16,7 +16,7 @@ function logpdf(d::MatrixDistribution, x, transform::Bool)
 end
 
 
-#################### TrancatedDistribution ####################
+#################### TruncatedDistribution ####################
 
 function rand(d::Truncated)
   if d.nc > 0.25

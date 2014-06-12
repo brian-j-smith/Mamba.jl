@@ -111,10 +111,6 @@ scheme = [MISS([:t]),
 setsamplers!(model, scheme)
 
 
-setinputs!(model, kidney)
-setinits!(model, inits[1])
-
-
 ## MCMC Simulations
 sim = mcmc(model, kidney, inits, 20000, burnin=2500, thin=2, chains=2)
 describe(sim)

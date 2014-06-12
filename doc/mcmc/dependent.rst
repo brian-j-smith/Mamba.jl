@@ -136,6 +136,10 @@ Constructors
 	**Value**
 	
 		Returns an ``MCMCLogical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``MCMCLogical{VariateType}`` if not.
+		
+	**Example**
+	
+		See the :ref:`section-Line-Specification` section of the tutorial.
 
 Methods
 ^^^^^^^
@@ -222,6 +226,10 @@ Constructors
 	**Value**
 	
 		Returns an ``MCMCStochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``MCMCStochastic{VariateType}`` if not.
+
+	**Example**
+	
+		See the :ref:`section-Line-Specification` section of the tutorial.
 
 Methods
 ^^^^^^^

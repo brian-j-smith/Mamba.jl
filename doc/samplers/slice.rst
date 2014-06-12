@@ -22,6 +22,8 @@ Stand-Alone Function
 	
 		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
+	.. _example-slice:
+	
 	**Example**
 
 		.. literalinclude:: slice.jl
@@ -94,6 +96,10 @@ MCMCSampler Constructor
 	
 		Returns an ``MCMCSampler`` type object.
 
+	**Example**
+	
+		See the :ref:`section-Examples` section.
+
 .. index:: Sampling Functions; Slice within Gibbs
 
 Slice within Gibbs (SliceWG)
@@ -118,6 +124,8 @@ Stand-Alone Function
 	
 		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
+	.. _example-slicewg:
+	
 	**Example**
 
 		.. literalinclude:: slice.jl
@@ -140,3 +148,7 @@ MCMCSampler Constructor
 	**Value**
 	
 		Returns an ``MCMCSampler`` type object.
+
+	**Example**
+	
+		See the :ref:`section-Examples` section.

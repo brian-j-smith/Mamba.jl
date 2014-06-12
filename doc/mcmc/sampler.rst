@@ -43,6 +43,10 @@ Constructor
 	
 		Returns an ``MCMCSampler`` type object.
 
+	**Example**
+	
+		See the :ref:`section-Line-Specification` section of the tutorial.
+
 Methods
 ^^^^^^^
 

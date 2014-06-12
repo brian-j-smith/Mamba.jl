@@ -23,6 +23,8 @@ Stand-Alone Function
 	**Value**
 	
 		Returns ``v`` updated with simulated values and associated tuning parameters.
+		
+	.. _example-amm:
 	
 	**Example**
 	
@@ -104,3 +106,7 @@ MCMCSampler Constructor
 	**Value**
 	
 		Returns an ``MCMCSampler`` type object.
+
+	**Example**
+	
+		See the :ref:`section-Examples` section.

@@ -44,6 +44,10 @@ Constructor
 	
 		Returns an ``MCMCModel`` type object.
 
+	**Example**
+	
+		See the :ref:`section-Line-Specification` section of the tutorial.
+
 Methods
 ^^^^^^^
 
@@ -108,7 +112,11 @@ Methods
 	**Value**
 	
 		A character string represenation of the graph in DOT format.
+
+	**Example**
 	
+		See the :ref:`section-Line-DAG` section of the tutorial.
+		
 .. function:: keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
 
 	Return the symbols of nodes of a specified type.
@@ -170,6 +178,10 @@ Methods
 	**Value**
 	
 		An ``MCMCChains`` type object of simulated draws.
+
+	**Example**
+	
+		See the :ref:`section-Line-Simulation` section of the tutorial.
 		
 .. function:: relist(m::MCMCModel, values::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
@@ -222,6 +234,10 @@ Methods
 	
 		Returns the model with stochastic nodes initialized and the ``iter`` field set equal to 0.
 
+	**Example**
+	
+		See the :ref:`section-Line-Development` section of the tutorial.
+
 .. function:: setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
 
 	Set the values of input model nodes.
@@ -235,6 +251,10 @@ Methods
 	
 		Returns the model with values assigned to input nodes.
 
+	**Example**
+	
+		See the :ref:`section-Line-Development` section of the tutorial.
+
 .. function:: setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
 
 	Set the block-samplers for stochastic model nodes.
@@ -247,6 +267,10 @@ Methods
 	**Values:**
 	
 		Returns the model updated with the block-samplers.
+
+	**Example**
+	
+		See the :ref:`section-Line-Specification` and :ref:`section-Line-Simulation` sections of the tutorial.
 
 .. function:: show(m::MCMCModel)
 
@@ -268,6 +292,10 @@ Methods
 	**Value**
 	
 		Returns the model updated with the MCMC draw and, in the case of ``block=0``, the ``iter`` field incremented by 1.
+
+	**Example**
+	
+		See the :ref:`section-Line-Development` section of the tutorial.
 
 .. function:: tune(m::MCMCModel, block::Integer=0)
 
