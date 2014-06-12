@@ -3,7 +3,7 @@
 Missing Values Sampler (MISS)
 -----------------------------
 
-A sampler to simulate missing output values.
+A sampler to simulate missing output values from their likelihood distributions.
 
 MCMCSampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -22,4 +22,4 @@ MCMCSampler Constructor
 		
 	**Example**
 	
-		Use of the ``MISS`` constructor can be seen in the :ref:`Bones <example-Bones>`, :ref:`Mice <example-Mice>`, and :ref:`Kidney <example-Kidney>` examples.
+		See the :ref:`Bones <example-Bones>`, :ref:`Mice <example-Mice>`, and :ref:`Kidney <example-Kidney>` examples.

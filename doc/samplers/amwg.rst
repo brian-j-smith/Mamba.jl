@@ -26,6 +26,8 @@ Stand-Alone Function
 	
 		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
+	.. _example-amwg:
+	
 	**Example**
 
 		.. literalinclude:: amwg.jl
@@ -107,3 +109,7 @@ MCMCSampler Constructor
 	**Value**
 	
 		Returns an ``MCMCSampler`` type object.
+
+	**Example**
+	
+		See the :ref:`section-Examples` section.

@@ -8,6 +8,9 @@ Tutorial
 
 The complete source code for the examples containing in this tutorial can be obtained :download:`here <tutorial/line.jl>`.
 
+
+.. _section-Line-Model:
+
 Bayesian Linear Regression Model
 --------------------------------
 
@@ -47,6 +50,8 @@ where :math:`\bm{\beta} = (\beta_0, \beta_1)^\top`, and :math:`\bm{X}` is a desi
 
 A common alternative is to make approximate inference based on parameter values simulated from the posterior with MCMC methods.
 
+
+.. _section-Line-Specification:
 
 Model Specification
 -------------------
@@ -97,7 +102,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	)
 	
-A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/release-0.2/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 Stochastic expressions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distribution specifications for the ``beta`` node are shown below.
 
@@ -123,7 +128,7 @@ Stochastic expressions must return a single distribution object that can accommo
 	  :(Distribution[Normal(0, sqrt(1000)) for i in 1:2])
 	)
 
-Case 1 is one of the `multivariate normal distributions <http://distributionsjl.readthedocs.org/en/latest/multivariate.html#multivariate-normal-distribution>`_ available in the `Distributions` package, and the specification used in the example model implementation.  In Case 2, a single `univariate normal distribution <http://distributionsjl.readthedocs.org/en/latest/univariate.html#normal>`_ is specified to imply independent priors of the same type for all elements of ``beta``.  Cases 3 and 4 explicitly specify a univariate prior for each element of ``beta`` and allow for the possibility of differences among the priors.  Both return `arrays <http://docs.julialang.org/en/release-0.2/manual/arrays/>`_ of Distribution objects, with the last case automating the specification of array elements.
+Case 1 is one of the `multivariate normal distributions <http://distributionsjl.readthedocs.org/en/latest/multivariate.html#multivariate-normal-distribution>`_ available in the `Distributions` package, and the specification used in the example model implementation.  In Case 2, a single `univariate normal distribution <http://distributionsjl.readthedocs.org/en/latest/univariate.html#normal>`_ is specified to imply independent priors of the same type for all elements of ``beta``.  Cases 3 and 4 explicitly specify a univariate prior for each element of ``beta`` and allow for the possibility of differences among the priors.  Both return `arrays <http://docs.julialang.org/en/latest/manual/arrays/>`_ of Distribution objects, with the last case automating the specification of array elements.
 
 In summary, ``y`` and ``beta`` are stochastic vectors, ``s2`` is a stochastic scalar, and ``mu`` is a logical vector.  We note that the model could have been implemented without ``mu``.  It is included here primarily to illustrate use of a logical node.  Finally, note that nodes ``y`` and ``mu`` are not being monitored.
 	
@@ -206,7 +211,7 @@ The Model Expression Macro
 
 .. function:: @modelexpr(args...)
 
-	A macro to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``MCMCLogical``, and ``MCMCSampler`` constructors. 
+	A `macro <http://julia.readthedocs.org/en/latest/manual/metaprogramming/#macros>`_ to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``MCMCLogical``, and ``MCMCSampler`` constructors. 
 
 	**Arguments**
 	
@@ -245,6 +250,8 @@ The Model Expression Macro
 			)
 	
 
+.. _section-Line-DAG:
+
 Directed Acyclic Graphs
 -----------------------
 
@@ -281,6 +288,8 @@ Either the printed or saved output can be passed to Graphviz to plot a visual re
 
 Stochastic, logical, and input nodes are represented by ellipses, diamonds, and rectangles, respectively.  Gray-colored nodes are ones designated as unmonitored in MCMC simulations.  The DAG not only allows the user to visually check that the model specification is the intended one, but is also used internally to check that nodal relationships are acyclic.
 
+
+.. _section-Line-Simulation:
 
 MCMC Simulation
 ---------------
@@ -335,6 +344,8 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
 
 Results are retuned as ``MCMCChains`` objects on which methods for posterior inference are defined.
 
+
+.. _section-Line-Inference:
 
 Posterior Inference
 -------------------
@@ -464,6 +475,8 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	 "beta[2]"  -0.128758  0.598377   0.800894  0.976567  1.55979 
 
 
+.. _section-Line-Performance:
+
 Computational Performance
 -------------------------
 
@@ -480,6 +493,8 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 	+--------------+--------------+--------+-------+--------------+--------------+
 
 	
+.. _section-Line-Development:
+
 Development and Testing
 -----------------------
 

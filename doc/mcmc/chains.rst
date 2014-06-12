@@ -53,6 +53,10 @@ Constructors
 	
 		Returns an ``MCMCChains`` type object.
 
+	**Example**
+	
+		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, :ref:`Slice <example-slice>`, and :ref:`SliceWG <example-slicewg>` examples.
+	
 Methods
 ^^^^^^^
 
@@ -82,6 +86,10 @@ Methods
 			end
 
 		with model parameters indexed by the first dimension of ``value``, lag-autocorrelations by the second, and chains by the third.
+		
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
 
 .. function:: cor(c::MCMCChains)
 
@@ -94,6 +102,10 @@ Methods
 	**Value**
 	
 		A ``ChainSummary`` type object with the first and second dimensions of the ``value`` field indexing the model parameters between which correlations.  Results are for all chains combined.
+
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
 
 .. function:: describe(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975], \
                 etype=:bm, args...)
@@ -111,6 +123,10 @@ Methods
 	
 		A tuple of results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)``, respectively.  Results are for all chains combined.
 
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
+
 .. function:: dic(c::MCMCChains)
 
 	Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
@@ -122,6 +138,10 @@ Methods
 	**Value**
 	
 		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
+
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
 
 .. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, \
 			    filename::String="chainplot."string(fmt), \
@@ -164,6 +184,10 @@ Methods
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
 
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
+
 .. function:: getindex(c::MCMCChains, inds...)
 
 	Subset MCMC sampler output.  The syntax ``c[i, j, k]`` is converted to ``getindex(c, i, j, k)``.
@@ -177,6 +201,10 @@ Methods
 	
 		Returns an ``MCMCChains`` object with the subsetted sampler output.
 		
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
+
 .. function:: gewekediag(c::MCMCChains; first::Real=0.1, last::Real=0.5, \
                 etype=:imse, args...)
 	
@@ -206,6 +234,10 @@ Methods
 	**Value**
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and lower and upper intervals in the first and second columns.  Results are for all chains combined.
+
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
 
 .. function:: mcse(x::Vector{T<:Real}, method::Symbol=:imse; args...)
 
@@ -237,7 +269,8 @@ Methods
 			* ``:mean`` : running mean plots.
 			* ``:summary`` : trace and density plots.
 			* ``:trace`` : trace plots.
-		* ``args...`` : additional arguments to be passed to the ``ptype`` method.
+		* ``args...`` : additional arguments to be passed to the ``ptype`` method.  In addition to the option described above for ``:autocor``, the following global one is also available:
+			* ``legend::Bool`` : whether to include legends in the plots to identify chain-specific results (default: ``false``).
 		
 	**Value**
 	
@@ -270,6 +303,9 @@ Methods
 	
 		Returns an ``MCMCChains`` object with the sampler output stored in the specified indices.
 
+	**Example**
+	
+		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, :ref:`Slice <example-slice>`, and :ref:`SliceWG <example-slicewg>` examples.
 		
 .. function:: summarystats(c::MCMCChains; etype=:bm, args...)
 
