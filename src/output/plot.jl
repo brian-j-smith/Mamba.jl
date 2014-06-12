@@ -30,7 +30,7 @@ function densityplot(c::MCMCChains; legend::Bool=false,
   pos = legend ? :right : :none
   for i in 1:nvars
     qs = [quantile(c.value[:,i,j],[trim[1],trim[2]]) for j in 1:nchains]
-    val = [c.value[ .qs[j][1] .<= c.value[:,i,j] .<= qs[j][2],i,j] 
+    val = [c.value[ qs[j][1] .<= c.value[:,i,j] .<= qs[j][2],i,j] 
             for j in 1:nchains]
     plots[i] = plot(x=[val...], Geom.density,
                     color=repeat([1:nchains], inner=[length(c.range)]),
