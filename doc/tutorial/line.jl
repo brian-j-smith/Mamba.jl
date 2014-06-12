@@ -155,6 +155,19 @@ dic(sim1) |> display
 describe(sim1[1000:5000, ["beta[1]", "beta[2]"], :])
 
 
+## Plotting
+
+## Default plot is a summary plot (includes trace plots and density plots)
+p = plot(sim1)
+
+## Write plot to file
+draw(p, filename="summaryplot.svg")
+
+
+p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
+draw(p, ncol=2, nrow=3, filename="autocormeanplot.svg")
+
+
 ## Development and Testing
 
 setinputs!(model, line)             # Set input node values
