@@ -269,11 +269,11 @@ Methods
 		* ``c`` : sampler output to plot.
 		* ``ptype`` : plot type.  Options are
 			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=100`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
-			* ``:density`` : density plots.  Optional argument ``trim::(Real,Real)=(.01,.99)`` trims off lower and upper quantiles of density.
+			* ``:density`` : density plots.  Optional argument ``trim::(Real,Real)=(.025,.975)`` trims off lower and upper quantiles of density.
 			* ``:mean`` : running mean plots.
 			* ``:summary`` : trace and density plots.
 			* ``:trace`` : trace plots.
-		* ``args...`` : additional arguments to be passed to the ``ptype`` method.  In addition to the options described above, the following global one is also available:
+		* ``args...`` : additional arguments to be passed to the ``ptype`` method.  In addition to the options described above, the following global one is available:
 			* ``legend::Bool`` : whether to include legends in the plots to identify chain-specific results (default: ``false``).
 			
 	**Value**

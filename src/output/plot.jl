@@ -24,7 +24,7 @@ function traceplot(c::MCMCChains; legend::Bool=false)
 end
 
 function densityplot(c::MCMCChains; legend::Bool=false, 
-                                    trim::(Real,Real)=(0.01,0.99))
+                                    trim::(Real,Real)=(0.025,0.975))
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
