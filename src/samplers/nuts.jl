@@ -70,7 +70,7 @@ function nutsfx{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
            dtype::Symbol)
   logf = logpdf(m, x, block, true)
   grad = isfinite(logf) ?
-           gradient(m, x, block, true, dtype=dtype) :
+           gradlogpdf(m, x, block, true, dtype=dtype) :
            zeros(length(x))
   logf, grad
 end
@@ -79,7 +79,7 @@ function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
            dtype::Symbol)
   logf = logpdf!(m, x, block, true)
   grad = isfinite(logf) ?
-           gradient!(m, x, block, true, dtype=dtype) :
+           gradlogpdf!(m, x, block, true, dtype=dtype) :
            zeros(length(x))
   logf, grad
 end

@@ -64,14 +64,14 @@ Methods
 	
 		The specified node.
 	
-.. function:: gradient(m::MCMCModel, block::Integer=0, transform::Bool=false; \
+.. function:: gradlogpdf(m::MCMCModel, block::Integer=0, transform::Bool=false; \
 				dtype::Symbol=:forward)
-              gradient(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+              gradlogpdf(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false; dtype::Symbol=:forward)
-			  gradient!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+			  gradlogpdf!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false; dtype::Symbol=:forward)
 			
-	Compute the gradient for stochastic nodes.
+	Compute the gradient of log-densities for stochastic nodes.
 	
 	**Arguments**
 	
@@ -85,7 +85,7 @@ Methods
 		
 	**Value**
 	
-		The resulting gradient vector.  Method ``gradient!()`` additionally updates model ``m`` with supplied values ``x``.
+		The resulting gradient vector.  Method ``gradlogpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 
 .. function:: graph(m::MCMCModel)
 
