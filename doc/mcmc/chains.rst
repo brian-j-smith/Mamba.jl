@@ -169,6 +169,10 @@ Methods
 	
 		Draws plots to file
 
+	**Example**
+	
+		See the :ref:`section-Line-Plotting` section of the tutorial.
+
 .. function:: gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
 	
@@ -275,6 +279,10 @@ Methods
 	**Value**
 	
 		An array of plots that can be saved to a file with :func:`draw`.
+
+	**Example**
+	
+		See the :ref:`section-Line-Plotting` section of the tutorial.
 
 .. function:: quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
