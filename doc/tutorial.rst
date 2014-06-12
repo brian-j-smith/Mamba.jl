@@ -464,6 +464,43 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	 "beta[2]"  -0.128758  0.598377   0.800894  0.976567  1.55979 
 
 
+Plotting
+^^^^^^^^^^^^^^^^^
+
+Summary plots can be created using the ``plot`` function and written to file using the ``draw`` function. 
+
+.. code-block:: julia
+
+	## Default plot is a summary plot (includes trace plots and density plots)
+  p = plot(sim1)
+
+  ## Write plot to file
+  draw(p)
+
+
+.. figure:: tutorial/summaryplot.svg
+	:align: center
+	
+	Trace and density plots.
+
+.. code-block:: julia
+
+	## Can also make autocorrelation plots and running mean plots
+  ## Arrays of plots can be created and passed to the draw function
+  ## To add legend use optional argument ``legend::Bool=true``
+  p = [plot(sim1,:autocor) plot(sim1,:mean, legend=true)] 
+
+  ## Write plot to file
+  ## Use byrow to control how the matrix of plots is filled
+  ## use ncol and nrow to determine how many columns and rows of plots there will be
+  draw(p, byrow=false, ncol=2, nrow=3)
+
+.. figure:: tutorial/autocormeanplot.svg
+	:align: center
+	
+	Autocorrelation and running mean plots.
+
+
 Computational Performance
 -------------------------
 
