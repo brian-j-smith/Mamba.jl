@@ -23,14 +23,15 @@ function traceplot(c::MCMCChains; legend::Bool=false)
   return plots
 end
 
-function densityplot{T<:Real}(c::MCMCChains; legend::Bool=false, trim::Array{T}=[0.1,0.9])
+function densityplot(c::MCMCChains; legend::Bool=false, 
+                                    trim::(Real,Real)=(0.01,0.99))
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
-    qs = [quantile(c.value[:,i,j],trim) for j in 1:nchains]
-    val = [c.value[ .>(c.value[:,i,j],qs[j][1]) & 
-                    .<(c.value[:,i,j],qs[j][2]),i,j] for j in 1:nchains]
+    qs = [quantile(c.value[:,i,j],[trim[1],trim[2]]) for j in 1:nchains]
+    val = [c.value[ .qs[j][1] .<= c.value[:,i,j] .<= qs[j][2],i,j] 
+            for j in 1:nchains]
     plots[i] = plot(x=[val...], Geom.density,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
