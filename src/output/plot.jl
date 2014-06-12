@@ -1,5 +1,5 @@
 function plot(c::MCMCChains, ptype::Symbol=:summary; args...)
-  ptype == :summary ? [traceplot(c; args...) densityplot(c; args...)].' :
+  ptype == :summary ? [traceplot(c) densityplot(c; args...)].' :
   ptype == :trace   ? traceplot(c; args...) :
   ptype == :density ? densityplot(c; args...) :
   ptype == :autocor ? autocorplot(c; args...) :
