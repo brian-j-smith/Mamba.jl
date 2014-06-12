@@ -271,7 +271,7 @@ Methods
 			* ``:trace`` : trace plots.
 		* ``args...`` : additional arguments to be passed to the ``ptype`` method.  In addition to the option described above for ``:autocor``, the following global one is also available:
 			* ``legend::Bool`` : whether to include legends in the plots to identify chain-specific results (default: ``false``).
-		
+			
 	**Value**
 	
 		An array of plots that can be saved to a file with :func:`draw`.
