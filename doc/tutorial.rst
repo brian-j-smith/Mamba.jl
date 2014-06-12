@@ -475,10 +475,12 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	 "beta[2]"  -0.128758  0.598377   0.800894  0.976567  1.55979 
 
 
-Plotting
-^^^^^^^^^^^^^^^^^
+.. _section-Line-Plotting:
 
-Summary plots can be created using the ``plot`` function and written to file using the ``draw`` function. 
+Plotting
+^^^^^^^^
+
+Summary plots can be created using the ``plot`` function and written to files using the ``draw`` function. 
 
 .. code-block:: julia
 
@@ -486,7 +488,7 @@ Summary plots can be created using the ``plot`` function and written to file usi
 	p = plot(sim1)
 
 	## Write plot to file
-	draw(p)
+	draw(p, filename="summaryplot.svg")
 
 
 .. figure:: tutorial/summaryplot.svg
@@ -494,17 +496,13 @@ Summary plots can be created using the ``plot`` function and written to file usi
 	
 	Trace and density plots.
 
+	
+The ``plot`` function can also be used to make autocorrelation and running means plots.  Legends can be added with the optional ``legend`` argument.  Arrays of plots can be created and passed to the ``draw`` function.  Use ``ncol`` and ``nrow`` to determine how many columns and rows of plots to include in each drawing.
+
 .. code-block:: julia
 
-	## Can also make autocorrelation plots and running mean plots
-	## Arrays of plots can be created and passed to the draw function
-	## To add legend use optional argument ``legend::Bool=true``
-	p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)]
-
-	## Write plot to file
-	## Use byrow to control how the matrix of plots is filled
-	## use ncol and nrow to determine how many columns and rows of plots there will be
-	draw(p, byrow=false, ncol=2, nrow=3)
+	p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
+	draw(p, ncol=2, nrow=3, filename="autocormeanplot.svg")
 
 .. figure:: tutorial/autocormeanplot.svg
 	:align: center
