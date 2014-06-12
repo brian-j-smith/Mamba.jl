@@ -233,7 +233,7 @@ Methods
 		* ``c`` : sampler output to plot.
 		* ``ptype`` : plot type.  Options are
 			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=100`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output. Optional argument ``legend::Bool=false`` determines whether a legend (i.e. key) is drawn.
-			* ``:density`` : density plots. Optional argument ``legend::Bool=false`` determines whether a legend (i.e. key) is drawn. Optional argument ``trim::Array{Real}=[.1,.9]`` trims off lower and
+			* ``:density`` : density plots. Optional argument ``legend::Bool=false`` determines whether a legend (i.e. key) is drawn. Optional argument ``trim::(Real,Real)=(.01,.99)`` trims off lower and
         upper quantiles of density. 
 			* ``:mean`` : running mean plots. Optional argument ``legend::Bool=false`` determines whether a legend (i.e. key) is drawn.
 			* ``:summary`` : trace and density plots. Optional argument ``legend::Bool=false`` determines whether a legend (i.e. key) is drawn.
