@@ -38,6 +38,8 @@ Stand-Alone Functions
 	
 		Returns ``v`` updated with simulated values and associated tuning parameters.
 	
+	.. _example-nuts:
+	
 	**Example**
 
 		.. literalinclude:: nuts.jl
@@ -121,3 +123,7 @@ MCMCSampler Constructor
 	**Value**
 	
 		Returns an ``MCMCSampler`` type object.
+
+	**Example**
+	
+		See the :ref:`section-Examples` section.
