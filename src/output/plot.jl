@@ -41,7 +41,9 @@ function densityplot(c::MCMCChains; legend::Bool=false,
   return plots
 end
 
-function autocorplot(c::MCMCChains; maxlag::Integer=100, legend::Bool=false)
+function autocorplot(c::MCMCChains;
+                     maxlag::Integer=int(10*log10(length(c.range))),
+                     legend::Bool=false)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
