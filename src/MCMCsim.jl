@@ -3,24 +3,21 @@ module MCMCsim
 using Distributions
 
 
-
-
 #################### Imports ####################
 
 import Base: Base, cor, dot
 import Base.LinAlg: Cholesky
 import Calculus: gradient
+import Compose: Canvas, canvas, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
 import Distributions: Continuous, Distribution, gradlogpdf, insupport, logpdf,
        logpdf!, minimum, maximum, PDiagMat, PDMat, quantile, rand, ScalMat,
        Truncated
+import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
+       render, Scale, SVG, Theme
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
        out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
 import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
        StatsBase, summarystats
-import Gadfly: Plot, plot, Layer, layer, Geom, Guide, Theme, Scale, render,
-       SVG, PNG, PS, PDF, draw
-import Compose: MeasureOrNumber, Canvas, canvas, gridstack, inch, mm, cm, px, pt
-
 
 
 #################### Variate Types ####################
@@ -131,8 +128,6 @@ include("utils.jl")
 
 include("variate/core.jl")
 include("variate/numeric.jl")
-
-
 
 
 #################### Exports ####################
