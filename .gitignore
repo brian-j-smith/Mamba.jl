@@ -1,4 +1,6 @@
-test/lineDAG.dot
+doc/_build/
+doc/make.bat
+test/*
+!test/*.jl
 tmp/
 usr/
-doc/_build/
