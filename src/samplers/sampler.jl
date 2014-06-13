@@ -20,8 +20,6 @@ function Base.showall(io::IO, s::MCMCSampler)
   show(io, s)
   print(io, "\nTuning Parameters:\n")
   show(io, s.tune)
-  print(io, "\n\nSource Nodes:\n")
-  show(io, s.sources)
   print(io, "\n\nTarget Nodes:\n")
   show(io, s.targets)
 end
