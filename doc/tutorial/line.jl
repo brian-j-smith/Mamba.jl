@@ -31,7 +31,7 @@ model = MCMCModel(
 
 ## Hybrid No-U-Turn and Slice Sampling Scheme
 scheme1 = [NUTS([:beta]),
-           Slice([:s2], [1.0])]
+           Slice([:s2], [3.0])]
 
 ## No-U-Turn Sampling Scheme
 scheme2 = [NUTS([:beta, :s2])]
@@ -157,13 +157,13 @@ describe(sim1[1000:5000, ["beta[1]", "beta[2]"], :])
 
 ## Plotting
 
-## Default plot is a summary plot (includes trace plots and density plots)
+## Default summary plot (trace and density plots)
 p = plot(sim1)
 
 ## Write plot to file
 draw(p, filename="summaryplot.svg")
 
-
+## Autocorrelation and running mean plots
 p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
 draw(p, ncol=2, nrow=3, filename="autocormeanplot.svg")
 

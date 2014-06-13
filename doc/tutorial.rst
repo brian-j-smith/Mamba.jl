@@ -142,7 +142,7 @@ The package provides a flexible system for the specification of schemes to sampl
 
 	## Hybrid No-U-Turn and Slice Sampling Scheme
 	scheme1 = [NUTS([:beta]),
-	           Slice([:s2], [1.0])]
+	           Slice([:s2], [3.0])]
 
 	## No-U-Turn Sampling Scheme
 	scheme2 = [NUTS([:beta, :s2])]
@@ -266,15 +266,15 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command-lin
 	>>> print(graph2dot(model))
 	
 	digraph MCMCModel {
+	  "mu" [shape="diamond", fillcolor="gray85", style="filled"];
+	    "mu" -> "y";
+	  "xmat" [shape="box", fillcolor="gray85", style="filled"];
+	    "xmat" -> "mu";
 	  "beta" [shape="ellipse"];
-	  	"beta" -> "mu";
-	  "mu" [fillcolor="gray85", shape="diamond", style="filled"];
-	  	"mu" -> "y";
-	  "xmat" [fillcolor="gray85", shape="box", style="filled"];
-	  	"xmat" -> "mu";
+	    "beta" -> "mu";
 	  "s2" [shape="ellipse"];
-	  	"s2" -> "y";
-	  "y" [fillcolor="gray85", shape="ellipse", style="filled"];
+	    "s2" -> "y";
+	  "y" [shape="ellipse", fillcolor="gray85", style="filled"];
 	}
 	
 	>>> graph2dot(model, "lineDAG.dot")
@@ -362,10 +362,10 @@ Checks of MCMC output should be performed to assess convergence of simulated dra
 
 	5x3 Array{Any,2}:
 	 ""               "PSRF"     "97.5%"
-	 "beta[1]"       1.02918    1.03171 
-	 "beta[2]"       1.03469    1.03662 
-	 "s2"            1.03887    1.08334 
-	 "Multivariate"  1.0306   NaN       
+	 "s2"            1.00221    1.00518
+	 "beta[1]"       1.00203    1.0047
+	 "beta[2]"       1.0019     1.0041
+	 "Multivariate"  1.00315  NaN
 
 Values of the diagnostic that are greater than 1.2 are evidence of non-convergence.  The smaller diagnostic values for the regression example suggest that its draws have converged.
  
@@ -387,66 +387,67 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
 
 	Empirical Posterior Estimates:
 	4x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
-	 "beta[1]"  0.62304   1.36139   0.0112573    0.0190558   8639.77  
-	 "beta[2]"  0.791204  0.415459  0.00343542   0.00536403  9366.67  
-	 "s2"       1.67718   3.03168   0.0250689    0.13544     2706.98  
+	 ""          "Mean"    "SD"     "Naive SE"   "MCSE"         "ESS"
+	 "s2"       1.16085   1.52343  0.0125972    0.0509304   3617.37
+	 "beta[1]"  0.584507  1.1447   0.0094655    0.0179161   7726.75
+	 "beta[2]"  0.802692  0.34592  0.00286041   0.00506991  8251.33
 
 	Quantiles:
-	 ""           "2.5%"     "25.0%"   "50.0%"   "75.0%"    "97.5%"
-	 "beta[1]"  -2.06987    0.017145  0.601943  1.22092    3.49299 
-	 "beta[2]"  -0.0672923  0.614058  0.801942  0.975351   1.59617 
-	 "s2"        0.169209   0.392506  0.70132   1.42582   11.4226  
+	4x6 Array{Any,2}:
+	 ""           "2.5%"     "25.0%"    "50.0%"   "75.0%"   "97.5%"
+	 "s2"        0.170299   0.38362    0.657429  1.26298   5.83319
+	 "beta[1]"  -1.74193    0.0146818  0.588057  1.17414   2.89209
+	 "beta[2]"   0.0984368  0.627392   0.802208  0.973418  1.52393
 
 	## Highest Posterior Density Intervals
 	>>> hpd(sim1)
 
 	4x3 Array{Any,2}:
 	 ""           "2.5%"     "97.5%"
-	 "beta[1]"  -2.22898    3.31416 
-	 "beta[2]"  -0.0470837  1.61191 
-	 "s2"        0.0533557  6.93751 
+	 "s2"        0.0901542  3.88632
+	 "beta[1]"  -1.65564    2.9748
+	 "beta[2]"   0.0707496  1.49122
 
 	## Cross-Correlations
 	>>> cor(sim1)
 	
 	4x4 Array{Any,2}:
-	 ""           "beta[1]"    "beta[2]"    "s2"    
-	 "beta[1]"   1.0         -0.903835     0.0541675
-	 "beta[2]"  -0.903835     1.0         -0.0669071
-	 "s2"        0.0541675   -0.0669071    1.0      
+	 ""           "s2"         "beta[1]"    "beta[2]"
+	 "s2"        1.0         -0.0190114    0.00548288
+	 "beta[1]"  -0.0190114    1.0         -0.908459
+	 "beta[2]"   0.00548288  -0.908459     1.0
 
 	## Lag-Autocorrelations
 	>>> autocor(sim1)
 
 	4x5x3 Array{Any,3}:
 	[:, :, 1] =
-	 ""          "Lag 2"    "Lag 10"   "Lag 20"   "Lag 100"
-	 "beta[1]"  0.29238   -0.0702434  0.040136   0.0621334 
-	 "beta[2]"  0.263146  -0.0901678  0.0505934  0.0678597 
-	 "s2"       0.992458   0.970461   0.949806   0.802721  
+	 ""          "Lag 2"   "Lag 10"     "Lag 20"    "Lag 100"
+	 "s2"       0.780239  0.446865     0.318042   -0.0418881
+	 "beta[1]"  0.300597  0.00553661  -0.0554599   0.00869974
+	 "beta[2]"  0.254651  0.0247564   -0.0635603   0.000803874
 
 	[:, :, 2] =
-	 ""          "Lag 2"    "Lag 10"   "Lag 20"    "Lag 100"
-	 "beta[1]"  0.362155  -0.0283355  0.0313453   0.0107155 
-	 "beta[2]"  0.325581  -0.0165301  0.0253301  -0.00992808
-	 "s2"       0.914888   0.709646   0.539679   -0.0272397 
+	 ""          "Lag 2"    "Lag 10"     "Lag 20"     "Lag 100"
+	 "s2"       0.820313   0.433955     0.224169     0.0017534
+	 "beta[1]"  0.326794  -0.0106691    0.0130236   -0.0334291
+	 "beta[2]"  0.278261   0.00209892  -0.00177215  -0.030299
 
 	[:, :, 3] =
-	 ""          "Lag 2"   "Lag 10"   "Lag 20"     "Lag 100"
-	 "beta[1]"  0.269976  0.0140151  0.000571365  0.0181566 
-	 "beta[2]"  0.218475  0.0200635  0.00861747   0.00400033
-	 "s2"       0.96878   0.90511    0.859906     0.525132  
+	 ""          "Lag 2"   "Lag 10"    "Lag 20"     "Lag 100"
+	 "s2"       0.777773  0.326898    0.103656    -0.0265332
+	 "beta[1]"  0.293802  0.0408244  -0.0107053   -0.0121016
+	 "beta[2]"  0.267306  0.0403602  -0.00715853  -0.012454
 
 	## Deviance Information Criterion
 	>>> dic(sim1)
 
 	3x3 Array{Any,2}:
 	 ""      "DIC"   "Effective Parameters"
-	 "pD"  13.6836  0.477079               
-	 "pV"  28.6347  7.95264                
+	 "pD"  14.0569  1.37158
+	 "pV"  22.2138  5.45
 
-	 
+
 Output Subsetting
 ^^^^^^^^^^^^^^^^^
 
@@ -465,14 +466,14 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	Empirical Posterior Estimates:
 	3x6 Array{Any,2}:
 	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
-	 "beta[1]"  0.668175  1.34189   0.0173194    0.0308641   3368.58  
-	 "beta[2]"  0.779001  0.402028  0.00518886   0.00882264  3530.55  
+	 "beta[1]"  0.600888  1.11773   0.0144262    0.029911    2895.28
+	 "beta[2]"  0.799814  0.337275  0.00435312   0.00828297  3154.88
 
 	Quantiles:
-	3x6 Array{Any,2}
+	3x6 Array{Any,2}:
 	 ""           "2.5%"    "25.0%"    "50.0%"   "75.0%"   "97.5%"
-	 "beta[1]"  -1.94608   0.0228286  0.601943  1.29243   3.74592 
-	 "beta[2]"  -0.128758  0.598377   0.800894  0.976567  1.55979 
+	 "beta[1]"  -1.65357   0.0248331  0.609293  1.19681   2.87551
+	 "beta[2]"   0.097539  0.626108   0.79722   0.970727  1.48108
 
 
 .. _section-Line-Plotting:
@@ -484,12 +485,11 @@ Summary plots can be created using the ``plot`` function and written to files us
 
 .. code-block:: julia
 
-	## Default plot is a summary plot (includes trace plots and density plots)
+	## Default summary plot (trace and density plots)
 	p = plot(sim1)
 
 	## Write plot to file
 	draw(p, filename="summaryplot.svg")
-
 
 .. figure:: tutorial/summaryplot.svg
 	:align: center
@@ -501,6 +501,7 @@ The ``plot`` function can also be used to make autocorrelation and running means
 
 .. code-block:: julia
 
+	## Autocorrelation and running mean plots
 	p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
 	draw(p, ncol=2, nrow=3, filename="autocormeanplot.svg")
 
