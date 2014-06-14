@@ -60,14 +60,14 @@ function graph2dot(m::MCMCModel)
       attr["style"] = "filled"
       attr["fillcolor"] = "gray85"
     end
-    str = str * string(
+    str *= string(
       "\t\"", v.key, "\" [",
       join(map(x -> "$(x[1])=\"$(x[2])\"", attr), ", "),
       "];\n"
     )
     for e in out_edges(v, g)
       t = target(e, g)
-      str = str * "\t\t\"$(v.key)\" -> \"$(t.key)\";\n"
+      str *= "\t\t\"$(v.key)\" -> \"$(t.key)\";\n"
      end
   end
   str * "}\n"
