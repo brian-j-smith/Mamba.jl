@@ -51,6 +51,23 @@ Constructor
 Methods
 ^^^^^^^
 
+.. function:: draw(m::MCMCModel; filename::String="")
+
+	Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
+	
+	**Arguments**
+	
+		* ``m`` : a model for which to construct a graph.
+		* ``filename`` : an external file to which to save the resulting graph, or an empty string to draw to standard output (default).
+	
+	**Value**
+	
+		The model drawn to an external file or standard output.
+
+	**Example**
+	
+		See the :ref:`section-Line-DAG` section of the tutorial.
+
 .. function:: getindex(m::MCMCModel, key::Symbol)
 
 	Returns a model node identified by its symbol.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
@@ -99,24 +116,6 @@ Methods
 	
 		Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
 
-.. function:: graph2dot(m::MCMCModel)
-              graph2dot(m::MCMCModel, filename::String)
-
-	Construct a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
-	
-	**Arguments**
-	
-		* ``m`` : a model for which to construct a graph.
-		* ``filename`` : an external file to which to save the resulting graph.
-	
-	**Value**
-	
-		A character string represenation of the graph in DOT format.
-
-	**Example**
-	
-		See the :ref:`section-Line-DAG` section of the tutorial.
-		
 .. function:: keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
 
 	Return the symbols of nodes of a specified type.

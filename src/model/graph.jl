@@ -11,6 +11,20 @@ function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::MCMCModel)
   found
 end
 
+function draw(m::MCMCModel; filename::String="")
+  dot = graph2dot(m)
+  if length(filename) == 0
+    print(dot)
+  else
+    if search(filename, '.') == 0
+      filename = string(filename, ".dot")
+    end
+    f = open(filename, "w")
+    write(f, dot)
+    close(f)
+  end
+end
+
 function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::MCMCModel)
   values = Symbol[]
   for v in out_neighbors(v, g)
@@ -71,18 +85,6 @@ function graph2dot(m::MCMCModel)
      end
   end
   str * "}\n"
-end
-
-function graph2dot(m::MCMCModel, filename::String)
-  f = open(filename, "w")
-  write(f, graph2dot(m))
-  close(f)
-end
-
-function plot(m::MCMCModel)
-  stream, process = writesto(`dot -Tx11`)
-  write(stream, graph2dot(m))
-  close(stream)
 end
 
 function tsort{T}(g::AbstractGraph{KeyVertex{T}, Edge{KeyVertex{T}}})

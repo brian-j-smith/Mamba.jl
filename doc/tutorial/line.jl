@@ -94,8 +94,8 @@ setsamplers!(model, scheme1)
 
 
 ## Graph Representation of Nodes
-print(graph2dot(model))
-graph2dot(model, "lineDAG.dot")
+draw(model)
+draw(model, filename="lineDAG.dot")
 
 
 ## Data
@@ -165,7 +165,7 @@ draw(p, filename="summaryplot.svg")
 
 ## Autocorrelation and running mean plots
 p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
-draw(p, ncol=2, nrow=3, filename="autocormeanplot.svg")
+draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
 
 
 ## Development and Testing

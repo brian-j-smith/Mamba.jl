@@ -263,7 +263,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command-lin
 
 	## Graph Representation of Nodes
 
-	>>> print(graph2dot(model))
+	>>> draw(model)
 	
 	digraph MCMCModel {
 	  "mu" [shape="diamond", fillcolor="gray85", style="filled"];
@@ -277,7 +277,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command-lin
 	  "y" [shape="ellipse", fillcolor="gray85", style="filled"];
 	}
 	
-	>>> graph2dot(model, "lineDAG.dot")
+	>>> draw(model, filename="lineDAG.dot")
 
 Either the printed or saved output can be passed to Graphviz to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
 
@@ -497,13 +497,13 @@ Summary plots can be created using the ``plot`` function and written to files us
 	Trace and density plots.
 
 	
-The ``plot`` function can also be used to make autocorrelation and running means plots.  Legends can be added with the optional ``legend`` argument.  Arrays of plots can be created and passed to the ``draw`` function.  Use ``ncol`` and ``nrow`` to determine how many columns and rows of plots to include in each drawing.
+The ``plot`` function can also be used to make autocorrelation and running means plots.  Legends can be added with the optional ``legend`` argument.  Arrays of plots can be created and passed to the ``draw`` function.  Use ``nrow`` and  ``ncol`` to determine how many rows and columns of plots to include in each drawing.
 
 .. code-block:: julia
 
 	## Autocorrelation and running mean plots
 	p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
-	draw(p, ncol=2, nrow=3, filename="autocormeanplot.svg")
+	draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
 
 .. figure:: tutorial/autocormeanplot.svg
 	:align: center
