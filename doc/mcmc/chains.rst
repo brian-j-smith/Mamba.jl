@@ -143,22 +143,21 @@ Methods
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
-.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, \
-			    filename::String="chainplot."string(fmt), \
+.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \
 			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
 			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
 
-  Draw (write to a file) plots produced by :func:`plot`.  Plots are arranged in a matrix (default: 3x2).
+  Draw plots produced by :func:`plot`.  Plots are arranged in a matrix (default: 3x2).
 	
 	**Arguments**
 	
 		* ``p`` : array of plots to be drawn.
 		* ``fmt`` : plotting format. Options are
-			* ``:svg`` : Scalable Vector Graphics (.svg).
 			* ``:pdf`` : Portable Document Format (.pdf).
 			* ``:png`` : Portable Network Graphics (.png).
 			* ``:ps``  : Postscript (.ps).
-		* ``filename`` : produces output in a file with this name.
+			* ``:svg`` : Scalable Vector Graphics (.svg).
+		* ``filename`` : an external file to which to save plots, or an empty string to draw to the display device (default).
 		* ``width`` : plot width.
 		* ``height`` : plot height.
 		* ``nrow`` : number of rows in output matrix.
@@ -167,7 +166,7 @@ Methods
 		
 	**Value**
 	
-		Draws plots to file
+		Plots drawn to an external file or the display device.
 
 	**Example**
 	
@@ -278,7 +277,7 @@ Methods
 			
 	**Value**
 	
-		An array of plots that can be saved to a file with :func:`draw`.
+		An array of plots that can be saved to a file with ``draw()``.
 
 	**Example**
 	

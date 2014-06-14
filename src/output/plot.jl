@@ -77,13 +77,27 @@ function meanplot(c::MCMCChains; legend::Bool=false)
   return plots
 end
 
-function draw(p::Array{Plot}; fmt::Symbol=:svg,
-              filename::String="chainplot."string(fmt),
+function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
               width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch,
               nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
 
-  in(fmt, [:png, :svg, :pdf, :ps]) ||
-    error("$(fmt) is not a supported plot format")
+  in(fmt, [:pdf, :png, :ps, :svg]) ||
+    error("$(fmt) is not a supported draw format")
+
+  if length(filename) == 0
+    img = fmt == :pdf ? PDF(width, height) :
+          fmt == :png ? PNG(width, height) :
+          fmt == :ps  ? PS(width, height) :
+                        SVG(width, height)
+  else
+    if search(filename, '.') == 0
+      filename = string(filename, '.', fmt)
+    end
+    img = fmt == :pdf ? PDF(filename, width, height) :
+          fmt == :png ? PNG(filename, width, height) :
+          fmt == :ps  ? PS(filename, width, height) :
+                        SVG(filename, width, height)
+  end
 
   pp = nrow*ncol       ## plots per page
   ps = length(p)       ## number of plots
@@ -105,20 +119,8 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg,
       println("Press ENTER to draw next plot")
       readline(STDIN)
     end
-    if byrow
-      result = reshape(mat,ncol,nrow).'
-    else
-      result = reshape(mat,nrow,ncol)
-    end
-    if fmt == :png
-      draw(PNG(filename,width,height),gridstack(result))
-    elseif fmt == :svg
-      draw(SVG(filename,width,height),gridstack(result))
-    elseif fmt == :pdf
-      draw(PDF(filename,width,height),gridstack(result))
-    elseif fmt == :ps
-      draw(PS(filename,width,height),gridstack(result))
-    end
+    result = byrow ? reshape(mat, ncol, nrow).' : reshape(mat, nrow, ncol)
+    draw(img, gridstack(result))
   end
 
 end
