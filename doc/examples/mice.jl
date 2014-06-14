@@ -27,7 +27,9 @@ model = MCMCModel(
       Distribution[
         begin
           lambda = exp(-beta[i] / r)
-          Truncated(Weibull(r, lambda), tcensor[i,j], Inf)
+          0 < lambda < Inf ?
+            Truncated(Weibull(r, lambda), tcensor[i,j], Inf) :
+            Uniform(0, Inf)
         end
         for i in 1:M, j in 1:N
       ]

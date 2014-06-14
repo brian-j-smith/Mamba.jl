@@ -50,7 +50,9 @@ model = MCMCModel(
             mu = alpha + beta_age * age[i,j] + beta_sex * sex[i] + beta_dis[i] +
                  b[i]
             lambda = exp(-mu / r)
-            Truncated(Weibull(r, lambda), tcensor[i,j], Inf)
+            0 < lambda < Inf ?
+              Truncated(Weibull(r, lambda), tcensor[i,j], Inf) :
+              Uniform(0, Inf)
           end
           for i in 1:N, j in 1:M
         ]
