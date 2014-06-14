@@ -25,5 +25,4 @@ The following examples are taken from OpenBUGS :cite:`openbugs:2014:ex1`, and we
 	examples/bones.rst
 	examples/inhalers.rst
 	examples/mice.rst
-	examples/kidney.rst
 	examples/leuk.rst

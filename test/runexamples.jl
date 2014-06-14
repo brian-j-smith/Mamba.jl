@@ -8,7 +8,6 @@ examples = [
   "epil",
   "equiv",
   "inhalers",
-  "kidney",
   "leuk",
   "lsat",
   "magnesium",

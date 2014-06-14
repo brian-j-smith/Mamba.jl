@@ -22,4 +22,4 @@ MCMCSampler Constructor
 		
 	**Example**
 	
-		See the :ref:`Bones <example-Bones>`, :ref:`Mice <example-Mice>`, and :ref:`Kidney <example-Kidney>` examples.
+		See the :ref:`Bones <example-Bones>` and :ref:`Mice <example-Mice>` examples.
