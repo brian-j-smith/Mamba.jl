@@ -204,4 +204,11 @@ export
   SliceWG,
   SliceVariate
 
+export
+  cm,
+  inch,
+  mm,
+  pt,
+  px
+
 end
