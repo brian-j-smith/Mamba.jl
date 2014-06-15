@@ -281,7 +281,7 @@ The DAG representation of an ``MCMCModel`` can be printed out at the command-lin
 
 Either the printed or saved output can be passed to Graphviz to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
 
-.. figure:: tutorial/LineDAG.png
+.. figure:: tutorial/lineDAG.png
 	:align: center
 	
 	Directed acyclic graph representation of the example regression model nodes.
