@@ -84,19 +84,16 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
   in(fmt, [:pdf, :png, :ps, :svg]) ||
     error("$(fmt) is not a supported draw format")
 
+  f(args...) = fmt == :pdf ? PDF(args...) :
+               fmt == :png ? PNG(args...) :
+               fmt == :ps  ? PS(args...)  : SVG(args...)
   if length(filename) == 0
-    img = fmt == :pdf ? PDF(width, height) :
-          fmt == :png ? PNG(width, height) :
-          fmt == :ps  ? PS(width, height) :
-                        SVG(width, height)
+    img = f(width, height)
   else
     if search(filename, '.') == 0
       filename = string(filename, '.', fmt)
     end
-    img = fmt == :pdf ? PDF(filename, width, height) :
-          fmt == :png ? PNG(filename, width, height) :
-          fmt == :ps  ? PS(filename, width, height) :
-                        SVG(filename, width, height)
+    img = f(filename, width, height)
   end
 
   pp = nrow*ncol       ## plots per page
