@@ -58,7 +58,7 @@ Methods
 	**Arguments**
 	
 		* ``m`` : a model for which to construct a graph.
-		* ``filename`` : an external file to which to save the resulting graph, or an empty string to draw to standard output (default).
+		* ``filename`` : an external file to which to save the resulting graph, or an empty string to draw to standard output (default).  If a supplied external file name does not include a dot (``.``), the file extension ``.dot`` will be appended automatically.
 	
 	**Value**
 	

@@ -157,17 +157,19 @@ Methods
 			* ``:png`` : Portable Network Graphics (.png).
 			* ``:ps``  : Postscript (.ps).
 			* ``:svg`` : Scalable Vector Graphics (.svg).
-		* ``filename`` : an external file to which to save plots, or an empty string to draw to the display device (default).
-		* ``width`` : plot width.
-		* ``height`` : plot height.
-		* ``nrow`` : number of rows in output matrix.
-		* ``ncol`` : number of columns in output matrix.
+		* ``filename`` : an external file to which to save plots, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), the plotting format extension will be appended automatically.
+		* ``width/height`` : plot width/height in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
+		* ``nrow/ncol`` : number of rows/columns in output matrix.
 		* ``byrow`` : whether the matrix should be filled by row.
 		
 	**Value**
 	
 		Plots drawn to an external file or the display device.
 
+	**Note**
+	
+		The PDF, PNG, and PS formats are available only if the `Cairo <https://github.com/JuliaLang/Cairo.jl>`_ package is installed.
+	
 	**Example**
 	
 		See the :ref:`section-Line-Plotting` section of the tutorial.
