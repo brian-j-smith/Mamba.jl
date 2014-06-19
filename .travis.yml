@@ -13,6 +13,6 @@ before_install:
   - sudo apt-get update -qq -y
   - sudo apt-get install libpcre3-dev julia -y
 script:
-  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("MCMCsim"))`); Pkg.pin("MCMCsim"); Pkg.resolve()'
-  - julia -e 'using MCMCsim; @assert isdefined(:MCMCsim); @assert typeof(MCMCsim) === Module'
+  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("Mamba"))`); Pkg.pin("Mamba"); Pkg.resolve()'
+  - julia -e 'using Mamba; @assert isdefined(:Mamba); @assert typeof(Mamba) === Module'
   - julia ./test/runtests.jl

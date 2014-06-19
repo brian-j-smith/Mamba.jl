@@ -1,4 +1,4 @@
-The MCMCSim.jl package is licensed under the MIT License:
+The Mamba.jl package is licensed under the MIT License:
 
 > Copyright (c) 2014: Brian J Smith.
 >

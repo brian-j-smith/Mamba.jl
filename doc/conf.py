@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# MCMCsim.jl documentation build configuration file, created by
+# Mamba.jl documentation build configuration file, created by
 # sphinx-quickstart on Mon Mar 31 10:03:01 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'MCMCsim.jl'
+project = 'Mamba.jl'
 copyright = '2014, Brian J Smith'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -191,7 +191,7 @@ html_domain_indices = False
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'MCMCsimjldoc'
+htmlhelp_basename = 'Mambajldoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -211,7 +211,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'MCMCsimjl.tex', 'MCMCsim.jl Documentation',
+  ('index', 'Mambajl.tex', 'Mamba.jl Documentation',
    'Brian J Smith', 'manual'),
 ]
 
@@ -241,7 +241,7 @@ latex_domain_indices = False
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'mcmcsimjl', 'MCMCsim.jl Documentation',
+    ('index', 'mambajl', 'Mamba.jl Documentation',
      ['Brian J Smith'], 1)
 ]
 
@@ -255,8 +255,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'MCMCsimjl', 'MCMCsim.jl Documentation',
-   'Brian J Smith', 'MCMCsimjl', 'Markov chain Monte Carlo simulation toolkit for julia.',
+  ('index', 'Mambajl', 'Mamba.jl Documentation',
+   'Brian J Smith', 'Mambajl', 'Markov chain Monte Carlo simulation toolkit for julia.',
    'Miscellaneous'),
 ]
 

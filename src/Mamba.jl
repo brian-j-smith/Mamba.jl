@@ -1,4 +1,4 @@
-module MCMCsim
+module Mamba
 
 using Distributions
 

@@ -1,4 +1,4 @@
-using MCMCsim
+using Mamba
 using Distributions
 
 ## Data

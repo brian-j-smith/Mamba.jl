@@ -59,19 +59,19 @@ Model Specification
 Nodes
 ^^^^^
 
-In the `MCMCsim` package, terms that appear in the Bayesian model specification are referred to as *nodes*.  Nodes are classified as one of three types:
+In the `Mamba` package, terms that appear in the Bayesian model specification are referred to as *nodes*.  Nodes are classified as one of three types:
 
 	* **Stochastic nodes** are any model terms that have likelihood or prior distributional specifications.  In the regression example, :math:`\bm{y}`, :math:`\bm{\beta}`, and :math:`\sigma^2` are stochastic nodes.
 	* **Logical nodes** are terms, like :math:`\bm{\mu}`, that are deterministic functions of other nodes.
 	* **Input nodes** are any remaining model terms (:math:`\bm{X}`) and are considered to be fixed quantities in the analysis.
 
-Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `MCMCsim` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
+Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `Mamba` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
-For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being symbols.  The regression nodes will be named ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `MCMCsim`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Stochastic and logical nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
+For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being symbols.  The regression nodes will be named ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `Mamba`--supplied constructors ``MCMCStochastic`` and ``MCMCLogical``.  Stochastic and logical nodes for a model are defined with a call to the ``MCMCModel`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``MCMCLogical`` and ``MCMCStochastic`` nodes are passed.
 
 .. code-block:: julia
 
-	using MCMCsim
+	using Mamba
 	using Distributions
 
 	## Model Specification
@@ -255,7 +255,7 @@ The Model Expression Macro
 Directed Acyclic Graphs
 -----------------------
 
-One of the internal structures created by ``MCMCModel`` is a graph representation of the model nodes and their associations.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `MCMCsim` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
+One of the internal structures created by ``MCMCModel`` is a graph representation of the model nodes and their associations.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `Mamba` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
 
 The DAG representation of an ``MCMCModel`` can be printed out at the command-line or saved to an external file in a format that can be displayed with the `Graphviz <http://www.graphviz.org/>`_ software.
 
@@ -518,7 +518,7 @@ Computational Performance
 
 Computing runtimes were recorded for different sampling algorithms applied to the regression example.  Runs wer performed on a desktop computer with an Intel i5-2500 CPU @ 3.30GHz.  Results are summarized in the table below.  Note that these are only intended to measure the raw computing performance of the package, and do not account for different efficiencies in output generated by the sampling algorithms.
 
-.. table:: Number of draws per second for select sampling algorithms in `MCMCsim`.
+.. table:: Number of draws per second for select sampling algorithms in `Mamba`.
 
 	+--------------+--------------+--------+-------+--------------+--------------+
 	| Adaptive Metropolis         |        |       | Slice                       |

@@ -1,17 +1,17 @@
-MCMCsim: Markov chain Monte Carlo simulation toolkit for julia (version |release|)
-==================================================================================
+Mamba: Markov chain Monte Carlo toolkit for Bayesian analysis in julia (version |release|)
+==========================================================================================
 
 :Version: |release|
 :Date: |today|
 :Maintainer: Brian J Smith (brian-j-smith@uiowa.edu)
 :Contributors: Benjamin Deonovic (benjamin-deonovic@uiowa.edu), Brian J Smith (brian-j-smith@uiowa.edu)
-:Web site: https://github.com/brian-j-smith/MCMCsim.jl
+:Web site: https://github.com/brian-j-smith/Mamba.jl
 :License: MIT
 
 Purpose
 -------
 
-`MCMCsim` is a `julia <http://julialang.org/>`_ programming environment and toolset for the implementation and inference of Bayesian models using Markov chain Monte Carlo (MCMC) sampling.  The package provides a framework for (1) specification of hierarchical models through stated relationships between data, parameters, and statistical distributions; (2) block-updating of parameters with samplers provided, defined by the user, or available from other packages; (3) execution of MCMC sampling schemes, and (4) posterior inference.  It is designed to give users access to all levels of the design and implementation of MCMC simulators to particularly aid in the development of complex models.
+`Mamba` is a `julia <http://julialang.org/>`_ programming environment and toolset for the implementation and inference of Bayesian models using Markov chain Monte Carlo (MCMC) sampling.  The package provides a framework for (1) specification of hierarchical models through stated relationships between data, parameters, and statistical distributions; (2) block-updating of parameters with samplers provided, defined by the user, or available from other packages; (3) execution of MCMC sampling schemes, and (4) posterior inference.  It is designed to give users access to all levels of the design and implementation of MCMC simulators to particularly aid in the development of complex models.
 
 The package aims to provide:
 
