@@ -78,7 +78,7 @@ model = MCMCModel(
 
   a = MCMCLogical(1,
     @modelexpr(alpha,
-      alpha .- mean(alpha)
+      alpha - mean(alpha)
     )
   ),
 

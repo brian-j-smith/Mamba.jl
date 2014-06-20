@@ -34,7 +34,7 @@ stacks[:p] = size(stacks[:x], 2)
 stacks[:meanx] = map(j -> mean(stacks[:x][:,j]), 1:stacks[:p])
 stacks[:sdx] = map(j -> std(stacks[:x][:,j]), 1:stacks[:p])
 stacks[:z] = Float64[
-  (stacks[:x][i,j] .- stacks[:meanx][j]) / stacks[:sdx][j]
+  (stacks[:x][i,j] - stacks[:meanx][j]) / stacks[:sdx][j]
   for i in 1:stacks[:N], j in 1:stacks[:p]
 ]
 
@@ -64,7 +64,7 @@ model = MCMCModel(
 
   mu = MCMCLogical(1,
     @modelexpr(beta0, z, beta,
-      beta0 .+ z * beta
+      beta0 + z * beta
     ),
     false
   ),

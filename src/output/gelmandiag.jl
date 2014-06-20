@@ -32,12 +32,12 @@ function gelmandiag(c::MCMCChains; alpha::Real=0.05, mpsrf::Bool=false,
 
   R_fixed = (n - 1) / n
   R_random = ((m + 1) / (m * n)) * b ./ w
-  R_est = R_fixed .+ R_random
+  R_est = R_fixed + R_random
   q = 1.0 - alpha / 2.0
-  R_upper = R_fixed .+ R_random .*
+  R_upper = R_fixed + R_random .*
             map(df2 -> quantile(FDist(B_df, df2), q), W_df)
 
-  correction = (df .+ 3.0) ./ (df .+ 1.0)
+  correction = (df + 3.0) ./ (df + 1.0)
   psrf = sqrt([correction .* R_est  correction .* R_upper])
   psrf_labels = ["PSRF", string(100 * q) * "%"]
   psrf_names = c.names

@@ -11,10 +11,10 @@ magnesium = (Symbol => Any)[
 
 magnesium[:rtx] = hcat([magnesium[:rt] for i in 1:6]...)'
 magnesium[:rcx] = hcat([magnesium[:rc] for i in 1:6]...)'
-magnesium[:s2] = 1 ./ (magnesium[:rt] .+ 0.5) +
-                 1 ./ (magnesium[:nt] .- magnesium[:rt] .+ 0.5) +
-                 1 ./ (magnesium[:rc] .+ 0.5) +
-                 1 ./ (magnesium[:nc] .- magnesium[:rc] .+ 0.5)
+magnesium[:s2] = 1 ./ (magnesium[:rt] + 0.5) +
+                 1 ./ (magnesium[:nt] - magnesium[:rt] + 0.5) +
+                 1 ./ (magnesium[:rc] + 0.5) +
+                 1 ./ (magnesium[:nc] - magnesium[:rc] + 0.5)
 magnesium[:s2_0] = 1 / mean(1 ./ magnesium[:s2])
 
 

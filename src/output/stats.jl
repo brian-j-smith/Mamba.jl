@@ -39,7 +39,7 @@ function dic(c::MCMCChains)
 
   relist!(m, x0)
 
-  ChainSummary([Dhat .+ 2.0 * p p], ["pD", "pV"],
+  ChainSummary([Dhat + 2.0 * p  p], ["pD", "pV"],
                ["DIC", "Effective Parameters"], header(c))
 end
 

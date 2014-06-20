@@ -19,7 +19,7 @@ equiv = (Symbol => Any)[
 equiv[:N] = size(equiv[:y], 1)
 equiv[:P] = size(equiv[:y], 2)
 
-equiv[:T] = [equiv[:group] 3 .- equiv[:group]]
+equiv[:T] = [equiv[:group] 3 - equiv[:group]]
 
 
 ## Model Specification
