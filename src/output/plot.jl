@@ -101,7 +101,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
   np = iceil(ps/pp)    ## number of pages
   ex = pp - (ps % pp)  ## number of blank plots
 
-  mat = Array(Canvas, pp)
+  mat = Array(Context, pp)
   for page in 1:np
     nrem = ps - (page-1)*pp
 
@@ -109,7 +109,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
       if j <= nrem
         mat[j] = render(p[(page-1)*pp+j])
       else
-        mat[j] = canvas() ## pad with blank plots
+        mat[j] = context() ## pad with blank plots
       end
     end
     if page > 1

@@ -8,7 +8,7 @@ using Distributions
 import Base: Base, cor, dot
 import Base.LinAlg: Cholesky
 import Calculus: gradient
-import Compose: Canvas, canvas, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
+import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
 import Distributions: Continuous, Distribution, gradlogpdf, insupport, logpdf,
        logpdf!, minimum, maximum, PDiagMat, PDMat, quantile, rand, ScalMat,
        Truncated
