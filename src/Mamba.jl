@@ -9,9 +9,11 @@ import Base: Base, cor, dot
 import Base.LinAlg: Cholesky
 import Calculus: gradient
 import Compose: Canvas, canvas, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
-import Distributions: Continuous, Distribution, gradlogpdf, insupport, logpdf,
-       logpdf!, minimum, maximum, PDiagMat, PDMat, quantile, rand, ScalMat,
-       Truncated
+import Distributions: Continuous, ContinuousUnivariateDistribution,
+       Distribution, Distributions, gradlogpdf, insupport, logpdf, logpdf!,
+       minimum, maximum, MatrixDistribution, MultivariateDistribution, PDiagMat,
+       PDMat, quantile, rand, ScalMat, Truncated, UnivariateDistribution,
+       ValueSupport
 import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
        render, Scale, SVG, Theme
 import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
