@@ -114,7 +114,7 @@ end
 
 function showf(io::IO, m::MCMCModel, f::Function)
   print(io, "Object of type \"$(summary(m))\"\n")
-  width = Base.tty_cols() - 1
+  width = Base.tty_size()[2] - 1
   for node in keys(m)
     print(io, string("-"^width, "\n", node, ":\n"))
     f(io, m[node])
