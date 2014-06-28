@@ -100,7 +100,7 @@ Type ``Logical`` inherits the fields and method functions from the ``Dependent``
 
 .. code-block:: julia
 
-	function(model::Model)
+	function(model::Mamba.Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
 
