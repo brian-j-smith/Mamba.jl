@@ -4,7 +4,7 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
            samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
   nodedict = (Symbol => Any)[]
   for (key, value) in nodes
-    isa(value, MCMCDependent) || error("nodes must be MCMCDependent types")
+    isa(value, Dependent) || error("nodes must be Dependent types")
     node = deepcopy(value)
     node.symbol = key
     nodedict[key] = node
@@ -36,7 +36,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   values = Symbol[]
   if ntype == :all
     for key in keys(m.nodes)
-      if isa(m[key], MCMCDependent)
+      if isa(m[key], Dependent)
         values = [values, key, m[key].sources]
       end
     end
@@ -51,7 +51,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
     values = unique(values)
   elseif ntype == :dependent
     for key in keys(m.nodes)
-      if isa(m[key], MCMCDependent)
+      if isa(m[key], Dependent)
         push!(values, key)
       end
     end
@@ -66,7 +66,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :monitor
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, MCMCDependent) && length(node.monitor) > 0
+      if isa(node, Dependent) && length(node.monitor) > 0
         push!(values, key)
       end
     end

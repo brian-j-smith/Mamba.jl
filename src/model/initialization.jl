@@ -33,8 +33,8 @@ end
 
 function setinputs!(m::Model, inputs::Dict{Symbol,Any})
   for key in keys(m, :input)
-    isa(inputs[key], MCMCDependent) &&
-      error("inputs must not be MCMCDependent types")
+    isa(inputs[key], Dependent) &&
+      error("inputs must not be Dependent types")
     m.nodes[key] = deepcopy(inputs[key])
   end
   m.hasinputs = true

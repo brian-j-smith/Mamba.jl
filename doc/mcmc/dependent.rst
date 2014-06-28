@@ -1,18 +1,18 @@
-.. index:: MCMCDependent
+.. index:: Dependent
 
-.. _section-MCMCDependent:
+.. _section-Dependent:
 
-MCMCDependent
+Dependent
 -------------
 
-``MCMCDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
+``Dependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
 
-Since parameter values in the ``MCMCDependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``MCMCDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``MCMCDependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
+Since parameter values in the ``Dependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``Dependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``Dependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
 
 Declaration
 ^^^^^^^^^^^
 
-``abstract MCMCDependent{T} <: Variate{T}``
+``abstract Dependent{T} <: Variate{T}``
 
 Fields
 ^^^^^^
@@ -22,14 +22,14 @@ Fields
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
-* ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Methods
 ^^^^^^^
 
-.. function:: invlink(d::MCMCDependent, x)
+.. function:: invlink(d::Dependent, x)
 
-	Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``MCMCDependent`` to implement different link transformations. 
+	Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
 	
 	**Arguments**
 	
@@ -40,9 +40,9 @@ Methods
 	
 		Returns the inverse-link-transformed version of ``x``.
 
-.. function:: link(d::MCMCDependent, x)
+.. function:: link(d::Dependent, x)
 
-	Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``MCMCDependent`` to implement different link transformations. 
+	Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
 	
 	**Arguments**
 	
@@ -53,9 +53,9 @@ Methods
 	
 		Returns the link-transformed version of ``x``.
 
-.. function:: logpdf(d::MCMCDependent, transform::Bool=false)
+.. function:: logpdf(d::Dependent, transform::Bool=false)
 
-	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``MCMCDependent`` that have distributional specifications.
+	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``Dependent`` that have distributional specifications.
 	
 	**Arguments**
 	
@@ -66,8 +66,8 @@ Methods
 	
 		The resulting numeric value of the log-density.
 
-.. function:: setmonitor!(d::MCMCDependent, monitor::Bool)
-              setmonitor!(d::MCMCDependent, monitor::Vector{Int})
+.. function:: setmonitor!(d::Dependent, monitor::Bool)
+              setmonitor!(d::Dependent, monitor::Vector{Int})
 
 	Specify node elements to be included in monitored MCMC sampler output.
 	
@@ -80,11 +80,11 @@ Methods
 	
 		Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
 
-.. function:: show(d::MCMCDependent)
+.. function:: show(d::Dependent)
 
 	Write a text representation of nodal values and attributes to the current output stream.  
 
-.. function:: showall(d::MCMCDependent)
+.. function:: showall(d::Dependent)
 
 	Write a verbose text representation of nodal values and attributes to the current output stream.  
 
@@ -96,7 +96,7 @@ Methods
 MCMCLogical
 -----------
 
-Type ``MCMCLogical`` inherits the fields and method functions from the ``MCMCDependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
+Type ``MCMCLogical`` inherits the fields and method functions from the ``Dependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -107,7 +107,7 @@ where ``model`` contains all model nodes.  The function can contain any valid **
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCLogical{T} <: MCMCDependent{T}``
+``type MCMCLogical{T} <: Dependent{T}``
 
 Fields
 ^^^^^^
@@ -117,7 +117,7 @@ Fields
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
-* ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructors
 ^^^^^^^^^^^^
@@ -178,7 +178,7 @@ Methods
 MCMCStochastic
 --------------
 
-Type ``MCMCStochastic`` inherits the fields and method functions from the ``MCMCDependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
+Type ``MCMCStochastic`` inherits the fields and method functions from the ``Dependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -189,7 +189,7 @@ where ``model`` contains all model nodes.  The function can contain any valid **
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCStochastic{T} <: MCMCDependent{T}``
+``type MCMCStochastic{T} <: Dependent{T}``
 
 Fields
 ^^^^^^
@@ -199,7 +199,7 @@ Fields
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
-* ``targets::Vector{Symbol}`` : symbols of ``MCMCDependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``distr::DistributionStruct`` : the distributional specification for the node.
 
 Aliases

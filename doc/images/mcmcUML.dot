@@ -10,7 +10,7 @@ graph MCMC {
 
 	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	MCMCDependent [label = "{MCMCDependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
+	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
 	MCMCLogical [label = "{MCMCLogical\{T\}}"]
 	
@@ -22,9 +22,9 @@ graph MCMC {
 	
 	MCMCChains [label = "{MCMCChains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ range : Range\{Int\}\l+ model : Model\l}"]
 
-	MCMCDependent -- Variate[len = 0.9, arrowhead = empty]
-	MCMCLogical -- MCMCDependent[arrowhead = empty]
-	MCMCStochastic -- MCMCDependent[arrowhead = empty]
+	Dependent -- Variate[len = 0.9, arrowhead = empty]
+	MCMCLogical -- Dependent[arrowhead = empty]
+	MCMCStochastic -- Dependent[arrowhead = empty]
 	MCMCSampler -- MCMCStochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
 	Model -- MCMCSampler[arrowtail = odiamond, headlabel = "0..*"]
 	Model -- MCMCLogical[arrowtail = odiamond, headlabel = "0..*"]

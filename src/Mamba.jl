@@ -40,11 +40,11 @@ typealias MatrixVariate MultiVariate{2}
 typealias DistributionStruct Union(Distribution, Array{Distribution})
 
 
-#################### MCMCDependent Types ####################
+#################### Dependent Types ####################
 
-abstract MCMCDependent{T} <: Variate{T}
+abstract Dependent{T} <: Variate{T}
 
-type MCMCLogical{T} <: MCMCDependent{T}
+type MCMCLogical{T} <: Dependent{T}
   value::T
   symbol::Symbol
   monitor::Vector{Int}
@@ -53,7 +53,7 @@ type MCMCLogical{T} <: MCMCDependent{T}
   targets::Vector{Symbol}
 end
 
-type MCMCStochastic{T} <: MCMCDependent{T}
+type MCMCStochastic{T} <: Dependent{T}
   value::T
   symbol::Symbol
   monitor::Vector{Int}

@@ -1,13 +1,13 @@
-#################### MCMCDependent Methods ####################
+#################### Dependent Methods ####################
 
-function Base.show(io::IO, d::MCMCDependent)
+function Base.show(io::IO, d::Dependent)
   msg = string(ifelse(length(d.monitor) > 0, "A ", "An un"),
                "monitored node of type \"", summary(d), "\"\n")
   print(io, msg)
   show(io, d.value)
 end
 
-function Base.showall(io::IO, d::MCMCDependent)
+function Base.showall(io::IO, d::Dependent)
   show(io, d)
   print(io, "\nFunction:\n")
   show(io, d.eval.code)
@@ -17,24 +17,24 @@ function Base.showall(io::IO, d::MCMCDependent)
   show(io, d.targets)
 end
 
-identity(d::MCMCDependent, x) = x
+identity(d::Dependent, x) = x
 
-invlink(d::MCMCDependent, x) = x
+invlink(d::Dependent, x) = x
 
-link(d::MCMCDependent, x) = x
+link(d::Dependent, x) = x
 
-logpdf(d::MCMCDependent, transform::Bool=false) = 0.0
+logpdf(d::Dependent, transform::Bool=false) = 0.0
 
-function names(d::MCMCDependent)
+function names(d::Dependent)
   names(d, d.symbol)
 end
 
-function setmonitor!(d::MCMCDependent, monitor::Bool)
+function setmonitor!(d::Dependent, monitor::Bool)
   value = monitor ? Int[0] : Int[]
   setmonitor!(d, value)
 end
 
-function setmonitor!(d::MCMCDependent, monitor::Vector{Int})
+function setmonitor!(d::Dependent, monitor::Vector{Int})
   values = monitor
   n = length(d)
   if n > 0 && length(monitor) > 0

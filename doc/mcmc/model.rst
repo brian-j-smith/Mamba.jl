@@ -5,7 +5,7 @@
 Model
 ---------
 
-The ``Model`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``MCMCDependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``MCMCSampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}.`
+The ``Model`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``Dependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``MCMCSampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}.`
 
 Declaration
 ^^^^^^^^^^^
@@ -16,7 +16,7 @@ Fields
 ^^^^^^
 
 * ``nodes::Dict{Symbol,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
-* ``dependents::Vector{Symbol}`` : symbols of all ``MCMCDependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``dependents::Vector{Symbol}`` : symbols of all ``Dependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``samplers::Vector{MCMCSampler}`` : sampling functions for updating blocks of stochastic nodes.
 * ``iter::Integer`` : current MCMC draw from the target distribution.
 * ``burnin::Integer`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
