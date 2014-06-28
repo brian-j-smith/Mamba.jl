@@ -17,7 +17,8 @@ function traceplot(c::MCMCChains; legend::Bool=false)
                     Geom.line,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel("Iteration"), Guide.ylabel("Value"),
+                    Guide.xlabel("Iteration", orientation=:horizontal),
+                    Guide.ylabel("Value", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
   end
   return plots
@@ -35,7 +36,8 @@ function densityplot(c::MCMCChains; legend::Bool=false,
     plots[i] = plot(x=[val...], Geom.density,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel("Value"), Guide.ylabel("Density"),
+                    Guide.xlabel("Value", orientation=:horizontal),
+                    Guide.ylabel("Density", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
   end
   return plots
@@ -55,7 +57,8 @@ function autocorplot(c::MCMCChains;
                     Geom.line,
                     color=repeat([1:nchains], inner=[maxlag]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel("Lag"), Guide.ylabel("Autocorrelation"),
+                    Guide.xlabel("Lag", orientation=:horizontal),
+                    Guide.ylabel("Autocorrelation", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
   end
   return plots
@@ -71,7 +74,8 @@ function meanplot(c::MCMCChains; legend::Bool=false)
                     Geom.line,
                     color=repeat([1:nchains], inner=[length(c.range)]),
                     Scale.discrete_color(), Guide.colorkey("Chain"),
-                    Guide.xlabel("Iteration"), Guide.ylabel("Mean"),
+                    Guide.xlabel("Iteration", orientation=:horizontal),
+                    Guide.ylabel("Mean", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
   end
   return plots
