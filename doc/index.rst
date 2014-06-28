@@ -1,5 +1,5 @@
-Mamba: Markov chain Monte Carlo toolkit for Bayesian analysis in julia (version |release|)
-==========================================================================================
+Mamba: Markov chain Monte Carlo for Bayesian analysis in julia (version |release|)
+==================================================================================
 
 :Version: |release|
 :Date: |today|
