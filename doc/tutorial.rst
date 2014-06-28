@@ -136,7 +136,7 @@ In summary, ``y`` and ``beta`` are stochastic vectors, ``s2`` is a stochastic sc
 Sampling Schemes
 ^^^^^^^^^^^^^^^^
 
-The package provides a flexible system for the specification of schemes to sample stochastic nodes.  Arbitrary blocking of nodes and designation of block-specific samplers is supported.  Furthermore, block-updating of nodes can be performed with samplers provided, defined by the user, or available from other packages.  Schemes are specified as vectors of ``MCMCSampler`` objects.  Constructors are provided for several popular sampling algorithms, including adaptive Metropolis, No-U-Turn (NUTS), and slice sampling.  Example schemes are shown below.  In the first one, NUTS is used for the sampling of ``beta`` and slice for ``s2``.  The two nodes are block together in the second scheme and sampled jointly with NUTS.
+The package provides a flexible system for the specification of schemes to sample stochastic nodes.  Arbitrary blocking of nodes and designation of block-specific samplers is supported.  Furthermore, block-updating of nodes can be performed with samplers provided, defined by the user, or available from other packages.  Schemes are specified as vectors of ``Sampler`` objects.  Constructors are provided for several popular sampling algorithms, including adaptive Metropolis, No-U-Turn (NUTS), and slice sampling.  Example schemes are shown below.  In the first one, NUTS is used for the sampling of ``beta`` and slice for ``s2``.  The two nodes are block together in the second scheme and sampled jointly with NUTS.
 
 .. code-block:: julia
 
@@ -147,7 +147,7 @@ The package provides a flexible system for the specification of schemes to sampl
 	## No-U-Turn Sampling Scheme
 	scheme2 = [NUTS([:beta, :s2])]
 
-Additionally, users are free to create their own samplers with the generic ``MCMCSampler`` constructor.  This is particularly useful in settings were full conditional distributions are of standard forms for some nodes and can be sampled from directly.  Such is the case for the full conditional of :math:`\bm{\beta}` which can be written as
+Additionally, users are free to create their own samplers with the generic ``Sampler`` constructor.  This is particularly useful in settings were full conditional distributions are of standard forms for some nodes and can be sampled from directly.  Such is the case for the full conditional of :math:`\bm{\beta}` which can be written as
 
 .. math::
   p(\bm{\beta} | \sigma^2, \bm{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\bm{\beta}) \\
@@ -166,7 +166,7 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
 
 	## User-Defined Samplers
 
-	Gibbs_beta = MCMCSampler([:beta],
+	Gibbs_beta = Sampler([:beta],
 	  quote
 	    beta = model[:beta]
 	    s2 = model[:s2]
@@ -180,7 +180,7 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
 	  end
 	)
 
-	Gibbs_s2 = MCMCSampler([:s2],
+	Gibbs_s2 = Sampler([:s2],
 	  quote
 	    beta = model[:beta]
 	    s2 = model[:s2]
@@ -211,7 +211,7 @@ The Model Expression Macro
 
 .. function:: @modelexpr(args...)
 
-	A `macro <http://julia.readthedocs.org/en/latest/manual/metaprogramming/#macros>`_ to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``Logical``, and ``MCMCSampler`` constructors. 
+	A `macro <http://julia.readthedocs.org/en/latest/manual/metaprogramming/#macros>`_ to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``Logical``, and ``Sampler`` constructors. 
 
 	**Arguments**
 	
@@ -223,11 +223,11 @@ The Model Expression Macro
 		
 	**Example**
 	
-		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``MCMCSampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
+		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``Sampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
 		
 		.. code-block:: julia
 		
-			Gibbs_beta = MCMCSampler([:beta],
+			Gibbs_beta = Sampler([:beta],
 			  @modelexpr(beta, s2, xmat, y,
 			    begin
 			      beta_mean = mean(beta.distr)
@@ -239,7 +239,7 @@ The Model Expression Macro
 			  )
 			)
 
-			Gibbs_s2 = MCMCSampler([:s2],
+			Gibbs_s2 = Sampler([:s2],
 			  @modelexpr(beta, s2, xmat, y,
 			    begin
 			      a = length(y) / 2.0 + s2.distr.shape

@@ -87,13 +87,13 @@ Fields
 * ``sigma::Vector{Float64}`` : updated values of the proposal standard deviations if ``adapt = true``, and the user-defined values otherwise.
 * ``target::Real`` : target acceptance rate for the adaptive algorithm.
 
-MCMCSampler Constructor
+Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: AMWG(params::Vector{Symbol}, sigma::Vector{T<:Real}; \
 				adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
 
-	Construct an ``MCMCSampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct an ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -108,7 +108,7 @@ MCMCSampler Constructor
 
 	**Value**
 	
-		Returns an ``MCMCSampler`` type object.
+		Returns an ``Sampler`` type object.
 
 	**Example**
 	

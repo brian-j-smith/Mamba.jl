@@ -31,14 +31,14 @@ function AMWGVariate(x::Vector{VariateType}, tune=nothing)
 end
 
 
-#################### MCMCSampler Constructor ####################
+#################### Sampler Constructor ####################
 
 function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
            adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
-  MCMCSampler(params,
+  Sampler(params,
     quote
       x = unlist(model, block, true)
       tunepar = tune(model, block)

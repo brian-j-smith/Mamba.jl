@@ -1,7 +1,7 @@
 #################### Missing Value Sampler ####################
 
 function MISS(params::Vector{Symbol})
-  MCMCSampler(params,
+  Sampler(params,
     quote
       value = (Symbol => Any)[]
       sampler = model.samplers[block]

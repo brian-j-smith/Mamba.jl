@@ -16,17 +16,17 @@ graph MCMC {
 	
 	Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
 
-	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\l+ targets : Vector\{Symbol\}\l}"]
+	Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\l+ targets : Vector\{Symbol\}\l}"]
 	
-	Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
+	Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
 	
 	MCMCChains [label = "{MCMCChains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ range : Range\{Int\}\l+ model : Model\l}"]
 
 	Dependent -- Variate[len = 0.9, arrowhead = empty]
 	Logical -- Dependent[arrowhead = empty]
 	Stochastic -- Dependent[arrowhead = empty]
-	MCMCSampler -- Stochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
-	Model -- MCMCSampler[arrowtail = odiamond, headlabel = "0..*"]
+	Sampler -- Stochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
+	Model -- Sampler[arrowtail = odiamond, headlabel = "0..*"]
 	Model -- Logical[arrowtail = odiamond, headlabel = "0..*"]
 	Model -- Stochastic[arrowtail = odiamond, headlabel = "0..*"]
 	MCMCChains -- Model[len = 1.2, arrowtail = odiamond, headlabel = "1"]

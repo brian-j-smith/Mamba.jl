@@ -104,13 +104,13 @@ Fields
 * ``t0::Float64`` : dual averaging parameter, fixed at :math:`t_0 = 10`.
 * ``target::Float64`` : target acceptance rate for the adaptive algorithm.
 
-MCMCSampler Constructor
+Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
 				target::Real=0.6)
 
-	Construct an ``MCMCSampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct an ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -122,7 +122,7 @@ MCMCSampler Constructor
 
 	**Value**
 	
-		Returns an ``MCMCSampler`` type object.
+		Returns an ``Sampler`` type object.
 
 	**Example**
 	

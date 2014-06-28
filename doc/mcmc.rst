@@ -3,14 +3,14 @@
 MCMC Types
 ==========
 
-The *MCMC* types and their relationships are depicted below with a Unified Modelling Language (UML) diagram.  In the diagram, types are represented with boxes that display their respective names in the top-most panels, and fields in the second panels.  By convention, plus signs denote fields that are publicly accessible, which is always the case for these structures in **julia**.  Hollow triangle arrows point to types that the originator extends.  Solid diamond arrows indicate that a number of instances of the type being pointed to are contained in the originator.  The undirected line between ``MCMCSampler`` and ``Stochastic`` represents a bi-directional association.  Numbers on the graph indicate that there is one (1), zero or more (0..*), or one or more (1..*) instances of a type at the corresponding end of a relationship.
+The *MCMC* types and their relationships are depicted below with a Unified Modelling Language (UML) diagram.  In the diagram, types are represented with boxes that display their respective names in the top-most panels, and fields in the second panels.  By convention, plus signs denote fields that are publicly accessible, which is always the case for these structures in **julia**.  Hollow triangle arrows point to types that the originator extends.  Solid diamond arrows indicate that a number of instances of the type being pointed to are contained in the originator.  The undirected line between ``Sampler`` and ``Stochastic`` represents a bi-directional association.  Numbers on the graph indicate that there is one (1), zero or more (0..*), or one or more (1..*) instances of a type at the corresponding end of a relationship.
 
 .. figure:: images/mcmcUML.png
 	:align: center
 
 	UML relational diagram of *MCMC* types and their fields.
 
-The relationships are as follows.  Type ``Model`` contains a dictionary field (``Dict{Symbol,Any}``) of model nodes and a field (``Vector{MCMCSampler}``) of one or more sampling functions.  Nodes can be one of three types:
+The relationships are as follows.  Type ``Model`` contains a dictionary field (``Dict{Symbol,Any}``) of model nodes and a field (``Vector{Sampler}``) of one or more sampling functions.  Nodes can be one of three types:
 
 	.. index:: Nodes; Stochastic
 	.. index:: Nodes; Logical

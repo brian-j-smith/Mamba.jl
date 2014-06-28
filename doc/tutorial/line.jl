@@ -38,7 +38,7 @@ scheme2 = [NUTS([:beta, :s2])]
 
 ## User-Defined Samplers
 
-Gibbs_beta = MCMCSampler([:beta],
+Gibbs_beta = Sampler([:beta],
   quote
     beta = model[:beta]
     s2 = model[:s2]
@@ -52,7 +52,7 @@ Gibbs_beta = MCMCSampler([:beta],
   end
 )
 
-Gibbs_beta = MCMCSampler([:beta],
+Gibbs_beta = Sampler([:beta],
   @modelexpr(beta, s2, xmat, y,
     begin
       beta_mean = mean(beta.distr)
@@ -64,7 +64,7 @@ Gibbs_beta = MCMCSampler([:beta],
   )
 )
 
-Gibbs_s2 = MCMCSampler([:s2],
+Gibbs_s2 = Sampler([:s2],
   quote
     beta = model[:beta]
     s2 = model[:s2]
@@ -76,7 +76,7 @@ Gibbs_s2 = MCMCSampler([:s2],
   end
 )
 
-Gibbs_s2 = MCMCSampler([:s2],
+Gibbs_s2 = Sampler([:s2],
   @modelexpr(beta, s2, xmat, y,
     begin
       a = length(y) / 2.0 + s2.distr.shape

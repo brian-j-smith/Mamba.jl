@@ -35,14 +35,14 @@ function AMMVariate(x::Vector{VariateType}, tune=nothing)
 end
 
 
-#################### MCMCSampler Constructor ####################
+#################### Sampler Constructor ####################
 
 function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
            adapt::Symbol=:all)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
-  MCMCSampler(params,
+  Sampler(params,
     quote
       x = unlist(model, block, true)
       tunepar = tune(model, block)

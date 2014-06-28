@@ -1,7 +1,7 @@
 #################### Model Constructor ####################
 
 function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
-           samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
+           samplers::Vector{Sampler}=Sampler[], nodes...)
   nodedict = (Symbol => Any)[]
   for (key, value) in nodes
     isa(value, Dependent) || error("nodes must be Dependent types")
@@ -9,8 +9,7 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.symbol = key
     nodedict[key] = node
   end
-  m = Model(nodedict, Symbol[], MCMCSampler[], iter, burnin, chain, false,
-            false)
+  m = Model(nodedict, Symbol[], Sampler[], iter, burnin, chain, false, false)
   g = graph(m)
   V = vertices(g)
   lookup = (Symbol => Integer)[]

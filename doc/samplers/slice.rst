@@ -78,13 +78,13 @@ Fields
 * ``width::Vector{Float64}`` : vector of initial widths defining hyperrectangles from which to simulate values.
 
 
-MCMCSampler Constructor
+Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: Slice(params::Vector{Symbol}, width::Vector{T<:Real}; \
                 transform::Bool=false)
 
-	Construct an ``MCMCSampler`` object for multivariate (shrinkage) slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct an ``Sampler`` object for multivariate (shrinkage) slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -94,7 +94,7 @@ MCMCSampler Constructor
 
 	**Value**
 	
-		Returns an ``MCMCSampler`` type object.
+		Returns an ``Sampler`` type object.
 
 	**Example**
 	
@@ -131,13 +131,13 @@ Stand-Alone Function
 		.. literalinclude:: slice.jl
 			:language: julia
 	
-MCMCSampler Constructor
+Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: SliceWG(params::Vector{Symbol}, width::Vector{T<:Real}; \
                 transform::Bool=false)
 
-	Construct an ``MCMCSampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct an ``Sampler`` object for univariate (shrinkage) slice-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -147,7 +147,7 @@ MCMCSampler Constructor
 
 	**Value**
 	
-		Returns an ``MCMCSampler`` type object.
+		Returns an ``Sampler`` type object.
 
 	**Example**
 	

@@ -21,11 +21,11 @@ end
 
 #################### Multivariate Slice Sampler ####################
 
-#################### MCMCSampler Constructor ####################
+#################### Sampler Constructor ####################
 
 function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T};
            transform::Bool=false)
-  MCMCSampler(params,
+  Sampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, tunepar["transform"])
@@ -73,7 +73,7 @@ end
 
 function SliceWG{T<:Real}(params::Vector{Symbol}, width::Vector{T};
            transform::Bool=false)
-  MCMCSampler(params,
+  Sampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, tunepar["transform"])

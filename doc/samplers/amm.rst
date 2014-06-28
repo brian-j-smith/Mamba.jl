@@ -86,13 +86,13 @@ Fields
 * ``SigmaF::Cholesky{Float64}`` : factorization of the non-adaptive covariance matrix.
 * ``SigmaLm::Matrix{Float64}`` : lower-triangular factorization of the adaptively tuned covariance matrix.
 
-MCMCSampler Constructor
+Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
 				adapt::Symbol=:all)
 
-	Construct an ``MCMCSampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct an ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -105,7 +105,7 @@ MCMCSampler Constructor
 
 	**Value**
 	
-		Returns an ``MCMCSampler`` type object.
+		Returns an ``Sampler`` type object.
 
 	**Example**
 	

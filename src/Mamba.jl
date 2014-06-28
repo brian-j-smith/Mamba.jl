@@ -64,9 +64,9 @@ type Stochastic{T} <: Dependent{T}
 end
 
 
-#################### MCMCSampler Type ####################
+#################### Sampler Type ####################
 
-type MCMCSampler
+type Sampler
   params::Vector{Symbol}
   eval::Function
   tune::Dict
@@ -79,7 +79,7 @@ end
 type Model
   nodes::Dict{Symbol,Any}
   dependents::Vector{Symbol}
-  samplers::Vector{MCMCSampler}
+  samplers::Vector{Sampler}
   iter::Integer
   burnin::Integer
   chain::Integer
@@ -155,6 +155,7 @@ export
 export
   Logical,
   Model,
+  Sampler,
   Stochastic
 
 export

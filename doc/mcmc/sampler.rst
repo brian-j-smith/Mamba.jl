@@ -1,22 +1,22 @@
-.. index:: MCMCSampler
+.. index:: Sampler
 
-.. _section-MCMCSampler:
+.. _section-Sampler:
 
-MCMCSampler
+Sampler
 -----------
 
-Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gibbs` is implemented as an ``MCMCSampler`` type object, whose fields are summarized herein.  The ``eval`` field is an anonymous function defined as
+Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gibbs` is implemented as an ``Sampler`` type object, whose fields are summarized herein.  The ``eval`` field is an anonymous function defined as
 
 .. code-block:: julia
 
-	function(model::Model, block::Integer)
+	function(model::Mamba.Model, block::Integer)
 
 where ``model`` contains all model nodes, and ``block`` is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function may return an updated sample for the nodes identified in its ``params`` field.  Such a return value can be a structure of the same type as the node if the block consists of only one node, or a dictionary of node structures with keys equal to the block node symbols if one or more.  Alternatively, a value of ``nothing`` may be returned.  Return values that are not ``nothing`` will be used to automatically update the node values and propagate them to dependent nodes.  No automatic updating will be done if ``nothing`` is returned.
 
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCSampler``
+``type Sampler``
 
 Fields
 ^^^^^^
@@ -29,9 +29,9 @@ Fields
 Constructor
 ^^^^^^^^^^^
 
-.. function:: MCMCSampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
+.. function:: Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
 
-	Construct an ``MCMCSampler`` object that defines a sampling function for a block of stochastic nodes.
+	Construct an ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
 	
 	**Arguments**
 	
@@ -41,7 +41,7 @@ Constructor
 		
 	**Value**
 	
-		Returns an ``MCMCSampler`` type object.
+		Returns an ``Sampler`` type object.
 
 	**Example**
 	
@@ -50,10 +50,10 @@ Constructor
 Methods
 ^^^^^^^
 
-.. function:: show(s::MCMCSampler)
+.. function:: show(s::Sampler)
 
     Write a text representation of the defined sampling function to the current output stream.
 
-.. function:: showall(s::MCMCSampler)
+.. function:: showall(s::Sampler)
 
     Write a verbose text representation of the defined sampling function to the current output stream.

@@ -41,7 +41,7 @@ function setinputs!(m::Model, inputs::Dict{Symbol,Any})
   m
 end
 
-function setsamplers!(m::Model, samplers::Vector{MCMCSampler})
+function setsamplers!(m::Model, samplers::Vector{Sampler})
   m.samplers = deepcopy(samplers)
   for i in 1:length(m.samplers)
     sampler = m.samplers[i]

@@ -43,10 +43,10 @@ function NUTSVariate(x::Vector{VariateType}, tune=nothing)
 end
 
 
-#################### MCMCSampler Constructor ####################
+#################### Sampler Constructor ####################
 
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
-  MCMCSampler(params,
+  Sampler(params,
     quote
       x = unlist(model, block, true)
       tunepar = tune(model, block)
