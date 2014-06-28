@@ -22,7 +22,7 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
   m.iter = 0
   for key in m.dependents
     node = m[key]
-    if isa(node, MCMCStochastic)
+    if isa(node, Stochastic)
       setinits!(node, m, inits[key])
     else
       setinits!(node, m)

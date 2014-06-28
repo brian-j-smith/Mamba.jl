@@ -23,7 +23,7 @@ blocker[:N] = length(blocker[:rt])
 
 model = Model(
 
-  rc = MCMCStochastic(1,
+  rc = Stochastic(1,
     @modelexpr(mu, nc, N,
       begin
         pc = invlogit(mu)
@@ -33,7 +33,7 @@ model = Model(
     false
   ),
 
-  rt = MCMCStochastic(1,
+  rt = Stochastic(1,
     @modelexpr(mu, delta, nt, N,
       begin
         pt = invlogit(mu + delta)
@@ -43,29 +43,29 @@ model = Model(
     false
   ),
 
-  mu = MCMCStochastic(1,
+  mu = Stochastic(1,
     :(Normal(0, 1000)),
     false
   ),
 
-  delta = MCMCStochastic(1,
+  delta = Stochastic(1,
     @modelexpr(d, s2,
       Normal(d, sqrt(s2))
     ),
     false
   ),
 
-  delta_new = MCMCStochastic(
+  delta_new = Stochastic(
     @modelexpr(d, s2,
       Normal(d, sqrt(s2))
     )
   ),
 
-  d = MCMCStochastic(
+  d = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

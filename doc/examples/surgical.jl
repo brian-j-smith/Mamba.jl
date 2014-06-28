@@ -13,7 +13,7 @@ surgical[:N] = length(surgical[:r])
 
 model = Model(
 
-  r = MCMCStochastic(1,
+  r = Stochastic(1,
     @modelexpr(n, p, N,
       Distribution[Binomial(n[i], p[i]) for i in 1:N]
     ),
@@ -26,14 +26,14 @@ model = Model(
     )
   ),
 
-  b = MCMCStochastic(1,
+  b = Stochastic(1,
     @modelexpr(mu, s2,
       Normal(mu, sqrt(s2))
     ),
     false
   ),
 
-  mu = MCMCStochastic(
+  mu = Stochastic(
     :(Normal(0, 1000))
   ),
 
@@ -43,7 +43,7 @@ model = Model(
     )
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

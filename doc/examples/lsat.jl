@@ -53,7 +53,7 @@ lsat[:r] = lsat[:response][idx,:]
 
 model = Model(
 
-  r = MCMCStochastic(2,
+  r = Stochastic(2,
     @modelexpr(beta, theta, alpha, N, T,
       Distribution[
         begin
@@ -66,12 +66,12 @@ model = Model(
     false
   ),
 
-  theta = MCMCStochastic(1,
+  theta = Stochastic(1,
     :(Normal(0, 1)),
     false
   ),
 
-  alpha = MCMCStochastic(1,
+  alpha = Stochastic(1,
     :(Normal(0, 100)),
     false
   ),
@@ -82,7 +82,7 @@ model = Model(
     )
   ),
 
-  beta = MCMCStochastic(
+  beta = Stochastic(
     :(Truncated(Flat(), 0, Inf))
   )
 

@@ -44,7 +44,7 @@ end
 
 model = Model(
 
-  response = MCMCStochastic(2,
+  response = Stochastic(2,
     @modelexpr(a1, a2, a3, mu, group, b, N, T,
       begin
         a = Float64[a1, a2, a3]
@@ -74,42 +74,42 @@ model = Model(
     false
   ),
 
-  b = MCMCStochastic(1,
+  b = Stochastic(1,
     @modelexpr(s2,
       Normal(0, sqrt(s2))
     ),
     false
   ),
 
-  a1 = MCMCStochastic(
+  a1 = Stochastic(
     @modelexpr(a2,
       Truncated(Flat(), -1000, a2)
     )
   ),
 
-  a2 = MCMCStochastic(
+  a2 = Stochastic(
     @modelexpr(a3,
       Truncated(Flat(), -1000, a3)
     )
   ),
 
-  a3 = MCMCStochastic(
+  a3 = Stochastic(
     :(Truncated(Flat(), -1000, 1000))
   ),
 
-  beta = MCMCStochastic(
+  beta = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  pi = MCMCStochastic(
+  pi = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  kappa = MCMCStochastic(
+  kappa = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

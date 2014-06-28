@@ -40,7 +40,7 @@ kidney[:Dx] = Int[
 
 model = Model(
 
-  t = MCMCStochastic(2,
+  t = Stochastic(2,
     @modelexpr(alpha, beta_age, age, beta_sex, sex, Dx, beta_Dx, b, r,
                tcensor, N, M,
       begin
@@ -61,34 +61,34 @@ model = Model(
     false
   ),
 
-  b = MCMCStochastic(1,
+  b = Stochastic(1,
     @modelexpr(s2,
       Normal(0, sqrt(s2))
     ),
     false
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   ),
 
-  alpha = MCMCStochastic(
+  alpha = Stochastic(
     :(Normal(0, 100))
   ),
 
-  beta_age = MCMCStochastic(
+  beta_age = Stochastic(
     :(Normal(0, 100))
   ),
 
-  beta_sex = MCMCStochastic(
+  beta_sex = Stochastic(
     :(Normal(0, 100))
   ),
 
-  beta_Dx = MCMCStochastic(1,
+  beta_Dx = Stochastic(1,
     :(Normal(0, 100))
   ),
 
-  r = MCMCStochastic(
+  r = Stochastic(
     :(Gamma(1, 1000))
   )
 

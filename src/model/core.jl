@@ -73,13 +73,13 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :output
     g = graph(m)
     for v in vertices(g)
-      if isa(m[v.key], MCMCStochastic) && !any_stochastic(v, g, m)
+      if isa(m[v.key], Stochastic) && !any_stochastic(v, g, m)
         push!(values, v.key)
       end
     end
   elseif ntype == :stochastic
     for key in keys(m.nodes)
-      if isa(m[key], MCMCStochastic)
+      if isa(m[key], Stochastic)
         push!(values, key)
       end
     end

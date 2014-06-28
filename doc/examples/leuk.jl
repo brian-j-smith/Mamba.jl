@@ -36,7 +36,7 @@ leuk[:r] = 0.1
 
 model = Model(
 
-  dN = MCMCStochastic(2,
+  dN = Stochastic(2,
     @modelexpr(Y, beta, Z, dL0, N, T,
       Distribution[
         Y[i,j] > 0 ? Poisson(exp(beta * Z[i]) * dL0[j]) : Flat()
@@ -53,14 +53,14 @@ model = Model(
     false
   ),
 
-  dL0 = MCMCStochastic(1,
+  dL0 = Stochastic(1,
     @modelexpr(mu, c, T,
       Distribution[Gamma(mu[j], 1 / c) for j in 1:T]
     ),
     false
   ),
 
-  beta = MCMCStochastic(
+  beta = Stochastic(
     :(Normal(0, 1000))
   )
 

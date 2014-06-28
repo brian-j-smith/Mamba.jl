@@ -67,7 +67,7 @@ In the `Mamba` package, terms that appear in the Bayesian model specification ar
 
 Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `Mamba` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
-For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being symbols.  The regression nodes will be named ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `Mamba`--supplied constructors ``MCMCStochastic`` and ``Logical``.  Stochastic and logical nodes for a model are defined with a call to the ``Model`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``Logical`` and ``MCMCStochastic`` nodes are passed.
+For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being symbols.  The regression nodes will be named ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `Mamba`--supplied constructors ``Stochastic`` and ``Logical``.  Stochastic and logical nodes for a model are defined with a call to the ``Model`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``Logical`` and ``Stochastic`` nodes are passed.
 
 .. code-block:: julia
 
@@ -78,7 +78,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	model = Model(
 
-	  y = MCMCStochastic(1,
+	  y = Stochastic(1,
 	    quote
 	      mu = model[:mu]
 	      s2 = model[:s2]
@@ -92,39 +92,39 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	    false
 	  ),
 
-	  beta = MCMCStochastic(1,
+	  beta = Stochastic(1,
 	    :(IsoNormal(2, sqrt(1000)))
 	  ),
 
-	  s2 = MCMCStochastic(
+	  s2 = Stochastic(
 	    :(InverseGamma(0.001, 0.001))
 	  )
 
 	)
 	
-A single integer value for the first ``MCMCStochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``Stochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 Stochastic expressions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distribution specifications for the ``beta`` node are shown below.
 
 .. code-block:: julia
 
 	# Case 1: Multivariate Normal with independence covariance matrix
-	beta = MCMCStochastic(1,
+	beta = Stochastic(1,
 	  :(IsoNormal(2, sqrt(1000)))
 	)
 
 	# Case 2: One common univariate Normal 
-	beta = MCMCStochastic(1,
+	beta = Stochastic(1,
 	  :(Normal(0, sqrt(1000)))
 	)
   
 	# Case 3: Array of univariate Normals
-	beta = MCMCStochastic(1,
+	beta = Stochastic(1,
 	  :(Distribution[Normal(0, sqrt(1000)), Normal(0, sqrt(1000))])
 	)
 
 	# Case 4: Array of univariate Normals
-	beta = MCMCStochastic(1,
+	beta = Stochastic(1,
 	  :(Distribution[Normal(0, sqrt(1000)) for i in 1:2])
 	)
 

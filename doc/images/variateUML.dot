@@ -12,13 +12,13 @@ digraph Variate {
 	
 	Logical [label = "{Logical\{T\}}"]
 	
-	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
+	Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
 
 	SamplerVariate [label = "{SamplerVariate\{Vector\{VariateType\}\}|+ tune : SamplerTune\l}"]
 	
 	Variate -> Dependent
 	Dependent -> Logical
-	Dependent -> MCMCStochastic
+	Dependent -> Stochastic
 	Variate -> SamplerVariate
 
 }

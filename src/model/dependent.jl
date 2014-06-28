@@ -81,29 +81,29 @@ function update!(l::Logical, m::Model)
 end
 
 
-#################### MCMCStochastic Constructors ####################
+#################### Stochastic Constructors ####################
 
-function MCMCStochastic(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
-  d = MCMCStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
-                     Symbol[], NullDistribution())
+function Stochastic(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
+  d = Stochastic(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[],
+                 NullDistribution())
   setmonitor!(d, monitor)
 end
 
-function MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
   value = convert(VariateType, NaN)
-  MCMCStochastic(value, expr, monitor)
+  Stochastic(value, expr, monitor)
 end
 
-function MCMCStochastic(d::Integer, expr::Expr,
-                        monitor::Union(Bool,Vector{Int})=true)
+function Stochastic(d::Integer, expr::Expr,
+                    monitor::Union(Bool,Vector{Int})=true)
   value = Array(VariateType, tuple(zeros(Integer, d)...))
-  MCMCStochastic(value, expr, monitor)
+  Stochastic(value, expr, monitor)
 end
 
 
-#################### MCMCStochastic Methods ####################
+#################### Stochastic Methods ####################
 
-function Base.showall(io::IO, s::MCMCStochastic)
+function Base.showall(io::IO, s::Stochastic)
   show(io, s)
   print(io, "\n\nDistribution:\n")
   show(io, s.distr)
@@ -115,7 +115,7 @@ function Base.showall(io::IO, s::MCMCStochastic)
   show(io, s.targets)
 end
 
-function setinits!(s::MCMCStochastic, m::Model, x)
+function setinits!(s::Stochastic, m::Model, x)
   T = typeof(s.value)
   s.value = isa(x, T) ? deepcopy(x) : convert(T, x)
   setmonitor!(s, s.monitor)
@@ -126,18 +126,18 @@ function setinits!(s::MCMCStochastic, m::Model, x)
   s
 end
 
-insupport(s::MCMCStochastic) = all(mapdistr(insupport, s, s.value))
+insupport(s::Stochastic) = all(mapdistr(insupport, s, s.value))
 
-invlink(s::MCMCStochastic, x) = mapdistr(invlink, s, x)
+invlink(s::Stochastic, x) = mapdistr(invlink, s, x)
 
-link(s::MCMCStochastic, x) =  mapdistr(link, s, x)
+link(s::Stochastic, x) =  mapdistr(link, s, x)
 
-function logpdf(s::MCMCStochastic, transform::Bool=false)
+function logpdf(s::Stochastic, transform::Bool=false)
   f(d, x) = logpdf(d, x, transform)
   sum(mapdistr(f, s, s.value))
 end
 
-function mapdistr(f::Function, s::MCMCStochastic, x)
+function mapdistr(f::Function, s::Stochastic, x)
   if isa(s.distr, Array)
     y = similar(x)
     for i in 1:length(y)
@@ -149,7 +149,7 @@ function mapdistr(f::Function, s::MCMCStochastic, x)
   end
 end
 
-function update!(s::MCMCStochastic, m::Model)
+function update!(s::Stochastic, m::Model)
   s.distr = s.eval(m)
   s
 end

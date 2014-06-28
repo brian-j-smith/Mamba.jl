@@ -22,7 +22,7 @@ mice[:N] = size(mice[:t], 2)
 
 model = Model(
 
-  t = MCMCStochastic(2,
+  t = Stochastic(2,
     @modelexpr(r, beta, tcensor, M, N,
       Distribution[
         begin
@@ -37,11 +37,11 @@ model = Model(
     false
   ),
 
-  r = MCMCStochastic(
+  r = Stochastic(
     :(Exponential(1000))
   ),
 
-  beta = MCMCStochastic(1,
+  beta = Stochastic(1,
     :(Normal(0, 10)),
     false
   ),

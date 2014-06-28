@@ -47,7 +47,7 @@ dogs[:y] = 1 - dogs[:Y][:, 2:25]
 
 model = Model(
 
-  y = MCMCStochastic(2,
+  y = Stochastic(2,
     @modelexpr(Dogs, Trials, alpha, xa, beta, xs,
       Distribution[
         begin
@@ -60,7 +60,7 @@ model = Model(
     false
   ),
 
-  alpha = MCMCStochastic(
+  alpha = Stochastic(
     :(Truncated(Flat(), -Inf, -1e-5))
   ),
 
@@ -70,7 +70,7 @@ model = Model(
     )
   ),
 
-  beta = MCMCStochastic(
+  beta = Stochastic(
     :(Truncated(Flat(), -Inf, -1e-5))
   ),
 

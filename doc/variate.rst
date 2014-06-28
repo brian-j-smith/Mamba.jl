@@ -100,7 +100,7 @@ Statistics
 Subtypes
 ----------
 
-Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logical`, and :ref:`section-MCMCStochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
+Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logical`, and :ref:`section-Stochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
 
 .. figure:: images/variateUML.png
 	:align: center

@@ -114,7 +114,7 @@ MCMCSampler Constructor
 	
 	**Arguments**
 	
-		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
 		* ``dtype`` : type of differentiation for gradient calculations.  Options are
 			* ``:central`` : central differencing.
 			* ``:forward`` : forward differencing.

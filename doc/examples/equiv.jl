@@ -26,7 +26,7 @@ equiv[:T] = [equiv[:group] 3 - equiv[:group]]
 
 model = Model(
 
-  y = MCMCStochastic(2,
+  y = Stochastic(2,
     @modelexpr(delta, mu, phi, pi, s2_1, T,
       begin
         sigma = sqrt(s2_1)
@@ -43,18 +43,18 @@ model = Model(
     false
   ),
 
-  delta = MCMCStochastic(2,
+  delta = Stochastic(2,
     @modelexpr(s2_2,
       Normal(0, sqrt(s2_2))
     ),
     false
   ),
 
-  mu = MCMCStochastic(
+  mu = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  phi = MCMCStochastic(
+  phi = Stochastic(
     :(Normal(0, 1000))
   ),
 
@@ -64,15 +64,15 @@ model = Model(
     )
   ),
 
-  pi = MCMCStochastic(
+  pi = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  s2_1 = MCMCStochastic(
+  s2_1 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   ),
 
-  s2_2 = MCMCStochastic(
+  s2_2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   ),
 

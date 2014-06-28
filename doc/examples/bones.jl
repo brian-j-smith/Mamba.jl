@@ -55,7 +55,7 @@ bones = (Symbol => Any)[
 
 model = Model(
 
-  grade = MCMCStochastic(2,
+  grade = Stochastic(2,
     @modelexpr(ncat, delta, theta, gamma, nChild, nInd,
       begin
         p = Array(Float64, 5)
@@ -77,7 +77,7 @@ model = Model(
     false
   ),
 
-  theta = MCMCStochastic(1,
+  theta = Stochastic(1,
     :(Normal(0, 100))
   )
 

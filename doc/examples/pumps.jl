@@ -13,7 +13,7 @@ pumps[:N] = length(pumps[:y])
 
 model = Model(
 
-  y = MCMCStochastic(1,
+  y = Stochastic(1,
     @modelexpr(theta, t, N,
       Distribution[
         begin
@@ -26,17 +26,17 @@ model = Model(
     false
   ),
 
-  theta = MCMCStochastic(1,
+  theta = Stochastic(1,
     @modelexpr(alpha, beta,
       Gamma(alpha, 1 / beta)
     )
   ),
 
-  alpha = MCMCStochastic(
+  alpha = Stochastic(
     :(Exponential(1.0))
   ),
 
-  beta = MCMCStochastic(
+  beta = Stochastic(
     :(Gamma(0.1, 1.0))
   )
 

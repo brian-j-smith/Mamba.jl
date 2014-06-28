@@ -48,7 +48,7 @@ oxford[:K] = length(oxford[:r1])
 
 model = Model(
 
-  r0 = MCMCStochastic(1,
+  r0 = Stochastic(1,
     @modelexpr(mu, n0, K,
       begin
         p = invlogit(mu)
@@ -58,7 +58,7 @@ model = Model(
     false
   ),
 
-  r1 = MCMCStochastic(1,
+  r1 = Stochastic(1,
     @modelexpr(mu, alpha, beta1, beta2, year, b, n1, K,
       Distribution[
         begin
@@ -72,31 +72,31 @@ model = Model(
     false
   ),
 
-  b = MCMCStochastic(1,
+  b = Stochastic(1,
     @modelexpr(s2,
       Normal(0, sqrt(s2))
     ),
     false
   ),
 
-  mu = MCMCStochastic(1,
+  mu = Stochastic(1,
     :(Normal(0, 1000)),
     false
   ),
 
-  alpha = MCMCStochastic(
+  alpha = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  beta1 = MCMCStochastic(
+  beta1 = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  beta2 = MCMCStochastic(
+  beta2 = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

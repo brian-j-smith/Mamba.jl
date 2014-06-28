@@ -16,7 +16,7 @@ salm = (Symbol => Any)[
 
 model = Model(
 
-  y = MCMCStochastic(2,
+  y = Stochastic(2,
     @modelexpr(alpha, beta, gamma, x, lambda,
       Distribution[
         begin
@@ -29,26 +29,26 @@ model = Model(
     false
   ),
 
-  alpha = MCMCStochastic(
+  alpha = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  beta = MCMCStochastic(
+  beta = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  gamma = MCMCStochastic(
+  gamma = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  lambda = MCMCStochastic(2,
+  lambda = Stochastic(2,
     @modelexpr(s2,
       Normal(0, sqrt(s2))
     ),
     false
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

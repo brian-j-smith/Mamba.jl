@@ -171,14 +171,14 @@ Methods
 		Returns the node with its values updated.
 
 
-.. index:: MCMCStochastic
+.. index:: Stochastic
 
-.. _section-MCMCStochastic:
+.. _section-Stochastic:
 
-MCMCStochastic
+Stochastic
 --------------
 
-Type ``MCMCStochastic`` inherits the fields and method functions from the ``Dependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
+Type ``Stochastic`` inherits the fields and method functions from the ``Dependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -189,7 +189,7 @@ where ``model`` contains all model nodes.  The function can contain any valid **
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCStochastic{T} <: Dependent{T}``
+``type Stochastic{T} <: Dependent{T}``
 
 Fields
 ^^^^^^
@@ -212,10 +212,10 @@ Aliases
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCStochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-              MCMCStochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+.. function:: Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+              Stochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
-	Construct an ``MCMCStochastic`` object that defines a stochastic model node.
+	Construct an ``Stochastic`` object that defines a stochastic model node.
 	
 	**Arguments**
 	
@@ -225,7 +225,7 @@ Constructors
 		
 	**Value**
 	
-		Returns an ``MCMCStochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``MCMCStochastic{VariateType}`` if not.
+		Returns an ``Stochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``Stochastic{VariateType}`` if not.
 
 	**Example**
 	
@@ -234,7 +234,7 @@ Constructors
 Methods
 ^^^^^^^
 
-.. function:: insupport(s::MCMCStochastic)
+.. function:: insupport(s::Stochastic)
 
 	Check whether stochastic node values are within the support of its distribution.
 	
@@ -246,7 +246,7 @@ Methods
 	
 		Returns ``true`` if all values are within the support, and ``false`` otherwise.
 
-.. function:: invlink(s::MCMCStochastic, x)
+.. function:: invlink(s::Stochastic, x)
 
 	Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
 	
@@ -259,7 +259,7 @@ Methods
 	
 		Returns the inverse-link-transformed version of ``x``.
 
-.. function:: link(s::MCMCStochastic, x)
+.. function:: link(s::Stochastic, x)
 
 	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions are transformed as follows:
 	
@@ -289,7 +289,7 @@ Methods
 	
 		The resulting numeric value of the log-density.
 
-.. function:: setinits!(s::MCMCStochastic, m::Model, x=nothing)
+.. function:: setinits!(s::Stochastic, m::Model, x=nothing)
 
 	Set initial values for a stochastic node.
 	
@@ -303,7 +303,7 @@ Methods
 	
 		Returns the node with its assigned initial values.
 
-.. function:: update!(s::MCMCStochastic, m::Model)
+.. function:: update!(s::Stochastic, m::Model)
 
 	Update the values of a stochastic node according to its relationship with others in a model.
 	

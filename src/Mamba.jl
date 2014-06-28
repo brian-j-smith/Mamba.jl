@@ -53,7 +53,7 @@ type Logical{T} <: Dependent{T}
   targets::Vector{Symbol}
 end
 
-type MCMCStochastic{T} <: Dependent{T}
+type Stochastic{T} <: Dependent{T}
   value::T
   symbol::Symbol
   monitor::Vector{Int}
@@ -154,7 +154,8 @@ export
 
 export
   Logical,
-  Model
+  Model,
+  Stochastic
 
 export
   Flat

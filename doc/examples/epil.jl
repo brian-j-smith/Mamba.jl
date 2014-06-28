@@ -93,7 +93,7 @@ map(key -> epil[symbol(string(key, "bar"))] = mean(epil[key]),
 
 model = Model(
 
-  y = MCMCStochastic(2,
+  y = Stochastic(2,
     @modelexpr(a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,
                alpha_BT, BT, BTbar, alpha_Age, logAge, logAgebar, alpha_V4, V4,
                V4bar, b1, b, N, T,
@@ -112,42 +112,42 @@ model = Model(
     false
   ),
 
-  b1 = MCMCStochastic(1,
+  b1 = Stochastic(1,
     @modelexpr(s2_b1,
       Normal(0, sqrt(s2_b1))
     ),
     false
   ),
 
-  b = MCMCStochastic(2,
+  b = Stochastic(2,
     @modelexpr(s2_b,
       Normal(0, sqrt(s2_b))
     ),
     false
   ),
 
-  a0 = MCMCStochastic(
+  a0 = Stochastic(
     :(Normal(0, 100)),
     false
   ),
 
-  alpha_Base = MCMCStochastic(
+  alpha_Base = Stochastic(
     :(Normal(0, 100))
   ),
 
-  alpha_Trt = MCMCStochastic(
+  alpha_Trt = Stochastic(
     :(Normal(0, 100))
   ),
 
-  alpha_BT = MCMCStochastic(
+  alpha_BT = Stochastic(
     :(Normal(0, 100))
   ),
 
-  alpha_Age = MCMCStochastic(
+  alpha_Age = Stochastic(
     :(Normal(0, 100))
   ),
 
-  alpha_V4 = MCMCStochastic(
+  alpha_V4 = Stochastic(
     :(Normal(0, 100))
   ),
 
@@ -159,11 +159,11 @@ model = Model(
     )
   ),
 
-  s2_b1 = MCMCStochastic(
+  s2_b1 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   ),
 
-  s2_b = MCMCStochastic(
+  s2_b = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

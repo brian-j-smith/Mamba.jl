@@ -17,7 +17,7 @@ seeds[:N] = length(seeds[:r])
 
 model = Model(
 
-  r = MCMCStochastic(1,
+  r = Stochastic(1,
     @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,
       Distribution[
         begin
@@ -31,30 +31,30 @@ model = Model(
     false
   ),
 
-  b = MCMCStochastic(1,
+  b = Stochastic(1,
     @modelexpr(s2,
       Normal(0, sqrt(s2))
     ),
     false
   ),
 
-  alpha0 = MCMCStochastic(
+  alpha0 = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  alpha1 = MCMCStochastic(
+  alpha1 = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  alpha2 = MCMCStochastic(
+  alpha2 = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  alpha12 = MCMCStochastic(
+  alpha12 = Stochastic(
     :(Normal(0, 1000))
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

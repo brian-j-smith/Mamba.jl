@@ -22,19 +22,19 @@ magnesium[:s2_0] = 1 / mean(1 ./ magnesium[:s2])
 
 model = Model(
 
-  rcx = MCMCStochastic(2,
+  rcx = Stochastic(2,
     @modelexpr(nc, pc,
       Distribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8]
     ),
     false
   ),
 
-  pc = MCMCStochastic(2,
+  pc = Stochastic(2,
     :(Uniform(0, 1)),
     false
   ),
 
-  rtx = MCMCStochastic(2,
+  rtx = Stochastic(2,
     @modelexpr(nt, pc, theta,
       Distribution[
         begin
@@ -48,14 +48,14 @@ model = Model(
     false
   ),
 
-  theta = MCMCStochastic(2,
+  theta = Stochastic(2,
     @modelexpr(mu, tau,
       Distribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8]
     ),
     false
   ),
 
-  mu = MCMCStochastic(1,
+  mu = Stochastic(1,
     :(Uniform(-10, 10)),
     false
   ),
@@ -77,7 +77,7 @@ model = Model(
     )
   ),
 
-  priors = MCMCStochastic(1,
+  priors = Stochastic(1,
     @modelexpr(s2_0,
       Distribution[
         InverseGamma(0.001, 0.001),

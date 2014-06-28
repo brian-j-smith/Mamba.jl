@@ -43,7 +43,7 @@ stacks[:z] = Float64[
 
 model = Model(
 
-  y = MCMCStochastic(1,
+  y = Stochastic(1,
     @modelexpr(mu, sigma, N,
       begin
         Distribution[Laplace(mu[i], sigma) for i in 1:N]
@@ -52,12 +52,12 @@ model = Model(
     false
   ),
 
-  beta0 = MCMCStochastic(
+  beta0 = Stochastic(
     :(Normal(0, 1000)),
     false
   ),
 
-  beta = MCMCStochastic(1,
+  beta = Stochastic(1,
     :(Normal(0, 1000)),
     false
   ),
@@ -69,7 +69,7 @@ model = Model(
     false
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001)),
     false
   ),

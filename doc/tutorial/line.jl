@@ -5,7 +5,7 @@ using Distributions
 
 model = Model(
 
-  y = MCMCStochastic(1,
+  y = Stochastic(1,
     quote
       mu = model[:mu]
       s2 = model[:s2]
@@ -19,11 +19,11 @@ model = Model(
     false
   ),
 
-  beta = MCMCStochastic(1,
+  beta = Stochastic(1,
     :(IsoNormal(2, sqrt(1000)))
   ),
 
-  s2 = MCMCStochastic(
+  s2 = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

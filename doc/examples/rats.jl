@@ -50,7 +50,7 @@ rats[:Xm] = rats[:X] - rats[:xbar]
 
 model = Model(
 
-  y = MCMCStochastic(1,
+  y = Stochastic(1,
     @modelexpr(alpha, beta, rat, Xm, s2_c,
       begin
         mu = alpha[rat] + beta[rat] .* Xm
@@ -60,7 +60,7 @@ model = Model(
     false
   ),
 
-  alpha = MCMCStochastic(1,
+  alpha = Stochastic(1,
     @modelexpr(mu_alpha, s2_alpha,
       Normal(mu_alpha, sqrt(s2_alpha))
     ),
@@ -73,33 +73,33 @@ model = Model(
     )
   ),
 
-  mu_alpha = MCMCStochastic(
+  mu_alpha = Stochastic(
     :(Normal(0.0, 1000)),
     false
   ),
 
-  s2_alpha = MCMCStochastic(
+  s2_alpha = Stochastic(
     :(InverseGamma(0.001, 0.001)),
     false
   ),
 
-  beta = MCMCStochastic(1,
+  beta = Stochastic(1,
     @modelexpr(mu_beta, s2_beta,
       Normal(mu_beta, sqrt(s2_beta))
     ),
     false
   ),
 
-  mu_beta = MCMCStochastic(
+  mu_beta = Stochastic(
     :(Normal(0.0, 1000))
   ),
 
-  s2_beta = MCMCStochastic(
+  s2_beta = Stochastic(
     :(InverseGamma(0.001, 0.001)),
     false
   ),
 
-  s2_c = MCMCStochastic(
+  s2_c = Stochastic(
     :(InverseGamma(0.001, 0.001))
   )
 

@@ -97,7 +97,7 @@ MCMCSampler Constructor
 	
 	**Arguments**
 	
-		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-MCMCStochastic` ``link()`` function.
+		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
 		* ``sigma`` : initial standard deviations for the univariate normal proposal distributions.  The standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
 		* ``adapt`` : type of adaptation phase.  Options are
 			* ``:all`` : adapt proposals during all iterations.
