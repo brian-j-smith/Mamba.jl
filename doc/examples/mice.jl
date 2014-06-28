@@ -46,25 +46,25 @@ model = Model(
     false
   ),
 
-  median = MCMCLogical(1,
+  median = Logical(1,
     @modelexpr(beta, r,
       exp(-beta / r) * log(2)^(1/r)
     )
   ),
 
-  veh_control = MCMCLogical(
+  veh_control = Logical(
     @modelexpr(beta,
       beta[2] - beta[1]
     )
   ),
 
-  test_sub = MCMCLogical(
+  test_sub = Logical(
     @modelexpr(beta,
       beta[3] - beta[1]
     )
   ),
 
-  pos_control = MCMCLogical(
+  pos_control = Logical(
     @modelexpr(beta,
       beta[4] - beta[1]
     )

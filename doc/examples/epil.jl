@@ -151,7 +151,7 @@ model = Model(
     :(Normal(0, 100))
   ),
 
-  alpha0 = MCMCLogical(
+  alpha0 = Logical(
     @modelexpr(a0, alpha_Base, logBase4bar, alpha_Trt, Trtbar, alpha_BT, BTbar,
                alpha_Age, logAgebar, alpha_V4, V4bar,
       a0 - alpha_Base * logBase4bar - alpha_Trt * Trtbar - alpha_BT * BTbar -

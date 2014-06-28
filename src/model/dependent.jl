@@ -49,35 +49,33 @@ function setmonitor!(d::Dependent, monitor::Vector{Int})
 end
 
 
-#################### MCMCLogical Constructors ####################
+#################### Logical Constructors ####################
 
-function MCMCLogical(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
-  d = MCMCLogical(value, :nothing, Int[], depfx(expr), depsrc(expr),
-                  Symbol[])
+function Logical(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
+  d = Logical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
   setmonitor!(d, monitor)
 end
 
-function MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
   value = convert(VariateType, NaN)
-  MCMCLogical(value, expr, monitor)
+  Logical(value, expr, monitor)
 end
 
-function MCMCLogical(d::Integer, expr::Expr,
-                     monitor::Union(Bool,Vector{Int})=true)
+function Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
   value = Array(VariateType, tuple(zeros(Integer, d)...))
-  MCMCLogical(value, expr, monitor)
+  Logical(value, expr, monitor)
 end
 
 
 
-#################### MCMCLogical Methods ####################
+#################### Logical Methods ####################
 
-function setinits!(l::MCMCLogical, m::Model, ::Any=nothing)
+function setinits!(l::Logical, m::Model, ::Any=nothing)
   l.value = l.eval(m)
   setmonitor!(l, l.monitor)
 end
 
-function update!(l::MCMCLogical, m::Model)
+function update!(l::Logical, m::Model)
   l[:] = l.eval(m)
   l
 end

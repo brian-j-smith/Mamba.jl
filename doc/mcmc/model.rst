@@ -38,7 +38,7 @@ Constructor
 		* ``burnin`` : number of initial draws to be discarded as a burn-in sequence to allow for convergence.
 		* ``chain`` : current run of the MCMC simulator in a possible sequence of runs.
 		* ``samplers`` : a vector of block-specific sampling functions.
-		* ``nodes...`` : an arbitrary number of user-specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``MCMCLogical`` or ``MCMCStochastic`` type objects.  Their names in the model will be taken from the argument names.
+		* ``nodes...`` : an arbitrary number of user-specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``Logical`` or ``MCMCStochastic`` type objects.  Their names in the model will be taken from the argument names.
 		
 	**Value**
 	

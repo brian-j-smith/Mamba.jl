@@ -46,7 +46,7 @@ model = Model(
     false
   ),
 
-  mu = MCMCLogical(1,
+  mu = Logical(1,
     @modelexpr(c, r, t,
       c * r * (t[2:end] - t[1:end-1])
     ),

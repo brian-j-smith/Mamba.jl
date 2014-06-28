@@ -76,7 +76,7 @@ model = Model(
     false
   ),
 
-  a = MCMCLogical(1,
+  a = Logical(1,
     @modelexpr(alpha,
       alpha - mean(alpha)
     )

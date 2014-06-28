@@ -44,7 +44,7 @@ typealias DistributionStruct Union(Distribution, Array{Distribution})
 
 abstract Dependent{T} <: Variate{T}
 
-type MCMCLogical{T} <: Dependent{T}
+type Logical{T} <: Dependent{T}
   value::T
   symbol::Symbol
   monitor::Vector{Int}
@@ -153,6 +153,7 @@ export
   MCMCStochastic
 
 export
+  Logical,
   Model
 
 export

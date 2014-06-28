@@ -66,7 +66,7 @@ model = Model(
     false
   ),
 
-  mu = MCMCLogical(2,
+  mu = Logical(2,
     @modelexpr(beta, treat, pi, period, kappa, carry, G, T,
       [ beta * treat[g,t] / 2 + pi * period[g,t] / 2 + kappa * carry[g,t]
         for g in 1:G, t in 1:T ]

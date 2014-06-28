@@ -20,7 +20,7 @@ model = Model(
     false
   ),
 
-  p = MCMCLogical(1,
+  p = Logical(1,
     @modelexpr(b,
       invlogit(b)
     )
@@ -37,7 +37,7 @@ model = Model(
     :(Normal(0, 1000))
   ),
 
-  pop_mean = MCMCLogical(
+  pop_mean = Logical(
     @modelexpr(mu,
       invlogit(mu)
     )

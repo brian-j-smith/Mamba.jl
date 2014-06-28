@@ -17,10 +17,10 @@ The relationships are as follows.  Type ``Model`` contains a dictionary field (`
 	.. index:: Nodes; Input
 	
 	* **Stochastic nodes** (``MCMCStochastic``) are any model terms that have likelihood or prior distributional specifications.
-	* **Logical nodes** (``MCMCLogical``) are terms that are deterministic functions of other nodes.
+	* **Logical nodes** (``Logical``) are terms that are deterministic functions of other nodes.
 	* **Input nodes** (not shown) are any other model terms and data types that are considered to be fixed quantities in the analysis.
 
-``MCMCStochastic`` and ``MCMCLogical`` are inherited from the base :ref:`section-Variate` type and can be used with operators and in functions defined for that type.  The sampling functions in ``Model`` each correspond to a block of one or more model parameters (stochastic nodes) to be sampled from a target distribution (e.g. full conditional) during the simulation.  Finally, ``MCMCChain`` stores simulation output for a given model.  Detailed information about each type is provided in the subsequent sections.
+``MCMCStochastic`` and ``Logical`` are inherited from the base :ref:`section-Variate` type and can be used with operators and in functions defined for that type.  The sampling functions in ``Model`` each correspond to a block of one or more model parameters (stochastic nodes) to be sampled from a target distribution (e.g. full conditional) during the simulation.  Finally, ``MCMCChain`` stores simulation output for a given model.  Detailed information about each type is provided in the subsequent sections.
 
 .. toctree::
 	:maxdepth: 1

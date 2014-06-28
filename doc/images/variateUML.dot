@@ -10,14 +10,14 @@ digraph Variate {
 
 	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
-	MCMCLogical [label = "{MCMCLogical\{T\}}"]
+	Logical [label = "{Logical\{T\}}"]
 	
 	MCMCStochastic [label = "{MCMCStochastic\{T\}|+ distr : DistributionStruct\l}"]
 
 	SamplerVariate [label = "{SamplerVariate\{Vector\{VariateType\}\}|+ tune : SamplerTune\l}"]
 	
 	Variate -> Dependent
-	Dependent -> MCMCLogical
+	Dependent -> Logical
 	Dependent -> MCMCStochastic
 	Variate -> SamplerVariate
 

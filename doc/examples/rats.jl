@@ -67,7 +67,7 @@ model = Model(
     false
   ),
 
-  alpha0 = MCMCLogical(
+  alpha0 = Logical(
     @modelexpr(mu_alpha, xbar, mu_beta,
       mu_alpha - xbar * mu_beta
     )

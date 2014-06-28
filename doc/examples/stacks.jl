@@ -62,7 +62,7 @@ model = Model(
     false
   ),
 
-  mu = MCMCLogical(1,
+  mu = Logical(1,
     @modelexpr(beta0, z, beta,
       beta0 + z * beta
     ),
@@ -74,25 +74,25 @@ model = Model(
     false
   ),
 
-  sigma = MCMCLogical(
+  sigma = Logical(
     @modelexpr(s2,
       sqrt(2.0 * s2)
     )
   ),
 
-  b0 = MCMCLogical(
+  b0 = Logical(
     @modelexpr(beta0, b, meanx,
       beta0 - dot(b, meanx)
     )
   ),
 
-  b = MCMCLogical(1,
+  b = Logical(1,
     @modelexpr(beta, sdx,
       beta ./ sdx
     )
   ),
 
-  outlier = MCMCLogical(1,
+  outlier = Logical(1,
     @modelexpr(y, mu, sigma, N,
       Float64[abs((y[i] - mu[i]) / sigma) > 2.5 for i in 1:N]
     ),

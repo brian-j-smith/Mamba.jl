@@ -14,7 +14,7 @@ model = Model(
     false
   ),
 
-  mu = MCMCLogical(1,
+  mu = Logical(1,
     :(model[:xmat] * model[:beta]),
     false
   ),

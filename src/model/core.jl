@@ -59,7 +59,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
     values = setdiff(keys(m, :all), keys(m, :dependent))
   elseif ntype == :logical
     for key in keys(m.nodes)
-      if isa(m[key], MCMCLogical)
+      if isa(m[key], Logical)
         push!(values, key)
       end
     end

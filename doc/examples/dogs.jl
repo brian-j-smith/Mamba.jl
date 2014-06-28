@@ -64,7 +64,7 @@ model = Model(
     :(Truncated(Flat(), -Inf, -1e-5))
   ),
 
-  A = MCMCLogical(
+  A = Logical(
     @modelexpr(alpha,
       exp(alpha)
     )
@@ -74,7 +74,7 @@ model = Model(
     :(Truncated(Flat(), -Inf, -1e-5))
   ),
 
-  B = MCMCLogical(
+  B = Logical(
     @modelexpr(beta,
       exp(beta)
     )

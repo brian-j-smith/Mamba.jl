@@ -60,7 +60,7 @@ function graph2dot(m::Model)
     attr = (String => String)[]
     if in(v.key, deps)
       node = m[v.key]
-      if isa(node, MCMCLogical)
+      if isa(node, Logical)
         attr["shape"] = "diamond"
       elseif isa(node, MCMCStochastic)
         attr["shape"] = "ellipse"

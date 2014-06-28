@@ -89,14 +89,14 @@ Methods
 	Write a verbose text representation of nodal values and attributes to the current output stream.  
 
 
-.. index:: MCMCLogical
+.. index:: Logical
 
-.. _section-MCMCLogical:
+.. _section-Logical:
 
-MCMCLogical
+Logical
 -----------
 
-Type ``MCMCLogical`` inherits the fields and method functions from the ``Dependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
+Type ``Logical`` inherits the fields and method functions from the ``Dependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -107,7 +107,7 @@ where ``model`` contains all model nodes.  The function can contain any valid **
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCLogical{T} <: Dependent{T}``
+``type Logical{T} <: Dependent{T}``
 
 Fields
 ^^^^^^
@@ -122,10 +122,10 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: MCMCLogical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-              MCMCLogical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+.. function:: Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+              Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
-	Construct an ``MCMCLogical`` object that defines a logical model node.
+	Construct an ``Logical`` object that defines a logical model node.
 	
 	**Arguments**
 	
@@ -135,7 +135,7 @@ Constructors
 		
 	**Value**
 	
-		Returns an ``MCMCLogical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``MCMCLogical{VariateType}`` if not.
+		Returns an ``Logical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``Logical{VariateType}`` if not.
 		
 	**Example**
 	
@@ -144,7 +144,7 @@ Constructors
 Methods
 ^^^^^^^
 
-.. function:: setinits!(l::MCMCLogical, m::Model, ::Any=nothing)
+.. function:: setinits!(l::Logical, m::Model, ::Any=nothing)
 
 	Set initial values for a logical node.
 	
@@ -157,7 +157,7 @@ Methods
 	
 		Returns the result of a call to ``update!(l, m)``.
 
-.. function:: update!(l::MCMCLogical, m::Model)
+.. function:: update!(l::Logical, m::Model)
 
 	Update the values of a logical node according to its relationship with others in a model.
 	

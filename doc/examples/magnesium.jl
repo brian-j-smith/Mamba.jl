@@ -60,13 +60,13 @@ model = Model(
     false
   ),
 
-  OR = MCMCLogical(1,
+  OR = Logical(1,
     @modelexpr(mu,
       exp(mu)
     )
   ),
 
-  tau = MCMCLogical(1,
+  tau = Logical(1,
     @modelexpr(priors, s2_0,
       [ sqrt(priors[1]),
         sqrt(priors[2]),

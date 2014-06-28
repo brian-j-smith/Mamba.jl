@@ -58,7 +58,7 @@ model = Model(
     :(Normal(0, 1000))
   ),
 
-  theta = MCMCLogical(
+  theta = Logical(
     @modelexpr(phi,
       exp(phi)
     )
@@ -76,7 +76,7 @@ model = Model(
     :(InverseGamma(0.001, 0.001))
   ),
 
-  equiv = MCMCLogical(
+  equiv = Logical(
     @modelexpr(theta,
       int(0.8 < theta < 1.2)
     )
