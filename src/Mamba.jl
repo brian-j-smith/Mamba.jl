@@ -88,7 +88,7 @@ type Model
 end
 
 
-#################### MCMCChain Type ####################
+#################### Chains Type ####################
 
 immutable Chains
   value::Array{VariateType,3}
