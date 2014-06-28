@@ -43,6 +43,6 @@ function mcmc(model::Model, inputs::Dict{Symbol},
   end
   print("\n")
 
-  MCMCChains(cat(3, sims...), start=burnin+thin, thin=thin,
-             names=names(m, true), model=m)
+  Chains(cat(3, sims...), start=burnin+thin, thin=thin, names=names(m, true),
+         model=m)
 end

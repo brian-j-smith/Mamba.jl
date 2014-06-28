@@ -342,7 +342,7 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
 	setsamplers!(model, scheme3)
 	sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
-Results are retuned as ``MCMCChains`` objects on which methods for posterior inference are defined.
+Results are retuned as ``Chains`` objects on which methods for posterior inference are defined.
 
 
 .. _section-Line-Inference:

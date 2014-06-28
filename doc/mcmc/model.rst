@@ -176,7 +176,7 @@ Methods
 		
 	**Value**
 	
-		An ``MCMCChains`` type object of simulated draws.
+		An ``Chains`` type object of simulated draws.
 
 	**Example**
 	

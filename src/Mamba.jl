@@ -90,7 +90,7 @@ end
 
 #################### MCMCChain Type ####################
 
-immutable MCMCChains
+immutable Chains
   value::Array{VariateType,3}
   names::Vector{String}
   range::Range{Int}
@@ -153,6 +153,7 @@ export
   MCMCStochastic
 
 export
+  Chains,
   Logical,
   Model,
   Sampler,

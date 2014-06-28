@@ -1,3 +1,4 @@
+@deprecate MCMCChains Chains
 @deprecate MCMCLogical Logical
 @deprecate MCMCModel Model
 @deprecate MCMCSampler Sampler

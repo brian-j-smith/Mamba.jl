@@ -1,6 +1,6 @@
 #################### Posterior Statistics ####################
 
-function autocor(c::MCMCChains; lags::Vector=[1,5,10,50], relative::Bool=true)
+function autocor(c::Chains; lags::Vector=[1,5,10,50], relative::Bool=true)
   if relative
     lags *= step(c.range)
   elseif any(lags .% step(c.range) .!= 0)
@@ -11,11 +11,11 @@ function autocor(c::MCMCChains; lags::Vector=[1,5,10,50], relative::Bool=true)
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function cor(c::MCMCChains)
+function cor(c::Chains)
   ChainSummary(cor(combine(c)), c.names, c.names, header(c))
 end
 
-function describe(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
+function describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
            etype=:bm, args...)
   println(header(c))
   print("Empirical Posterior Estimates:\n")
@@ -24,7 +24,7 @@ function describe(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
   showall(quantile(c, q=q), false)
 end
 
-function dic(c::MCMCChains)
+function dic(c::Chains)
   m = c.model
   nkeys = keys(m, :output)
   idx = indexin(names(m, keys(m, :block)), c)
@@ -55,14 +55,14 @@ function hpd{T<:Real}(x::Vector{T}; alpha::Real=0.05)
   [a[i], b[i]]
 end
 
-function hpd(c::MCMCChains; alpha::Real=0.05)
+function hpd(c::Chains; alpha::Real=0.05)
   cc = combine(c)
   labels = [string(100 * alpha / 2) * "%", string(100 * (1 - alpha / 2)) * "%"]
   vals = mapslices(x -> hpd(x, alpha=alpha), cc, 1)'
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function logpdf(c::MCMCChains, nkeys::Vector{Symbol})
+function logpdf(c::Chains, nkeys::Vector{Symbol})
   m = c.model
   idx = indexin(names(m, keys(m, :block)), c)
 
@@ -71,7 +71,7 @@ function logpdf(c::MCMCChains, nkeys::Vector{Symbol})
   iters, p, chains = size(c.value)
   values = Array(Float64, iters, 1, chains)
   for k in 1:chains
-    print("\nPROCESSING MCMCChains $(k)/$(chains)\n")
+    print("\nPROCESSING Chains $(k)/$(chains)\n")
     pct = 0
     for i in 1:iters
       if floor(100 * i / iters) >= pct
@@ -90,14 +90,14 @@ function logpdf(c::MCMCChains, nkeys::Vector{Symbol})
   values
 end
 
-function quantile(c::MCMCChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+function quantile(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
   cc = combine(c)
   labels = map(x -> string(100 * x) * "%", q)
   vals = mapslices(x -> quantile(x, q), cc, 1)'
   ChainSummary(vals, c.names, labels, header(c))
 end
 
-function summarystats(c::MCMCChains; etype=:bm, args...)
+function summarystats(c::Chains; etype=:bm, args...)
   cc = combine(c)
   f = x -> [mean(x), std(x), sem(x), mcse(x, etype; args...)]
   labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]

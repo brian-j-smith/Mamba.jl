@@ -1,4 +1,4 @@
-function plot(c::MCMCChains, ptype::Symbol=:summary; args...)
+function plot(c::Chains, ptype::Symbol=:summary; args...)
   ptype == :summary ? [traceplot(c) densityplot(c; args...)].' :
   ptype == :trace   ? traceplot(c; args...) :
   ptype == :density ? densityplot(c; args...) :
@@ -7,7 +7,7 @@ function plot(c::MCMCChains, ptype::Symbol=:summary; args...)
     error("unsupported plot type $ptype")
 end
 
-function traceplot(c::MCMCChains; legend::Bool=false)
+function traceplot(c::Chains; legend::Bool=false)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
@@ -24,8 +24,8 @@ function traceplot(c::MCMCChains; legend::Bool=false)
   return plots
 end
 
-function densityplot(c::MCMCChains; legend::Bool=false, 
-                                    trim::(Real,Real)=(0.025,0.975))
+function densityplot(c::Chains; legend::Bool=false,
+                     trim::(Real,Real)=(0.025,0.975))
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
@@ -43,8 +43,7 @@ function densityplot(c::MCMCChains; legend::Bool=false,
   return plots
 end
 
-function autocorplot(c::MCMCChains;
-                     maxlag::Integer=int(10*log10(length(c.range))),
+function autocorplot(c::Chains; maxlag::Integer=int(10*log10(length(c.range))),
                      legend::Bool=false)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
@@ -64,7 +63,7 @@ function autocorplot(c::MCMCChains;
   return plots
 end
 
-function meanplot(c::MCMCChains; legend::Bool=false)
+function meanplot(c::Chains; legend::Bool=false)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
