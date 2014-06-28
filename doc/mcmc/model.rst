@@ -62,7 +62,7 @@ Methods
 	
 	**Value**
 	
-		The model drawn to an external file or standard output.
+		The model drawn to an external file or standard output.  Stochastic, logical, and input nodes will be represented by ellipses, diamonds, and rectangles, respectively.  Nodes that are unmonitored in MCMC simulations will be gray-colored.
 
 	**Example**
 	
