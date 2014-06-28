@@ -3,3 +3,10 @@
 @deprecate MCMCModel Model
 @deprecate MCMCSampler Sampler
 @deprecate MCMCStochastic Stochastic
+
+export
+  MCMCChains,
+  MCMCLogical,
+  MCMCModel,
+  MCMCSampler,
+  MCMCStochastic

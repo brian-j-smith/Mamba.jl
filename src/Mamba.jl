@@ -132,8 +132,6 @@ include("utils.jl")
 include("variate/core.jl")
 include("variate/numeric.jl")
 
-include("deprecated.jl")
-
 
 #################### Exports ####################
 
@@ -144,13 +142,6 @@ export
   Variate,
   VariateType,
   VectorVariate
-
-export
-  MCMCChains,
-  MCMCLogical,
-  MCMCModel,
-  MCMCSampler,
-  MCMCStochastic
 
 export
   Chains,
@@ -222,5 +213,10 @@ export
   mm,
   pt,
   px
+
+
+#################### Deprecated ####################
+
+include("deprecated.jl")
 
 end
