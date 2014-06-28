@@ -1,6 +1,6 @@
-#################### MCMCModel Simulation Methods ####################
+#################### Model Simulation Methods ####################
 
-function gradlogpdf(m::MCMCModel, block::Integer=0, transform::Bool=false;
+function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
            dtype::Symbol=:forward)
   x0 = unlist(m, block, transform)
   value = gradlogpdf!(m, x0, block, transform, dtype=dtype)
@@ -8,7 +8,7 @@ function gradlogpdf(m::MCMCModel, block::Integer=0, transform::Bool=false;
   value
 end
 
-function gradlogpdf{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+function gradlogpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
            transform::Bool=false; dtype::Symbol=:forward)
   x0 = unlist(m, block)
   value = gradlogpdf!(m, x, block, transform, dtype=dtype)
@@ -16,13 +16,13 @@ function gradlogpdf{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
   value
 end
 
-function gradlogpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+function gradlogpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
            transform::Bool=false; dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
   gradient(f, x, dtype)
 end
 
-function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
+function logpdf(m::Model, block::Integer=0, transform::Bool=false)
   value = 0
   if block > 0
     sampler = m.samplers[block]
@@ -39,7 +39,7 @@ function logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
   value
 end
 
-function logpdf{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+function logpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
            transform::Bool=false)
   x0 = unlist(m, block)
   value = logpdf!(m, x, block, transform)
@@ -47,7 +47,7 @@ function logpdf{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
   value
 end
 
-function logpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
+function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
            transform::Bool=false)
   value = 0
   if block > 0
@@ -71,12 +71,12 @@ function logpdf!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer=0,
   value
 end
 
-function relist{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
+function relist{T<:Real}(m::Model, values::Vector{T}, block::Integer=0,
            transform::Bool=false)
   relist(m, values, keys(m, :block, block), transform)
 end
 
-function relist{T<:Real}(m::MCMCModel, values::Vector{T}, nkeys::Vector{Symbol},
+function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
            transform::Bool=false)
   f =  transform ? invlink : identity
   x = (Symbol => Any)[]
@@ -91,20 +91,20 @@ function relist{T<:Real}(m::MCMCModel, values::Vector{T}, nkeys::Vector{Symbol},
   x
 end
 
-function relist!{T<:Real}(m::MCMCModel, values::Vector{T}, block::Integer=0,
+function relist!{T<:Real}(m::Model, values::Vector{T}, block::Integer=0,
            transform::Bool=false)
   nkeys = keys(m, :block, block)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m, block)
 end
 
-function relist!{T<:Real}(m::MCMCModel, values::Vector{T},
-           nkeys::Vector{Symbol}, transform::Bool=false)
+function relist!{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
+           transform::Bool=false)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m)
 end
 
-function simulate!(m::MCMCModel, block::Integer=0)
+function simulate!(m::Model, block::Integer=0)
   if block > 0
     blocks = block
   else
@@ -122,11 +122,11 @@ function simulate!(m::MCMCModel, block::Integer=0)
   m
 end
 
-function unlist(m::MCMCModel, block::Integer=0, transform::Bool=false)
+function unlist(m::Model, block::Integer=0, transform::Bool=false)
   unlist(m, keys(m, :block, block), transform)
 end
 
-function unlist(m::MCMCModel, monitoronly::Bool)
+function unlist(m::Model, monitoronly::Bool)
   values = VariateType[]
   for key in keys(m, :dependent)
     node = m[key]
@@ -136,7 +136,7 @@ function unlist(m::MCMCModel, monitoronly::Bool)
   values
 end
 
-function unlist(m::MCMCModel, nkeys::Vector{Symbol}, transform::Bool=false)
+function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
   f = transform ? link : identity
   N = map(key -> length(m[key]), nkeys)
   values = Array(VariateType, sum(N))
@@ -150,7 +150,7 @@ function unlist(m::MCMCModel, nkeys::Vector{Symbol}, transform::Bool=false)
   values
 end
 
-function update!(m::MCMCModel, block::Integer=0)
+function update!(m::Model, block::Integer=0)
   nkeys = block > 0 ? m.samplers[block].targets : m.dependents
   for key in nkeys
     update!(m[key], m)

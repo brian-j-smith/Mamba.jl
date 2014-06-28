@@ -74,9 +74,9 @@ type MCMCSampler
 end
 
 
-#################### MCMCModel Type ####################
+#################### Model Type ####################
 
-type MCMCModel
+type Model
   nodes::Dict{Symbol,Any}
   dependents::Vector{Symbol}
   samplers::Vector{MCMCSampler}
@@ -94,7 +94,7 @@ immutable MCMCChains
   value::Array{VariateType,3}
   names::Vector{String}
   range::Range{Int}
-  model::MCMCModel
+  model::Model
 end
 
 
@@ -132,6 +132,8 @@ include("utils.jl")
 include("variate/core.jl")
 include("variate/numeric.jl")
 
+include("deprecated.jl")
+
 
 #################### Exports ####################
 
@@ -149,6 +151,9 @@ export
   MCMCModel,
   MCMCSampler,
   MCMCStochastic
+
+export
+  Model
 
 export
   Flat

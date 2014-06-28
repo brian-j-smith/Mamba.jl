@@ -28,5 +28,5 @@ end
 #################### Utility Functions ####################
 
 function samplerfx(expr::Expr)
-  eval(Main, Expr(:function, :(model::MCMCModel, block::Integer), expr))
+  eval(Main, Expr(:function, :(model::Mamba.Model, block::Integer), expr))
 end

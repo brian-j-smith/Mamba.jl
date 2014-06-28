@@ -42,7 +42,7 @@ end
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   response = MCMCStochastic(2,
     @modelexpr(a1, a2, a3, mu, group, b, N, T,

@@ -45,7 +45,7 @@ dogs[:y] = 1 - dogs[:Y][:, 2:25]
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(2,
     @modelexpr(Dogs, Trials, alpha, xa, beta, xs,

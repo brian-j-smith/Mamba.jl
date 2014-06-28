@@ -21,7 +21,7 @@ blocker[:N] = length(blocker[:rt])
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   rc = MCMCStochastic(1,
     @modelexpr(mu, nc, N,

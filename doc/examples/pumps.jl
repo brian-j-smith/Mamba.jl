@@ -11,7 +11,7 @@ pumps[:N] = length(pumps[:y])
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(1,
     @modelexpr(theta, t, N,

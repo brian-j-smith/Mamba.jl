@@ -1,6 +1,6 @@
-#################### MCMCModel Initialization Methods ####################
+#################### Model Initialization Methods ####################
 
-function names(m::MCMCModel, monitoronly::Bool)
+function names(m::Model, monitoronly::Bool)
   values = String[]
   for key in keys(m, :dependent)
     node = m[key]
@@ -10,7 +10,7 @@ function names(m::MCMCModel, monitoronly::Bool)
   values
 end
 
-function names(m::MCMCModel, nkeys::Vector{Symbol})
+function names(m::Model, nkeys::Vector{Symbol})
   values = String[]
   for key in nkeys
     append!(values, names(m[key]))
@@ -18,7 +18,7 @@ function names(m::MCMCModel, nkeys::Vector{Symbol})
   values
 end
 
-function setinits!(m::MCMCModel, inits::Dict{Symbol,Any})
+function setinits!(m::Model, inits::Dict{Symbol,Any})
   m.iter = 0
   for key in m.dependents
     node = m[key]
@@ -31,7 +31,7 @@ function setinits!(m::MCMCModel, inits::Dict{Symbol,Any})
   m
 end
 
-function setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
+function setinputs!(m::Model, inputs::Dict{Symbol,Any})
   for key in keys(m, :input)
     isa(inputs[key], MCMCDependent) &&
       error("inputs must not be MCMCDependent types")
@@ -41,7 +41,7 @@ function setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
   m
 end
 
-function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
+function setsamplers!(m::Model, samplers::Vector{MCMCSampler})
   m.samplers = deepcopy(samplers)
   for i in 1:length(m.samplers)
     sampler = m.samplers[i]
@@ -51,13 +51,13 @@ function setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
   m
 end
 
-function settune!(m::MCMCModel, tune::Vector)
+function settune!(m::Model, tune::Vector)
   for b in 1:length(m.samplers)
     m.samplers[b].tune = deepcopy(tune[b])
   end
 end
 
-function tune(m::MCMCModel, block::Integer=0)
+function tune(m::Model, block::Integer=0)
   if block > 0
     values = m.samplers[block].tune
   else

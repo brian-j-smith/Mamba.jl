@@ -20,7 +20,7 @@ dyes[:sample] = vcat(fill([1:dyes[:samples]], dyes[:batches])...)
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(1,
     @modelexpr(mu, batch, s2_within,

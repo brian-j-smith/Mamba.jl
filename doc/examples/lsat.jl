@@ -51,7 +51,7 @@ lsat[:r] = lsat[:response][idx,:]
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   r = MCMCStochastic(2,
     @modelexpr(beta, theta, alpha, N, T,

@@ -24,7 +24,7 @@ equiv[:T] = [equiv[:group] 3 - equiv[:group]]
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(2,
     @modelexpr(delta, mu, phi, pi, s2_1, T,

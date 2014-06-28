@@ -91,7 +91,7 @@ map(key -> epil[symbol(string(key, "bar"))] = mean(epil[key]),
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(2,
     @modelexpr(a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,

@@ -11,7 +11,7 @@ surgical[:N] = length(surgical[:r])
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   r = MCMCStochastic(1,
     @modelexpr(n, p, N,

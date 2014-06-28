@@ -38,7 +38,7 @@ kidney[:Dx] = Int[
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   t = MCMCStochastic(2,
     @modelexpr(alpha, beta_age, age, beta_sex, sex, Dx, beta_Dx, b, r,

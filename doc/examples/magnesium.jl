@@ -20,7 +20,7 @@ magnesium[:s2_0] = 1 / mean(1 ./ magnesium[:s2])
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   rcx = MCMCStochastic(2,
     @modelexpr(nc, pc,

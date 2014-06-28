@@ -53,7 +53,7 @@ bones = (Symbol => Any)[
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   grade = MCMCStochastic(2,
     @modelexpr(ncat, delta, theta, gamma, nChild, nInd,

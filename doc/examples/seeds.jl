@@ -15,7 +15,7 @@ seeds[:N] = length(seeds[:r])
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   r = MCMCStochastic(1,
     @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,

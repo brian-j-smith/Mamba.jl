@@ -14,7 +14,7 @@ salm = (Symbol => Any)[
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(2,
     @modelexpr(alpha, beta, gamma, x, lambda,

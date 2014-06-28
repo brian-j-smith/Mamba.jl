@@ -2,7 +2,7 @@
 
 function MCMCChains{T<:String}(iters::Integer, params::Integer;
            start::Integer=1, thin::Integer=1, chains::Integer=1,
-           names::Vector{T}=String[], model::MCMCModel=MCMCModel())
+           names::Vector{T}=String[], model::Model=Model())
   value = Array(VariateType, length(start:thin:iters), params, chains)
   fill!(value, NaN)
   MCMCChains(value, start=start, thin=thin, names=names, model=model)
@@ -10,7 +10,7 @@ end
 
 function MCMCChains{T<:Real,U<:String}(value::Array{T,3};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           model::MCMCModel=MCMCModel())
+           model::Model=Model())
   n, p, m = size(value)
   if length(names) == 0
     names = String[string("Param", i) for i in 1:p]
@@ -23,14 +23,14 @@ end
 
 function MCMCChains{T<:Real,U<:String}(value::Matrix{T};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           model::MCMCModel=MCMCModel())
+           model::Model=Model())
   MCMCChains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
              thin=thin, names=names, model=model)
 end
 
 function MCMCChains{T<:Real}(value::Vector{T};
            start::Integer=1, thin::Integer=1, names::String="Param1",
-           model::MCMCModel=MCMCModel())
+           model::Model=Model())
   MCMCChains(reshape(value, length(value), 1, 1), start=start, thin=thin,
              names=String[names], model=model)
 end

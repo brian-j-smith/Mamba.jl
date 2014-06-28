@@ -34,7 +34,7 @@ A summary of the steps involved in using the package to perform MCMC simulation 
 
 		b. A vector of ``MCMCSampler`` objects containing supplied, user-defined, or external functions :math:`\{f_j\}_{j=1}^{B}` for sampling each parameter block :math:`\Theta_j`.
 
-		c. An ``MCMCModel`` object from the resulting stochastic nodes and sampler vector.
+		c. An ``Model`` object from the resulting stochastic nodes and sampler vector.
 
 	#. Simulate parameter values with the :func:`mcmc` function.
 	

@@ -72,12 +72,12 @@ end
 
 #################### MCMCLogical Methods ####################
 
-function setinits!(l::MCMCLogical, m::MCMCModel, ::Any=nothing)
+function setinits!(l::MCMCLogical, m::Model, ::Any=nothing)
   l.value = l.eval(m)
   setmonitor!(l, l.monitor)
 end
 
-function update!(l::MCMCLogical, m::MCMCModel)
+function update!(l::MCMCLogical, m::Model)
   l[:] = l.eval(m)
   l
 end
@@ -117,7 +117,7 @@ function Base.showall(io::IO, s::MCMCStochastic)
   show(io, s.targets)
 end
 
-function setinits!(s::MCMCStochastic, m::MCMCModel, x)
+function setinits!(s::MCMCStochastic, m::Model, x)
   T = typeof(s.value)
   s.value = isa(x, T) ? deepcopy(x) : convert(T, x)
   setmonitor!(s, s.monitor)
@@ -151,7 +151,7 @@ function mapdistr(f::Function, s::MCMCStochastic, x)
   end
 end
 
-function update!(s::MCMCStochastic, m::MCMCModel)
+function update!(s::MCMCStochastic, m::Model)
   s.distr = s.eval(m)
   s
 end
@@ -172,5 +172,5 @@ function depsrc(expr)
 end
 
 function depfx(expr::Expr)
-  eval(Main, Expr(:function, :(model::MCMCModel,), expr))
+  eval(Main, Expr(:function, :(model::Mamba.Model,), expr))
 end

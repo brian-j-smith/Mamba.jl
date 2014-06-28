@@ -46,7 +46,7 @@ oxford[:K] = length(oxford[:r1])
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   r0 = MCMCStochastic(1,
     @modelexpr(mu, n0, K,

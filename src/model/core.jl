@@ -1,6 +1,6 @@
-#################### MCMCModel Constructor ####################
+#################### Model Constructor ####################
 
-function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
+function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
            samplers::Vector{MCMCSampler}=MCMCSampler[], nodes...)
   nodedict = (Symbol => Any)[]
   for (key, value) in nodes
@@ -9,8 +9,8 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.symbol = key
     nodedict[key] = node
   end
-  m = MCMCModel(nodedict, Symbol[], MCMCSampler[], iter, burnin, chain, false,
-                false)
+  m = Model(nodedict, Symbol[], MCMCSampler[], iter, burnin, chain, false,
+            false)
   g = graph(m)
   V = vertices(g)
   lookup = (Symbol => Integer)[]
@@ -26,13 +26,13 @@ function MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
 end
 
 
-#################### MCMCModel Base Methods ####################
+#################### Model Base Methods ####################
 
-function Base.getindex(m::MCMCModel, key::Symbol)
+function Base.getindex(m::Model, key::Symbol)
   m.nodes[key]
 end
 
-function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
+function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   values = Symbol[]
   if ntype == :all
     for key in keys(m.nodes)
@@ -89,30 +89,30 @@ function Base.keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
   values
 end
 
-function Base.setindex!(m::MCMCModel, values::Dict, nkeys::Vector{Symbol})
+function Base.setindex!(m::Model, values::Dict, nkeys::Vector{Symbol})
   for key in nkeys
     m[key][:] = values[key]
   end
 end
 
-function Base.setindex!(m::MCMCModel, value, nkeys::Vector{Symbol})
+function Base.setindex!(m::Model, value, nkeys::Vector{Symbol})
   length(nkeys) == 1 || throw(BoundsError())
   m[nkeys[1]][:] = value
 end
 
-function Base.setindex!(m::MCMCModel, value, nkey::Symbol)
+function Base.setindex!(m::Model, value, nkey::Symbol)
   m[nkey][:] = value
 end
 
-function Base.show(io::IO, m::MCMCModel)
+function Base.show(io::IO, m::Model)
   showf(io, m, Base.show)
 end
 
-function Base.showall(io::IO, m::MCMCModel)
+function Base.showall(io::IO, m::Model)
   showf(io, m, Base.showall)
 end
 
-function showf(io::IO, m::MCMCModel, f::Function)
+function showf(io::IO, m::Model, f::Function)
   print(io, "Object of type \"$(summary(m))\"\n")
   width = Base.tty_size()[2] - 1
   for node in keys(m)

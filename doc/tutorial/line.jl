@@ -3,7 +3,7 @@ using Distributions
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(1,
     quote

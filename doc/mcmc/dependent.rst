@@ -100,7 +100,7 @@ Type ``MCMCLogical`` inherits the fields and method functions from the ``MCMCDep
 
 .. code-block:: julia
 
-	function(model::MCMCModel)
+	function(model::Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
 
@@ -144,7 +144,7 @@ Constructors
 Methods
 ^^^^^^^
 
-.. function:: setinits!(l::MCMCLogical, m::MCMCModel, ::Any=nothing)
+.. function:: setinits!(l::MCMCLogical, m::Model, ::Any=nothing)
 
 	Set initial values for a logical node.
 	
@@ -157,7 +157,7 @@ Methods
 	
 		Returns the result of a call to ``update!(l, m)``.
 
-.. function:: update!(l::MCMCLogical, m::MCMCModel)
+.. function:: update!(l::MCMCLogical, m::Model)
 
 	Update the values of a logical node according to its relationship with others in a model.
 	
@@ -182,7 +182,7 @@ Type ``MCMCStochastic`` inherits the fields and method functions from the ``MCMC
 
 .. code-block:: julia
 
-	function(model::MCMCModel)
+	function(model::Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single `Distributions <http://distributionsjl.readthedocs.org/en/latest/index.html>`_ object for all node elements or a structure of the same type as the node with element-specific `Distributions` objects :cite:`juliastats:2014:DP`.
 
@@ -289,7 +289,7 @@ Methods
 	
 		The resulting numeric value of the log-density.
 
-.. function:: setinits!(s::MCMCStochastic, m::MCMCModel, x=nothing)
+.. function:: setinits!(s::MCMCStochastic, m::Model, x=nothing)
 
 	Set initial values for a stochastic node.
 	
@@ -303,7 +303,7 @@ Methods
 	
 		Returns the node with its assigned initial values.
 
-.. function:: update!(s::MCMCStochastic, m::MCMCModel)
+.. function:: update!(s::MCMCStochastic, m::Model)
 
 	Update the values of a stochastic node according to its relationship with others in a model.
 	

@@ -1,16 +1,16 @@
-.. index:: MCMCModel
+.. index:: Model
 
-.. _section-MCMCModel:
+.. _section-Model:
 
-MCMCModel
+Model
 ---------
 
-The ``MCMCModel`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``MCMCDependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``MCMCSampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}.`
+The ``Model`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``MCMCDependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``MCMCSampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}.`
 
 Declaration
 ^^^^^^^^^^^
 
-``type MCMCModel``
+``type Model``
 
 Fields
 ^^^^^^
@@ -27,10 +27,10 @@ Fields
 Constructor
 ^^^^^^^^^^^
 
-.. function:: MCMCModel(; iter::Integer=0, burnin::Integer=0, chain::Integer=1, \
+.. function:: Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1, \
 				samplers::Vector{MCMCSampler}=Array(MCMCSampler, 0), nodes...)
 				
-	Construct an ``MCMCModel`` object that defines a model for MCMC simulation.
+	Construct an ``Model`` object that defines a model for MCMC simulation.
 	
 	**Arguments**
 	
@@ -42,7 +42,7 @@ Constructor
 		
 	**Value**
 	
-		Returns an ``MCMCModel`` type object.
+		Returns an ``Model`` type object.
 
 	**Example**
 	
@@ -51,7 +51,7 @@ Constructor
 Methods
 ^^^^^^^
 
-.. function:: draw(m::MCMCModel; filename::String="")
+.. function:: draw(m::Model; filename::String="")
 
 	Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
 	
@@ -68,7 +68,7 @@ Methods
 	
 		See the :ref:`section-Line-DAG` section of the tutorial.
 
-.. function:: getindex(m::MCMCModel, key::Symbol)
+.. function:: getindex(m::Model, key::Symbol)
 
 	Returns a model node identified by its symbol.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
 	
@@ -81,11 +81,11 @@ Methods
 	
 		The specified node.
 	
-.. function:: gradlogpdf(m::MCMCModel, block::Integer=0, transform::Bool=false; \
+.. function:: gradlogpdf(m::Model, block::Integer=0, transform::Bool=false; \
 				dtype::Symbol=:forward)
-              gradlogpdf(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+              gradlogpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false; dtype::Symbol=:forward)
-			  gradlogpdf!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+			  gradlogpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false; dtype::Symbol=:forward)
 			
 	Compute the gradient of log-densities for stochastic nodes.
@@ -104,7 +104,7 @@ Methods
 	
 		The resulting gradient vector.  Method ``gradlogpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 
-.. function:: graph(m::MCMCModel)
+.. function:: graph(m::Model)
 
 	Construct a graph representation of model nodes and their relationships.
 	
@@ -116,7 +116,7 @@ Methods
 	
 		Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
 
-.. function:: keys(m::MCMCModel, ntype::Symbol=:assigned, block::Integer=0)
+.. function:: keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
 
 	Return the symbols of nodes of a specified type.
 	
@@ -139,10 +139,10 @@ Methods
 	
 		A vector of node symbols.
 
-.. function:: logpdf(m::MCMCModel, block::Integer=0, transform::Bool=false)
-              logpdf(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+.. function:: logpdf(m::Model, block::Integer=0, transform::Bool=false)
+              logpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
-			  logpdf!(m::MCMCModel, x::Vector{T<:Real}, block::Integer=0, \
+			  logpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
 
 	Compute the sum of log-densities for stochastic nodes.
@@ -158,7 +158,7 @@ Methods
 	
 		The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 				
-.. function:: mcmc(model::MCMCModel, inputs::Dict{Symbol}, \
+.. function:: mcmc(model::Model, inputs::Dict{Symbol}, \
 				inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
 				burnin::Integer=0, thin::Integer=1, chains::Integer=1)
 
@@ -182,9 +182,9 @@ Methods
 	
 		See the :ref:`section-Line-Simulation` section of the tutorial.
 		
-.. function:: relist(m::MCMCModel, values::Vector{T<:Real}, block::Integer=0, \
+.. function:: relist(m::Model, values::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
-              relist(m::MCMCModel, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
+              relist(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
 				transform::Bool=false)
 				
 	Convert a vector of values to a set of logical and/or stochastic node values.
@@ -201,9 +201,9 @@ Methods
 	
 		A dictionary of node symbols and converted values.
 
-.. function:: relist!(m::MCMCModel, values::Vector{T<:Real}, block::Integer=0, \
+.. function:: relist!(m::Model, values::Vector{T<:Real}, block::Integer=0, \
 				transform::Bool=false)
-              relist!(m::MCMCModel, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
+              relist!(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
 				transform::Bool=false)
 				
 	Copy a vector of values to a set of logical and/or stochastic nodes.
@@ -220,7 +220,7 @@ Methods
 	
 		Returns the model with copied node values.
 							
-.. function:: setinits!(m::MCMCModel, inits::Dict{Symbol,Any})
+.. function:: setinits!(m::Model, inits::Dict{Symbol,Any})
 
 	Set the initial values of stochastic model nodes.
 	
@@ -237,7 +237,7 @@ Methods
 	
 		See the :ref:`section-Line-Development` section of the tutorial.
 
-.. function:: setinputs!(m::MCMCModel, inputs::Dict{Symbol,Any})
+.. function:: setinputs!(m::Model, inputs::Dict{Symbol,Any})
 
 	Set the values of input model nodes.
 	
@@ -254,7 +254,7 @@ Methods
 	
 		See the :ref:`section-Line-Development` section of the tutorial.
 
-.. function:: setsamplers!(m::MCMCModel, samplers::Vector{MCMCSampler})
+.. function:: setsamplers!(m::Model, samplers::Vector{MCMCSampler})
 
 	Set the block-samplers for stochastic model nodes.
 	
@@ -271,15 +271,15 @@ Methods
 	
 		See the :ref:`section-Line-Specification` and :ref:`section-Line-Simulation` sections of the tutorial.
 
-.. function:: show(m::MCMCModel)
+.. function:: show(m::Model)
 
 	Write a text representation of the model, nodes, and attributes to the current output stream.
 
-.. function:: showall(m::MCMCModel)
+.. function:: showall(m::Model)
 
 	Write a verbose text representation of the model, nodes, and attributes to the current output stream.
 
-.. function:: simulate!(m::MCMCModel, block::Integer=0)
+.. function:: simulate!(m::Model, block::Integer=0)
 
 	Simulate one MCMC draw from a specified model.
 	
@@ -296,7 +296,7 @@ Methods
 	
 		See the :ref:`section-Line-Development` section of the tutorial.
 
-.. function:: tune(m::MCMCModel, block::Integer=0)
+.. function:: tune(m::Model, block::Integer=0)
 
 	Get block-sampler tuning parameters.
 	
@@ -309,8 +309,8 @@ Methods
 	
 		If ``block = 0``, a vector of dictionaries containing block-specific tuning parameters; otherwise, one block-specific dictionary.
 
-.. function:: unlist(m::MCMCModel, block::Integer=0, transform::Bool=false)
-              unlist(m::MCMCModel, nkeys::Vector{Symbol}, transform::Bool=false)
+.. function:: unlist(m::Model, block::Integer=0, transform::Bool=false)
+              unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
 			  
 	Convert a set of logical and/or stochastic node values to a vector.
 	
@@ -325,7 +325,7 @@ Methods
 	
 		A vector of concatenated node values.
 
-.. function:: update!(m::MCMCModel, block::Integer=0)
+.. function:: update!(m::Model, block::Integer=0)
 
 	Update values of logical and stochastic model node according to their relationship with others in a model.
 	

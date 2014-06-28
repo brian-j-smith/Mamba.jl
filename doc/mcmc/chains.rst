@@ -18,23 +18,23 @@ Fields
 * ``value::Array{VariateType,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``names::Vector{String}`` : names assigned to the parameter elements.
 * ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
-* ``model::MCMCModel`` : the model from which the sampled values were generated.
+* ``model::Model`` : the model from which the sampled values were generated.
 
 Constructors
 ^^^^^^^^^^^^
 
 .. function:: MCMCChains(iters::Integer, params::Integer; \
 			    start::Integer=1, thin::Integer=1, chains::Integer=1, \
-			    names::Vector{T<:String}=Array(String,0), model::MCMCModel=MCMCModel())
+			    names::Vector{T<:String}=Array(String,0), model::Model=Model())
               MCMCChains(value::Array{T<:Real,3}; \
 			    start::Integer=1, thin::Integer=1, names::Vector{U<:String}=Array(String,0), \
-			    model::MCMCModel=MCMCModel())
+			    model::Model=Model())
 			  MCMCChains(value::Matrix{T<:Real}; \
 			    start::Integer=1, thin::Integer=1, names::Vector{U<:String}=Array(String,0), \
-			    model::MCMCModel=MCMCModel())
+			    model::Model=Model())
 			  MCMCChains(value::Vector{T<:Real}; \
 			    start::Integer=1, thin::Integer=1, names::String="Param1", \
-			    model::MCMCModel=MCMCModel())
+			    model::Model=Model())
 		
 	Construct an ``MCMCChains`` object that stores MCMC sampler output.
 	

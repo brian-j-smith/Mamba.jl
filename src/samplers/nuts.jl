@@ -66,8 +66,7 @@ function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   )
 end
 
-function nutsfx{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
-           dtype::Symbol)
+function nutsfx{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
   logf = logpdf(m, x, block, true)
   grad = isfinite(logf) ?
            gradlogpdf(m, x, block, true, dtype=dtype) :
@@ -75,8 +74,7 @@ function nutsfx{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
   logf, grad
 end
 
-function nutsfx!{T<:Real}(m::MCMCModel, x::Vector{T}, block::Integer,
-           dtype::Symbol)
+function nutsfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
   logf = logpdf!(m, x, block, true)
   grad = isfinite(logf) ?
            gradlogpdf!(m, x, block, true, dtype=dtype) :

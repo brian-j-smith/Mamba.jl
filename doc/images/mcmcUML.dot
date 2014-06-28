@@ -18,17 +18,17 @@ graph MCMC {
 
 	MCMCSampler [label = "{MCMCSampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\l+ targets : Vector\{Symbol\}\l}"]
 	
-	MCMCModel [label = "{MCMCModel|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
+	Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{MCMCSampler\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
 	
-	MCMCChains [label = "{MCMCChains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ range : Range\{Int\}\l+ model : MCMCModel\l}"]
+	MCMCChains [label = "{MCMCChains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ range : Range\{Int\}\l+ model : Model\l}"]
 
 	MCMCDependent -- Variate[len = 0.9, arrowhead = empty]
 	MCMCLogical -- MCMCDependent[arrowhead = empty]
 	MCMCStochastic -- MCMCDependent[arrowhead = empty]
 	MCMCSampler -- MCMCStochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
-	MCMCModel -- MCMCSampler[arrowtail = odiamond, headlabel = "0..*"]
-	MCMCModel -- MCMCLogical[arrowtail = odiamond, headlabel = "0..*"]
-	MCMCModel -- MCMCStochastic[arrowtail = odiamond, headlabel = "0..*"]
-	MCMCChains -- MCMCModel[len = 1.2, arrowtail = odiamond, headlabel = "1"]
+	Model -- MCMCSampler[arrowtail = odiamond, headlabel = "0..*"]
+	Model -- MCMCLogical[arrowtail = odiamond, headlabel = "0..*"]
+	Model -- MCMCStochastic[arrowtail = odiamond, headlabel = "0..*"]
+	MCMCChains -- Model[len = 1.2, arrowtail = odiamond, headlabel = "1"]
 
 }

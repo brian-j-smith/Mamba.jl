@@ -20,7 +20,7 @@ mice[:N] = size(mice[:t], 2)
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   t = MCMCStochastic(2,
     @modelexpr(r, beta, tcensor, M, N,

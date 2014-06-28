@@ -1,6 +1,6 @@
-#################### MCMCModel Graph Methods ####################
+#################### Model Graph Methods ####################
 
-function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::MCMCModel)
+function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   found = false
   for v in out_neighbors(v, g)
     if isa(m[v.key], MCMCStochastic) || any_stochastic(v, g, m)
@@ -11,7 +11,7 @@ function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::MCMCModel)
   found
 end
 
-function draw(m::MCMCModel; filename::String="")
+function draw(m::Model; filename::String="")
   dot = graph2dot(m)
   if length(filename) == 0
     print(dot)
@@ -25,7 +25,7 @@ function draw(m::MCMCModel; filename::String="")
   end
 end
 
-function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::MCMCModel)
+function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   values = Symbol[]
   for v in out_neighbors(v, g)
     push!(values, v.key)
@@ -36,7 +36,7 @@ function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::MCMCModel)
   values
 end
 
-function graph(m::MCMCModel)
+function graph(m::Model)
   g = graph(KeyVertex{Symbol}[], Edge{KeyVertex{Symbol}}[])
   lookup = (Symbol => Integer)[]
   for key in keys(m, :all)
@@ -52,9 +52,9 @@ function graph(m::MCMCModel)
   g
 end
 
-function graph2dot(m::MCMCModel)
+function graph2dot(m::Model)
   g = graph(m)
-  str = "digraph MCMCModel {\n"
+  str = "digraph Mamba.Model {\n"
   deps = keys(m, :dependent)
   for v in vertices(g)
     attr = (String => String)[]
@@ -92,6 +92,6 @@ function tsort{T}(g::AbstractGraph{KeyVertex{T}, Edge{KeyVertex{T}}})
   map(v -> v.key, V)
 end
 
-function tsort(m::MCMCModel)
+function tsort(m::Model)
   tsort(graph(m))
 end

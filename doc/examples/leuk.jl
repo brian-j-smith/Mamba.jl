@@ -34,7 +34,7 @@ leuk[:r] = 0.1
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   dN = MCMCStochastic(2,
     @modelexpr(Y, beta, Z, dL0, N, T,

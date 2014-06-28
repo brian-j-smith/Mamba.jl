@@ -41,7 +41,7 @@ stacks[:z] = Float64[
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(1,
     @modelexpr(mu, sigma, N,

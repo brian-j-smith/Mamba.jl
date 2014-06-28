@@ -48,7 +48,7 @@ rats[:Xm] = rats[:X] - rats[:xbar]
 
 ## Model Specification
 
-model = MCMCModel(
+model = Model(
 
   y = MCMCStochastic(1,
     @modelexpr(alpha, beta, rat, Xm, s2_c,
