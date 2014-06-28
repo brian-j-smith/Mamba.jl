@@ -265,7 +265,7 @@ The DAG representation of an ``Model`` can be printed out at the command-line or
 
 	>>> draw(model)
 	
-	digraph Model {
+	digraph MambaModel {
 	  "mu" [shape="diamond", fillcolor="gray85", style="filled"];
 	    "mu" -> "y";
 	  "xmat" [shape="box", fillcolor="gray85", style="filled"];

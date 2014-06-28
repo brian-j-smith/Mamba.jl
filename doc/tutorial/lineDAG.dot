@@ -1,4 +1,4 @@
-digraph MCMCModel {
+digraph MambaModel {
 	"mu" [shape="diamond", fillcolor="gray85", style="filled"];
 		"mu" -> "y";
 	"xmat" [shape="box", fillcolor="gray85", style="filled"];

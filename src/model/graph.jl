@@ -54,7 +54,7 @@ end
 
 function graph2dot(m::Model)
   g = graph(m)
-  str = "digraph Mamba.Model {\n"
+  str = "digraph MambaModel {\n"
   deps = keys(m, :dependent)
   for v in vertices(g)
     attr = (String => String)[]
