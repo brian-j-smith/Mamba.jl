@@ -42,6 +42,7 @@ Contents
 	samplers.rst
 	examples.rst
 	conclusion.rst
+	supplement.rst
 	xrefs.rst
 
 

@@ -42,6 +42,8 @@ Stand-Alone Functions
 	
 	**Example**
 
+		The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
+		
 		.. literalinclude:: nuts.jl
 			:language: julia
 
