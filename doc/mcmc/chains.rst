@@ -281,6 +281,10 @@ Methods
 	
 		An array of plots that can be saved to a file with ``draw()``.
 
+	**Note**
+	
+		Plots are created using the `Gadfly` package :cite:`jones:2014:GP`.
+		
 	**Example**
 	
 		See the :ref:`section-Line-Plotting` section of the tutorial.

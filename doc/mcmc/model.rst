@@ -104,6 +104,10 @@ Methods
 	
 		The resulting gradient vector.  Method ``gradlogpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 
+	**Note**
+	
+		Numerical approximation of derivatives by central and forward differencing is performed with the `Calculus` package :cite:`white:2014:CP`.
+
 .. function:: graph(m::Model)
 
 	Construct a graph representation of model nodes and their relationships.

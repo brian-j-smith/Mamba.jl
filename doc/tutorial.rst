@@ -102,7 +102,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 	)
 	
-A single integer value for the first ``Stochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions <http://distributionsjl.readthedocs.org/en/latest/>`_ package :cite:`juliastats:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``Stochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions` package :cite:`bates:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 Stochastic expressions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distribution specifications for the ``beta`` node are shown below.
 
@@ -255,7 +255,7 @@ The Model Expression Macro
 Directed Acyclic Graphs
 -----------------------
 
-One of the internal structures created by ``Model`` is a graph representation of the model nodes and their associations.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `Mamba` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
+One of the internal structures created by ``Model`` is a graph representation of the model nodes and their associations.  Graphs are managed internally with the `Graphs` package :cite:`white:2014:GP`.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `Mamba` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
 
 The DAG representation of an ``Model`` can be printed out at the command-line or saved to an external file in a format that can be displayed with the `Graphviz <http://www.graphviz.org/>`_ software.
 
@@ -373,7 +373,7 @@ Values of the diagnostic that are greater than 1.2 are evidence of non-convergen
 Posterior Summaries
 ^^^^^^^^^^^^^^^^^^^
 
-Once convergence has been assessed, sample statistics may be computed on the MCMC output to estimate features of the posterior distribution.  Some of the available posterior summaries are illustrated in the code block below.
+Once convergence has been assessed, sample statistics may be computed on the MCMC output to estimate features of the posterior distribution.  The `StatsBase` package :cite:`lin:2014:SBP` is utilized in the calculation of many posterior estimates.  Some of the available posterior summaries are illustrated in the code block below.
 
 .. code-block:: julia
 
@@ -481,7 +481,7 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 Plotting
 ^^^^^^^^
 
-Summary plots can be created using the ``plot`` function and written to files using the ``draw`` function. 
+Plotting of sampler output in `Mamba` is based on the `Gadfly` package :cite:`jones:2014:GP`.  Summary plots can be created and written to files using the ``plot`` and ``draw`` functions.
 
 .. code-block:: julia
 
@@ -496,7 +496,6 @@ Summary plots can be created using the ``plot`` function and written to files us
 	
 	Trace and density plots.
 
-	
 The ``plot`` function can also be used to make autocorrelation and running means plots.  Legends can be added with the optional ``legend`` argument.  Arrays of plots can be created and passed to the ``draw`` function.  Use ``nrow`` and  ``ncol`` to determine how many rows and columns of plots to include in each drawing.
 
 .. code-block:: julia
