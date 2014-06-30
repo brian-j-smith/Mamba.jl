@@ -6,7 +6,7 @@ Mamba: Markov chain Monte Carlo for Bayesian analysis in julia (version |release
 :Maintainer: Brian J Smith (brian-j-smith@uiowa.edu)
 :Contributors: Benjamin Deonovic (benjamin-deonovic@uiowa.edu), Brian J Smith (brian-j-smith@uiowa.edu)
 :Web site: https://github.com/brian-j-smith/Mamba.jl
-:License: MIT
+:License: `MIT <https://github.com/brian-j-smith/Mamba.jl/blob/master/LICENSE.md>`_
 
 Purpose
 -------
