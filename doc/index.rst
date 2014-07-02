@@ -29,6 +29,13 @@ The package aims to provide:
 	* Tools for convergence diagnostics and posterior inference.
 	* Run-time performance on par with compiled MCMC software.
 
+The following **julia** command will install the package:
+
+.. code-block:: julia
+
+	julia> Pkg.clone("git://github.com/brian-j-smith/Mamba.jl.git")
+
+	
 Contents
 --------
 
