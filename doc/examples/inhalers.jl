@@ -1,5 +1,4 @@
 using Mamba
-using Distributions
 
 ## Data
 inhalers = (Symbol => Any)[

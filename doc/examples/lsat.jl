@@ -1,5 +1,4 @@
 using Mamba
-using Distributions
 
 ## Data
 lsat = (Symbol => Any)[

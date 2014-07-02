@@ -1,5 +1,4 @@
 using Mamba
-using Distributions
 
 ## Data
 kidney = (Symbol => Any)[

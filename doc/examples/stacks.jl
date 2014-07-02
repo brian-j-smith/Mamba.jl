@@ -1,5 +1,4 @@
 using Mamba
-using Distributions
 
 ## Data
 stacks = (Symbol => Any)[

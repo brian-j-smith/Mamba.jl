@@ -72,7 +72,6 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 .. code-block:: julia
 
 	using Mamba
-	using Distributions
 
 	## Model Specification
 

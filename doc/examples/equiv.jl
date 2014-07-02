@@ -1,5 +1,4 @@
 using Mamba
-using Distributions
 
 ## Data
 equiv = (Symbol => Any)[
