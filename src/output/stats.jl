@@ -71,19 +71,14 @@ function logpdf(c::Chains, nkeys::Vector{Symbol})
   iters, p, chains = size(c.value)
   values = Array(Float64, iters, 1, chains)
   for k in 1:chains
-    print("\nPROCESSING Chains $(k)/$(chains)\n")
-    pct = 0
+    meter = ChainProgress(k, iters)
     for i in 1:iters
-      if floor(100 * i / iters) >= pct
-        print(string("Row: ", lpad(i, length(string(iters)), ' '),
-          "/$(iters) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
-        pct += 10
-      end
       relist!(m, c.value[i,idx,k][:])
       values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
+      next!(meter)
     end
+    println()
   end
-  print("\n")
 
   relist!(m, x0)
 

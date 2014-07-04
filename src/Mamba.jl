@@ -129,10 +129,11 @@ include("samplers/nuts.jl")
 include("samplers/sampler.jl")
 include("samplers/slice.jl")
 
-include("utils.jl")
-
 include("variate/core.jl")
 include("variate/numeric.jl")
+
+include("progress.jl")
+include("utils.jl")
 
 
 #################### Exports ####################

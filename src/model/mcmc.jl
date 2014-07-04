@@ -22,26 +22,18 @@ function mcmc(model::Model, inputs::Dict{Symbol},
     sims[k] = Array(VariateType, length(burnin+1:thin:iters),
                     length(unlist(m, true)))
 
-    print("\nSAMPLING FROM CHAIN $(k)/$(chains)\n")
-    pct = 0
     i = 1
+    meter = ChainProgress(k, iters)
     for t in 1:iters
-
-      if floor(100 * t / iters) >= pct
-        print(string("Iteration: ", lpad(t, length(string(iters)), ' '),
-          "/$(iters) [", lpad(pct, 3, ' '), "%] @ $(strftime(time()))\n"))
-        pct += 10
-      end
-
       simulate!(m)
-
       if t > burnin && (t - burnin - 1) % thin == 0
         sims[k][i,:] = unlist(m, true)
         i += 1
       end
+      next!(meter)
     end
+    println()
   end
-  print("\n")
 
   Chains(cat(3, sims...), start=burnin+thin, thin=thin, names=names(m, true),
          model=m)
