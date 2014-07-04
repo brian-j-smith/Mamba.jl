@@ -7,7 +7,7 @@ using Distributions
 
 #################### Imports ####################
 
-import Base: Base, cor, dot, print
+import Base: Base, cor, dot
 import Base.LinAlg: Cholesky
 import Calculus: gradient
 import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt,

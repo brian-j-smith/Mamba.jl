@@ -23,7 +23,7 @@ function next!(p::ChainProgress)
   p
 end
 
-function print(io::IO, p::ChainProgress)
+function Base.print(io::IO, p::ChainProgress)
   pct = iround(100.0 * p.counter / p.iters)
   str = string(
     "Chain ", p.chain, ": ", lpad(p.counter, length(string(p.iters)), ' '),
