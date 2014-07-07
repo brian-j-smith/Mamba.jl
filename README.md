@@ -14,6 +14,7 @@ The package aims to provide:
 * Directed acyclic graph representations of models.
 * Arbitrary blocking of model parameters and designation of block-specific samplers.
 * Samplers that can be used with the included simulation engine or apart from it.
+* NEW: Automatic parallel execution of parallel chains on multi-processor systems.
 * Command-line access to all package functionality, including its simulation API.
 * Tools for convergence diagnostics and posterior inference.
 * Run-time performance on par with compiled MCMC software.
