@@ -11,6 +11,9 @@ function mcmc(model::Model, inputs::Dict{Symbol},
 
   sims = Array(Chains, chains)
 
+  print(string("MCMC Simulation of $iters Iterations x $chains Chain",
+               ifelse(chains > 1, "s", ""), "...\n\n"))
+
   np = nprocs()
   i = 1
   nextidx() = (idx = i; i += 1; idx)
