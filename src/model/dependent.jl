@@ -170,5 +170,5 @@ function depsrc(expr)
 end
 
 function depfx(expr::Expr)
-  eval(Main, Expr(:function, :(model::Mamba.Model,), expr))
+  eval(Expr(:function, :(model::Mamba.Model,), expr))
 end
