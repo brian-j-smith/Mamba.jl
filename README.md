@@ -25,4 +25,4 @@ The following **julia** command will install the package:
 julia> Pkg.clone("git://github.com/brian-j-smith/Mamba.jl.git")
 ```
 
-See the [Package Documentation](http://mambajl.readthedocs.org/en/latest/) for details and examples.
+See the [Package Documentation](http://brian-j-smith.github.io/Mamba.jl) for details and examples.
