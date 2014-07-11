@@ -8,7 +8,7 @@ Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2011:nuts` to 
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: nutseps(v::NUTSVariate, fx::Function)
+.. function:: nutsepsilon(v::NUTSVariate, fx::Function)
 	
 	Generate an initial value for the step size parameter of the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 	
