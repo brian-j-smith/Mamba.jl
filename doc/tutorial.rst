@@ -491,7 +491,7 @@ Plotting of sampler output in `Mamba` is based on the `Gadfly` package :cite:`jo
 	## Write plot to file
 	draw(p, filename="summaryplot.svg")
 
-.. figure:: tutorial/summaryplot.svg
+.. figure:: tutorial/summaryplot.*
 	:align: center
 	
 	Trace and density plots.
@@ -504,7 +504,7 @@ The ``plot`` function can also be used to make autocorrelation and running means
 	p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
 	draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
 
-.. figure:: tutorial/autocormeanplot.svg
+.. figure:: tutorial/autocormeanplot.*
 	:align: center
 	
 	Autocorrelation and running mean plots.
