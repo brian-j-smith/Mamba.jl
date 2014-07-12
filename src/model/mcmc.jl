@@ -1,5 +1,6 @@
 #################### MCMC Simulation Engine ####################
 
+
 function mcmc(model::Model, inputs::Dict{Symbol},
               inits::Vector{Dict{Symbol,Any}}, iters::Integer;
               burnin::Integer=0, thin::Integer=1, chains::Integer=1)
@@ -8,40 +9,23 @@ function mcmc(model::Model, inputs::Dict{Symbol},
 
   m = deepcopy(model)
   setinputs!(m, inputs)
-
-  sims = Array(Chains, chains)
+  m.burnin = burnin
 
   print(string("MCMC Simulation of $iters Iterations x $chains Chain",
                ifelse(chains > 1, "s", ""), "...\n\n"))
 
-  np = nprocs()
-  i = 1
-  nextidx() = (idx = i; i += 1; idx)
-  @sync begin
-    for j in 1:np
-      if j != myid() || np == 1
-        @async begin
-          while true
-            k = nextidx()
-            if k > chains
-              break
-            end
-            sims[k] = remotecall_fetch(j, mcmc_sub!, m, inits[k], iters, burnin,
-                                       thin, k)
-          end
-        end
-      end
-    end
-  end
+  lsts = [[m, inits[k], iters, burnin, thin, k] for k in 1:chains]
+  sims = pmap(mcmc_sub!, lsts)
 
-  cat(sims)
+  cat(Chains[sims...])
 end
 
-function mcmc_sub!(model::Model, inits::Dict{Symbol,Any}, iters::Integer,
-                   burnin::Integer, thin::Integer, chain::Integer)
+
+function mcmc_sub!(args::Vector)
+
+  model, inits, iters, burnin, thin, chain = args
 
   setinits!(model, inits)
-  model.burnin = burnin
   model.chain = chain
 
   pnames = names(model, true)
