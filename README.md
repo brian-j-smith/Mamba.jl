@@ -1,6 +1,7 @@
 # Mamba: Markov chain Monte Carlo for Bayesian analysis in julia
 
 [![Build Status](https://travis-ci.org/brian-j-smith/Mamba.jl.svg?branch=master)](https://travis-ci.org/brian-j-smith/Mamba.jl)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.10856.png)](http://dx.doi.org/10.5281/zenodo.10856)
 
 ## Purpose
 
