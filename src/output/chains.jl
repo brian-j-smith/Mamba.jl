@@ -148,6 +148,10 @@ function header(c::Chains)
   )
 end
 
+function ismodelbased(c::Chains)
+  c.model.iter > 0
+end
+
 function link(c::Chains)
   cc = deepcopy(c.value)
   idx0 = 1:length(c.names)
