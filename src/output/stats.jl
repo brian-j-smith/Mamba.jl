@@ -25,6 +25,8 @@ function describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
 end
 
 function dic(c::Chains)
+  ismodelbased(c) || error("dic requires Chains from a Model fit")
+
   m = c.model
   nkeys = keys(m, :output)
   idx = indexin(names(m, keys(m, :block)), c)
@@ -63,6 +65,8 @@ function hpd(c::Chains; alpha::Real=0.05)
 end
 
 function logpdf(c::Chains, nkeys::Vector{Symbol})
+  ismodelbased(c) || error("logpdf requires Chains from a Model fit")
+
   m = c.model
   idx = indexin(names(m, keys(m, :block)), c)
 
