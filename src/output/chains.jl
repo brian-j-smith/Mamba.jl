@@ -130,10 +130,6 @@ function combine(c::Chains)
   value
 end
 
-function getstate(c::Chains, chain::Integer)
-  c.model.states[chain]
-end
-
 function header(c::Chains)
   string(
     "Iterations = $(first(c.range)):$(last(c.range))\n",
