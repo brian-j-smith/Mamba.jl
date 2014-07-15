@@ -82,6 +82,7 @@ module Mamba
     nodes::Dict{Symbol,Any}
     dependents::Vector{Symbol}
     samplers::Vector{Sampler}
+    state::Vector{Vector{VariateType}}
     iter::Integer
     burnin::Integer
     chain::Integer

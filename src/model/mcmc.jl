@@ -9,6 +9,7 @@ function mcmc(model::Model, inputs::Dict{Symbol},
 
   m = deepcopy(model)
   setinputs!(m, inputs)
+  m.state = Array(Vector{VariateType}, chains)
   m.burnin = burnin
 
   print(string("MCMC Simulation of $iters Iterations x $chains Chain",
@@ -17,7 +18,10 @@ function mcmc(model::Model, inputs::Dict{Symbol},
   lsts = [[m, inits[k], iters, burnin, thin, k] for k in 1:chains]
   sims = pmap(mcmc_sub!, lsts)
 
-  cat(Chains[sims...])
+  m = sims[1].model
+  m.state = map(k -> sims[k].model.state[k], 1:chains)
+  Chains(cat(3, map(k -> sims[k].value, 1:chains)...),
+         start=burnin+thin, thin=thin, names=sims[1].names, model=m)
 end
 
 
@@ -42,6 +46,7 @@ function mcmc_sub!(args::Vector)
     end
     next!(meter)
   end
+  model.state[chain] = unlist(model)
   println()
 
   sim

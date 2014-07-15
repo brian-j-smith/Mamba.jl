@@ -38,15 +38,6 @@ end
 
 #################### Chains Base/Utility Methods ####################
 
-function Base.cat(c::Vector{Chains})
-  n = length(c)
-  n > 0 || error("no Chains to concatenate")
-  value = cat(3, [c[i].value for i in 1:n]...)
-  range = c[1].range
-  Chains(value, start=start(range), thin=step(range), names=c[1].names,
-         model=c[1].model)
-end
-
 function Base.getindex(c::Chains, iters::Range, names, chains)
   from = max(iceil((first(iters) - first(c.range)) / step(c.range) + 1), 1)
   thin = step(iters)
@@ -137,6 +128,10 @@ function combine(c::Chains)
     end
   end
   value
+end
+
+function getstate(c::Chains, chain::Integer)
+  c.model.state[chain]
 end
 
 function header(c::Chains)

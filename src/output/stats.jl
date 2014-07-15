@@ -31,15 +31,11 @@ function dic(c::Chains)
   nkeys = keys(m, :output)
   idx = indexin(names(m, keys(m, :block)), c)
 
-  x0 = unlist(m)
-
   xbar = map(i -> mean(c.value[:,i,:]), idx)
   relist!(m, xbar)
   Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, nkeys)
   D = -2.0 * logpdf(c, nkeys)
   p = [mean(D) - Dhat, 0.5 * var(D)]
-
-  relist!(m, x0)
 
   ChainSummary([Dhat + 2.0 * p  p], ["pD", "pV"],
                ["DIC", "Effective Parameters"], header(c))
@@ -70,8 +66,6 @@ function logpdf(c::Chains, nkeys::Vector{Symbol})
   m = c.model
   idx = indexin(names(m, keys(m, :block)), c)
 
-  x0 = unlist(m)
-
   iters, p, chains = size(c.value)
   values = Array(Float64, iters, 1, chains)
   for k in 1:chains
@@ -83,8 +77,6 @@ function logpdf(c::Chains, nkeys::Vector{Symbol})
     end
     println()
   end
-
-  relist!(m, x0)
 
   values
 end

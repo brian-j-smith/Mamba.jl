@@ -9,7 +9,8 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.symbol = key
     nodedict[key] = node
   end
-  m = Model(nodedict, Symbol[], Sampler[], iter, burnin, chain, false, false)
+  m = Model(nodedict, Symbol[], Sampler[], Vector{VariateType}[], iter, burnin,
+            chain, false, false)
   g = graph(m)
   V = vertices(g)
   lookup = (Symbol => Integer)[]
