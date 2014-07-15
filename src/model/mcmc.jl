@@ -1,22 +1,43 @@
 #################### MCMC Simulation Engine ####################
 
 
-function mcmc(model::Model, inputs::Dict{Symbol},
-              inits::Vector{Dict{Symbol,Any}}, iters::Integer;
-              burnin::Integer=0, thin::Integer=1, chains::Integer=1)
+function mcmc(c::Chains, iters::Integer)
+
+  ismodelbased(c) || error("mcmc restart requires Chains from a Model fit")
+  last(c.range) == c.model.iter ||
+    error("Chains have been subsetted to exclude the last iterations")
+
+  mm = deepcopy(c.model)
+  c2 = mcmc_master!(mm, mm.state, iters, 0, step(c.range), size(c, 3))
+
+  Chains(cat(1, c.value, c2.value), start=first(c.range), thin=step(c.range),
+         names=c.names, model=c2.model)
+end
+
+
+function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
+              iters::Integer; burnin::Integer=0, thin::Integer=1,
+              chains::Integer=1)
 
   iters > burnin || error("iters <= burnin")
 
-  m = deepcopy(model)
-  setinputs!(m, inputs)
-  m.state = Array(Vector{VariateType}, chains)
-  m.burnin = burnin
+  mm = deepcopy(m)
+  setinputs!(mm, inputs)
+  mm.state = Array(Vector{VariateType}, chains)
+  mm.burnin = burnin
+
+  mcmc_master!(mm, inits, iters, burnin, thin, chains)
+end
+
+
+function mcmc_master!(m::Model, inits, iters::Integer, burnin::Integer,
+                      thin::Integer, chains::Integer)
 
   print(string("MCMC Simulation of $iters Iterations x $chains Chain",
                ifelse(chains > 1, "s", ""), "...\n\n"))
 
-  lsts = [[m, inits[k], iters, burnin, thin, k] for k in 1:chains]
-  sims = pmap(mcmc_sub!, lsts)
+  lsts = [Any[m, inits[k], iters, burnin, thin, k] for k in 1:chains]
+  sims = pmap(mcmc_worker!, lsts)
 
   m = sims[1].model
   m.state = map(k -> sims[k].model.state[k], 1:chains)
@@ -25,7 +46,7 @@ function mcmc(model::Model, inputs::Dict{Symbol},
 end
 
 
-function mcmc_sub!(args::Vector)
+function mcmc_worker!(args::Vector)
 
   model, inits, iters, burnin, thin, chain = args
 
