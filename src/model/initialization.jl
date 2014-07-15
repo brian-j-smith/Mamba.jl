@@ -31,6 +31,10 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
   m
 end
 
+function setinits!{T<:Real}(m::Model, inits::Vector{T})
+  relist!(m, inits)
+end
+
 function setinputs!(m::Model, inputs::Dict{Symbol,Any})
   for key in keys(m, :input)
     isa(inputs[key], Dependent) &&
