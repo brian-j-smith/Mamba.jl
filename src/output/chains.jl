@@ -131,7 +131,7 @@ function combine(c::Chains)
 end
 
 function getstate(c::Chains, chain::Integer)
-  c.model.state[chain]
+  c.model.states[chain]
 end
 
 function header(c::Chains)

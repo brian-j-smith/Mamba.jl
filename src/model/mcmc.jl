@@ -8,7 +8,7 @@ function mcmc(c::Chains, iters::Integer)
     error("Chains have been subsetted to exclude the last iterations")
 
   mm = deepcopy(c.model)
-  c2 = mcmc_master!(mm, mm.state, iters, 0, step(c.range), size(c, 3))
+  c2 = mcmc_master!(mm, mm.states, iters, 0, step(c.range), size(c, 3))
 
   Chains(cat(1, c.value, c2.value), start=first(c.range), thin=step(c.range),
          names=c.names, model=c2.model)
@@ -23,7 +23,7 @@ function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
 
   mm = deepcopy(m)
   setinputs!(mm, inputs)
-  mm.state = Array(Vector{VariateType}, chains)
+  mm.states = Array(Vector{VariateType}, chains)
   mm.burnin = burnin
 
   mcmc_master!(mm, inits, iters, burnin, thin, chains)
@@ -40,7 +40,7 @@ function mcmc_master!(m::Model, inits, iters::Integer, burnin::Integer,
   sims = pmap(mcmc_worker!, lsts)
 
   m = sims[1].model
-  m.state = map(k -> sims[k].model.state[k], 1:chains)
+  m.states = map(k -> sims[k].model.states[k], 1:chains)
   Chains(cat(3, map(k -> sims[k].value, 1:chains)...),
          start=burnin+thin, thin=thin, names=sims[1].names, model=m)
 end
@@ -67,7 +67,7 @@ function mcmc_worker!(args::Vector)
     end
     next!(meter)
   end
-  model.state[chain] = unlist(model)
+  model.states[chain] = unlist(model)
   println()
 
   sim
