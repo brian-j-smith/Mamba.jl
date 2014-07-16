@@ -4,13 +4,17 @@
 function mcmc(c::Chains, iters::Integer)
 
   ismodelbased(c) || error("mcmc restart requires Chains from a Model fit")
-  last(c.range) == c.model.iter ||
-    error("Chains have been subsetted to exclude the last iterations")
+
+  burnin = last(c.range) - c.model.iter
+  thin = step(c.range)
+  burnin + thin > 0 ||
+    error("Chains have been subsetted to exclude the last iteration")
 
   mm = deepcopy(c.model)
-  c2 = mcmc_master!(mm, mm.states, iters, 0, step(c.range), size(c, 3))
+  c2 = mcmc_master!(mm, mm.states, iters, burnin, thin, size(c, 3))
 
-  Chains(cat(1, c.value, c2.value), start=first(c.range), thin=step(c.range),
+  c2.model.iter += c.model.iter
+  Chains(cat(1, c.value, c2.value), start=first(c.range), thin=thin,
          names=c.names, model=c2.model)
 end
 
@@ -61,7 +65,7 @@ function mcmc_worker!(args::Vector)
   meter = ChainProgress(chain, iters)
   for t in 1:iters
     simulate!(model)
-    if t > burnin && (t - burnin - 1) % thin == 0
+    if t > burnin && (t - burnin) % thin == 0
       sim.value[i,:,1] = unlist(model, true)
       i += 1
     end
