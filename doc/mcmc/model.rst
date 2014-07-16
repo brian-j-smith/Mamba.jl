@@ -18,9 +18,10 @@ Fields
 * ``nodes::Dict{Symbol,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
 * ``dependents::Vector{Symbol}`` : symbols of all ``Dependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``samplers::Vector{Sampler}`` : sampling functions for updating blocks of stochastic nodes.
+* ``states::Vector{Vector{VariateType}}`` : states of chains at the end of a possible series of MCMC runs.
 * ``iter::Integer`` : current MCMC draw from the target distribution.
 * ``burnin::Integer`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
-* ``chain::Integer`` : current run of the MCMC simulator in a possible sequence of runs.
+* ``chain::Integer`` : current run of an MCMC simulator in a possible series of runs.
 * ``hasinputs::Bool`` : whether values have been assigned to the input nodes.
 * ``hasinits::Bool`` : whether initial values have been assigned to stochastic nodes.
 
@@ -165,12 +166,14 @@ Methods
 .. function:: mcmc(m::Model, inputs::Dict{Symbol}, \
 				inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
 				burnin::Integer=0, thin::Integer=1, chains::Integer=1)
+			  mcmc(c::Chains, iters::Integer)
 
 	Simulate MCMC draws for a specified model.
 	
 	**Arguments**
 	
 		* ``m`` : a specified mode.
+		* ``c`` : chains from a previous call to ``mcmc`` for which to simulate additional draws.
 		* ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
 		* ``inits`` : a vector of dictionaries that contain initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.  Consecutive runs of the simulator will iterate through the vector's dictionary elements.
 		* ``iters`` : number of draws to generate for each simulation run.

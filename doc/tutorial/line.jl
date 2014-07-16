@@ -151,8 +151,15 @@ autocor(sim1) |> display
 ## Deviance Information Criterion
 dic(sim1) |> display
 
+
 ## Subset Sampler Output
-describe(sim1[1000:5000, ["beta[1]", "beta[2]"], :])
+sim = sim1[1000:5000, ["beta[1]", "beta[2]"], :]
+describe(sim)
+
+
+## Restart the Sampler
+sim = mcmc(sim1, 5000)
+describe(sim)
 
 
 ## Plotting

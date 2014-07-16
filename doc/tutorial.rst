@@ -326,7 +326,7 @@ Initial values for ``y`` are those in the observed response vector.  Likewise, t
 MCMC Engine
 ^^^^^^^^^^^
 
-MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the ``mcmc`` function.  As shown below, the first three arguments are an ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  The simulation of multiple chains will be executed in parallel automatically if **julia** is running in multi-processor mode on a multi-processor system.  Multi-processor mode can be started with the command line argument ``julia -p n``, where ``n`` is the number of available processors.  See the **julia** documentation on `parallel computing <http://julia.readthedocs.org/en/latest/manual/parallel-computing/>`_ for details. 
+MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are an ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  The simulation of multiple chains will be executed in parallel automatically if **julia** is running in multi-processor mode on a multi-processor system.  Multi-processor mode can be started with the command line argument ``julia -p n``, where ``n`` is the number of available processors.  See the **julia** documentation on `parallel computing <http://julia.readthedocs.org/en/latest/manual/parallel-computing/>`_ for details. 
 
 .. code-block:: julia
 
@@ -456,7 +456,8 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 .. code-block:: julia
 
 	## Subset Sampler Output
-	>>> describe(sim1[1000:5000, ["beta[1]", "beta[2]"], :])
+	>>> sim = sim1[1000:5000, ["beta[1]", "beta[2]"], :]
+	>>> describe(sim)
 	
 	Iterations = 1000:5000
 	Thinning interval = 2
@@ -477,6 +478,37 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 
 
 .. _section-Line-Plotting:
+
+
+Restarting the Sampler
+^^^^^^^^^^^^^^^^^^^^^^
+
+Convergence diagnostics or posterior summaries may indicate that additional draws from the posterior are needed for inference.  In such cases, the :func:`mcmc` function can be used to restart the sampler with previously generated output, as illustrated below.
+
+.. code-block:: julia
+
+	## Restart the Sampler
+	>>> sim = mcmc(sim1, 5000)
+	>>> describe(sim)
+
+	Iterations = 252:15000
+	Thinning interval = 2
+	Number of chains = 3
+	Samples per chain = 7375
+
+	Empirical Posterior Estimates:
+	4x6 Array{Any,2}:
+	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"          "ESS"
+	 "s2"       1.3584    2.01987   0.0135794    0.0614207    4891.59  
+	 "beta[1]"  0.614309  1.24606   0.00837718   0.0159013   11656.0   
+	 "beta[2]"  0.796488  0.374392  0.00251701   0.00461965  12054.8   
+
+	Quantiles:
+	4x6 Array{Any,2}:
+	 ""           "2.5%"       "25.0%"     "50.0%"   "75.0%"   "97.5%"
+	 "s2"        0.174712     0.398579    0.697138  1.3956    7.29569 
+	 "beta[1]"  -1.90886     -0.00502574  0.591263  1.19065   3.22561 
+	 "beta[2]"   0.00943373   0.620339    0.803543  0.982711  1.55282 
 
 Plotting
 ^^^^^^^^
