@@ -32,6 +32,7 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
 end
 
 function setinits!{T<:Real}(m::Model, inits::Vector{T})
+  m.iter = 0
   relist!(m, inits)
 end
 
