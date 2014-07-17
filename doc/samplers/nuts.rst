@@ -112,7 +112,7 @@ Sampler Constructor
 .. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
 				target::Real=0.6)
 
-	Construct an ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct a ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -124,7 +124,7 @@ Sampler Constructor
 
 	**Value**
 	
-		Returns an ``Sampler`` type object.
+		Returns a ``Sampler`` type object.
 
 	**Example**
 	

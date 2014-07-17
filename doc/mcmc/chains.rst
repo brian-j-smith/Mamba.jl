@@ -36,7 +36,7 @@ Constructors
 			    start::Integer=1, thin::Integer=1, names::String="Param1", \
 			    model::Model=Model())
 		
-	Construct an ``Chains`` object that stores MCMC sampler output.
+	Construct a ``Chains`` object that stores MCMC sampler output.
 	
 	**Arguments**
 	
@@ -51,7 +51,7 @@ Constructors
 		
 	**Value**
 	
-		Returns an ``Chains`` type object.
+		Returns a ``Chains`` type object.
 
 	**Example**
 	
@@ -204,7 +204,7 @@ Methods
 		
 	**Value**
 	
-		Returns an ``Chains`` object with the subsetted sampler output.
+		Returns a ``Chains`` object with the subsetted sampler output.
 		
 	**Example**
 	
@@ -314,7 +314,7 @@ Methods
 		
 	**Value**
 	
-		Returns an ``Chains`` object with the sampler output stored in the specified indices.
+		Returns a ``Chains`` object with the sampler output stored in the specified indices.
 
 	**Example**
 	

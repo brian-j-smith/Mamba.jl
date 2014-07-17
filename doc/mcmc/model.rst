@@ -31,7 +31,7 @@ Constructor
 .. function:: Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1, \
 				samplers::Vector{Sampler}=Array(Sampler, 0), nodes...)
 				
-	Construct an ``Model`` object that defines a model for MCMC simulation.
+	Construct a ``Model`` object that defines a model for MCMC simulation.
 	
 	**Arguments**
 	
@@ -43,7 +43,7 @@ Constructor
 		
 	**Value**
 	
-		Returns an ``Model`` type object.
+		Returns a ``Model`` type object.
 
 	**Example**
 	
@@ -183,7 +183,7 @@ Methods
 		
 	**Value**
 	
-		An ``Chains`` type object of simulated draws.
+		A ``Chains`` type object of simulated draws.
 
 	**Example**
 	

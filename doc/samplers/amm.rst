@@ -94,7 +94,7 @@ Sampler Constructor
 .. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
 				adapt::Symbol=:all)
 
-	Construct an ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -107,7 +107,7 @@ Sampler Constructor
 
 	**Value**
 	
-		Returns an ``Sampler`` type object.
+		Returns a ``Sampler`` type object.
 
 	**Example**
 	

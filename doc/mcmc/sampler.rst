@@ -5,7 +5,7 @@
 Sampler
 -----------
 
-Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gibbs` is implemented as an ``Sampler`` type object, whose fields are summarized herein.  The ``eval`` field is an anonymous function defined as
+Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gibbs` is implemented as a ``Sampler`` type object, whose fields are summarized herein.  The ``eval`` field is an anonymous function defined as
 
 .. code-block:: julia
 
@@ -31,7 +31,7 @@ Constructor
 
 .. function:: Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
 
-	Construct an ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
+	Construct a ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
 	
 	**Arguments**
 	
@@ -41,7 +41,7 @@ Constructor
 		
 	**Value**
 	
-		Returns an ``Sampler`` type object.
+		Returns a ``Sampler`` type object.
 
 	**Example**
 	

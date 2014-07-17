@@ -30,11 +30,11 @@ A summary of the steps involved in using the package to perform MCMC simulation 
 
 	#. Specify the model using the constructors described in the :ref:`section-MCMC-Types` section, to create the following:
  
-		a. An ``Stochastic`` object for each model term that has a distributional specification.  This includes parameters and data, such as the regression parameters ``b0``, ``b1``, and ``s2`` that have prior distributions and ``y`` that has a likelihood specification.
+		a. A ``Stochastic`` object for each model term that has a distributional specification.  This includes parameters and data, such as the regression parameters ``b0``, ``b1``, and ``s2`` that have prior distributions and ``y`` that has a likelihood specification.
 
 		b. A vector of ``Sampler`` objects containing supplied, user-defined, or external functions :math:`\{f_j\}_{j=1}^{B}` for sampling each parameter block :math:`\Theta_j`.
 
-		c. An ``Model`` object from the resulting stochastic nodes and sampler vector.
+		c. A ``Model`` object from the resulting stochastic nodes and sampler vector.
 
 	#. Simulate parameter values with the :func:`mcmc` function.
 	

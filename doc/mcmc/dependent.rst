@@ -125,7 +125,7 @@ Constructors
 .. function:: Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
               Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
-	Construct an ``Logical`` object that defines a logical model node.
+	Construct a ``Logical`` object that defines a logical model node.
 	
 	**Arguments**
 	
@@ -135,7 +135,7 @@ Constructors
 		
 	**Value**
 	
-		Returns an ``Logical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``Logical{VariateType}`` if not.
+		Returns a ``Logical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Logical{VariateType}`` if not.
 		
 	**Example**
 	
@@ -215,7 +215,7 @@ Constructors
 .. function:: Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
               Stochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
-	Construct an ``Stochastic`` object that defines a stochastic model node.
+	Construct a ``Stochastic`` object that defines a stochastic model node.
 	
 	**Arguments**
 	
@@ -225,7 +225,7 @@ Constructors
 		
 	**Value**
 	
-		Returns an ``Stochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and an ``Stochastic{VariateType}`` if not.
+		Returns a ``Stochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Stochastic{VariateType}`` if not.
 
 	**Example**
 	

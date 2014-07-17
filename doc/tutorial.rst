@@ -256,7 +256,7 @@ Directed Acyclic Graphs
 
 One of the internal structures created by ``Model`` is a graph representation of the model nodes and their associations.  Graphs are managed internally with the `Graphs` package :cite:`white:2014:GP`.  Like `OpenBUGS`, `JAGS`, and other `BUGS` clones, `Mamba` fits models whose nodes form a directed acyclic graph (DAG).  A *DAG* is a graph in which nodes are connected by directed edges and no node has a path that loops back to itself.  With respect to statistical models, directed edges point from parent nodes to the child nodes that depend on them.  Thus, a child node is independent of all others, given its parents.
 
-The DAG representation of an ``Model`` can be printed out at the command-line or saved to an external file in a format that can be displayed with the `Graphviz <http://www.graphviz.org/>`_ software.
+The DAG representation of a ``Model`` can be printed out at the command-line or saved to an external file in a format that can be displayed with the `Graphviz <http://www.graphviz.org/>`_ software.
 
 .. code-block:: julia
 
@@ -326,7 +326,7 @@ Initial values for ``y`` are those in the observed response vector.  Likewise, t
 MCMC Engine
 ^^^^^^^^^^^
 
-MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are an ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  The simulation of multiple chains will be executed in parallel automatically if **julia** is running in multi-processor mode on a multi-processor system.  Multi-processor mode can be started with the command line argument ``julia -p n``, where ``n`` is the number of available processors.  See the **julia** documentation on `parallel computing <http://julia.readthedocs.org/en/latest/manual/parallel-computing/>`_ for details. 
+MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are a ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  The simulation of multiple chains will be executed in parallel automatically if **julia** is running in multi-processor mode on a multi-processor system.  Multi-processor mode can be started with the command line argument ``julia -p n``, where ``n`` is the number of available processors.  See the **julia** documentation on `parallel computing <http://julia.readthedocs.org/en/latest/manual/parallel-computing/>`_ for details. 
 
 .. code-block:: julia
 

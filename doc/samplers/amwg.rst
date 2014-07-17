@@ -95,7 +95,7 @@ Sampler Constructor
 .. function:: AMWG(params::Vector{Symbol}, sigma::Vector{T<:Real}; \
 				adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
 
-	Construct an ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+	Construct a ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 	
 	**Arguments**
 	
@@ -110,7 +110,7 @@ Sampler Constructor
 
 	**Value**
 	
-		Returns an ``Sampler`` type object.
+		Returns a ``Sampler`` type object.
 
 	**Example**
 	
