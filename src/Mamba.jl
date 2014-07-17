@@ -207,8 +207,6 @@ module Mamba
     NUTSVariate,
     slice!,
     Slice,
-    slicewg!,
-    SliceWG,
     SliceVariate
 
   export

@@ -185,7 +185,7 @@ scheme = [AMWG([:a0, :alpha_Base, :alpha_Trt, :alpha_BT, :alpha_Age,
                 :alpha_V4], fill(0.1, 6)),
           Slice([:b1], ones(epil[:N])),
           Slice([:b], ones(epil[:N] * epil[:T])),
-          SliceWG([:s2_b1, :s2_b], [1.0, 1.0])]
+          Slice([:s2_b1, :s2_b], [1.0, 1.0], :univar)]
 setsamplers!(model, scheme)
 
 

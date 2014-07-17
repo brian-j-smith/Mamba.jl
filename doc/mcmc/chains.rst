@@ -55,7 +55,7 @@ Constructors
 
 	**Example**
 	
-		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, :ref:`Slice <example-slice>`, and :ref:`SliceWG <example-slicewg>` examples.
+		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 	
 Methods
 ^^^^^^^
@@ -318,7 +318,7 @@ Methods
 
 	**Example**
 	
-		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, :ref:`Slice <example-slice>`, and :ref:`SliceWG <example-slicewg>` examples.
+		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 		
 .. function:: summarystats(c::Chains; etype=:bm, args...)
 

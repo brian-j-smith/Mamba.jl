@@ -8,8 +8,7 @@ samplers = [
   "amm",
   "amwg",
   "nuts",
-  "slice",
-  "slicewg"
+  "slice"
 ]
 
 println("Running tests:")

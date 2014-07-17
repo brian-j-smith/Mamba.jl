@@ -107,8 +107,8 @@ inits = [
 ## Sampling Scheme
 scheme = [AMWG([:theta], fill(0.01, 48)),
           AMM([:mu], 0.01 * eye(6)),
-          SliceWG([:pc], fill(0.25, 48)),
-          SliceWG([:priors], [1.0, 5.0, 5.0, 0.25, 0.25, 5.0])]
+          Slice([:pc], fill(0.25, 48), :univar),
+          Slice([:priors], [1.0, 5.0, 5.0, 0.25, 0.25, 5.0], :univar)]
 setsamplers!(model, scheme)
 
 

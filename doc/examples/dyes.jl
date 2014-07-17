@@ -61,7 +61,7 @@ inits = [
 
 ## Sampling Scheme
 scheme = [NUTS([:mu, :theta]),
-          SliceWG([:s2_within, :s2_between], [1000.0, 1000.0])]
+          Slice([:s2_within, :s2_between], [1000.0, 1000.0], :univar)]
 setsamplers!(model, scheme)
 
 

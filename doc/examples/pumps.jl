@@ -52,7 +52,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SliceWG([:alpha, :beta], [1.0, 1.0]),
+scheme = [Slice([:alpha, :beta], [1.0, 1.0], :univar),
           AMWG([:theta], ones(pumps[:N]))]
 setsamplers!(model, scheme)
 
