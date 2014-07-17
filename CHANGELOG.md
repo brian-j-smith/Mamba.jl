@@ -12,7 +12,7 @@
 
 ### 0.1.0
 
-* Removed `MCMC` prefix from type names.
+* Removed `MCMC` prefix from type names, and deprecated `MCMC*` types.
 
 ### 0.0.2
 
