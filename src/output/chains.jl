@@ -8,31 +8,39 @@ function Chains{T<:String}(iters::Integer, params::Integer;
   Chains(value, start=start, thin=thin, names=names, model=model)
 end
 
-function Chains{T<:Real,U<:String}(value::Array{T,3};
+function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           model::Model=Model())
+           chains::Vector{V}=Integer[], model::Model=Model())
   n, p, m = size(value)
+
   if length(names) == 0
     names = String[string("Param", i) for i in 1:p]
   elseif length(names) != p
-    error("value column and names dimensions must match")
+    error("size(value, 2) and names dimensions must match")
   end
-  vvalue = convert(Array{VariateType, 3}, value)
-  Chains(vvalue, String[names...], range(start, thin, n), model)
+
+  if length(chains) == 0
+    chains = Integer[1:m]
+  elseif length(chains) != m
+    error("size(value, 3) and chains dimensions must match")
+  end
+
+  v = convert(Array{VariateType, 3}, value)
+  Chains(v, range(start, thin, n), String[names...], Integer[chains...], model)
 end
 
-function Chains{T<:Real,U<:String}(value::Matrix{T};
+function Chains{T<:Real,U<:String,V<:Integer}(value::Matrix{T};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           model::Model=Model())
+           chains::Vector{V}=Integer[], model::Model=Model())
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
-         thin=thin, names=names, model=model)
+         thin=thin, names=names, chains=chains, model=model)
 end
 
 function Chains{T<:Real}(value::Vector{T};
            start::Integer=1, thin::Integer=1, names::String="Param1",
-           model::Model=Model())
+           chains::Integer=1, model::Model=Model())
   Chains(reshape(value, length(value), 1, 1), start=start, thin=thin,
-         names=String[names], model=model)
+         names=String[names], chains=Integer[chains], model=model)
 end
 
 
@@ -47,7 +55,7 @@ function Base.getindex(c::Chains, iters::Range, names, chains)
   Chains(c.value[from:thin:to, names, chains],
          start = first(c.range) + (from - 1) * step(c.range),
          thin = thin * step(c.range), names = c.names[names],
-         model = c.model)
+         chains = c.chains[chains], model = c.model)
 end
 
 function Base.getindex(c::Chains, iters::Range, names::String, chains)
@@ -134,7 +142,7 @@ function header(c::Chains)
   string(
     "Iterations = $(first(c.range)):$(last(c.range))\n",
     "Thinning interval = $(step(c.range))\n",
-    "Number of chains = $(size(c, 3))\n",
+    "Chains = $(join(string(c.chains...), ","))\n",
     "Samples per chain = $(length(c.range))\n"
   )
 end

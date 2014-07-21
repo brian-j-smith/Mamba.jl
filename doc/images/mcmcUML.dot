@@ -20,7 +20,7 @@ graph MCMC {
 	
 	Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{VariateType\}\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
 	
-	Chains [label = "{Chains|+ value : Array\{VariateType, 3\}\l+ names : Vector\{String\}\l+ range : Range\{Int\}\l+ model : Model\l}"]
+	Chains [label = "{Chains|+ value : Array\{VariateType, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Integer\}\l+ model : Model\l}"]
 
 	Dependent -- Variate[len = 0.9, arrowhead = empty]
 	Logical -- Dependent[arrowhead = empty]

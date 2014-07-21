@@ -95,8 +95,9 @@ module Mamba
 
   immutable Chains
     value::Array{VariateType,3}
-    names::Vector{String}
     range::Range{Int}
+    names::Vector{String}
+    chains::Vector{Integer}
     model::Model
   end
 

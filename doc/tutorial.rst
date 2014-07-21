@@ -382,7 +382,7 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
 
 	Iterations = 252:10000
 	Thinning interval = 2
-	Number of chains = 3
+	Chains = 1,2,3
 	Samples per chain = 4875
 
 	Empirical Posterior Estimates:
@@ -461,7 +461,7 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	
 	Iterations = 1000:5000
 	Thinning interval = 2
-	Number of chains = 3
+	Chains = 1,2,3
 	Samples per chain = 2001
 
 	Empirical Posterior Estimates:
@@ -493,7 +493,7 @@ Convergence diagnostics or posterior summaries may indicate that additional draw
 
 	Iterations = 252:15000
 	Thinning interval = 2
-	Number of chains = 3
+	Chains = 1,2,3
 	Samples per chain = 7375
 
 	Empirical Posterior Estimates:
