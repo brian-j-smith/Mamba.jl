@@ -11,9 +11,12 @@ function mcmc(c::Chains, iters::Integer)
     error("Chains have been subsetted to exclude the last iteration")
 
   mm = deepcopy(c.model)
-  c2 = mcmc_master!(mm, mm.states, iters, burnin, thin, size(c, 3))
-
+  c2 = mcmc_master!(mm, mm.states[c.chains], iters, burnin, thin, size(c, 3))
   c2.model.iter += c.model.iter
+  if c2.names != c.names
+    c2 = c2[:,c.names,:]
+  end
+
   Chains(cat(1, c.value, c2.value), start=first(c.range), thin=thin,
          names=c.names, model=c2.model)
 end
