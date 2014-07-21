@@ -29,11 +29,11 @@ function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
   Chains(v, range(start, thin, n), String[names...], Integer[chains...], model)
 end
 
-function Chains{T<:Real,U<:String,V<:Integer}(value::Matrix{T};
+function Chains{T<:Real,U<:String}(value::Matrix{T};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           chains::Vector{V}=Integer[], model::Model=Model())
+           chains::Integer=1, model::Model=Model())
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
-         thin=thin, names=names, chains=chains, model=model)
+         thin=thin, names=names, chains=Integer[chains], model=model)
 end
 
 function Chains{T<:Real}(value::Vector{T};

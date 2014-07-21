@@ -34,8 +34,7 @@ Constructors
 				model::Model=Model())
 			  Chains(value::Matrix{T<:Real}; \
 				start::Integer=1, thin::Integer=1, \
-				names::Vector{U<:String}=Array(String,0), \
-				chains::Vector{V<:Integer}=Array(Integer, 0), \
+				names::Vector{U<:String}=Array(String,0), chains::Integer=1, \
 				model::Model=Model())
 			  Chains(value::Vector{T<:Real}; \
 				start::Integer=1, thin::Integer=1, names::String="Param1", \
@@ -50,7 +49,7 @@ Constructors
 		* ``value`` : an array whose first, second (optional), and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
 		* ``start`` : number of the first iteration to be stored.
 		* ``thin`` : number of steps between consecutive iterations to be stored.
-		* ``chains`` : number of simulation runs for which to store output, or a vector of indices to the runs (default: 1, 2, ...).
+		* ``chains`` : number of simulation runs for which to store output, or indices to the runs (default: 1, 2, ...).
 		* ``names`` : names to assign to the parameter elements (default: ``"Param1"``, ``"Param2"``, ...).
 		* ``model`` : the model for which the simulation was run.
 		
