@@ -1,5 +1,10 @@
 ## Condensed Changelog
 
+### 0.3.0
+
+* Implemented restarting of MCMC chains.
+* Deprecated `slicewg` and `SliceWG`.  Replaced with `:univar` option to `slice` and `Slice`.
+
 ### 0.2.1
 
 * Updated documentation.
