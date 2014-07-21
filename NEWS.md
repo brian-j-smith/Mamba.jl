@@ -1,4 +1,6 @@
-## Condensed Changelog
+# News
+
+## Version Updates
 
 ### 0.3.1
 
