@@ -1,5 +1,11 @@
 ## Condensed Changelog
 
+### 0.3.1
+
+* Added `chains` field to `Chains` type for tracking purposes.
+* Fixed `mcmc` to accommodate restarting of chains subsetted by parameters and/or chains.
+* Fixed plot legends to properly reference the chains being displayed.
+
 ### 0.3.0
 
 * Implemented restarting of MCMC chains.
