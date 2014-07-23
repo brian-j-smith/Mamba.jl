@@ -82,7 +82,7 @@ function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
   j = 0
   for key in nkeys
     node = m[key]
-    n = length(node)
+    n = node.nlink
     x[key] = invlink(node, values[j+(1:n)], transform)
     j += n
   end
@@ -129,14 +129,15 @@ function unlist(m::Model, monitoronly::Bool)
   values = VariateType[]
   for key in keys(m, :dependent)
     node = m[key]
-    v = monitoronly ? node[node.monitor] : vec(node)
+    lvalue = [link(node, node.value, false)]
+    v = monitoronly ? lvalue[node.monitor] : vec(lvalue)
     append!(values, v)
   end
   values
 end
 
 function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
-  N = map(key -> length(m[key]), nkeys)
+  N = Integer[m[key].nlink for key in nkeys]
   values = Array(VariateType, sum(N))
   i = 0
   for k in 1:length(nkeys)
