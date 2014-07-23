@@ -129,7 +129,7 @@ function unlist(m::Model, monitoronly::Bool)
   values = VariateType[]
   for key in keys(m, :dependent)
     node = m[key]
-    v = monitoronly ? node[node.monitor] : node[:]
+    v = monitoronly ? node[node.monitor] : vec(node)
     append!(values, v)
   end
   values

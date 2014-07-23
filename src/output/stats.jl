@@ -71,7 +71,7 @@ function logpdf(c::Chains, nkeys::Vector{Symbol})
   for k in 1:chains
     meter = ChainProgress(k, iters)
     for i in 1:iters
-      relist!(m, c.value[i,idx,k][:])
+      relist!(m, vec(c.value[i,idx,k]))
       values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
       next!(meter)
     end
