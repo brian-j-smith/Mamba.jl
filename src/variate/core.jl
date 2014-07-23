@@ -50,11 +50,10 @@ function names(v::UniVariate, prefix)
 end
 
 function names{N}(v::MultiVariate{N}, prefix)
-  n = length(v)
-  values = Array(String, n)
   dims = size(v)
   offset = ndims(v) > 1 ? 1 : 2
-  for i in 1:n
+  values = similar(v.value, String)
+  for i in 1:length(v)
     s = string(ind2sub(dims, i))
     values[i] = string(prefix, "[", s[2:end-offset], "]")
   end

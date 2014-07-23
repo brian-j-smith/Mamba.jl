@@ -4,7 +4,7 @@ function names(m::Model, monitoronly::Bool)
   values = String[]
   for key in keys(m, :dependent)
     node = m[key]
-    v = monitoronly ? names(node)[node.monitor] : names(node)
+    v = monitoronly ? names(node)[node.monitor] : vec(names(node))
     append!(values, v)
   end
   values
@@ -13,7 +13,8 @@ end
 function names(m::Model, nkeys::Vector{Symbol})
   values = String[]
   for key in nkeys
-    append!(values, names(m[key]))
+    node = m[key]
+    append!(values, vec(names(node)))
   end
   values
 end
