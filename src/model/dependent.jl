@@ -34,11 +34,11 @@ end
 
 function setmonitor!(d::Dependent, monitor::Vector{Int})
   values = monitor
-  n = length(d)
-  if n > 0 && length(monitor) > 0
+  d.nlink = length(link(d, d.value, false))
+  if d.nlink > 0 && length(monitor) > 0
     if monitor[1] == 0
-      values = [1:n]
-    elseif minimum(monitor) < 1 || maximum(monitor) > n
+      values = [1:d.nlink]
+    elseif minimum(monitor) < 1 || maximum(monitor) > d.nlink
       throw(BoundsError())
     end
   end
@@ -50,7 +50,7 @@ end
 #################### Logical Constructors ####################
 
 function Logical(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
-  d = Logical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
+  d = Logical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr), Symbol[])
   setmonitor!(d, monitor)
 end
 
@@ -82,7 +82,7 @@ end
 #################### Stochastic Constructors ####################
 
 function Stochastic(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
-  d = Stochastic(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[],
+  d = Stochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr), Symbol[],
                  NullDistribution())
   setmonitor!(d, monitor)
 end

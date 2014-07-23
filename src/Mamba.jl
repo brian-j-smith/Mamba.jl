@@ -49,6 +49,7 @@ module Mamba
   type Logical{T} <: Dependent{T}
     value::T
     symbol::Symbol
+    nlink::Integer
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -58,6 +59,7 @@ module Mamba
   type Stochastic{T} <: Dependent{T}
     value::T
     symbol::Symbol
+    nlink::Integer
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
