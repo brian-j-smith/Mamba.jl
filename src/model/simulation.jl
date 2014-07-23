@@ -78,13 +78,12 @@ end
 
 function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
            transform::Bool=false)
-  f =  transform ? invlink : identity
   x = (Symbol => Any)[]
   j = 0
   for key in nkeys
     node = m[key]
     n = length(node)
-    x[key] = f(node, values[j+(1:n)])
+    x[key] = invlink(node, values[j+(1:n)], transform)
     j += n
   end
   j == length(values) || throw(ErrorException("argument dimensions must match"))
@@ -137,14 +136,13 @@ function unlist(m::Model, monitoronly::Bool)
 end
 
 function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
-  f = transform ? link : identity
   N = map(key -> length(m[key]), nkeys)
   values = Array(VariateType, sum(N))
   i = 0
   for k in 1:length(nkeys)
     node = m[nkeys[k]]
     n = N[k]
-    values[i+(1:n)] = f(node, node.value)
+    values[i+(1:n)] = link(node, node.value, transform)
     i += n
   end
   values

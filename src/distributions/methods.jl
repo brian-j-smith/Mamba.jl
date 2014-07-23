@@ -1,7 +1,7 @@
 #################### Fallback Methods ####################
 
-link(d::Distribution, x) = x
-invlink(d::Distribution, x) = x
+link(d::Distribution, x, transform::Bool=true) = x
+invlink(d::Distribution, x, transform::Bool=true) = x
 
 function logpdf(d::UnivariateDistribution, x, transform::Bool)
   all(insupport(d, x)) ? logpdf(d, x) : -Inf
@@ -45,31 +45,39 @@ function maximum(d::Truncated)
   min(d.upper, maximum(d.untruncated))
 end
 
-function link(d::TransformDistribution, x)
-  a, b = minimum(d), maximum(d)
-  lowerbounded, upperbounded = isfinite(a), isfinite(b)
-  if lowerbounded && upperbounded
-    logit((x - a) / (b - a))
-  elseif lowerbounded
-    log(x - a)
-  elseif upperbounded
-    log(b - x)
+function link(d::TransformDistribution, x, transform::Bool=true)
+  if transform
+    a, b = minimum(d), maximum(d)
+    lowerbounded, upperbounded = isfinite(a), isfinite(b)
+    if lowerbounded && upperbounded
+      return logit((x - a) / (b - a))
+    elseif lowerbounded
+      return log(x - a)
+    elseif upperbounded
+      return log(b - x)
+    else
+      return x
+    end
   else
-    x
+     return x
   end
 end
 
-function invlink(d::TransformDistribution, x)
-  a, b = minimum(d), maximum(d)
-  lowerbounded, upperbounded = isfinite(a), isfinite(b)
-  if lowerbounded && upperbounded
-    (b - a) * invlogit(x) + a
-  elseif lowerbounded
-    exp(x) + a
-  elseif upperbounded
-    b - exp(x)
+function invlink(d::TransformDistribution, x, transform::Bool=true)
+  if transform
+    a, b = minimum(d), maximum(d)
+    lowerbounded, upperbounded = isfinite(a), isfinite(b)
+    if lowerbounded && upperbounded
+      return (b - a) * invlogit(x) + a
+    elseif lowerbounded
+      return exp(x) + a
+    elseif upperbounded
+      return b - exp(x)
+    else
+      return x
+    end
   else
-    x
+    return x
   end
 end
 

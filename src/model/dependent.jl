@@ -17,11 +17,9 @@ function Base.showall(io::IO, d::Dependent)
   show(io, d.targets)
 end
 
-identity(d::Dependent, x) = x
+invlink(d::Dependent, x, transform::Bool=true) = x
 
-invlink(d::Dependent, x) = x
-
-link(d::Dependent, x) = x
+link(d::Dependent, x, transform::Bool=true) = x
 
 logpdf(d::Dependent, transform::Bool=false) = 0.0
 
@@ -128,9 +126,15 @@ end
 
 insupport(s::Stochastic) = all(mapdistr(insupport, s, s.value))
 
-invlink(s::Stochastic, x) = mapdistr(invlink, s, x)
+function invlink(s::Stochastic, x, transform::Bool=true)
+  f(d, x) = invlink(d, x, transform)
+  mapdistr(f, s, x)
+end
 
-link(s::Stochastic, x) =  mapdistr(link, s, x)
+function link(s::Stochastic, x, transform::Bool=true)
+  f(d, x) = link(d, x, transform)
+  mapdistr(f, s, x)
+end
 
 function logpdf(s::Stochastic, transform::Bool=false)
   f(d, x) = logpdf(d, x, transform)
