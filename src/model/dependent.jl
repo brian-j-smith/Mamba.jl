@@ -116,12 +116,11 @@ end
 function setinits!(s::Stochastic, m::Model, x)
   T = typeof(s.value)
   s.value = isa(x, T) ? deepcopy(x) : convert(T, x)
-  setmonitor!(s, s.monitor)
   s.distr = s.eval(m)
   if isa(s.distr, Array) && size(s.value) != size(s.distr)
     error("stochastic parameter and distribution dimensions must match")
   end
-  s
+  setmonitor!(s, s.monitor)
 end
 
 insupport(s::Stochastic) = all(mapdistr(insupport, s, s.value))
