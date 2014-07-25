@@ -8,7 +8,7 @@ digraph Variate {
 
 	Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
+	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 	
 	Logical [label = "{Logical\{T\}}"]
 	
