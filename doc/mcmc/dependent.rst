@@ -19,7 +19,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``nlink::Integer`` : number of elements returned by the ``link`` method defined for the type.  Generally, this will be the number of unique elements in the node.  In most cases, ``nlink`` will be equal to ``length(value)``.  However, for some structures, like stochastic covariance matrices, ``nlink`` may be smaller.
+* ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.  Generally, this will be the number of unique elements in the node.  In most cases, ``nlink`` will be equal to ``length(value)``.  However, for some structures, like stochastic covariance matrices, ``nlink`` may be smaller.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
@@ -28,7 +28,7 @@ Fields
 Methods
 ^^^^^^^
 
-.. function:: invlink(d::Dependent, x)
+.. function:: invlink(d::Dependent, x, transform::Bool=true)
 
 	Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
 	
@@ -36,12 +36,13 @@ Methods
 	
 		* ``d`` : a node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
+		* ``transform`` : whether to transform ``x`` or assume an identity link.
 	
 	**Value**
 	
 		Returns the inverse-link-transformed version of ``x``.
 
-.. function:: link(d::Dependent, x)
+.. function:: link(d::Dependent, x, transform::Bool=true)
 
 	Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
 	
@@ -49,6 +50,7 @@ Methods
 	
 		* ``d`` : a node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
+		* ``transform`` : whether to transform ``x`` or assume an identity link.
 	
 	**Value**
 	
@@ -115,7 +117,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``nlink::Integer`` : number of elements returned by the ``link`` method defined for the type.
+* ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
@@ -198,7 +200,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``nlink::Integer`` : number of elements returned by the ``link`` method defined for the type.
+* ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
@@ -249,7 +251,7 @@ Methods
 	
 		Returns ``true`` if all values are within the support, and ``false`` otherwise.
 
-.. function:: invlink(s::Stochastic, x)
+.. function:: invlink(s::Stochastic, x, transform::Bool=true)
 
 	Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
 	
@@ -257,23 +259,26 @@ Methods
 	
 		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the inverse-link transformation.
+		* ``transform`` : whether to transform ``x`` or assume an identity link.
 	
 	**Value**
 	
 		Returns the inverse-link-transformed version of ``x``.
 
-.. function:: link(s::Stochastic, x)
+.. function:: link(s::Stochastic, x, transform::Bool=true)
 
-	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions are transformed as follows:
+	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions are transformed as follows:
 	
 		* Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
 		* Lower bounded: shifted to zero and log-transformed.
 		* Upper bounded: scaled by -1, shifted to zero, and log-transformed.
+		* Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector.
 	
 	**Arguments**
 	
 		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
 		* ``x`` : an object to which to apply the link transformation.
+		* ``transform`` : whether to transform ``x`` or assume an identity link.
 	
 	**Value**
 	
