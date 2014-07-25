@@ -32,6 +32,68 @@ function rand(d::Truncated)
 end
 
 
+#################### PDMatDistribution ####################
+
+typealias PDMatDistribution Union(InverseWishart, Wishart)
+
+function link(D::PDMatDistribution, X::Matrix, transform::Bool=true)
+  n = dim(D)
+  value = similar(X, int(n * (n + 1) / 2))
+  k = 1
+  if transform
+    U = chol(X)
+    for i in 1:n
+      value[k] = log(U[i,i])
+      k += 1
+    end
+    for i in 1:n, j in (i+1):n
+      value[k] = U[i,j]
+      k += 1
+    end
+  else
+    for i in 1:n, j in i:n
+      value[k] = X[i,j]
+      k += 1
+    end
+  end
+  value
+end
+
+function invlink(D::PDMatDistribution, x::Vector, transform::Bool=true)
+  n = dim(D)
+  value = zeros(VariateType, n, n)
+  k = 1
+  if transform
+    for i in 1:n
+      value[i,i] = exp(x[k])
+      k += 1
+    end
+    for i in 1:n, j in (i+1):n
+      value[i,j] = x[k]
+      k += 1
+    end
+    return At_mul_B(value, value)
+  else
+    for i in 1:n, j in i:n
+      value[i,j] = value[j,i] = x[k]
+      k += 1
+    end
+    return value
+  end
+end
+
+function logpdf{T<:Real}(D::PDMatDistribution, X::Matrix{T}, transform::Bool)
+  value = logpdf(D, X)
+  if transform && isfinite(value)
+    U = chol(X)
+    for i in 1:dim(D)
+      value += log(U[i,i])
+    end
+  end
+  value
+end
+
+
 #################### TransformDistribution ####################
 
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
