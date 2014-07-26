@@ -7,6 +7,7 @@
 * Added `chains` field to `Chains` type for tracking purposes.
 * Fixed `mcmc` to accommodate restarting of chains subsetted by parameters and/or chains.
 * Fixed plot legends to properly reference the chains being displayed.
+* Added support for sampling of positive-definite matrices specified with Wishart or InverseWishart distributions.
 
 ### 0.3.0
 
