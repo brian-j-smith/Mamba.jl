@@ -118,7 +118,7 @@ function setinits!(s::Stochastic, m::Model, x)
   s.value = isa(x, T) ? deepcopy(x) : convert(T, x)
   s.distr = s.eval(m)
   if isa(s.distr, Array) && size(s.value) != size(s.distr)
-    error("stochastic parameter and distribution dimensions must match")
+    error("size of stochastic node and Distributions array must match")
   end
   setmonitor!(s, s.monitor)
 end
