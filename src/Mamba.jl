@@ -24,6 +24,9 @@ module Mamba
   import StatsBase: autocor, autocov, crosscov, describe, quantile, sem,
          StatsBase, summarystats
 
+  include("distributions/pdmats2.jl")
+  importall .PDMats2
+
 
   #################### Variate Types ####################
 
