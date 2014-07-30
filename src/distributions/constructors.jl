@@ -276,6 +276,11 @@ Distributions.IsoNormal(μ, C::ScalMat) =
 Distributions.IsoNormal(μ, σ) =
   IsoNormal(convert(Vector{Float64}, μ), convert(Float64, σ))
 
+BDiagNormal(μ, Σ) =
+  BDiagNormal(convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
+BDiagNormal(μ, Σ::Vector) =
+  BDiagNormal(convert(Vector{Float64}, μ), Matrix{Float64}[Σ...])
+
 
 #################### Dirichlet ####################
 

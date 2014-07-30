@@ -109,10 +109,11 @@ module Mamba
 
   #################### Includes ####################
 
-  include("distributions/constructors.jl")
   include("distributions/flat.jl")
-  include("distributions/methods.jl")
+  include("distributions/mvnormal.jl")
   include("distributions/null.jl")
+  include("distributions/constructors.jl")
+  include("distributions/methods.jl")
 
   include("model/core.jl")
   include("model/dependent.jl")
@@ -161,6 +162,7 @@ module Mamba
     Stochastic
 
   export
+    BDiagNormal,
     Flat
 
   export
