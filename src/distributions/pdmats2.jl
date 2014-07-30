@@ -145,10 +145,6 @@ module PDMats2
     sparse(I, J, V, offset, offset)
   end
 
-  function spbdiagm{T<:Real}(x::Matrix{T}, n::Integer=1)
-    spbdiagm(Matrix{T}[x], n)
-  end
-
   splength(x::Matrix) = length(x)
   isnonzero(x::Matrix, i::Integer, j::Integer) = true
 
