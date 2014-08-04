@@ -125,7 +125,7 @@ Methods
 		
 	**Value**
 	
-		A tuple of results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)``, respectively.  Results are for all chains combined.
+		Results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)`` are printed for all chains combined, and a value of ``nothing`` is returned.
 
 	**Example**
 	
