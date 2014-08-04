@@ -126,11 +126,12 @@ function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
     tune.m += 1
     nuts_sub!(v, tune.epsilon, fx)
     p = 1.0 / (tune.m + tune.t0)
-    tune.Hbar = (1 - p) * tune.Hbar +
+    tune.Hbar = (1.0 - p) * tune.Hbar +
                 p * (tune.target - tune.alpha / tune.nalpha)
     tune.epsilon = exp(tune.mu - sqrt(tune.m) * tune.Hbar / tune.gamma)
     p = tune.m^-tune.kappa
-    tune.epsilonbar = exp(p * log(tune.epsilon) + (1 - p) * log(tune.epsilonbar))
+    tune.epsilonbar = exp(p * log(tune.epsilon) +
+                          (1.0 - p) * log(tune.epsilonbar))
   else
     tune.epsilon = tune.adapt ? tune.epsilonbar : epsilon
     nuts_sub!(v, tune.epsilon, fx)
@@ -200,7 +201,7 @@ function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
         xprime = xprime2
       end
       nprime += nprime2
-      sprime = sprime && sprime2 && nouturn(xminus, xplus, rminus, rplus)
+      sprime = sprime2 && nouturn(xminus, xplus, rminus, rplus)
       alphaprime += alphaprime2
       nalphaprime += nalphaprime2
     end

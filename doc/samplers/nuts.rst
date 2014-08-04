@@ -3,7 +3,7 @@
 No-U-Turn Sampler (NUTS)
 ------------------------
 
-Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2011:nuts` to Hamiltonian Monte Carlo :cite:`neal:2011:hmc` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2014:nuts` to Hamiltonian Monte Carlo :cite:`neal:2011:hmc` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
