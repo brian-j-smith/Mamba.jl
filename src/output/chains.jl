@@ -69,12 +69,6 @@ function Base.getindex{T<:String}(c::Chains, iters::Range, names::Vector{T},
   getindex(c, iters, idx, chains)
 end
 
-function Base.indexin(names::Vector{String}, c::Chains)
-  idx = indexin(names, c.names)
-  in(0, idx) && error("node name matches not found in Chains")
-  idx
-end
-
 function Base.keys(c::Chains)
   c.names
 end

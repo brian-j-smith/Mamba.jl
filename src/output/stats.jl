@@ -29,7 +29,8 @@ function dic(c::Chains)
 
   m = c.model
   nkeys = keys(m, :output)
-  idx = indexin(names(m, keys(m, :block)), c)
+  idx = indexin(names(m, keys(m, :block)), c.names)
+  in(0, idx) && error("dic requires all sampled nodes to be monitored")
 
   xbar = map(i -> mean(c.value[:,i,:]), idx)
   relist!(m, xbar)
@@ -64,7 +65,8 @@ function logpdf(c::Chains, nkeys::Vector{Symbol})
   ismodelbased(c) || error("logpdf requires Chains from a Model fit")
 
   m = c.model
-  idx = indexin(names(m, keys(m, :block)), c)
+  idx = indexin(names(m, keys(m, :block)), c.names)
+  in(0, idx) && error("logpdf requires all sampled nodes to be monitored")
 
   iters, p, chains = size(c.value)
   values = Array(Float64, iters, 1, chains)

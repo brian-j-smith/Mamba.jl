@@ -137,7 +137,7 @@ Methods
 	
 	**Arguments**
 	
-		* ``c`` : sampler output on which to perform calculations.
+		* ``c`` : sampler output from a model fit with the :func:`mcmc` function and for which all sampled nodes are monitored.
 		
 	**Value**
 	
