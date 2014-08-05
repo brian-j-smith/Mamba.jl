@@ -1,26 +1,5 @@
 #################### Model Initialization Methods ####################
 
-function names(m::Model, monitoronly::Bool)
-  values = String[]
-  for key in keys(m, :dependent)
-    node = m[key]
-    lnames = link(node, names(node), false)
-    v = monitoronly ? lnames[node.monitor] : vec(lnames)
-    append!(values, v)
-  end
-  values
-end
-
-function names(m::Model, nkeys::Vector{Symbol})
-  values = String[]
-  for key in nkeys
-    node = m[key]
-    lnames = link(node, names(node), false)
-    append!(values, vec(lnames))
-  end
-  values
-end
-
 function setinits!(m::Model, inits::Dict{Symbol,Any})
   m.iter = 0
   for key in m.dependents
