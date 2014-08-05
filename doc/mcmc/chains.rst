@@ -141,7 +141,13 @@ Methods
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns.  Results are for all chains combined.
+		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns; where
+		
+		.. math::
+		
+			\text{DIC} = -2 \mathcal{L}(\bar{\Theta}) + 2 p,
+			
+		such that :math:`\mathcal{L}(\bar{\Theta})` is the log-likelihood of model outputs given the expected values of model parameters :math:`\Theta`, and :math:`p` is the effective number of parameters.  The latter is defined as :math:`p_D = -2 \bar{\mathcal{L}}(\Theta) + 2 \mathcal{L}(\bar{\Theta})` for the method of Spiegelhalter and as :math:`p_V = \frac{1}{2} \operatorname{var}(-2 \mathcal{L}(\Theta))` for the method of Gelman.  Results are for all chains combined.
 
 	**Example**
 	
