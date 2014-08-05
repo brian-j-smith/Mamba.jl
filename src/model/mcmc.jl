@@ -27,6 +27,7 @@ function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
               chains::Integer=1)
 
   iters > burnin || error("iters <= burnin")
+  length(inits) >= chains || error("fewer initial values than chains")
 
   mm = deepcopy(m)
   setinputs!(mm, inputs)

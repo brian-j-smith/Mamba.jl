@@ -26,6 +26,7 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
   for key in m.dependents
     node = m[key]
     if isa(node, Stochastic)
+      haskey(inits, key) || error(string("missing inits for node :", key))
       setinits!(node, m, inits[key])
     else
       setinits!(node, m)
@@ -41,8 +42,8 @@ end
 
 function setinputs!(m::Model, inputs::Dict{Symbol,Any})
   for key in keys(m, :input)
-    isa(inputs[key], Dependent) &&
-      error("inputs must not be Dependent types")
+    haskey(inputs, key) || error(string("missing inputs for node :", key))
+    isa(inputs[key], Dependent) && error("inputs cannot be Dependent types")
     m.nodes[key] = deepcopy(inputs[key])
   end
   m.hasinputs = true
