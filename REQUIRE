@@ -4,4 +4,5 @@ Compose 0.3.1 0.4-
 Distributions 0.4.7 0.6-
 Gadfly 0.3.1 0.4-
 Graphs 0.4.2 0.5-
+PDMats 0.2.3 0.3-
 StatsBase 0.4.0 0.6-
