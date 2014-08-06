@@ -262,7 +262,7 @@ Methods
 	
 		* ``x`` : a time series of values on which to perform calculations.
 		* ``method`` : method used for the calculations.  Options are
-			* ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.
+			* ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.  This method requires that the number of values in ``x`` is at least 2 times the batch size.
 			* ``:imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
 			* ``:ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
 		* ``args...`` : additional arguments for the calculation method.
