@@ -46,12 +46,6 @@ function setsamplers!(m::Model, samplers::Vector{Sampler})
   m
 end
 
-function settune!(m::Model, tune::Vector)
-  for b in 1:length(m.samplers)
-    m.samplers[b].tune = deepcopy(tune[b])
-  end
-end
-
 function tune(m::Model, block::Integer=0)
   if block > 0
     values = m.samplers[block].tune
