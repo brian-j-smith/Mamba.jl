@@ -45,16 +45,3 @@ function setsamplers!(m::Model, samplers::Vector{Sampler})
   end
   m
 end
-
-function tune(m::Model, block::Integer=0)
-  if block > 0
-    values = m.samplers[block].tune
-  else
-    n = length(m.samplers)
-    values = Array(Any, n)
-    for i in 1:n
-      values[i] = m.samplers[i].tune
-    end
-  end
-  values
-end
