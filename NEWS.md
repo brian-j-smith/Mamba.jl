@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+### 0.3.2
+
+* Fixed tuning parameter overwrites occurring with `pmap()` in single-processor mode.
+
 ### 0.3.1
 
 * Added `chains` field to `Chains` type for tracking purposes.
