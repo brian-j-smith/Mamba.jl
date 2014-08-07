@@ -1,6 +1,7 @@
 #################### Model Initialization Methods ####################
 
 function reset!(m::Model)
+  m.iter = 0
   for s in m.samplers
     s.tune["sampler"] = nothing
   end
@@ -8,7 +9,7 @@ function reset!(m::Model)
 end
 
 function setinits!(m::Model, inits::Dict{Symbol,Any})
-  m.iter = 0
+  reset!(m)
   for key in m.dependents
     node = m[key]
     if isa(node, Stochastic)
@@ -22,7 +23,7 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
 end
 
 function setinits!{T<:Real}(m::Model, inits::Vector{T})
-  m.iter = 0
+  reset!(m)
   relist!(m, inits)
 end
 
