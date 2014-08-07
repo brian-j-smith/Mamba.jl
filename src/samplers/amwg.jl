@@ -69,7 +69,7 @@ function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
       tune.accept[:] = 0
       tune.batchsize = batchsize
       tune.m = 0
-      tune.sigma = sigma
+      tune.sigma = copy(sigma)
       tune.target = target
     end
     tune.m += 1
@@ -77,8 +77,8 @@ function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
     if tune.m % tune.batchsize == 0
       delta = min(0.01, (tune.m / tune.batchsize)^-0.5)
       for i in 1:length(tune.sigma)
-        tune.sigma[i] *= tune.accept[i] / tune.batchsize < tune.target ?
-          exp(-delta) : exp(delta)
+        epsilon = tune.accept[i] / tune.m < tune.target ? -delta : delta
+        tune.sigma[i] *= exp(epsilon)
       end
     end
   else
@@ -101,7 +101,7 @@ function amwg_sub!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function)
     logfprime = logf(v.value)
     if rand() < exp(logfprime - logf0)
       logf0 = logfprime
-      v.tune.accept[i] += 1
+      v.tune.accept[i] += v.tune.adapt
     else
       v[i] = x
     end
