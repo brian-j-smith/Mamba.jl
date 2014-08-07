@@ -76,7 +76,7 @@ module Mamba
   type Sampler
     params::Vector{Symbol}
     eval::Function
-    tune::Dict
+    tune::Dict{String,Any}
     targets::Vector{Symbol}
   end
 
