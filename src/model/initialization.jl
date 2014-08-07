@@ -1,5 +1,12 @@
 #################### Model Initialization Methods ####################
 
+function reset!(m::Model)
+  for s in m.samplers
+    s.tune["sampler"] = nothing
+  end
+  m
+end
+
 function setinits!(m::Model, inits::Dict{Symbol,Any})
   m.iter = 0
   for key in m.dependents

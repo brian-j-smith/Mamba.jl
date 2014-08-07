@@ -58,6 +58,7 @@ function mcmc_worker!(args::Vector)
 
   model, inits, iters, burnin, thin, chain = args
 
+  reset!(model)
   setinits!(model, inits)
   model.chain = chain
 
