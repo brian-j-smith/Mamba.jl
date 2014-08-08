@@ -1,5 +1,5 @@
-Mamba: Markov chain Monte Carlo for Bayesian analysis in julia
-==============================================================
+Mamba: Markov chain Monte Carlo (MCMC) for Bayesian analysis in julia
+=====================================================================
 
 :Version: |release|
 :Date: |today|
@@ -14,7 +14,7 @@ Overview
 Purpose
 ^^^^^^^
 
-`Mamba` is a `julia <http://julialang.org/>`_ programming environment and toolset for the implementation and inference of Bayesian models using Markov chain Monte Carlo (MCMC) sampling.  The package provides a framework for (1) specification of hierarchical models through stated relationships between data, parameters, and statistical distributions; (2) block-updating of parameters with samplers provided, defined by the user, or available from other packages; (3) execution of MCMC sampling schemes; and (4) posterior inference.  It is designed to give users access to all levels of the design and implementation of MCMC simulators to particularly aid in the development of complex models.
+`Mamba` is a `julia <http://julialang.org/>`_ programming environment and toolset for the implementation and inference of Bayesian models using MCMC sampling.  The package provides a framework for (1) specification of hierarchical models through stated relationships between data, parameters, and statistical distributions; (2) block-updating of parameters with samplers provided, defined by the user, or available from other packages; (3) execution of sampling schemes; and (4) posterior inference.  It is designed to give users access to all levels of the design and implementation of MCMC simulators to particularly aid in the development of complex models.
 
 Features
 ^^^^^^^^
