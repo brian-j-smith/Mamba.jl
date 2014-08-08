@@ -7,7 +7,7 @@ function MISS(params::Vector{Symbol})
       sampler = model.samplers[block]
       for key in sampler.params
         node = model[key]
-        v = deepcopy(node.value)
+        v = copy(node.value)
         if !sampler.tune["initialized"]
           sampler.tune["missing"][key] = find(isnan(node))
         end

@@ -115,7 +115,7 @@ end
 
 function setinits!(s::Stochastic, m::Model, x)
   T = typeof(s.value)
-  s.value = isa(x, T) ? deepcopy(x) : convert(T, x)
+  s.value = isa(x, T) ? copy(x) : convert(T, x)
   s.distr = s.eval(m)
   if isa(s.distr, Array) && size(s.value) != size(s.distr)
     error("size of stochastic node and Distributions array must match")

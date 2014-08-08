@@ -146,7 +146,7 @@ function ismodelbased(c::Chains)
 end
 
 function link(c::Chains)
-  cc = deepcopy(c.value)
+  cc = copy(c.value)
   idx0 = 1:length(c.names)
   for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
     node = c.model[key]

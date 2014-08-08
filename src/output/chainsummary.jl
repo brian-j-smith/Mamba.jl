@@ -22,8 +22,7 @@ end
 
 function ChainSummary{T<:String,U<:String}(value::Array{Float64,3},
            rownames::Vector{T}, colnames::Vector{U}, header::String)
-  ChainSummary(deepcopy(value), String[rownames...], String[colnames...],
-               header)
+  ChainSummary(copy(value), String[rownames...], String[colnames...], header)
 end
 
 function ChainSummary{T<:String,U<:String}(value::Matrix{Float64},
