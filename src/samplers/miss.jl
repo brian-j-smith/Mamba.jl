@@ -4,14 +4,18 @@ function MISS(params::Vector{Symbol})
   Sampler(params,
     quote
       value = (Symbol => Any)[]
-      sampler = model.samplers[block]
-      for key in sampler.params
+      tunepar = tune(model, block)
+      initialize = tunepar["sampler"] == nothing
+      if initialize
+        tunepar["sampler"] = Dict{Symbol,Vector{Int}}()
+      end
+      for key in keys(model, :block, block)
         node = model[key]
         v = copy(node.value)
-        if !sampler.tune["initialized"]
-          sampler.tune["missing"][key] = find(isnan(node))
+        if initialize
+          tunepar["sampler"][key] = find(isnan(node))
         end
-        missing = sampler.tune["missing"][key]
+        missing = tunepar["sampler"][key]
         if isa(node.distr, Array)
           for i in missing
             v[i] = rand(node.distr[i])
@@ -24,9 +28,8 @@ function MISS(params::Vector{Symbol})
         end
         value[key] = v
       end
-      sampler.tune["initialized"] = true
       value
     end,
-    ["initialized" => false, "missing" => Dict{Symbol,Vector{Int}}()]
+    ["sampler" => nothing]
   )
 end
