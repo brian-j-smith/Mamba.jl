@@ -267,12 +267,12 @@ Methods
 
 .. function:: link(s::Stochastic, x, transform::Bool=true)
 
-	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions are transformed as follows:
+	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
 	
 		* Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
 		* Lower bounded: shifted to zero and log-transformed.
 		* Upper bounded: scaled by -1, shifted to zero, and log-transformed.
-		* Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector.
+		* Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector of length :math:`n (n + 1) / 2`, where :math:`n` is the matrix dimension.
 	
 	**Arguments**
 	
