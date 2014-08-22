@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+
+### 0.3.3
+
+* Fixed the `rand` method definition error (`type DataType has no field body`) that began occurring with late release candidates and final release of julia 0.3.
+
 ### 0.3.2
 
 * Fixed tuning parameter overwrites occurring with `pmap()` in single-processor mode.
