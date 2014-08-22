@@ -18,7 +18,9 @@ end
 
 #################### Truncated ####################
 
-function rand(d::Truncated)
+rand2(d) = rand(d)
+
+function rand2(d::Truncated)
   if d.nc > 0.25
     while true
       r = rand(d.untruncated)
