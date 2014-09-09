@@ -3,6 +3,11 @@
 ## Version Updates
 
 
+### 0.3.4
+
+* Added distributions documentation.
+* Added jaws repeated measures analysis of variance example.
+
 ### 0.3.3
 
 * Fixed the `rand` method definition error (`type DataType has no field body`) that began occurring with late release candidates and final release of julia 0.3.
