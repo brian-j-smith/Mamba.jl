@@ -26,6 +26,7 @@ The relationships are as follows.  Type ``Model`` contains a dictionary field (`
 	:maxdepth: 1
 	
 	mcmc/dependent.rst
+	mcmc/distributions.rst
 	mcmc/sampler.rst
 	mcmc/model.rst
 	mcmc/chains.rst
