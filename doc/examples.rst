@@ -26,3 +26,4 @@ The following examples are taken from OpenBUGS :cite:`openbugs:2014:ex1`, and we
 	examples/inhalers.rst
 	examples/mice.rst
 	examples/leuk.rst
+	examples/jaws.rst

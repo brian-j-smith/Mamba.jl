@@ -18,7 +18,8 @@ examples = [
   "salm",
   "seeds",
   "stacks",
-  "surgical"
+  "surgical",
+  "jaws"
 ]
 
 println("Running examples:")
