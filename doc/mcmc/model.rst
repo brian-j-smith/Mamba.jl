@@ -3,7 +3,7 @@
 .. _section-Model:
 
 Model
----------
+-----
 
 The ``Model`` type is designed to store the set of all model nodes, including parameter set :math:`\Theta` as denoted in  the :ref:`figure-Gibbs`.  In particular, it stores ``Dependent`` type objects in its ``nodes`` dictionary field.  Valid models are ones whose nodes form directed acyclic graphs (DAGs).  Sampling functions :math:`\{f_j\}_{j=1}^{B}` are saved as ``Sampler`` objects in the vector of field ``samplers``.  Vector elements :math:`j=1,\ldots,B` correspond to sampling blocks :math:`\{\Theta_j\}_{j=1}^{B}.`
 

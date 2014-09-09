@@ -3,7 +3,7 @@
 .. _section-Sampler:
 
 Sampler
------------
+-------
 
 Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gibbs` is implemented as a ``Sampler`` type object, whose fields are summarized herein.  The ``eval`` field is an anonymous function defined as
 

@@ -3,7 +3,7 @@
 .. _section-Dependent:
 
 Dependent
--------------
+---------
 
 ``Dependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
 
@@ -97,7 +97,7 @@ Methods
 .. _section-Logical:
 
 Logical
------------
+-------
 
 Type ``Logical`` inherits the fields and method functions from the ``Dependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
 
@@ -180,7 +180,7 @@ Methods
 .. _section-Stochastic:
 
 Stochastic
---------------
+----------
 
 Type ``Stochastic`` inherits the fields and method functions from the ``Dependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
 
