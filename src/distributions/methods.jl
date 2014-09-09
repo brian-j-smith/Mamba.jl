@@ -88,8 +88,10 @@ function logpdf{T<:Real}(D::PDMatDistribution, X::Matrix{T}, transform::Bool)
   value = logpdf(D, X)
   if transform && isfinite(value)
     U = chol(X)
-    for i in 1:dim(D)
-      value += log(U[i,i])
+    n = dim(D)
+    for i in 1:n
+      u = U[i,i]
+      value += log(2 * u) + (n - i + 1) * log(u)
     end
   end
   value
