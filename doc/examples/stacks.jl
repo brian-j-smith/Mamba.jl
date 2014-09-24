@@ -43,9 +43,9 @@ stacks[:z] = Float64[
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(mu, sigma, N,
+    @modelexpr(mu, s2, N,
       begin
-        Distribution[Laplace(mu[i], sigma) for i in 1:N]
+        Distribution[Laplace(mu[i], s2) for i in 1:N]
       end
     ),
     false
@@ -75,7 +75,7 @@ model = Model(
 
   sigma = Logical(
     @modelexpr(s2,
-      sqrt(2.0 * s2)
+      sqrt(2.0) * s2
     )
   ),
 

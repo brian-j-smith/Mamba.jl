@@ -95,11 +95,11 @@ inits = [
 
 ## Sampling Scheme
 scheme = [NUTS([:delta]),
-          AMWG([:mu, :phi, :pi], fill(0.1, 3)),
+          Slice([:mu, :phi, :pi], fill(1.0, 3)),
           Slice([:s2_1, :s2_2], ones(2), :univar)]
 setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(model, equiv, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, equiv, inits, 12500, burnin=2500, thin=2, chains=2)
 describe(sim)

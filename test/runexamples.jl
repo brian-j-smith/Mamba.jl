@@ -1,3 +1,5 @@
+using Mamba
+
 include("utils.jl")
 
 examples = [
@@ -8,6 +10,7 @@ examples = [
   "epil",
   "equiv",
   "inhalers",
+  "jaws",
   "leuk",
   "lsat",
   "magnesium",
@@ -18,14 +21,13 @@ examples = [
   "salm",
   "seeds",
   "stacks",
-  "surgical",
-  "jaws"
+  "surgical"
 ]
 
 println("Running examples:")
 
-srand(123)
-
 for t in examples
+  @everywhere srand(123)
   @runtest "../doc/examples/" t
+  gelmandiag(sim) |> show
 end

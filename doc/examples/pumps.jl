@@ -28,7 +28,8 @@ model = Model(
   theta = Stochastic(1,
     @modelexpr(alpha, beta,
       Gamma(alpha, 1 / beta)
-    )
+    ),
+    true
   ),
 
   alpha = Stochastic(
@@ -53,7 +54,7 @@ inits = [
 
 ## Sampling Scheme
 scheme = [Slice([:alpha, :beta], [1.0, 1.0], :univar),
-          AMWG([:theta], ones(pumps[:N]))]
+          Slice([:theta], ones(pumps[:N]), :univar)]
 setsamplers!(model, scheme)
 
 

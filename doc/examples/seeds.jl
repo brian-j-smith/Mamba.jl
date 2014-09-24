@@ -72,10 +72,10 @@ inits = [
 ## Sampling Scheme
 scheme = [AMM([:alpha0, :alpha1, :alpha2, :alpha12], 0.01 * eye(4)),
           AMWG([:b], fill(0.01, seeds[:N])),
-          Slice([:s2], [1.0])]
+          AMWG([:s2], [0.1])]
 setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(model, seeds, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, seeds, inits, 12500, burnin=2500, thin=2, chains=2)
 describe(sim)

@@ -112,12 +112,13 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [AMWG([:alpha, :beta1, :beta2, :s2], fill(1.0, 4)),
+scheme = [AMWG([:alpha, :beta1, :beta2], fill(1.0, 3)),
+          Slice([:s2], [1.0]),
           Slice([:mu], ones(oxford[:K])),
           Slice([:b], ones(oxford[:K]))]
 setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(model, oxford, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, oxford, inits, 12500, burnin=2500, thin=2, chains=2)
 describe(sim)

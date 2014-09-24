@@ -61,6 +61,25 @@ model = Model(
 
   beta = Stochastic(
     :(Normal(0, 1000))
+  ),
+
+  S0 = Logical(1,
+    @modelexpr(dL0,
+      exp(-cumsum(dL0))
+    ),
+    false
+  ),
+
+  S_treat = Logical(1,
+    @modelexpr(S0, beta,
+      S0.^exp(-0.5 * beta)
+    )
+  ),
+
+  S_placebo = Logical(1,
+    @modelexpr(S0, beta,
+      S0.^exp(0.5 * beta)
+    )
   )
 
 )
@@ -74,7 +93,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [AMWG([:dL0], fill(0.01, leuk[:T])),
+scheme = [AMWG([:dL0], fill(0.1, leuk[:T])),
           Slice([:beta], [3.0])]
 setsamplers!(model, scheme)
 

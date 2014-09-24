@@ -105,13 +105,13 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [AMWG([:theta], fill(0.01, 48)),
-          AMM([:mu], 0.01 * eye(6)),
+scheme = [AMWG([:theta], fill(0.1, 48)),
+          AMWG([:mu], fill(0.1, 6)),
           Slice([:pc], fill(0.25, 48), :univar),
           Slice([:priors], [1.0, 5.0, 5.0, 0.25, 0.25, 5.0], :univar)]
 setsamplers!(model, scheme)
 
 
 ## MCMC Simulations
-sim = mcmc(model, magnesium, inits, 10000, burnin=2500, thin=2, chains=2)
+sim = mcmc(model, magnesium, inits, 12500, burnin=2500, thin=2, chains=2)
 describe(sim)

@@ -48,8 +48,6 @@ model = Model(
 
 )
 
-srand(123)
-
 ## Initial Values
 inits = [
   [:r => surgical[:r], :b => fill(0.1, surgical[:N]), :s2 => 1, :mu => 0],
