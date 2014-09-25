@@ -11,8 +11,8 @@ Listed in this section are distributions, as provided by the *Distributions* :ci
 Univariate
 ^^^^^^^^^^
 
-Distributions Package
-`````````````````````
+`Distributions Package <http://distributionsjl.readthedocs.org/en/latest/univariate.html>`_
+```````````````````````````````````````````````````````````````````````````````````````````
 
 .. code-block:: julia
 
@@ -47,8 +47,8 @@ The Flat distribution has the degenerate probability density function:
 Multivariate
 ^^^^^^^^^^^^
 
-Distributions Package
-`````````````````````
+`Distributions Package <http://distributionsjl.readthedocs.org/en/latest/multivariate.html>`_
+`````````````````````````````````````````````````````````````````````````````````````````````
 
 .. code-block:: julia
 
@@ -93,8 +93,8 @@ where
 Matrix
 ^^^^^^
 
-Distributions Package
-`````````````````````
+`Distributions Package <http://distributionsjl.readthedocs.org/en/latest/matrix.html>`_
+```````````````````````````````````````````````````````````````````````````````````````
 
 .. code-block:: julia
 
