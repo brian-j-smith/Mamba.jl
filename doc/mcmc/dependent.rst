@@ -188,7 +188,7 @@ Type ``Stochastic`` inherits the fields and method functions from the ``Dependen
 
 	function(model::Mamba.Model)
 
-where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single `Distributions <http://distributionsjl.readthedocs.org/en/latest/index.html>`_ object for all node elements or a structure of the same type as the node with element-specific `Distributions` objects :cite:`bates:2014:DP`.
+where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single :ref:`section-Distributions` object for all node elements or a structure of the same type as the node with element-specific :ref:`section-Distributions` objects.
 
 Declaration
 ^^^^^^^^^^^

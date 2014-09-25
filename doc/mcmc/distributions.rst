@@ -5,7 +5,7 @@
 Distributions
 -------------
 
-Listed in this section are distributions, as provided by the `Distributions <http://distributionsjl.readthedocs.org/en/latest/index.html>`_ and Mamba packages, supported for the specification of :ref:`section-Stochastic` nodes.  Truncated versions of the continuous univariate distributions are also supported.
+Listed in this section are distributions, as provided by the *Distributions* :cite:`bates:2014:DP` and *Mamba* packages, supported for the specification of :ref:`section-Stochastic` nodes.  Truncated versions of the continuous univariate distributions are also supported.
 
 
 Univariate

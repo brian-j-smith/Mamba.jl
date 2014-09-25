@@ -43,7 +43,7 @@ Field
 Methods
 ^^^^^^^
 
-Method functions supported on all ``Variate`` types are summarized in the following sections; and, unless otherwise specified, are detailed in `The Julia Standard Library <http://docs.julialang.org/en/release-0.2/stdlib/base>`_ documentation.
+Method functions supported on all ``Variate`` types are summarized in the following sections; and, unless otherwise specified, are detailed in `The Julia Standard Library <http://docs.julialang.org/en/release-0.3/stdlib/base>`_ documentation.
 
 Array Functions
 ```````````````
@@ -66,7 +66,7 @@ Collections
 Distributions
 `````````````
 
-The `univariate <http://distributionsjl.readthedocs.org/en/latest/univariate.html#list-of-distributions>`_, `multivariate <http://distributionsjl.readthedocs.org/en/latest/multivariate.html>`_, and `matrix <http://distributionsjl.readthedocs.org/en/latest/matrix.html>`_ distributions found in the *Distributions* package are supported.
+The univariate, multivariate, and matrix distributions described in the :ref:`section-Distributions` Section are supported.
 
 Linear Algebra
 ``````````````
@@ -78,7 +78,7 @@ Linear Algebra
 Mathematical Operators and Elementary Functions
 ```````````````````````````````````````````````
 
-The basic numerical `Mathematical Operators and Elementary Functions <http://julia.readthedocs.org/en/release-0.2/manual/mathematical-operations/>`_ of the **julia** language are supported, and the ones below added.
+The basic numerical `Mathematical Operators and Elementary Functions <http://julia.readthedocs.org/en/release-0.3/manual/mathematical-operations/>`_ of the **julia** language are supported, and the ones below added.
 
 =============== ================
 Function        Description
