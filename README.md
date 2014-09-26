@@ -20,7 +20,7 @@ Several software options are available for MCMC sampling of Bayesian models.  In
 * Arbitrary blocking of model parameters and designation of block-specific samplers.
 * Samplers that can be used with the included simulation engine or apart from it.
 * Automatic parallel execution of parallel MCMC chains on multi-processor systems.
-* NEW: Restarting of chains.
+* Restarting of chains.
 * Command-line access to all package functionality, including its simulation API.
 * Tools for convergence diagnostics and posterior inference.
 * Run-time performance on par with compiled MCMC software.

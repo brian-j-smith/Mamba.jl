@@ -3,6 +3,11 @@
 ## Version Updates
 
 
+### 0.3.5
+
+* Documentation updates only - primarily the addition of results to examples.
+* No changes made to the source code.
+
 ### 0.3.4
 
 * Added distributions documentation.
