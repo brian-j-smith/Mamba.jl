@@ -130,26 +130,26 @@ sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
-gelmandiag(sim1, mpsrf=true, transform=true) |> display
+gelmandiag(sim1, mpsrf=true, transform=true) |> show
 
 ## Geweke Convergence Diagnostic
-gewekediag(sim1) |> display
+gewekediag(sim1) |> show
 
 
 ## Summary Statistics
 describe(sim1)
 
 ## Highest Posterior Density Intervals
-hpd(sim1) |> display
+hpd(sim1) |> show
 
 ## Cross-Correlations
-cor(sim1) |> display
+cor(sim1) |> show
 
 ## Lag-Autocorrelations
-autocor(sim1) |> display
+autocor(sim1) |> show
 
 ## Deviance Information Criterion
-dic(sim1) |> display
+dic(sim1) |> show
 
 
 ## Subset Sampler Output
