@@ -6,7 +6,7 @@
 Tutorial
 ========
 
-The complete source code for the examples containing in this tutorial can be obtained :download:`here <tutorial/line.jl>`.
+The complete source code for the examples contained in this tutorial can be obtained :download:`here <tutorial/line.jl>`.
 
 
 .. _section-Line-Model:
