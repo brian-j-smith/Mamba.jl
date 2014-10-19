@@ -3,6 +3,10 @@
 ## Version Updates
 
 
+### 0.3.6
+
+* Fix for convert errors triggered by the *Color* package beginning with its version 0.3.9.
+
 ### 0.3.5
 
 * Documentation updates only - primarily the addition of results to examples.
