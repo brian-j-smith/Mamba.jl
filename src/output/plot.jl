@@ -90,35 +90,41 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
   f(args...) = fmt == :pdf ? PDF(args...) :
                fmt == :png ? PNG(args...) :
                fmt == :ps  ? PS(args...)  : SVG(args...)
-  if length(filename) == 0
-    img = f(width, height)
-  else
-    if search(filename, '.') == 0
-      filename = string(filename, '.', fmt)
-    end
-    img = f(filename, width, height)
-  end
 
-  pp = nrow*ncol       ## plots per page
-  ps = length(p)       ## number of plots
-  np = iceil(ps/pp)    ## number of pages
+  isexternalfile = length(filename) > 0
+  addextension = isexternalfile & search(filename, '.') == 0
+  args = (width, height)
+
+  pp = nrow * ncol       ## plots per page
+  ps = length(p)         ## number of plots
+  np = iceil(ps / pp)    ## number of pages
 
   mat = Array(Context, pp)
   for page in 1:np
-    nrem = ps - (page-1)*pp
+    if page > 1 && !addextension
+      println("Press ENTER to draw next plot")
+      readline(STDIN)
+    end
 
+    if isexternalfile
+      fname = filename
+      if addextension
+        fname = string(fname, '-', page, '.', fmt)
+      end
+      args = (fname, width, height)
+    end
+    img = f(args...)
+
+    nrem = ps - (page - 1) * pp
     for j in 1:pp
       if j <= nrem
-        mat[j] = render(p[(page-1)*pp+j])
+        mat[j] = render(p[(page - 1) * pp + j])
       else
         mat[j] = context() ## pad with blank plots
       end
     end
-    if page > 1
-      println("Press ENTER to draw next plot")
-      readline(STDIN)
-    end
     result = byrow ? reshape(mat, ncol, nrow).' : reshape(mat, nrow, ncol)
+
     draw(img, gridstack(result))
   end
 

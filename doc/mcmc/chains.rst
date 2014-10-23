@@ -167,7 +167,7 @@ Methods
 			* ``:png`` : Portable Network Graphics (.png).
 			* ``:ps``  : Postscript (.ps).
 			* ``:svg`` : Scalable Vector Graphics (.svg).
-		* ``filename`` : an external file to which to save plots, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), the plotting format extension will be appended automatically.
+		* ``filename`` : an external file to which to save plots, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the plot number and then the format extension will be appended automatically.  In the case of multiple plots, the former file name behavior will write all plots to the single named file, but prompt users before advancing to the next plot and overwriting the file; the latter behavior will write each plot to a different file.
 		* ``width/height`` : plot width/height in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
 		* ``nrow/ncol`` : number of rows/columns in output matrix.
 		* ``byrow`` : whether the matrix should be filled by row.
