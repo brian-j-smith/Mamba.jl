@@ -102,7 +102,6 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
   pp = nrow*ncol       ## plots per page
   ps = length(p)       ## number of plots
   np = iceil(ps/pp)    ## number of pages
-  ex = pp - (ps % pp)  ## number of blank plots
 
   mat = Array(Context, pp)
   for page in 1:np
