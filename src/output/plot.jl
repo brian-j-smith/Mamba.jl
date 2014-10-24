@@ -92,7 +92,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
                fmt == :ps  ? PS(args...)  : SVG(args...)
 
   isexternalfile = length(filename) > 0
-  addextension = isexternalfile & search(filename, '.') == 0
+  addextension = isexternalfile && search(filename, '.') == 0
   args = (width, height)
 
   pp = nrow * ncol       ## plots per page
