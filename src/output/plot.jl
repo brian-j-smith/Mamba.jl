@@ -1,3 +1,13 @@
+function plot(c::Chains, ptype::Vector{Symbol}; legend::Bool=false)
+  n = length(ptype)
+  p = Array(Plot, n, size(c, 2))
+  for i in 1:n
+    showlegend = legend && i == n
+    p[i,:] = plot(c, ptype[i]; legend=showlegend)
+  end
+  p
+end
+
 function plot(c::Chains, ptype::Symbol=:summary; args...)
   ptype == :summary ? [traceplot(c) densityplot(c; args...)].' :
   ptype == :trace   ? traceplot(c; args...) :
