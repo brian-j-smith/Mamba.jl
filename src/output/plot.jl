@@ -1,4 +1,5 @@
-function plot(c::Chains, ptype::Vector{Symbol}; legend::Bool=false)
+function plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density];
+              legend::Bool=false)
   n = length(ptype)
   p = Array(Plot, n, size(c, 2))
   for i in 1:n
@@ -8,12 +9,12 @@ function plot(c::Chains, ptype::Vector{Symbol}; legend::Bool=false)
   p
 end
 
-function plot(c::Chains, ptype::Symbol=:summary; args...)
-  ptype == :summary ? [traceplot(c) densityplot(c; args...)].' :
-  ptype == :trace   ? traceplot(c; args...) :
-  ptype == :density ? densityplot(c; args...) :
-  ptype == :autocor ? autocorplot(c; args...) :
-  ptype == :mean    ? meanplot(c; args...) :
+function plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
+  ptype == :trace   ? traceplot(c; legend=legend, args...) :
+  ptype == :density ? densityplot(c; legend=legend, args...) :
+  ptype == :autocor ? autocorplot(c; legend=legend, args...) :
+  ptype == :mean    ? meanplot(c; legend=legend, args...) :
+  ptype == :summary ? error("use plot type [:trace, :density] instead of :summary") :
     error("unsupported plot type $ptype")
 end
 
