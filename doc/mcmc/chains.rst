@@ -271,25 +271,25 @@ Methods
 	
 		The numeric standard error value.
 
-.. function:: plot(c::Chains, ptype::Symbol=:summary; args...)
+.. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false)
+			  plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
 
 	Various plots to summarize a ``Chains`` object.  Separate plots are produced for each parameter. 
 	
 	**Arguments**
 	
 		* ``c`` : sampler output to plot.
-		* ``ptype`` : plot type.  Options are
+		* ``ptype`` : plot type(s).  Options are
 			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=int(10*log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
 			* ``:density`` : density plots.  Optional argument ``trim::(Real,Real)=(.025,.975)`` trims off lower and upper quantiles of density.
 			* ``:mean`` : running mean plots.
-			* ``:summary`` : trace and density plots.
 			* ``:trace`` : trace plots.
-		* ``args...`` : additional arguments to be passed to the ``ptype`` method.  In addition to the options described above, the following global one is available:
-			* ``legend::Bool`` : whether to include legends in the plots to identify chain-specific results (default: ``false``).
+		* ``legend`` : whether to include legends in the plots to identify chain-specific results.
+		* ``args...`` : additional arguments to be passed to the ``ptype`` method, as described above.
 			
 	**Value**
 	
-		An array of plots that can be saved to a file with ``draw()``.
+		Returns a ``Vector{Plot}`` whose elements are individual parameter plots of the specified type if ``ptype`` is a symbol, and a ``Matrix{Plot}`` with plot types in the rows and parameters in the columns if ``ptype`` is a vector.  The result can be displayed or saved to a file with ``draw()``.
 
 	**Note**
 	

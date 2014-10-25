@@ -169,12 +169,12 @@ p = plot(sim1)
 
 ## Write plot to file
 draw(p, filename="summaryplot.svg")
-draw(p, filename="summaryplot", fmt=:pdf)
+draw(p, filename="summaryplot.pdf", fmt=:pdf)
 
 ## Autocorrelation and running mean plots
-p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
+p = plot(sim1, [:autocor, :mean], legend=true)
 draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
-draw(p, nrow=3, ncol=2, filename="autocormeanplot", fmt=:pdf)
+draw(p, nrow=3, ncol=2, filename="autocormeanplot.pdf", fmt=:pdf)
 
 
 ## Development and Testing

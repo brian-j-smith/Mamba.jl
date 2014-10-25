@@ -477,9 +477,6 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 	 "beta[2]"   0.097539  0.626108   0.79722   0.970727  1.48108
 
 
-.. _section-Line-Plotting:
-
-
 Restarting the Sampler
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -510,6 +507,9 @@ Convergence diagnostics or posterior summaries may indicate that additional draw
 	 "beta[1]"  -1.90886     -0.00502574  0.591263  1.19065   3.22561 
 	 "beta[2]"   0.00943373   0.620339    0.803543  0.982711  1.55282 
 
+
+.. _section-Line-Plotting:
+
 Plotting
 ^^^^^^^^
 
@@ -533,7 +533,7 @@ The ``plot`` function can also be used to make autocorrelation and running means
 .. code-block:: julia
 
 	## Autocorrelation and running mean plots
-	p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
+	p = plot(sim1, [:autocor, :mean], legend=true)
 	draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
 
 .. figure:: tutorial/autocormeanplot.*
