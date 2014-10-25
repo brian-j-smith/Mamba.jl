@@ -157,24 +157,24 @@ Methods
 			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
 			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
 
-  Draw plots produced by :func:`plot`.  Plots are arranged in a matrix (default: 3x2).
+  Draw plots produced by :func:`plot` into display grids containing a default of 3 rows and 2 columns of plots.
 	
 	**Arguments**
 	
-		* ``p`` : array of plots to be drawn.
-		* ``fmt`` : plotting format. Options are
+		* ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
+		* ``fmt`` : output format. Options are
 			* ``:pdf`` : Portable Document Format (.pdf).
 			* ``:png`` : Portable Network Graphics (.png).
 			* ``:ps``  : Postscript (.ps).
 			* ``:svg`` : Scalable Vector Graphics (.svg).
-		* ``filename`` : an external file to which to save plots, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the plot number and then the format extension will be appended automatically.  In the case of multiple plots, the former file name behavior will write all plots to the single named file, but prompt users before advancing to the next plot and overwriting the file; the latter behavior will write each plot to a different file.
-		* ``width/height`` : plot width/height in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
-		* ``nrow/ncol`` : number of rows/columns in output matrix.
-		* ``byrow`` : whether the matrix should be filled by row.
+		* ``filename`` : an external file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
+		* ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
+		* ``nrow/ncol`` : number of rows/columns in the display grids.
+		* ``byrow`` : whether the display grids should be filled by row.
 		
 	**Value**
 	
-		Plots drawn to an external file or the display device.
+		Grids drawn to an external file or the display device.
 
 	**Note**
 	
