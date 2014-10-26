@@ -3,6 +3,12 @@
 ## Version Updates
 
 
+### 0.3.7
+
+* Extend `Chains` draw method to allow automatic outputting of multiple plot grids to different files.
+* Add `Chains` plot method to accommodate vectors of plot types.
+* Fix variance calculation in `gewekediag()`.
+
 ### 0.3.6
 
 * Fix for convert errors triggered by the *Color* package beginning with its version 0.3.9.
