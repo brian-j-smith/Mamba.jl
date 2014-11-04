@@ -4,7 +4,7 @@ module PDMats2
   import Base: diag, full, inv, logdet, size
   import Base.LinAlg: Cholesky
   import PDMats: AbstractPDMat, dim, invquad, invquad!, quad, quad!,
-         whiten, whiten!, unwhiten, unwhiten!, unwhiten_winv, unwhiten_winv!
+         whiten, whiten!, unwhiten, unwhiten!
 
   export PBDiagMat
 
@@ -72,15 +72,6 @@ module PDMats2
 
   function unwhiten!(a::PBDiagMat, x::StridedVecOrMat{Float64})
     x[:] = unwhiten(a, x)
-  end
-
-  function unwhiten_winv(a::PBDiagMat, x::StridedVecOrMat{Float64})
-    au = map(ac -> ac[:U], a.chol)
-    spbdiagm(au, a.scale) * x
-  end
-
-  function unwhiten_winv!(a::PBDiagMat, x::StridedVecOrMat{Float64})
-    x[:] = unwhiten_winv(a, x)
   end
 
 
