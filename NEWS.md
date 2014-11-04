@@ -3,6 +3,10 @@
 ## Version Updates
 
 
+### 0.3.8
+
+* Updated to fix warning and work with the latest versions of the *PDMat* and *Distributions* packages.
+
 ### 0.3.7
 
 * Extend `Chains` draw method to allow automatic outputting of multiple plot grids to different files.

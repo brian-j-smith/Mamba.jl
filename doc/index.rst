@@ -44,7 +44,7 @@ The following **julia** command will install the package:
 
 .. code-block:: julia
 
-	julia> Pkg.clone("git://github.com/brian-j-smith/Mamba.jl.git")
+	julia> Pkg.add("Mamba")
 
 
 Contents

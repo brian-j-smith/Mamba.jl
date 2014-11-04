@@ -30,7 +30,7 @@ Several software options are available for MCMC sampling of Bayesian models.  In
 The following **julia** command will install the package:
 
 ```julia
-julia> Pkg.clone("git://github.com/brian-j-smith/Mamba.jl.git")
+julia> Pkg.add("Mamba")
 ```
 
 See the [Package Documentation](http://mambajl.readthedocs.org) for details and examples.
