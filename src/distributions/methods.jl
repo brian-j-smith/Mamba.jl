@@ -103,14 +103,6 @@ end
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
   Union(T, Truncated{T, Continuous})
 
-function minimum(d::Truncated)
-  max(d.lower, minimum(d.untruncated))
-end
-
-function maximum(d::Truncated)
-  min(d.upper, maximum(d.untruncated))
-end
-
 function link(d::TransformDistribution, x, transform::Bool=true)
   if transform
     a, b = minimum(d), maximum(d)
