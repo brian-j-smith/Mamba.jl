@@ -56,21 +56,21 @@ module PDMats2
 
   #################### PBDiagMat: whiten and unwhiten ####################
 
-  function whiten(a::PBDiagMat, x::StridedVecOrMat{Float64})
+  function whiten(a::PBDiagMat, x::DenseVecOrMat{Float64})
     au_inv = map(ac -> inv(ac[:U]), a.chol)
     At_mul_B(spbdiagm(au_inv, a.scale), x)
   end
 
-  function whiten!(a::PBDiagMat, x::StridedVecOrMat{Float64})
+  function whiten!(a::PBDiagMat, x::DenseVecOrMat{Float64})
     x[:] = whiten(a, x)
   end
 
-  function unwhiten(a::PBDiagMat, x::StridedVecOrMat{Float64})
+  function unwhiten(a::PBDiagMat, x::DenseVecOrMat{Float64})
     au = map(ac -> ac[:U], a.chol)
     At_mul_B(spbdiagm(au, a.scale), x)
   end
 
-  function unwhiten!(a::PBDiagMat, x::StridedVecOrMat{Float64})
+  function unwhiten!(a::PBDiagMat, x::DenseVecOrMat{Float64})
     x[:] = unwhiten(a, x)
   end
 
