@@ -1,10 +1,10 @@
 julia 0.3
-Calculus 0.1.3 0.2-
-Compose 0.3.5 0.4-
-Distributions 0.5.8 0.6-
-Gadfly 0.3.5 0.4-
-Graphs 0.4.2 0.5-
+Calculus 0.1.3
+Compose 0.3.5
+Distributions 0.5.8
+Gadfly 0.3.5
+Graphs 0.4.2
 PDMats 0.3
-StatsBase 0.5.0 0.7-
+StatsBase 0.5.0
 
 Color 0.3 0.3.9
