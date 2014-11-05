@@ -136,7 +136,7 @@ function header(c::Chains)
   string(
     "Iterations = $(first(c.range)):$(last(c.range))\n",
     "Thinning interval = $(step(c.range))\n",
-    "Chains = $(join(string(c.chains...), ","))\n",
+    "Chains = $(join(map(string, c.chains), ","))\n",
     "Samples per chain = $(length(c.range))\n"
   )
 end
