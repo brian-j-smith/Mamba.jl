@@ -3,6 +3,18 @@
 ## Version Updates
 
 
+### 0.4.0
+
+* Added support for user add-on packages and functions to allow for their inclusion in `Model` specifications.
+* Added experimental `predict` (posterior prediction) function.
+* Required the *Cairo* package.
+* Removed deprecated `MCMC*` types and `slicewg` and `SliceWG` functions.
+* Fixed `ERROR: GenericMvNormal not defined`.
+* Distributions `DiagNormal` and `IsoNormal` removed and replaced by `MvNormal`.
+* Distributions `DiagNormalCanon` and `IsoNormalCanon` removed and replaced by `MvNormalCanon`.
+* Distributions `DiagNormalCanon` and `IsoNormalCanon` removed and replaced by `MvNormalCanon`.
+* Distributions `DiagTDist` and `IsoTDist` removed and replaced by `MvTDist`.
+
 ### 0.3.8
 
 * Updated to fix warning and work with the latest versions of the *PDMat* and *Distributions* packages.
