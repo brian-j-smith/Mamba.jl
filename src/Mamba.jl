@@ -5,6 +5,11 @@ module Mamba
   using Distributions
 
 
+  #################### User Add-on Packages and Functions ####################
+
+  try include("../usr/addons.jl") end
+
+
   #################### Imports ####################
 
   import Base: Base, cor, dot
