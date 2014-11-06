@@ -5,6 +5,8 @@ function predict(c::Chains, key::Symbol)
   node = m[key]
   nodenames = names(m, [key])
 
+  isa(node, Stochastic) || error("predict is only defined for Stochastic nodes")
+
   idx = indexin(names(m, node.sources), c.names)
   in(0, idx) && error("predict requires monitoring of nodes: ",
                       join(map(string, node.sources), ", "))
