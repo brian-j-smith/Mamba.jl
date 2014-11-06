@@ -18,10 +18,10 @@ function MISS(params::Vector{Symbol})
         missing = tunepar["sampler"][key]
         if isa(node.distr, Array)
           for i in missing
-            v[i] = rand2(node.distr[i])
+            v[i] = rand(node.distr[i])
           end
         elseif length(missing) > 0
-          pred = rand2(node.distr)
+          pred = rand(node.distr)
           for i in missing
             v[i] = pred[i]
           end
