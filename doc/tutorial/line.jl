@@ -9,7 +9,7 @@ model = Model(
     quote
       mu = model[:mu]
       s2 = model[:s2]
-      IsoNormal(mu, sqrt(s2))
+      MvNormal(mu, sqrt(s2))
     end,
     false
   ),
@@ -20,7 +20,7 @@ model = Model(
   ),
 
   beta = Stochastic(1,
-    :(IsoNormal(2, sqrt(1000)))
+    :(MvNormal(2, sqrt(1000)))
   ),
 
   s2 = Stochastic(

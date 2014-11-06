@@ -81,7 +81,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	    quote
 	      mu = model[:mu]
 	      s2 = model[:s2]
-	      IsoNormal(mu, sqrt(s2))
+	      MvNormal(mu, sqrt(s2))
 	    end,
 	    false
 	  ),
@@ -92,7 +92,7 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 	  ),
 
 	  beta = Stochastic(1,
-	    :(IsoNormal(2, sqrt(1000)))
+	    :(MvNormal(2, sqrt(1000)))
 	  ),
 
 	  s2 = Stochastic(
@@ -109,7 +109,7 @@ Stochastic expressions must return a single distribution object that can accommo
 
 	# Case 1: Multivariate Normal with independence covariance matrix
 	beta = Stochastic(1,
-	  :(IsoNormal(2, sqrt(1000)))
+	  :(MvNormal(2, sqrt(1000)))
 	)
 
 	# Case 2: One common univariate Normal 
@@ -194,7 +194,7 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
 	## User-Defined Sampling Scheme
 	scheme3 = [Gibbs_beta, Gibbs_s2]
 
-In these samplers, the respective ``IsoNormal(2, sqrt(1000))`` and ``InverseGamma(0.001, 0.001)`` priors on stochastic nodes ``beta`` and ``s2`` are accessed directly through the ``distr`` :ref:`fields <section-Stochastic>`.  Features of the `Distributions` objects returned by ``beta.distr`` and ``s2.distr`` can, in turn, be extracted with method functions defined in that package or through their own fields.  For instance, ``mean(beta.distr)`` and ``invcov(beta.distr)`` apply method functions to extract the mean vector and inverse-covariance matrix of the ``beta`` prior.  Whereas, ``s2.distr.shape`` and ``s2.distr.scale`` extract the shape and scale parameters from fields of the inverse-gamma prior.  `Distributions` method functions can be found in that package's `documentation <http://distributionsjl.readthedocs.org>`_; whereas, fields are found in the `source code <https://github.com/JuliaStats/Distributions.jl>`_.
+In these samplers, the respective ``MvNormal(2, sqrt(1000))`` and ``InverseGamma(0.001, 0.001)`` priors on stochastic nodes ``beta`` and ``s2`` are accessed directly through the ``distr`` :ref:`fields <section-Stochastic>`.  Features of the `Distributions` objects returned by ``beta.distr`` and ``s2.distr`` can, in turn, be extracted with method functions defined in that package or through their own fields.  For instance, ``mean(beta.distr)`` and ``invcov(beta.distr)`` apply method functions to extract the mean vector and inverse-covariance matrix of the ``beta`` prior.  Whereas, ``s2.distr.shape`` and ``s2.distr.scale`` extract the shape and scale parameters from fields of the inverse-gamma prior.  `Distributions` method functions can be found in that package's `documentation <http://distributionsjl.readthedocs.org>`_; whereas, fields are found in the `source code <https://github.com/JuliaStats/Distributions.jl>`_.
 
 When possible to do so, direct sampling from full conditions is often preferred in practice because it tends to be more efficient than general-purpose algorithms.  Schemes that mix the two approaches can be used if full conditionals are available for some model parameters but not for others.  Once a sampling scheme is formulated in `Mamba`, it can be assigned to an existing model with a call to the ``setsamplers!`` function.
 

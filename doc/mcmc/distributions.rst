@@ -52,9 +52,8 @@ Multivariate
 
 .. code-block:: julia
 
-	MvNormal     Dirichlet       DiagNormalCanon   DiagTDist
-	DiagNormal   Multinomial     IsoNormalCanon    IsoTDist
-	IsoNormal    MvNormalCanon   MvTDist           VonMisesFisher
+	Dirichlet    Multinomial     MvNormal          MvNormalCannon
+	MvTDist      VonMisesFisher
 
 
 .. index:: Distributions; Block-Diagonal Normal

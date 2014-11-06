@@ -53,7 +53,7 @@ model = Model(
     @modelexpr(alpha, beta, rat, Xm, s2_c,
       begin
         mu = alpha[rat] + beta[rat] .* Xm
-        IsoNormal(mu, sqrt(s2_c))
+        MvNormal(mu, sqrt(s2_c))
       end
     ),
     false

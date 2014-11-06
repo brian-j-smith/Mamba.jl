@@ -1,12 +1,12 @@
 #################### BDiagNormal ####################
 
-typealias BDiagNormal GenericMvNormal{PBDiagMat}
+typealias BDiagNormal MvNormal{PBDiagMat,Vector{Float64}}
 
 function BDiagNormal(μ::Vector{Float64}, Σ::Matrix{Float64})
   n = div(length(μ), size(Σ, 1))
-  GenericMvNormal(μ, PBDiagMat(Σ, n))
+  MvNormal(μ, PBDiagMat(Σ, n))
 end
 
 function BDiagNormal(μ::Vector{Float64}, Σ::Vector{Matrix{Float64}})
-  GenericMvNormal(μ, PBDiagMat(Σ))
+  MvNormal(μ, PBDiagMat(Σ))
 end

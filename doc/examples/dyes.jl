@@ -23,7 +23,7 @@ model = Model(
 
   y = Stochastic(1,
     @modelexpr(mu, batch, s2_within,
-      IsoNormal(mu[batch], sqrt(s2_within))
+      MvNormal(mu[batch], sqrt(s2_within))
     ),
     false
   ),

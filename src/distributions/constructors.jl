@@ -258,26 +258,48 @@ Distributions.Truncated{S<:ValueSupport}(d::UnivariateDistribution{S}, l, u) =
 # Multivariate Distributions
 ######################################################################
 
-#################### GenericMvNormal ####################
+#################### MvNormal ####################
 
-Distributions.MvNormal(μ, C::PDMat) = MvNormal(convert(Vector{Float64}, μ), C)
-Distributions.MvNormal(Σ) = MvNormal(convert(Matrix{Float64}, Σ))
-Distributions.MvNormal(μ, Σ) =
+Distributions.MvNormal(μ::VectorVariate, Σ::Matrix{Float64}) =
+  MvNormal(convert(Vector{Float64}, μ), Σ)
+Distributions.MvNormal(μ::Vector{Float64}, Σ::MatrixVariate) =
+  MvNormal(μ, convert(Matrix{Float64}, Σ))
+Distributions.MvNormal(μ::VectorVariate, Σ::MatrixVariate) =
   MvNormal(convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
 
-Distributions.DiagNormal(μ, C::PDiagMat) =
-  DiagNormal(convert(Vector{Float64}, μ), C)
-Distributions.DiagNormal(μ, σ) =
-  DiagNormal(convert(Vector{Float64}, μ), convert(Vector{Float64}, σ))
+Distributions.MvNormal(μ::VectorVariate, σ::Vector{Float64}) =
+  MvNormal(convert(Vector{Float64}, μ), σ)
+Distributions.MvNormal(μ::Vector{Float64}, σ::VectorVariate) =
+  MvNormal(μ, convert(Vector{Float64}, σ))
+Distributions.MvNormal(μ::VectorVariate, σ::VectorVariate) =
+  MvNormal(convert(Vector{Float64}, μ), convert(Vector{Float64}, σ))
 
-Distributions.IsoNormal(d::Integer, σ::UniVariate) = IsoNormal(d, σ.value)
-Distributions.IsoNormal(μ, C::ScalMat) =
-  IsoNormal(convert(Vector{Float64}, μ), C)
-Distributions.IsoNormal(μ, σ) =
-  IsoNormal(convert(Vector{Float64}, μ), convert(Float64, σ))
+Distributions.MvNormal(μ::VectorVariate, σ::Real) =
+  MvNormal(convert(Vector{Float64}, μ), σ)
+Distributions.MvNormal(μ::Vector{Float64}, σ::UniVariate) =
+  MvNormal(μ, convert(Float64, σ))
+Distributions.MvNormal(μ::VectorVariate, σ::UniVariate) =
+  MvNormal(convert(Vector{Float64}, μ), convert(Float64, σ))
 
-BDiagNormal(μ, Σ) =
+Distributions.MvNormal(Σ::MatrixVariate) =
+  MvNormal(convert(Matrix{Float64}, Σ))
+
+Distributions.MvNormal(σ::VectorVariate) =
+  MvNormal(convert(Vector{Float64}, σ))
+
+Distributions.MvNormal(d::Int, σ::UniVariate) =
+  MvNormal(d, convert(Float64, σ))
+
+
+#################### BDiagNormal ####################
+
+BDiagNormal(μ::VectorVariate, Σ::Matrix{Float64}) =
+  BDiagNormal(convert(Vector{Float64}, μ), Σ)
+BDiagNormal(μ::Vector{Float64}, Σ::MatrixVariate) =
+  BDiagNormal(μ, convert(Matrix{Float64}, Σ))
+BDiagNormal(μ::VectorVariate, Σ::MatrixVariate) =
   BDiagNormal(convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
+
 BDiagNormal(μ, Σ::Vector) =
   BDiagNormal(convert(Vector{Float64}, μ), Matrix{Float64}[Σ...])
 
@@ -295,56 +317,72 @@ Distributions.Multinomial(n::Integer, p) =
   Multinomial(n, convert(Vector{Float64}, p))
 
 
-#################### GenericMvNormalCanon ####################
+#################### MvNormalCanon ####################
 
-Distributions.MvNormalCanon(h, J::PDMat) =
+Distributions.MvNormalCanon(h::VectorVariate, J::Matrix{Float64}) =
   MvNormalCanon(convert(Vector{Float64}, h), J)
-Distributions.MvNormalCanon(J) = MvNormalCanon(convert(Matrix{Float64}, J))
-Distributions.MvNormalCanon(h, J) =
+Distributions.MvNormalCanon(h::Vector{Float64}, J::MatrixVariate) =
+  MvNormalCanon(h, convert(Matrix{Float64}, J))
+Distributions.MvNormalCanon(h::VectorVariate, J::MatrixVariate) =
   MvNormalCanon(convert(Vector{Float64}, h), convert(Matrix{Float64}, J))
 
-Distributions.DiagNormalCanon(h, J::PDiagMat) =
-  DiagNormalCanon(convert(Vector{Float64}, h), J)
-Distributions.DiagNormalCanon(J) = DiagNormalCanon(convert(Vector{Float64}, J))
-Distributions.DiagNormalCanon(h, J) =
-  DiagNormalCanon(convert(Vector{Float64}, h), convert(Vector{Float64}, J))
+Distributions.MvNormalCanon(h::VectorVariate, prec::Vector{Float64}) =
+  MvNormalCanon(convert(Vector{Float64}, h), prec)
+Distributions.MvNormalCanon(h::Vector{Float64}, prec::VectorVariate) =
+  MvNormalCanon(h, convert(Vector{Float64}, prec))
+Distributions.MvNormalCanon(h::VectorVariate, prec::VectorVariate) =
+  MvNormalCanon(convert(Vector{Float64}, h), convert(Vector{Float64}, prec))
 
-Distributions.IsoNormalCanon(d::Integer, prec::UniVariate) =
-  IsoNormalCanon(d, prec.value)
-Distributions.IsoNormalCanon(h, J::ScalMat) =
-  IsoNormalCanon(convert(Vector{Float64}, h), J)
-Distributions.IsoNormalCanon(h, prec) =
-  IsoNormalCanon(convert(Vector{Float64}, h), convert(Float64, prec))
+Distributions.MvNormalCanon(h::VectorVariate, prec::Float64) =
+  MvNormalCanon(convert(Vector{Float64}, h), prec)
+Distributions.MvNormalCanon(h::Vector{Float64}, prec::UniVariate) =
+  MvNormalCanon(h, convert(Float64, prec))
+Distributions.MvNormalCanon(h::VectorVariate, prec::UniVariate) =
+  MvNormalCanon(convert(Vector{Float64}, h), convert(Float64, prec))
+
+Distributions.MvNormalCanon(J::MatrixVariate) =
+  MvNormalCanon(convert(Matrix{Float64}, J))
+
+Distributions.MvNormalCanon(prec::VectorVariate) =
+  MvNormalCanon(convert(Vector{Float64}, prec))
+
+Distributions.MvNormalCanon(d::Int, prec::UniVariate) =
+  MvNormalCanon(d, convert(Float64, prec))
 
 
-#################### GenericMvTDist ####################
+#################### MvTDist ####################
 
-Distributions.MvTDist(df, μ, C::PDMat) =
-  MvTDist(convert(Float64, df), convert(Vector{Float64}, μ), C)
-Distributions.MvTDist(df, C::PDMat) = MvTDist(convert(Float64, df), C)
-Distributions.MvTDist(df, μ, Σ) =
-  MvTDist(convert(Float64, df), convert(Vector{Float64}, μ),
-    convert(Matrix{Float64}, Σ))
-Distributions.MvTDist(df, Σ) =
+Distributions.MvTDist(df::UniVariate, μ::Vector{Float64}, C::PDMat) =
+  MvTDist(convert(Float64, df), μ, C)
+Distributions.MvTDist(df::Float64, μ::VectorVariate, C::PDMat) =
+  MvTDist(df, convert(Vector{Float64}, μ), C)
+Distributions.MvTDist(df::UniVariate, μ::VectorVariate, C::PDMat) =
+  MvTDist(convert(Float64, df), convert(Vector{Float64}, C))
+
+Distributions.MvTDist(df::UniVariate, C::PDMat) =
+  MvTDist(convert(Float64, df), C)
+
+Distributions.MvTDist(df::UniVariate, μ::Vector{Float64}, Σ::Matrix{Float64}) =
+  MvTDist(convert(Float64, df), μ, Σ)
+Distributions.MvTDist(df::Float64, μ::VectorVariate, Σ::Matrix{Float64}) =
+  MvTDist(df, convert(Vector{Float64}, μ), Σ)
+Distributions.MvTDist(df::Float64, μ::Vector{Float64}, Σ::MatrixVariate) =
+  MvTDist(df, μ, convert(Matrix{Float64}, Σ))
+Distributions.MvTDist(df::UniVariate, μ::VectorVariate, Σ::Matrix{Float64}) =
+  MvTDist(convert(Float64, df), convert(Vector{Float64}, μ), Σ)
+Distributions.MvTDist(df::UniVariate, μ::Vector{Float64}, Σ::MatrixVariate) =
+  MvTDist(convert(Float64, df), μ, convert(Matrix{Float64}, Σ))
+Distributions.MvTDist(df::Float64, μ::VectorVariate, Σ::MatrixVariate) =
+  MvTDist(df, convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
+Distributions.MvTDist(df::UniVariate, μ::VectorVariate, Σ::MatrixVariate) =
+  MvTDist(convert(Float64, df), convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
+
+Distributions.MvTDist(df::UniVariate, Σ::Matrix{Float64}) =
+  MvTDist(convert(Float64, df), Σ)
+Distributions.MvTDist(df::Float64, Σ::MatrixVariate) =
+  MvTDist(df, convert(Matrix{Float64}, Σ))
+Distributions.MvTDist(df::UniVariate, Σ::MatrixVariate) =
   MvTDist(convert(Float64, df), convert(Matrix{Float64}, Σ))
-
-Distributions.DiagTDist(df, μ, C::PDiagMat) =
-  DiagTDist(convert(Float64, df), convert(Vector{Float64}, μ), C)
-Distributions.DiagTDist(df, C::PDiagMat) =
-  DiagTDist(conert(Float64, df), C::PDiagMat)
-Distributions.DiagTDist(df, μ, σ) =
-  DiagTDist(convert(Float64, df), convert(Vector{Float64}, μ),
-            convert(Vector{Float64}, σ))
-
-Distributions.IsoTDist(df, d::Integer, σ::Union(Real, UniVariate)) =
-  IsoTDist(convert(Float64, df), d, convert(Float64, σ))
-Distributions.IsoTDist(df, μ, C::ScalMat) =
-  IsoTDist(convert(Float64, df), convert(Vector{Float64}, μ), C)
-Distributions.IsoTDist(df, C::ScalMat) =
-  IsoTDist(convert(Float64, df), C::ScalMat)
-Distributions.IsoTDist(df, μ, σ) =
-  IsoTDist(convert(Float64, df), convert(Vector{Float64}, μ),
-           convert(Float64, σ))
 
 
 #################### VonMisesFisher ####################
