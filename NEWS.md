@@ -12,7 +12,6 @@
 * Fixed `ERROR: GenericMvNormal not defined`.
 * Distributions `DiagNormal` and `IsoNormal` removed and replaced by `MvNormal`.
 * Distributions `DiagNormalCanon` and `IsoNormalCanon` removed and replaced by `MvNormalCanon`.
-* Distributions `DiagNormalCanon` and `IsoNormalCanon` removed and replaced by `MvNormalCanon`.
 * Distributions `DiagTDist` and `IsoTDist` removed and replaced by `MvTDist`.
 
 ### 0.3.8
