@@ -51,7 +51,7 @@ model = Model(
 
   Sigma = Stochastic(2,
     @modelexpr(M,
-      InverseWishart(4, eye(M))
+      InverseWishart(4.0, eye(M))
     )
   )
 
