@@ -397,11 +397,19 @@ Distributions.VonMisesFisher(mu, kappa) =
 
 #################### InverseWishart ####################
 
-Distributions.InverseWishart(nu, Psi) =
-  InverseWishart(convert(Float64, nu), convert(Matrix{Float64}, Psi))
+Distributions.InverseWishart(nu::UniVariate, Ψ::Matrix{Float64}) =
+  InverseWishart(convert(Float64, nu), Ψ)
+Distributions.InverseWishart(nu::Real, Ψ::MatrixVariate) =
+  InverseWishart(nu, convert(Matrix{Float64}, Ψ))
+Distributions.InverseWishart(nu::UniVariate, Ψ::MatrixVariate) =
+  InverseWishart(convert(Float64, nu), convert(Matrix{Float64}, Ψ))
 
 
 #################### Wishart ####################
 
-Distributions.Wishart(nu, S) =
+Distributions.Wishart(nu::UniVariate, S::Matrix{Float64}) =
+  Wishart(convert(Float64, nu), S)
+Distributions.Wishart(nu::Real, S::MatrixVariate) =
+  Wishart(nu, convert(Matrix{Float64}, S))
+Distributions.Wishart(nu::UniVariate, S::MatrixVariate) =
   Wishart(convert(Float64, nu), convert(Matrix{Float64}, S))
