@@ -60,9 +60,47 @@ Constructors
 	**Example**
 	
 		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
+
+Indexing
+^^^^^^^^
+
+.. function:: getindex(c::Chains, inds...)
+
+	Subset MCMC sampler output.  The syntax ``c[i, j, k]`` is converted to ``getindex(c, i, j, k)``.
 	
-Methods
-^^^^^^^
+	**Arguments**
+	
+		* ``c`` : sampler output to subset.
+		* ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
+		
+	**Value**
+	
+		Returns a ``Chains`` object with the subsetted sampler output.
+		
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
+
+.. function:: setindex!(c::Chains, value, inds...)
+
+	Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
+	
+	**Arguments**
+	
+		* ``c`` : object within which to store sampler output.
+		* ``value`` : sampler output.
+		* ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
+		
+	**Value**
+	
+		Returns a ``Chains`` object with the sampler output stored in the specified indices.
+
+	**Example**
+	
+		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
+
+Posterior Diagnostics and Summaries
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: autocor(c::Chains; lags::Vector=[1,5,10,50], relative::Bool=true)
 
@@ -131,59 +169,6 @@ Methods
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
-.. function:: dic(c::Chains)
-
-	Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output from a model fit with the :func:`mcmc` function and for which all sampled nodes are monitored.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns; where
-		
-		.. math::
-		
-			\text{DIC} = -2 \mathcal{L}(\bar{\Theta}) + 2 p,
-			
-		such that :math:`\mathcal{L}(\bar{\Theta})` is the log-likelihood of model outputs given the expected values of model parameters :math:`\Theta`, and :math:`p` is the effective number of parameters.  The latter is defined as :math:`p_D = -2 \bar{\mathcal{L}}(\Theta) + 2 \mathcal{L}(\bar{\Theta})` for the method of Spiegelhalter and as :math:`p_V = \frac{1}{2} \operatorname{var}(-2 \mathcal{L}(\Theta))` for the method of Gelman.  Results are for all chains combined.
-
-	**Example**
-	
-		See the :ref:`section-Line-Inference` section of the tutorial.
-
-.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \
-			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
-			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
-
-  Draw plots produced by :func:`plot` into display grids containing a default of 3 rows and 2 columns of plots.
-	
-	**Arguments**
-	
-		* ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
-		* ``fmt`` : output format. Options are
-			* ``:pdf`` : Portable Document Format (.pdf).
-			* ``:png`` : Portable Network Graphics (.png).
-			* ``:ps``  : Postscript (.ps).
-			* ``:svg`` : Scalable Vector Graphics (.svg).
-		* ``filename`` : an external file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
-		* ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
-		* ``nrow/ncol`` : number of rows/columns in the display grids.
-		* ``byrow`` : whether the display grids should be filled by row.
-		
-	**Value**
-	
-		Grids drawn to an external file or the display device.
-
-	**Note**
-	
-		The PDF, PNG, and PS formats are available only if the `Cairo <https://github.com/JuliaLang/Cairo.jl>`_ package is installed.
-	
-	**Example**
-	
-		See the :ref:`section-Line-Plotting` section of the tutorial.
-
 .. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
 	
@@ -199,23 +184,6 @@ Methods
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
 
-	**Example**
-	
-		See the :ref:`section-Line-Inference` section of the tutorial.
-
-.. function:: getindex(c::Chains, inds...)
-
-	Subset MCMC sampler output.  The syntax ``c[i, j, k]`` is converted to ``getindex(c, i, j, k)``.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output to subset.
-		* ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
-		
-	**Value**
-	
-		Returns a ``Chains`` object with the subsetted sampler output.
-		
 	**Example**
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
@@ -271,6 +239,61 @@ Methods
 	
 		The numeric standard error value.
 
+.. function:: quantile(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+
+	Compute posterior quantiles for MCMC sampler output.
+	
+	**Arguments**
+	
+		* ``c`` : sampler output on which to perform calculations.
+		* ``q`` : probabilities at which to compute quantiles.
+		
+	**Value**
+	
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
+
+.. function:: summarystats(c::Chains; etype=:bm, args...)
+
+	Compute posterior summary statistics for MCMC sampler output.
+	
+	**Arguments**
+	
+		* ``c`` : sampler output on which to perform calculations.
+		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+		* ``args...`` : additional arguments to be passed to the ``etype`` method.
+		
+	**Value**
+	
+		A ``ChainSummary`` type object with parameters in the rows of the ``value`` field; and the sample mean, standard deviation, standard error, Monte Carlo standard error, and effective sample size in the columns.  Results are for all chains combined.
+
+Model-Based Inference
+^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: dic(c::Chains)
+
+	Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
+	
+	**Arguments**
+	
+		* ``c`` : sampler output from a model fit with the :func:`mcmc` function and for which all sampled nodes are monitored.
+		
+	**Value**
+	
+		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns; where
+		
+		.. math::
+		
+			\text{DIC} = -2 \mathcal{L}(\bar{\Theta}) + 2 p,
+			
+		such that :math:`\mathcal{L}(\bar{\Theta})` is the log-likelihood of model outputs given the expected values of model parameters :math:`\Theta`, and :math:`p` is the effective number of parameters.  The latter is defined as :math:`p_D = -2 \bar{\mathcal{L}}(\Theta) + 2 \mathcal{L}(\bar{\Theta})` for the method of Spiegelhalter and as :math:`p_V = \frac{1}{2} \operatorname{var}(-2 \mathcal{L}(\Theta))` for the method of Gelman.  Results are for all chains combined.
+
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
+
+Plotting
+^^^^^^^^
+
 .. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false)
 			  plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
 
@@ -299,47 +322,33 @@ Methods
 	
 		See the :ref:`section-Line-Plotting` section of the tutorial.
 
-.. function:: quantile(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
+.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \
+			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
+			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
 
-	Compute posterior quantiles for MCMC sampler output.
+  Draw plots produced by :func:`plot` into display grids containing a default of 3 rows and 2 columns of plots.
 	
 	**Arguments**
 	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``q`` : probabilities at which to compute quantiles.
+		* ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
+		* ``fmt`` : output format. Options are
+			* ``:pdf`` : Portable Document Format (.pdf).
+			* ``:png`` : Portable Network Graphics (.png).
+			* ``:ps``  : Postscript (.ps).
+			* ``:svg`` : Scalable Vector Graphics (.svg).
+		* ``filename`` : an external file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
+		* ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
+		* ``nrow/ncol`` : number of rows/columns in the display grids.
+		* ``byrow`` : whether the display grids should be filled by row.
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
+		Grids drawn to an external file or the display device.
 
-.. function:: setindex!(c::Chains, value, inds...)
-
-	Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
+	**Note**
 	
-	**Arguments**
+		The PDF, PNG, and PS formats are available only if the `Cairo <https://github.com/JuliaLang/Cairo.jl>`_ package is installed.
 	
-		* ``c`` : object within which to store sampler output.
-		* ``value`` : sampler output.
-		* ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
-		
-	**Value**
-	
-		Returns a ``Chains`` object with the sampler output stored in the specified indices.
-
 	**Example**
 	
-		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
-		
-.. function:: summarystats(c::Chains; etype=:bm, args...)
-
-	Compute posterior summary statistics for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
-		* ``args...`` : additional arguments to be passed to the ``etype`` method.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters in the rows of the ``value`` field; and the sample mean, standard deviation, standard error, Monte Carlo standard error, and effective sample size in the columns.  Results are for all chains combined.
+		See the :ref:`section-Line-Plotting` section of the tutorial.
