@@ -102,9 +102,11 @@ Indexing
 Posterior Diagnostics and Summaries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. index:: Chains; Autocorrelations
+
 .. function:: autocor(c::Chains; lags::Vector=[1,5,10,50], relative::Bool=true)
 
-	Compute lag-k autocorrelation for MCMC sampler output.
+	Compute lag-k autocorrelations for MCMC sampler output.
 	
 	**Arguments**
 	
@@ -133,6 +135,8 @@ Posterior Diagnostics and Summaries
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
+.. index:: Chains; Cross-Correlations
+
 .. function:: cor(c::Chains)
 
 	Compute cross-correlations for MCMC sampler output.
@@ -148,6 +152,8 @@ Posterior Diagnostics and Summaries
 	**Example**
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
+
+.. index:: Chains; Summary Statistics
 
 .. function:: describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975], \
                 etype=:bm, args...)
@@ -169,6 +175,8 @@ Posterior Diagnostics and Summaries
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
+.. index:: Chains; Gelman and Rubin Diagnostic
+
 .. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
 	
@@ -188,6 +196,8 @@ Posterior Diagnostics and Summaries
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
+.. index:: Chains; Geweke Diagnostic
+
 .. function:: gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, \
                 etype=:imse, args...)
 	
@@ -204,6 +214,8 @@ Posterior Diagnostics and Summaries
 	**Value**
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
+
+.. index:: Chains; Highest Posterior Density (HPD) Intervals
 
 .. function:: hpd(c::Chains; alpha::Real=0.05)
 
@@ -269,6 +281,8 @@ Posterior Diagnostics and Summaries
 Model-Based Inference
 ^^^^^^^^^^^^^^^^^^^^^
 
+.. index:: Deviance Information Criterion (DIC)
+
 .. function:: dic(c::Chains)
 
 	Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
@@ -293,6 +307,8 @@ Model-Based Inference
 
 Plotting
 ^^^^^^^^
+
+.. index:: Chains; Plotting
 
 .. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false)
 			  plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
