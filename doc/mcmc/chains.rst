@@ -305,6 +305,27 @@ Model-Based Inference
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
+.. index:: Posterior Predictive Distribution
+
+.. function:: predict(c::Chains, key::Symbol)
+
+	Generate MCMC draws from a posterior predictive distribution.
+
+	**Arguments**
+	
+		* ``c``: sampler output from a model fit with the :func:`mcmc` function.
+		* ``key``: name of an observed Stochastic model node for which to generate draws from its predictive distribution.
+		
+	**Value**
+	
+		A ``Chain`` object of simulated draws.  For observed data node :math:`y`, simulation is from the posterior predictive distribution 
+		
+		.. math::
+		
+			p(\tilde{y} | y) = \int p(\tilde{y} | \Theta) p(\Theta | y) d\Theta,
+
+		where :math:`\tilde{y}` is an unknown observation on the node, :math:`p(\tilde{y} | \Theta)` is the data likelihood, and :math:`p(\Theta | y)` is the posterior distribution of unobserved parameters :math:`\Theta`.
+
 Plotting
 ^^^^^^^^
 
