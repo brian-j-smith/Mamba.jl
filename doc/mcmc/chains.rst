@@ -326,6 +326,10 @@ Model-Based Inference
 
 		where :math:`\tilde{y}` is an unknown observation on the node, :math:`p(\tilde{y} | \Theta)` is the data likelihood, and :math:`p(\Theta | y)` is the posterior distribution of unobserved parameters :math:`\Theta`.
 
+	**Example**
+	
+		See the :ref:`Pumps <example-Pumps>` example.
+
 Plotting
 ^^^^^^^^
 

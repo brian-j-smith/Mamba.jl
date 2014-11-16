@@ -61,3 +61,8 @@ setsamplers!(model, scheme)
 ## MCMC Simulations
 sim = mcmc(model, pumps, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim)
+
+
+## Posterior Predictive Distribution
+ppd = predict(sim, :y)
+describe(ppd)
