@@ -382,10 +382,6 @@ Plotting
 	
 		Grids drawn to an external file or the display device.
 
-	**Note**
-	
-		The PDF, PNG, and PS formats are available only if the `Cairo <https://github.com/JuliaLang/Cairo.jl>`_ package is installed.
-	
 	**Example**
 	
 		See the :ref:`section-Line-Plotting` section of the tutorial.
