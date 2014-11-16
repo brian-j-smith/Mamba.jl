@@ -3,7 +3,11 @@ function predict(c::Chains, key::Symbol)
 
   m = c.model
   node = m[key]
-  isa(node, Stochastic) || error("predict is only defined for Stochastic nodes")
+
+  outputs = keys(m, :output)
+  in(key, outputs) ||
+    error("predict is only defined for observed Stochastic nodes: ",
+          join(map(string, outputs), ", "))
 
   nodenames = names(m, [key])
 
