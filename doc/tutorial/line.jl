@@ -1,6 +1,6 @@
 using Mamba
 
-## Model Specification
+## Model Specification (Tutorial Version)
 
 model = Model(
 
@@ -15,6 +15,34 @@ model = Model(
 
   mu = Logical(1,
     :(model[:xmat] * model[:beta]),
+    false
+  ),
+
+  beta = Stochastic(1,
+    :(MvNormal(2, sqrt(1000)))
+  ),
+
+  s2 = Stochastic(
+    :(InverseGamma(0.001, 0.001))
+  )
+
+)
+
+## Model Specification (@modelexpr Version)
+
+model = Model(
+
+  y = Stochastic(1,
+    @modelexpr(mu, s2,
+      MvNormal(mu, sqrt(s2))
+    ),
+    false
+  ),
+
+  mu = Logical(1,
+    @modelexpr(xmat, beta,
+      xmat * beta
+    ),
     false
   ),
 
