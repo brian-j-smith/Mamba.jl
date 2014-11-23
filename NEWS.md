@@ -3,6 +3,10 @@
 ## Version Updates
 
 
+### 0.4.1
+* Updated and documented `predict` function as an official part of the package.
+* Reorganized `Chains` methods documentation.
+
 ### 0.4.0
 
 * Added support for user add-on packages and functions to allow for their inclusion in `Model` specifications.
