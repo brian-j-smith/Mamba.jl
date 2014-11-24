@@ -335,7 +335,7 @@ Plotting
 
 .. index:: Chains; Plotting
 
-.. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false)
+.. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false, args...)
 			  plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
 
 	Various plots to summarize a ``Chains`` object.  Separate plots are produced for each parameter. 
