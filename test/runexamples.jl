@@ -9,6 +9,7 @@ examples = [
   "dyes",
   "epil",
   "equiv",
+  "eyes",
   "inhalers",
   "jaws",
   "leuk",

@@ -16,6 +16,17 @@ function logpdf(d::MatrixDistribution, x, transform::Bool)
 end
 
 
+#################### Discrete Support Grids ####################
+
+typealias GridUnivariateDistribution
+          Union(Bernoulli, Binomial, Categorical, DiscreteUniform,
+                Hypergeometric, NoncentralHypergeometric)
+
+grid(d::GridUnivariateDistribution) = Float64[minimum(d):maximum(d)]
+grid(d::Distribution) =
+  error("discrete grid not available for ", typeof(d), " distributions")
+
+
 #################### PDMatDistribution ####################
 
 typealias PDMatDistribution Union(InverseWishart, Wishart)
