@@ -1,4 +1,6 @@
-#################### Slice Sampler Types ####################
+#################### Slice Sampler ####################
+
+#################### Types ####################
 
 type SliceTune
   width::Vector{Float64}
