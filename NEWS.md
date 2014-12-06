@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.4.2
+* Added support for optional arguments in `Chains` plot method.
+* Implemented direct grid sampling for discrete univariate stochastic nodes with finite support.
 
 ### 0.4.1
 * Updated and documented `predict` function as an official part of the package.
