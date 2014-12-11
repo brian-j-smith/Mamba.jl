@@ -94,7 +94,7 @@ end
 #################### TransformDistribution ####################
 
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
-  Union(T, Truncated{T, Continuous})
+  Union(T, Truncated{T})
 
 function link(d::TransformDistribution, x, transform::Bool=true)
   if transform
