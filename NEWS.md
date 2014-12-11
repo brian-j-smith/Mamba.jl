@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.4.3
+* Fixed `ERROR: too many parameters for type Truncated`.
+
 ### 0.4.2
 * Added support for optional arguments in `Chains` plot method.
 * Implemented direct grid sampling for discrete univariate stochastic nodes with finite support.
