@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+### 0.4.4
+* Require julia 0.3.4 to remove version restriction on the *Colors* package.
+* Call new *Distributions* package methods to get `InverseGamma` shape and scale parameters in the tutorial example.
+
 ### 0.4.3
 * Fixed `ERROR: too many parameters for type Truncated`.
 
