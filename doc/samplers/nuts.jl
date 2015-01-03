@@ -8,10 +8,10 @@
 using Mamba
 
 ## Data
-data = [
+data = Dict(
   :x => [1, 2, 3, 4, 5],
   :y => [1, 3, 3, 3, 5]
-]
+)
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant and Gradient Vector
 fx = function(x)

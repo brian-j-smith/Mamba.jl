@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-epil = (Symbol => Any)[
+epil = Dict{Symbol,Any}(
   :y =>
     [ 5  3  3  3
       3  5  3  3
@@ -77,7 +77,7 @@ epil = (Symbol => Any)[
      22, 28, 23, 40, 33, 21, 35, 25, 26, 25, 22, 32, 25, 35, 21, 41, 32, 26, 21,
      36, 37],
   :V4 => [0, 0, 0, 1]
-]
+)
 epil[:N] = size(epil[:y], 1)
 epil[:T] = size(epil[:y], 2)
 
@@ -171,12 +171,12 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => epil[:y], :a0 => 0, :alpha_Base => 0, :alpha_Trt => 0,
-   :alpha_BT => 0, :alpha_Age => 0, :alpha_V4 => 0, :s2_b1 => 1,
-   :s2_b => 1, :b1 => zeros(epil[:N]), :b => zeros(epil[:N], epil[:T])],
-  [:y => epil[:y], :a0 => 1, :alpha_Base => 1, :alpha_Trt => 1,
-   :alpha_BT => 1, :alpha_Age => 1, :alpha_V4 => 1, :s2_b1 => 10,
-   :s2_b => 10, :b1 => zeros(epil[:N]), :b => zeros(epil[:N], epil[:T])]
+  Dict(:y => epil[:y], :a0 => 0, :alpha_Base => 0, :alpha_Trt => 0,
+       :alpha_BT => 0, :alpha_Age => 0, :alpha_V4 => 0, :s2_b1 => 1,
+       :s2_b => 1, :b1 => zeros(epil[:N]), :b => zeros(epil[:N], epil[:T])),
+  Dict(:y => epil[:y], :a0 => 1, :alpha_Base => 1, :alpha_Trt => 1,
+       :alpha_BT => 1, :alpha_Age => 1, :alpha_V4 => 1, :s2_b1 => 10,
+       :s2_b => 10, :b1 => zeros(epil[:N]), :b => zeros(epil[:N], epil[:T]))
 ]
 
 

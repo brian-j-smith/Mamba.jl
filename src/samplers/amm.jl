@@ -54,7 +54,7 @@ function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
       tunepar["sampler"] = v.tune
       relist(model, v.value, block, true)
     end,
-    ["SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
+    Dict("SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing)
   )
 end
 

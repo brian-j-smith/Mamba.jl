@@ -1,12 +1,12 @@
 using Mamba
 
 ## Data
-magnesium = (Symbol => Any)[
+magnesium = Dict{Symbol,Any}(
   :rt => [1, 9, 2, 1, 10, 1, 1, 90],
   :nt => [40, 135, 200, 48, 150, 59, 25, 1159],
   :rc => [2, 23, 7, 1, 8, 9, 3, 118],
   :nc => [36, 135, 200, 46, 148, 56, 23, 1157]
-]
+)
 
 magnesium[:rtx] = hcat([magnesium[:rt] for i in 1:6]...)'
 magnesium[:rcx] = hcat([magnesium[:rc] for i in 1:6]...)'
@@ -95,12 +95,12 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
-   :theta => zeros(6, 8), :mu => fill(-0.5, 6),
-   :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1]],
-  [:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
-   :theta => zeros(6, 8), :mu => fill(0.5, 6),
-   :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1]]
+  Dict(:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
+       :theta => zeros(6, 8), :mu => fill(-0.5, 6),
+       :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1]),
+  Dict(:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
+       :theta => zeros(6, 8), :mu => fill(0.5, 6),
+       :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1])
 ]
 
 

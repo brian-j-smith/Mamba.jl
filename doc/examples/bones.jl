@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-bones = (Symbol => Any)[
+bones = Dict{Symbol,Any}(
   :gamma => reshape(
     [ 0.7425,     NaN,     NaN,    NaN,  10.2670,     NaN,     NaN,     NaN,
      10.5215,     NaN,     NaN,    NaN,   9.3877,     NaN,     NaN,     NaN,
@@ -47,7 +47,7 @@ bones = (Symbol => Any)[
      34, 13)',
   :nChild => 13,
   :nInd => 34
-]
+)
 
 
 ## Model Specification
@@ -85,8 +85,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:grade => bones[:grade], :theta => [0.5,1,2,3,5,6,7,8,9,12,13,16,18]],
-  [:grade => bones[:grade], :theta => [1,2,3,4,5,6,7,8,9,10,11,12,13]]
+  Dict(:grade => bones[:grade], :theta => [0.5,1,2,3,5,6,7,8,9,12,13,16,18]),
+  Dict(:grade => bones[:grade], :theta => [1,2,3,4,5,6,7,8,9,10,11,12,13])
 ]
 
 

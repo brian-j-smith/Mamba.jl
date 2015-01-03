@@ -34,7 +34,8 @@ function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
       slice!(v, tunepar["width"], f, tunepar["stype"])
       relist(model, v.value, block, tunepar["transform"])
     end,
-    ["width" => Float64[width...], "stype" => stype, "transform" => transform]
+    Dict("width" => Float64[width...], "stype" => stype,
+         "transform" => transform)
   )
 end
 

@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-mice = (Symbol => Any)[
+mice = Dict{Symbol,Any}(
   :t =>
     [12  1  21 25 11  26  27  30 13 12  21 20  23  25  23  29 35 NaN 31 36
      32 27  23 12 18 NaN NaN  38 29 30 NaN 32 NaN NaN NaN NaN 25  30 37 27
@@ -12,7 +12,7 @@ mice = (Symbol => Any)[
      0 0  0 0 0 40 40  0 0 0 40 0 40 40 40 40 0  0 0 0
      0 0 10 0 0  0  0  0 0 0  0 0 24  0 40 40 0  0 0 0
      0 0  0 0 0  0  0 20 0 0  0 0 29 10  0  0 0  0 0 0]
-]
+)
 mice[:M] = size(mice[:t], 1)
 mice[:N] = size(mice[:t], 2)
 
@@ -74,8 +74,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:t => mice[:t], :beta => fill(-1, mice[:M]), :r => 1.0],
-  [:t => mice[:t], :beta => fill(-2, mice[:M]), :r => 1.0]
+  Dict(:t => mice[:t], :beta => fill(-1, mice[:M]), :r => 1.0),
+  Dict(:t => mice[:t], :beta => fill(-2, mice[:M]), :r => 1.0)
 ]
 
 

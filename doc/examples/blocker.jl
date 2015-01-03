@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-blocker = (Symbol => Any)[
+blocker = Dict{Symbol,Any}(
   :rt =>
     [3, 7, 5, 102, 28, 4, 98, 60, 25, 138, 64, 45, 9, 57, 25, 33, 28, 8, 6, 32,
      27, 22],
@@ -14,7 +14,7 @@ blocker = (Symbol => Any)[
   :nc =>
     [39, 116, 93, 1520, 365, 52, 939, 471, 282, 1921, 583, 266, 293, 883, 147,
      213, 122, 154, 134, 218, 364, 674]
-]
+)
 blocker[:N] = length(blocker[:rt])
 
 
@@ -73,10 +73,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:rc => blocker[:rc], :rt => blocker[:rt], :d => 0, :delta_new => 0,
-   :s2 => 1, :mu => zeros(blocker[:N]), :delta => zeros(blocker[:N])],
-  [:rc => blocker[:rc], :rt => blocker[:rt], :d => 2, :delta_new => 2,
-   :s2 => 10, :mu => fill(2, blocker[:N]), :delta => fill(2, blocker[:N])]
+  Dict(:rc => blocker[:rc], :rt => blocker[:rt], :d => 0, :delta_new => 0,
+       :s2 => 1, :mu => zeros(blocker[:N]), :delta => zeros(blocker[:N])),
+  Dict(:rc => blocker[:rc], :rt => blocker[:rt], :d => 2, :delta_new => 2,
+       :s2 => 10, :mu => fill(2, blocker[:N]), :delta => fill(2, blocker[:N]))
 ]
 
 

@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-eyes = [
+eyes = Dict(
   :y =>
     [529.0, 530.0, 532.0, 533.1, 533.4, 533.6, 533.7, 534.1, 534.8, 535.3,
      535.4, 535.9, 536.1, 536.3, 536.4, 536.6, 537.0, 537.4, 537.5, 538.3,
@@ -10,7 +10,7 @@ eyes = [
      550.6, 551.2, 551.4, 551.5, 551.6, 552.8, 552.9, 553.2],
   :N => 48,
   :alpha => [1, 1]
-]
+)
 
 
 ## Model Specification
@@ -72,10 +72,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 535,
-   :theta => 5, :s2 => 10],
-  [:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 550,
-   :theta => 1, :s2 => 1]
+  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 535,
+       :theta => 5, :s2 => 10),
+  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 550,
+       :theta => 1, :s2 => 1)
 ]
 
 

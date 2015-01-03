@@ -301,10 +301,10 @@ For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia**
 .. code-block:: julia
 
 	## Data
-	line = (Symbol => Any)[
+	line = Dict{Symbol,Any}(
 	  :x => [1, 2, 3, 4, 5],
 	  :y => [1, 3, 3, 3, 5]
-	]
+	)
 	line[:xmat] = [ones(5) line[:x]]
 
 Initial Values
@@ -315,10 +315,14 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 .. code-block:: julia
 
 	## Initial Values
-	inits = [[:y => line[:y],
-	          :beta => rand(Normal(0, 1), 2),
-	          :s2 => rand(Gamma(1, 1))]
-	         for i in 1:3]
+	inits = [
+	  Dict{Symbol,Any}(
+		:y => line[:y],
+		:beta => rand(Normal(0, 1), 2),
+		:s2 => rand(Gamma(1, 1))
+	  )
+	  for i in 1:3
+	]
 
 Initial values for ``y`` are those in the observed response vector.  Likewise, the node is not updated in the sampling schemes defined earlier and thus retains its initial values throughout MCMC simulations.  Initial values are generated for ``beta`` from a normal distribution and for ``s2`` from a gamma distribution.
 

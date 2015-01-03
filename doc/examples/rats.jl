@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-rats = (Symbol => Any)[
+rats = Dict{Symbol,Any}(
   :y =>
     [151, 199, 246, 283, 320,
      145, 199, 249, 293, 354,
@@ -34,7 +34,7 @@ rats = (Symbol => Any)[
      137, 180, 219, 258, 291,
      153, 200, 244, 286, 324],
   :x => [8.0, 15.0, 22.0, 29.0, 36.0]
-]
+)
 rats[:xbar] = mean(rats[:x])
 rats[:N] = size(rats[:y], 1)
 rats[:T] = size(rats[:y], 2)
@@ -107,12 +107,12 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
-   :mu_alpha => 150, :mu_beta => 10, :s2_c => 1, :s2_alpha => 1,
-   :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(20, 30), :beta => fill(0.6, 30),
-   :mu_alpha => 15, :mu_beta => 1, :s2_c => 10, :s2_alpha => 10,
-   :s2_beta => 10]
+  Dict(:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+       :mu_alpha => 150, :mu_beta => 10, :s2_c => 1, :s2_alpha => 1,
+       :s2_beta => 1),
+  Dict(:y => rats[:y], :alpha => fill(20, 30), :beta => fill(0.6, 30),
+       :mu_alpha => 15, :mu_beta => 1, :s2_c => 10, :s2_alpha => 10,
+       :s2_beta => 10)
 ]
 
 

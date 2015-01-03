@@ -78,7 +78,7 @@ end
 
 function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
            transform::Bool=false)
-  x = (Symbol => Any)[]
+  x = Dict{Symbol,Any}()
   j = 0
   for key in nkeys
     node = m[key]

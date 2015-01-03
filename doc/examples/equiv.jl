@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-equiv = (Symbol => Any)[
+equiv = Dict{Symbol,Any}(
   :group => [1, 1, 2, 2, 2, 1, 1, 1, 2, 2],
   :y =>
     [1.40 1.65
@@ -14,7 +14,7 @@ equiv = (Symbol => Any)[
      1.25 1.44
      1.25 1.39
      1.30 1.52]
-]
+)
 equiv[:N] = size(equiv[:y], 1)
 equiv[:P] = size(equiv[:y], 2)
 
@@ -86,10 +86,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => equiv[:y], :delta => zeros(10, 2), :mu => 0, :phi => 0,
-   :pi => 0, :s2_1 => 1, :s2_2 => 1],
-  [:y => equiv[:y], :delta => zeros(10, 2), :mu => 10, :phi => 10,
-   :pi => 10, :s2_1 => 10, :s2_2 => 10]
+  Dict(:y => equiv[:y], :delta => zeros(10, 2), :mu => 0, :phi => 0,
+       :pi => 0, :s2_1 => 1, :s2_2 => 1),
+  Dict(:y => equiv[:y], :delta => zeros(10, 2), :mu => 10, :phi => 10,
+       :pi => 10, :s2_1 => 10, :s2_2 => 10)
 ]
 
 

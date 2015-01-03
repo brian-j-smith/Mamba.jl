@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-inhalers = (Symbol => Any)[
+inhalers = Dict{Symbol,Any}(
   :pattern =>
     [1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4
      1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4]',
@@ -22,7 +22,7 @@ inhalers = (Symbol => Any)[
   :G => 2,
   :Npattern => 16,
   :Ncut => 3
-]
+)
 
 inhalers[:group] = Array(Int, inhalers[:N])
 inhalers[:response] = Array(Int, inhalers[:N], inhalers[:T])
@@ -117,10 +117,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:response => inhalers[:response], :beta => 0, :pi => 0, :kappa => 0,
-   :a1 => 2, :a2 => 3, :a3 => 4, :s2 => 1, :b => zeros(inhalers[:N])],
-  [:response => inhalers[:response], :beta => 1, :pi => 1, :kappa => 0,
-   :a1 => 3, :a2 => 4, :a3 => 5, :s2 => 10, :b => zeros(inhalers[:N])]
+  Dict(:response => inhalers[:response], :beta => 0, :pi => 0, :kappa => 0,
+       :a1 => 2, :a2 => 3, :a3 => 4, :s2 => 1, :b => zeros(inhalers[:N])),
+  Dict(:response => inhalers[:response], :beta => 1, :pi => 1, :kappa => 0,
+       :a1 => 3, :a2 => 4, :a3 => 5, :s2 => 10, :b => zeros(inhalers[:N]))
 ]
 
 

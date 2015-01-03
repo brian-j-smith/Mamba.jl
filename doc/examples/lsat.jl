@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-lsat = (Symbol => Any)[
+lsat = Dict{Symbol,Any}(
   :culm =>
     [3, 9, 11, 22, 23, 24, 27, 31, 32, 40, 40, 56, 56, 59, 61, 76, 86, 115, 129,
      210, 213, 241, 256, 336, 352, 408, 429, 602, 613, 674, 702, 1000],
@@ -39,7 +39,7 @@ lsat = (Symbol => Any)[
      1 1 1 1 0
      1 1 1 1 1],
   :N => 1000
-]
+)
 lsat[:R] = size(lsat[:response], 1)
 lsat[:T] = size(lsat[:response], 2)
 
@@ -90,10 +90,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:r => lsat[:r], :alpha => zeros(lsat[:T]), :beta => 1,
-   :theta => zeros(lsat[:N])],
-  [:r => lsat[:r], :alpha => ones(lsat[:T]), :beta => 2,
-   :theta => zeros(lsat[:N])]
+  Dict(:r => lsat[:r], :alpha => zeros(lsat[:T]), :beta => 1,
+       :theta => zeros(lsat[:N])),
+  Dict(:r => lsat[:r], :alpha => ones(lsat[:T]), :beta => 2,
+       :theta => zeros(lsat[:N]))
 ]
 
 

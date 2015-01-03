@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-jaws = (Symbol => Any)[
+jaws = Dict{Symbol,Any}(
   :Y =>
    [47.8 48.8 49.0 49.7
     46.4 47.3 47.7 48.4
@@ -24,7 +24,7 @@ jaws = (Symbol => Any)[
     46.2 47.5 48.1 48.4
     46.3 47.6 51.3 51.8],
   :age => [8.0, 8.5, 9.0, 9.5]
-]
+)
 M = jaws[:M] = size(jaws[:Y], 2)
 N = jaws[:N] = size(jaws[:Y], 1)
 jaws[:y] = vec(jaws[:Y]')
@@ -60,8 +60,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => jaws[:y], :beta0 => 40, :beta1 => 1, :Sigma => eye(M)],
-  [:y => jaws[:y], :beta0 => 10, :beta1 => 10, :Sigma => eye(M)]
+  Dict(:y => jaws[:y], :beta0 => 40, :beta1 => 1, :Sigma => eye(M)),
+  Dict(:y => jaws[:y], :beta0 => 10, :beta1 => 10, :Sigma => eye(M))
 ]
 
 

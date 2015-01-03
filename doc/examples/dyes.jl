@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-dyes = (Symbol => Any)[
+dyes = Dict{Symbol,Any}(
   :y =>
     [1545, 1440, 1440, 1520, 1580,
      1540, 1555, 1490, 1560, 1495,
@@ -11,7 +11,7 @@ dyes = (Symbol => Any)[
      1520, 1455, 1450, 1480, 1445],
   :batches => 6,
   :samples => 5
-]
+)
 
 dyes[:batch] = vcat([fill(i, dyes[:samples]) for i in 1:dyes[:batches]]...)
 dyes[:sample] = vcat(fill([1:dyes[:samples]], dyes[:batches])...)
@@ -52,10 +52,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => dyes[:y], :theta => 1500, :s2_within => 1, :s2_between => 1,
-   :mu => fill(1500, dyes[:batches])],
-  [:y => dyes[:y], :theta => 3000, :s2_within => 10, :s2_between => 10,
-   :mu => fill(3000, dyes[:batches])]
+  Dict(:y => dyes[:y], :theta => 1500, :s2_within => 1, :s2_between => 1,
+       :mu => fill(1500, dyes[:batches])),
+  Dict(:y => dyes[:y], :theta => 3000, :s2_within => 10, :s2_between => 10,
+       :mu => fill(3000, dyes[:batches]))
 ]
 
 

@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-dogs = (Symbol => Any)[
+dogs = Dict{Symbol,Any}(
   :Y =>
     [0 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
      0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1
@@ -33,7 +33,7 @@ dogs = (Symbol => Any)[
      0 0 0 1 0 1 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
      0 0 0 0 1 1 0 0 1 1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1
      0 0 0 0 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1]
-]
+)
 dogs[:Dogs] = size(dogs[:Y], 1)
 dogs[:Trials] = size(dogs[:Y], 2)
 
@@ -84,8 +84,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => dogs[:y], :alpha => -1, :beta => -1],
-  [:y => dogs[:y], :alpha => -2, :beta => -2]
+  Dict(:y => dogs[:y], :alpha => -1, :beta => -1),
+  Dict(:y => dogs[:y], :alpha => -2, :beta => -2)
 ]
 
 

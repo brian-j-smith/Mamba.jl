@@ -38,7 +38,7 @@ end
 
 function graph(m::Model)
   g = graph(KeyVertex{Symbol}[], Edge{KeyVertex{Symbol}}[])
-  lookup = (Symbol => Integer)[]
+  lookup = Dict{Symbol,Integer}()
   for key in keys(m, :all)
     lookup[key] = length(lookup) + 1
     add_vertex!(g, KeyVertex(lookup[key], key))
@@ -57,7 +57,7 @@ function graph2dot(m::Model)
   str = "digraph MambaModel {\n"
   deps = keys(m, :dependent)
   for v in vertices(g)
-    attr = (String => String)[]
+    attr = Dict{String,String}()
     if in(v.key, deps)
       node = m[v.key]
       if isa(node, Logical)

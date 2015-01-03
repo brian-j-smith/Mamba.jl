@@ -3,7 +3,7 @@
 function MISS(params::Vector{Symbol})
   Sampler(params,
     quote
-      value = (Symbol => Any)[]
+      value = Dict{Symbol,Any}()
       tunepar = tune(model, block)
       initialize = tunepar["sampler"] == nothing
       if initialize
@@ -30,6 +30,6 @@ function MISS(params::Vector{Symbol})
       end
       value
     end,
-    ["sampler" => nothing]
+    Dict{String,Any}("sampler" => nothing)
   )
 end

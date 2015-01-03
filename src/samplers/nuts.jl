@@ -61,8 +61,8 @@ function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
       tunepar["sampler"] = v.tune
       relist(model, v.value, block, true)
     end,
-    ["epsilon" => 1.0, "target" => target, "dtype" => dtype,
-     "sampler" => nothing]
+    Dict("epsilon" => 1.0, "target" => target, "dtype" => dtype,
+         "sampler" => nothing)
   )
 end
 
