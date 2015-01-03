@@ -9,7 +9,8 @@ type ChainProgress
   t0::Float64
 
   function ChainProgress(chain::Integer, iters::Integer)
-    new(chain, iters, 0, max(1, min(10, iround(0.01 * iters))), 0.0, time())
+    new(chain, iters, 0, max(1, min(10, round(Integer, 0.01 * iters))), 0.0,
+        time())
   end
 end
 

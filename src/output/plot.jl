@@ -106,9 +106,9 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
   addextension = isexternalfile && search(filename, '.') == 0
   args = (width, height)
 
-  pp = nrow * ncol       ## plots per page
-  ps = length(p)         ## number of plots
-  np = iceil(ps / pp)    ## number of pages
+  pp = nrow * ncol               ## plots per page
+  ps = length(p)                 ## number of plots
+  np = ceil(Integer, ps / pp)    ## number of pages
 
   mat = Array(Context, pp)
   for page in 1:np

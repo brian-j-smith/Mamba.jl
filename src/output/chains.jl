@@ -47,9 +47,10 @@ end
 #################### Chains Base/Utility Methods ####################
 
 function Base.getindex(c::Chains, iters::Range, names, chains)
-  from = max(iceil((first(iters) - first(c.range)) / step(c.range) + 1), 1)
+  from = max(ceil(Integer, (first(iters) - first(c.range)) / step(c.range) + 1),
+             1)
   thin = step(iters)
-  to = min(ifloor((last(iters) - first(c.range)) / step(c.range) + 1),
+  to = min(floor(Integer, (last(iters) - first(c.range)) / step(c.range) + 1),
            length(c.range))
 
   Chains(c.value[from:thin:to, names, chains],

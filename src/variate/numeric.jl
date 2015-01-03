@@ -120,13 +120,9 @@ const PowerMethods2 = [
 
 const RoundMethods = [
   :(Base.ceil),
-  :(Base.iceil),
   :(Base.floor),
-  :(Base.ifloor),
   :(Base.round),
-  :(Base.iround),
   :(Base.trunc),
-  :(Base.itrunc)
 ]
 
 const RoundMethods2 = [
