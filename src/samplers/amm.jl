@@ -28,7 +28,7 @@ function AMMVariate(x::Vector{VariateType}, tune=nothing)
     Array(Float64, 0),
     Array(Float64, 0, 0),
     2.38^2,
-    Cholesky(Array(Float64, 0, 0), 'U'),
+    Cholesky(Array(Float64, 0, 0), :U),
     Array(Float64, 0, 0)
   )
   AMMVariate(x, tune)
