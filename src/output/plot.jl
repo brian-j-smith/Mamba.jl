@@ -27,7 +27,7 @@ function traceplot(c::Chains; legend::Bool=false, na...)
                     x=[[c.range for j in 1:nchains]...],
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Iteration", orientation=:horizontal),
                     Guide.ylabel("Value", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
@@ -42,11 +42,11 @@ function densityplot(c::Chains; legend::Bool=false,
   pos = legend ? :right : :none
   for i in 1:nvars
     qs = [quantile(c.value[:,i,j],[trim[1],trim[2]]) for j in 1:nchains]
-    val = [c.value[ qs[j][1] .<= c.value[:,i,j] .<= qs[j][2],i,j] 
+    val = [c.value[ qs[j][1] .<= c.value[:,i,j] .<= qs[j][2],i,j]
             for j in 1:nchains]
     plots[i] = plot(x=[val...], Geom.density,
                     color=repeat(c.chains, inner=[length(c.range)]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
                     Guide.ylabel("Density", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
@@ -66,7 +66,7 @@ function autocorplot(c::Chains; maxlag::Integer=int(10*log10(length(c.range))),
                     x=[[lags for j in 1:nchains]...],
                     Geom.line,
                     color=repeat(c.chains, inner=[maxlag]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Lag", orientation=:horizontal),
                     Guide.ylabel("Autocorrelation", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
@@ -83,7 +83,7 @@ function meanplot(c::Chains; legend::Bool=false, na...)
                     x=[[c.range for j in 1:nchains]...],
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),
-                    Scale.discrete_color(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Iteration", orientation=:horizontal),
                     Guide.ylabel("Mean", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
