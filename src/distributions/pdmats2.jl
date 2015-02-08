@@ -108,7 +108,7 @@ module PDMats2
 
   function spbdiagm{T<:Real}(v::Union(
                                Vector{Matrix{T}},
-                               Vector{Triangular{T, Matrix{T}, :U, false}}),
+                               Vector{UpperTriangular{T, Matrix{T}}}),
                              n::Integer=1)
     vn = [fill(v, n)...]
 
@@ -139,10 +139,10 @@ module PDMats2
   splength(x::Matrix) = length(x)
   isnonzero(x::Matrix, i::Integer, j::Integer) = true
 
-  function splength{T}(x::Triangular{T, Matrix{T}})
+  function splength{T}(x::UpperTriangular{T, Matrix{T}})
     m, n = minmax(size(x)...)
     int(m * (m + 1) / 2) + (n - m) * m
   end
-  isnonzero{T}(x::Triangular{T, Matrix{T}, :U}, i::Integer, j::Integer) = j >= i
+  isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) = j >= i
 
 end
