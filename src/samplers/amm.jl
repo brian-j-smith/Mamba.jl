@@ -88,7 +88,7 @@ function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
     tune.Mv = p * tune.Mv + (1.0 - p) * v
     tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
     Sigma = (sd / p) * (tune.Mvv - tune.Mv * tune.Mv')
-    F = cholfact(Sigma, pivot=true)
+    F = cholfact(Sigma, :U, Val{true})
     if rank(F) == d
       tune.SigmaLm = F[:P] * F[:L]
     end
