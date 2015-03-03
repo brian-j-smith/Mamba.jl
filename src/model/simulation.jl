@@ -27,7 +27,7 @@ function logpdf(m::Model, block::Integer=0, transform::Bool=false)
   if block > 0
     sampler = m.samplers[block]
     params = sampler.params
-    nkeys = [setdiff(params, sampler.targets), sampler.targets]
+    nkeys = [setdiff(params, sampler.targets); sampler.targets]
   else
     params = keys(m, :block)
     nkeys = m.dependents

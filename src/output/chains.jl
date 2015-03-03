@@ -20,7 +20,7 @@ function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
   end
 
   if length(chains) == 0
-    chains = Integer[1:m]
+    chains = Integer[1:m;]
   elseif length(chains) != m
     error("size(value, 3) and chains dimensions must match")
   end

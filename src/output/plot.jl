@@ -60,7 +60,7 @@ function autocorplot(c::Chains; maxlag::Integer=int(10*log10(length(c.range))),
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
   lags = [(0:maxlag) * step(c.range)]
-  ac = autocor(c, lags=[0:maxlag])
+  ac = autocor(c, lags=[0:maxlag;])
   for i in 1:nvars
     plots[i] = plot(y=[[ac.value[i,:,j]' for j in 1:nchains]...],
                     x=[[lags for j in 1:nchains]...],
@@ -79,7 +79,7 @@ function meanplot(c::Chains; legend::Bool=false, na...)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
-    plots[i] = plot(y=[[cumsum(c.value[:,i,j])./[1:nrows] for j in 1:nchains]...],
+    plots[i] = plot(y=[[cumsum(c.value[:,i,j])./[1:nrows;] for j in 1:nchains]...],
                     x=[[c.range for j in 1:nchains]...],
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),

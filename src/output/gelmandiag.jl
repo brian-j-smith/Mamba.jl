@@ -45,7 +45,7 @@ function gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false,
   if mpsrf
     x = [(n - 1) / n + (m + 1) / m * eigmax(inv(cholfact(W)) * B) / n NaN]
     psrf = vcat(psrf, x)
-    psrf_names = [psrf_names, "Multivariate"]
+    psrf_names = [psrf_names; "Multivariate"]
   end
 
   ChainSummary(psrf, psrf_names, psrf_labels, header(c))

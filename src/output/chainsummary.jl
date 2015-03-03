@@ -59,5 +59,5 @@ function annotate{T}(x::Array{T,3}, rownames::Vector, colnames::Vector)
 end
 
 function annotate(x::Matrix, rownames::Vector, colnames::Vector)
-  hcat(["", rownames], vcat(colnames.', x))
+  hcat([""; rownames], vcat(colnames.', x))
 end
