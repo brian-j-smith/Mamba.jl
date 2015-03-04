@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.4.5
+* Replaced the `Scale.discrete_color` function deprecated in the *Gadfly* package with `Scale.color_discrete`.
+
 ### 0.4.4
 * Require julia 0.3.4 to remove version restriction on the *Colors* package.
 * Call new *Distributions* package methods to get `InverseGamma` shape and scale parameters in the tutorial example.
