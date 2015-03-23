@@ -7,8 +7,9 @@ module Mamba
 
   #################### User Add-on Packages and Functions ####################
 
-  try include("../usr/addons.jl") end
-
+  if isfile(joinpath(dirname(dirname(@__FILE__)),"usr","addons.jl"))
+    include("../usr/addons.jl")
+  end
 
   #################### Imports ####################
 
