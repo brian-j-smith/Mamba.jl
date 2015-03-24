@@ -95,6 +95,6 @@ function summarystats(c::Chains; etype=:bm, args...)
   f = x -> [mean(x), std(x), sem(x), mcse(x, etype; args...)]
   labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]
   vals = mapslices(x -> f(x), cc, 1)'
-  vals = [vals  size(cc, 1) * min(vals[:,3] ./ vals[:,4], 1.0)]
+  vals = [vals  min((vals[:,2] ./ vals[:,4]).^2, size(cc, 1))]
   ChainSummary(vals, c.names, labels, header(c))
 end
