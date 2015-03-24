@@ -83,9 +83,9 @@ function logpdf{T<:Real}(D::PDMatDistribution, X::Matrix{T}, transform::Bool)
     U = chol(X)
     n = dim(D)
     for i in 1:n
-      u = U[i,i]
-      value += log(2 * u) + (n - i + 1) * log(u)
+      value += (n - i + 2) * log(U[i,i])
     end
+    value += n * log(2)
   end
   value
 end
