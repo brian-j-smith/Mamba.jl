@@ -70,8 +70,12 @@ function logpdf(c::Chains, nkeys::Vector{Symbol})
 
   iters, p, chains = size(c.value)
   values = Array(Float64, iters, 1, chains)
+  frame = ChainProgressFrame(
+    "MCMC Processing of $iters Iterations x $chains Chain" * "s"^(chains > 1),
+    true
+  )
   for k in 1:chains
-    meter = ChainProgress(k, iters)
+    meter = ChainProgress(frame, k, iters)
     for i in 1:iters
       relist!(m, vec(c.value[i,idx,k]))
       values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
