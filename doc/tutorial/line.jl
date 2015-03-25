@@ -93,21 +93,20 @@ Gibbs_beta = Sampler([:beta],
 
 Gibbs_s2 = Sampler([:s2],
   quote
-    beta = model[:beta]
+    mu = model[:mu]
     s2 = model[:s2]
-    xmat = model[:xmat]
     y = model[:y]
     a = length(y) / 2.0 + shape(s2.distr)
-    b = sum((y - xmat * beta).^2) / 2.0 + scale(s2.distr)
+    b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
     rand(InverseGamma(a, b))
   end
 )
 
 Gibbs_s2 = Sampler([:s2],
-  @modelexpr(beta, s2, xmat, y,
+  @modelexpr(mu, s2, y,
     begin
       a = length(y) / 2.0 + shape(s2.distr)
-      b = sum((y - xmat * beta).^2) / 2.0 + scale(s2.distr)
+      b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
       rand(InverseGamma(a, b))
     end
   )
