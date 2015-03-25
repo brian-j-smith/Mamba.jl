@@ -5,6 +5,10 @@
 ### 0.5.0
 * Initial release for the under-development version of julia 0.4.0.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
 
+### 0.4.6
+* Added `verbose` argument to `mcmc` methods to suppress printing of sampler progress to the console.
+* Fix calculation of effective sample size.
+
 ### 0.4.5
 * Replaced the `Scale.discrete_color` function deprecated in the *Gadfly* package with `Scale.color_discrete`.
 
