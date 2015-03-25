@@ -1,6 +1,16 @@
-#################### ChainProgress Type ####################
+#################### ChainProgress Types ####################
+
+type ChainProgressFrame
+  verbose::Bool
+
+  function ChainProgressFrame(title::String, verbose::Bool)
+    verbose && print(title * "...\n\n")
+    new(verbose)
+  end
+end
 
 type ChainProgress
+  frame::ChainProgressFrame
   chain::Integer
   iters::Integer
   counter::Integer
@@ -8,20 +18,27 @@ type ChainProgress
   threshold::Float64
   t0::Float64
 
-  function ChainProgress(chain::Integer, iters::Integer)
-    new(chain, iters, 0, max(1, min(10, round(Integer, 0.01 * iters))), 0.0,
-        time())
+  function ChainProgress(frame::ChainProgressFrame, chain::Integer, iters::Integer)
+    new(frame, chain, iters, 0, max(1, min(10, round(Integer, 0.01 * iters))),
+        0.0, time())
   end
 end
 
 
 #################### ChainProgress Methods ####################
 
+function reset!(p::ChainProgress)
+  p.counter = 0
+  p.threshold = 0.0
+  p.t0 = time()
+  p
+end
+
 function next!(p::ChainProgress)
   p.counter += 1
   if p.counter / p.iters >= p.threshold && p.counter >= p.runin
     p.threshold += 0.10
-    print(STDOUT, p)
+    p.frame.verbose && print(STDOUT, p)
   end
   p
 end

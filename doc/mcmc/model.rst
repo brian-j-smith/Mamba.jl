@@ -165,8 +165,9 @@ Methods
 				
 .. function:: mcmc(m::Model, inputs::Dict{Symbol}, \
 				inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
-				burnin::Integer=0, thin::Integer=1, chains::Integer=1)
-			  mcmc(c::Chains, iters::Integer)
+				burnin::Integer=0, thin::Integer=1, chains::Integer=1, \
+				verbose::Bool=true)
+			  mcmc(c::Chains, iters::Integer; verbose::Bool=true)
 
 	Simulate MCMC draws for a specified model.
 	
@@ -180,6 +181,7 @@ Methods
 		* ``burnin`` : numer of initial draws to discard as a burn-in sequence to allow for convergence.
 		* ``thin`` : step-size between draws to output.
 		* ``chains`` : number of simulation runs to perform.
+		* ``verbose`` : whether to print sampler progress at the console.
 		
 	**Value**
 	
