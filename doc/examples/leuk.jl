@@ -23,7 +23,7 @@ leuk[:dN] = Array(Integer, N, T)
 for i in 1:N
   for j in 1:T
     leuk[:dN][i,j] = leuk[:fail][i] * (leuk[:t_obs][i] == leuk[:t][j])
-    leuk[:Y][i,j] = int(leuk[:t_obs][i] >= leuk[:t][j])
+    leuk[:Y][i,j] = Int(leuk[:t_obs][i] >= leuk[:t][j])
   end
 end
 

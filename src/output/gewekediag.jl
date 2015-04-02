@@ -8,8 +8,8 @@ function gewekediag{T<:Real}(x::Vector{T}; first::Real=0.1, last::Real=0.5,
     error("first and last sequences are overlapping")
   end
   n = length(x)
-  x1 = x[1:int(first * n)]
-  x2 = x[int(n - last * n + 1):n]
+  x1 = x[1:round(Integer, first * n)]
+  x2 = x[round(Integer, n - last * n + 1):n]
   z = (mean(x1) - mean(x2)) /
       sqrt(mcse(x1, etype; args...)^2 + mcse(x2, etype; args...)^2)
   [z, 1.0 - erf(abs(z) / sqrt(2.0))]

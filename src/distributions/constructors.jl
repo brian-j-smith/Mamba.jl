@@ -38,14 +38,14 @@ end
 
 #################### Binomial ####################
 
-@distr_fallback :(Binomial(int(n), float64(p)))
-@distr_fallback :(Binomial(int(size)))
+@distr_fallback :(Binomial(Int(n), float64(p)))
+@distr_fallback :(Binomial(Int(size)))
 
 
 #################### Categorical ####################
 
 Distributions.Categorical(p::VectorVariate) = Categorical(p.value)
-Distributions.Categorical(k::UniVariate) = Categorical(int(k))
+Distributions.Categorical(k::UniVariate) = Categorical(Int(k))
 
 
 #################### Cauchy ####################
@@ -71,8 +71,8 @@ Distributions.Categorical(k::UniVariate) = Categorical(int(k))
 
 #################### DiscreteUniform ####################
 
-@distr_fallback :(DiscreteUniform(int(a), int(b)))
-@distr_fallback :(DiscreteUniform(int(b)))
+@distr_fallback :(DiscreteUniform(Int(a), Int(b)))
+@distr_fallback :(DiscreteUniform(Int(b)))
 
 
 #################### Edgeworth ####################
@@ -135,12 +135,12 @@ Distributions.EdgeworthZ(d::UnivariateDistribution, n) =
 
 #################### KSDist ####################
 
-@distr_fallback :(KSDist(int(n)))
+@distr_fallback :(KSDist(Int(n)))
 
 
 #################### KSOneSided ####################
 
-@distr_fallback :(KSOneSided(int(n)))
+@distr_fallback :(KSOneSided(Int(n)))
 
 
 #################### Laplace ####################

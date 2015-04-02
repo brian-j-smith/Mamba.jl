@@ -176,7 +176,7 @@ function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
   if j == 0
     xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, d * epsilon, fx)
     logpprime = logfprime - 0.5 * dot(rprime)
-    nprime = int(logu0 < logpprime)
+    nprime = Int(logu0 < logpprime)
     sprime = logu0 < logpprime + 1000.0
     xminus = xplus = xprime
     rminus = rplus = rprime

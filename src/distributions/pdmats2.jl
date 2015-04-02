@@ -141,7 +141,7 @@ module PDMats2
 
   function splength{T}(x::UpperTriangular{T, Matrix{T}})
     m, n = minmax(size(x)...)
-    int(m * (m + 1) / 2) + (n - m) * m
+    Int(m * (m + 1) / 2) + (n - m) * m
   end
   isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) = j >= i
 
