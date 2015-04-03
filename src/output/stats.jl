@@ -49,7 +49,7 @@ function hpd{T<:Real}(x::Vector{T}; alpha::Real=0.05)
   y = sort(x)
   a = y[1:m]
   b = y[(n - m + 1):n]
-  i = sortperm(b - a)[1]
+  _,i = findmin(b - a)
 
   [a[i], b[i]]
 end

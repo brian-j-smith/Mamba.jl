@@ -2,7 +2,7 @@ using Distributions
 
 module Mamba
 
-  using Distributions
+  using Distributions, Showoff
 
 
   #################### User Add-on Packages and Functions ####################
