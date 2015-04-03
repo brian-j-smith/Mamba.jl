@@ -54,7 +54,8 @@ function densityplot(c::Chains; legend::Bool=false,
   return plots
 end
 
-function autocorplot(c::Chains; maxlag::Integer=int(10*log10(length(c.range))),
+function autocorplot(c::Chains;
+                     maxlag::Integer=round(Integer, 10*log10(length(c.range))),
                      legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)

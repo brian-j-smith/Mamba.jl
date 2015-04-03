@@ -22,46 +22,46 @@ end
 
 #################### Bernoulli ####################
 
-@distr_fallback :(Bernoulli(float64(p)))
+@distr_fallback :(Bernoulli(Float64(p)))
 
 
 #################### Beta ####################
 
-@distr_fallback :(Beta(float64(a), float64(b)))
-@distr_fallback :(Beta(float64(a)))
+@distr_fallback :(Beta(Float64(a), Float64(b)))
+@distr_fallback :(Beta(Float64(a)))
 
 
 #################### BetaPrime ####################
 
-@distr_fallback :(BetaPrime(float64(a), float64(b)))
+@distr_fallback :(BetaPrime(Float64(a), Float64(b)))
 
 
 #################### Binomial ####################
 
-@distr_fallback :(Binomial(int(n), float64(p)))
-@distr_fallback :(Binomial(int(size)))
+@distr_fallback :(Binomial(Int(n), Float64(p)))
+@distr_fallback :(Binomial(Int(size)))
 
 
 #################### Categorical ####################
 
 Distributions.Categorical(p::VectorVariate) = Categorical(p.value)
-Distributions.Categorical(k::UniVariate) = Categorical(int(k))
+Distributions.Categorical(k::UniVariate) = Categorical(Int(k))
 
 
 #################### Cauchy ####################
 
-@distr_fallback :(Cauchy(float64(location), float64(scale)))
-@distr_fallback :(Cauchy(float64(location)))
+@distr_fallback :(Cauchy(Float64(location), Float64(scale)))
+@distr_fallback :(Cauchy(Float64(location)))
 
 
 #################### Chi ####################
 
-@distr_fallback :(Chi(float64(df)))
+@distr_fallback :(Chi(Float64(df)))
 
 
 #################### Chisq ####################
 
-@distr_fallback :(Chisq(float64(df)))
+@distr_fallback :(Chisq(Float64(df)))
 
 
 #################### Cosine ####################
@@ -71,61 +71,61 @@ Distributions.Categorical(k::UniVariate) = Categorical(int(k))
 
 #################### DiscreteUniform ####################
 
-@distr_fallback :(DiscreteUniform(int(a), int(b)))
-@distr_fallback :(DiscreteUniform(int(b)))
+@distr_fallback :(DiscreteUniform(Int(a), Int(b)))
+@distr_fallback :(DiscreteUniform(Int(b)))
 
 
 #################### Edgeworth ####################
 
 Distributions.EdgeworthZ(d::UnivariateDistribution, n) =
-  EdgeworthZ(d, float64(n))
+  EdgeworthZ(d, Float64(n))
 
 
 #################### Erlang ####################
 
-@distr_fallback :(Erlang(float64(shape), float64(scale)))
-@distr_fallback :(Erlang(float64(shape)))
+@distr_fallback :(Erlang(Float64(shape), Float64(scale)))
+@distr_fallback :(Erlang(Float64(shape)))
 
 
 #################### Exponential ####################
 
-@distr_fallback :(Exponential(float64(scale)))
+@distr_fallback :(Exponential(Float64(scale)))
 
 
 #################### FDist ####################
 
-@distr_fallback :(FDist(float64(d1), float64(d2)))
+@distr_fallback :(FDist(Float64(d1), Float64(d2)))
 
 
 #################### Gamma ####################
 
-@distr_fallback :(Gamma(float64(shape), float64(scale)))
-@distr_fallback :(Gamma(float64(shape)))
+@distr_fallback :(Gamma(Float64(shape), Float64(scale)))
+@distr_fallback :(Gamma(Float64(shape)))
 
 
 #################### Geometric ####################
 
-@distr_fallback :(Geometric(float64(p)))
+@distr_fallback :(Geometric(Float64(p)))
 
 
 #################### Gumbel ####################
 
-@distr_fallback :(Gumbel(float64(mu), float64(beta)))
+@distr_fallback :(Gumbel(Float64(mu), Float64(beta)))
 
 
 #################### Hypergeometric ####################
 
-@distr_fallback :(Hypergeometric(float64(s), float64(f), float64(n)))
+@distr_fallback :(Hypergeometric(Float64(s), Float64(f), Float64(n)))
 
 
 #################### InverseGamma ####################
 
-@distr_fallback :(InverseGamma(float64(shape), float64(scale)))
+@distr_fallback :(InverseGamma(Float64(shape), Float64(scale)))
 
 
 #################### InverseGaussian ####################
 
-@distr_fallback :(InverseGaussian(float64(mu), float64(lambda)))
+@distr_fallback :(InverseGaussian(Float64(mu), Float64(lambda)))
 
 
 #################### Kolmogorov ####################
@@ -135,115 +135,115 @@ Distributions.EdgeworthZ(d::UnivariateDistribution, n) =
 
 #################### KSDist ####################
 
-@distr_fallback :(KSDist(int(n)))
+@distr_fallback :(KSDist(Int(n)))
 
 
 #################### KSOneSided ####################
 
-@distr_fallback :(KSOneSided(int(n)))
+@distr_fallback :(KSOneSided(Int(n)))
 
 
 #################### Laplace ####################
 
-@distr_fallback :(Laplace(float64(location), float64(scale)))
-@distr_fallback :(Laplace(float64(location)))
+@distr_fallback :(Laplace(Float64(location), Float64(scale)))
+@distr_fallback :(Laplace(Float64(location)))
 
 
 #################### Levy ####################
 
-@distr_fallback :(Levy(float64(location), float64(scale)))
-@distr_fallback :(Levy(float64(location)))
+@distr_fallback :(Levy(Float64(location), Float64(scale)))
+@distr_fallback :(Levy(Float64(location)))
 
 
 #################### Logistic ####################
 
-@distr_fallback :(Logistic(float64(location), float64(scale)))
-@distr_fallback :(Logistic(float64(location)))
+@distr_fallback :(Logistic(Float64(location), Float64(scale)))
+@distr_fallback :(Logistic(Float64(location)))
 
 
 #################### LogNormal ####################
 
-@distr_fallback :(LogNormal(float64(ml), float64(sdl)))
-@distr_fallback :(LogNormal(float64(ml)))
+@distr_fallback :(LogNormal(Float64(ml), Float64(sdl)))
+@distr_fallback :(LogNormal(Float64(ml)))
 
 
 #################### NegativeBinomial ####################
 
-@distr_fallback :(NegativeBinomial(float64(r), float64(p)))
+@distr_fallback :(NegativeBinomial(Float64(r), Float64(p)))
 
 
 #################### NoncentralBeta ####################
 
-@distr_fallback :(NoncentralBeta(float64(a), float64(b), float64(nc)))
+@distr_fallback :(NoncentralBeta(Float64(a), Float64(b), Float64(nc)))
 
 
 #################### NoncentralChisq ####################
 
-@distr_fallback :(NoncentralChisq(float64(df), float64(nc)))
+@distr_fallback :(NoncentralChisq(Float64(df), Float64(nc)))
 
 
 #################### NoncentralF ####################
 
-@distr_fallback :(NoncentralF(float64(n), float64(d), float64(nc)))
+@distr_fallback :(NoncentralF(Float64(n), Float64(d), Float64(nc)))
 
 
 #################### NoncentralT ####################
 
-@distr_fallback :(NoncentralT(float64(df), float64(nc)))
+@distr_fallback :(NoncentralT(Float64(df), Float64(nc)))
 
 
 #################### Normal ####################
 
-@distr_fallback :(Normal(float64(μ), float64(σ)))
-@distr_fallback :(Normal(float64(μ)))
+@distr_fallback :(Normal(Float64(μ), Float64(σ)))
+@distr_fallback :(Normal(Float64(μ)))
 
 
 #################### NormalCanon ####################
 
-@distr_fallback :(NormalCanon(float64(h), float64(prec)))
+@distr_fallback :(NormalCanon(Float64(h), Float64(prec)))
 
 
 #################### Pareto ####################
 
-@distr_fallback :(Pareto(float64(scale), float64(shape)))
-@distr_fallback :(Pareto(float64(scale)))
+@distr_fallback :(Pareto(Float64(scale), Float64(shape)))
+@distr_fallback :(Pareto(Float64(scale)))
 
 
 #################### Poisson ####################
 
-@distr_fallback :(Poisson(float64(lambda)))
+@distr_fallback :(Poisson(Float64(lambda)))
 
 
 #################### Rayleigh ####################
 
-@distr_fallback :(Rayleigh(float64(scale)))
+@distr_fallback :(Rayleigh(Float64(scale)))
 
 
 #################### Skellam ####################
 
-@distr_fallback :(Skellam(float64(mu1), float64(mu2)))
+@distr_fallback :(Skellam(Float64(mu1), Float64(mu2)))
 
 
 #################### TDist ####################
 
-@distr_fallback :(TDist(float64(df)))
+@distr_fallback :(TDist(Float64(df)))
 
 
 #################### TriangularDist ####################
 
-@distr_fallback :(TriangularDist(float64(location), float64(scale)))
-@distr_fallback :(TriangularDist(float64(location)))
+@distr_fallback :(TriangularDist(Float64(location), Float64(scale)))
+@distr_fallback :(TriangularDist(Float64(location)))
 
 
 #################### Uniform ####################
 
-@distr_fallback :(Uniform(float64(a), float64(b)))
+@distr_fallback :(Uniform(Float64(a), Float64(b)))
 
 
 #################### Weibull ####################
 
-@distr_fallback :(Weibull(float64(shape), float64(scale)))
-@distr_fallback :(Weibull(float64(shape)))
+@distr_fallback :(Weibull(Float64(shape), Float64(scale)))
+@distr_fallback :(Weibull(Float64(shape)))
 
 
 ######################################################################

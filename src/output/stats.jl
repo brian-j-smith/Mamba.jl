@@ -44,7 +44,7 @@ end
 
 function hpd{T<:Real}(x::Vector{T}; alpha::Real=0.05)
   n = length(x)
-  m = max(1, ceil(alpha * n))
+  m = max(1, ceil(Integer, alpha * n))
 
   y = sort(x)
   a = y[1:m]

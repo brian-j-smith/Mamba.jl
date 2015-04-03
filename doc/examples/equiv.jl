@@ -77,7 +77,7 @@ model = Model(
 
   equiv = Logical(
     @modelexpr(theta,
-      int(0.8 < theta < 1.2)
+      Int(0.8 < theta < 1.2)
     )
   )
 

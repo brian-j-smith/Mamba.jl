@@ -33,7 +33,7 @@ typealias PDMatDistribution Union(InverseWishart, Wishart)
 
 function link(D::PDMatDistribution, X::Matrix, transform::Bool=true)
   n = dim(D)
-  value = similar(X, int(n * (n + 1) / 2))
+  value = similar(X, Int(n * (n + 1) / 2))
   k = 1
   if transform
     U = chol(X)
