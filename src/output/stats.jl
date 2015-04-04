@@ -16,12 +16,12 @@ function cor(c::Chains)
 end
 
 function describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
-           etype=:bm, args...)
-  println(header(c))
-  print("Empirical Posterior Estimates:\n")
-  showall(summarystats(c; etype=etype, args...), false)
-  print("\nQuantiles:\n")
-  showall(quantile(c, q=q), false)
+                  etype=:bm, args...)
+  ps = PosteriorSummaries(
+    summarystats(c; etype=etype, args...),
+    quantile(c, q=q)
+  )
+  show(ps)
 end
 
 function dic(c::Chains)
