@@ -35,10 +35,8 @@ end
 
 #################### ChainSummary Base Methods ####################
 
-Base.showall(s::ChainSummary, header::Bool=true) = showall(STDOUT, s, header)
-
-function Base.showall(io::IO, s::ChainSummary, header::Bool=true)
-  !header || println(io, s.header)
+function Base.showall(io::IO, s::ChainSummary)
+  println(io, s.header)
   show(io, s)
 end
 
