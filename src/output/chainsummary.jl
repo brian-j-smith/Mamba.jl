@@ -39,21 +39,13 @@ Base.showall(s::ChainSummary, header::Bool=true) = showall(STDOUT, s, header)
 
 function Base.showall(io::IO, s::ChainSummary, header::Bool=true)
   !header || println(io, s.header)
-  Base.with_output_limit(true) do
-    Base.showarray(io, split(annotate(s), ['\n']); limit=false)
-  end
-  println(io)
+  show(io, s)
 end
-
-
-Base.show(io::IO, s::ChainSummary) = print(io, annotate(s))
 
 # write n ' ' characters to io
 wrtsp(io::IO, n) = while (n -= 1) >= 0 write(io, ' ') end
 
-## return a character string suitable for printing
-function annotate(s::ChainSummary)
-  io = IOBuffer()
+function Base.show(io::IO, s::ChainSummary)
   rnwid = map(length,s.rownames)   # rowname widths
   mxrnwid = maximum(rnwid)
   cnwid = map(length,s.colnames)   # column name widths
@@ -82,18 +74,4 @@ function annotate(s::ChainSummary)
     end
     println(io)
   end
-  bytestring(io)
-end
-
-
-function annotate{T}(x::Array{T,3}, rownames::Vector, colnames::Vector)
-  if size(x, 3) == 1
-    annotate(x[:,:,1], rownames, colnames)
-  else
-    mapslices(y -> annotate(y, rownames, colnames), x, [1,2])
-  end
-end
-
-function annotate(x::Matrix, rownames::Vector, colnames::Vector)
-  hcat([""; rownames], vcat(colnames.', x))
 end
