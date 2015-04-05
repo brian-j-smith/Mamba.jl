@@ -89,6 +89,6 @@ function Base.show(io::IO, ps::PosteriorSummaries)
   println(io, ps.stats.header)
   print(io, "Empirical Posterior Estimates:\n")
   show(io, ps.stats)
-  print(io, "\nQuantiles:\n")
+  print(io, "Quantiles:\n")
   show(io, ps.quantiles)
 end
