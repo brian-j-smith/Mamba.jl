@@ -2,7 +2,7 @@ using Distributions
 
 module Mamba
 
-  using Distributions, Showoff
+  using Distributions
 
 
   #################### User Add-on Packages and Functions ####################
@@ -27,6 +27,7 @@ module Mamba
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
+  import Showoff: showoff
   import StatsBase: autocor, autocov, crosscov, describe, predict, quantile,
          sem, StatsBase, summarystats
 
