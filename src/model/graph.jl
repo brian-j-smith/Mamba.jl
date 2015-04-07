@@ -14,7 +14,7 @@ end
 function draw(m::Model; filename::String="")
   dot = graph2dot(m)
   if length(filename) == 0
-    print(dot)
+    return dot
   else
     if search(filename, '.') == 0
       filename = string(filename, ".dot")
@@ -54,7 +54,8 @@ end
 
 function graph2dot(m::Model)
   g = graph(m)
-  str = "digraph MambaModel {\n"
+  io = IOBuffer()
+  write(io, "digraph MambaModel {\n")
   deps = keys(m, :dependent)
   for v in vertices(g)
     attr = (String => String)[]
@@ -74,17 +75,22 @@ function graph2dot(m::Model)
       attr["style"] = "filled"
       attr["fillcolor"] = "gray85"
     end
-    str *= string(
-      "\t\"", v.key, "\" [",
-      join(map(x -> "$(x[1])=\"$(x[2])\"", attr), ", "),
-      "];\n"
-    )
+    write(io, "\t\"")
+    write(io, v.key)
+    write(io, "\" [")
+    write(io, join(map(x -> "$(x[1])=\"$(x[2])\"", attr), ", "))
+    write(io, "];\n")
     for e in out_edges(v, g)
       t = target(e, g)
-      str *= "\t\t\"$(v.key)\" -> \"$(t.key)\";\n"
+      write(io, "\t\t\"")
+      write(io, v.key)
+      write(io, "\" -> \"")
+      write(io, t.key)
+      write(io, "\";\n")
      end
   end
-  str * "}\n"
+  write(io, "}\n")
+  bytestring(io)
 end
 
 function tsort{T}(g::AbstractGraph{KeyVertex{T}, Edge{KeyVertex{T}}})
