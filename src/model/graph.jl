@@ -14,7 +14,7 @@ end
 function draw(m::Model; filename::String="")
   dot = graph2dot(m)
   if length(filename) == 0
-    return dot
+    print(dot)
   else
     if search(filename, '.') == 0
       filename = string(filename, ".dot")
