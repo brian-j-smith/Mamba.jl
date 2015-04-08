@@ -121,6 +121,22 @@ Methods
 	
 		Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
 
+.. function:: graph2dot(m::Model)
+
+	Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
+
+	**Arguments**
+
+		* ``m`` : a model for which to construct a graph.
+
+	**Value**
+
+		A character string representation of the graph suitable for in-line processing.  Stochastic, logical, and input nodes will be represented by ellipses, diamonds, and rectangles, respectively.  Nodes that are unmonitored in MCMC simulations will be gray-colored.
+
+	**Example**
+
+		See the :ref:`section-Line-DAG` section of the tutorial.
+
 .. function:: keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
 
 	Return the symbols of nodes of a specified type.
