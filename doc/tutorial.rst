@@ -277,7 +277,15 @@ The DAG representation of a ``Model`` can be printed out at the command-line or 
 	
 	>>> draw(model, filename="lineDAG.dot")
 
-Either the printed or saved output can be passed to Graphviz to plot a visual representation of the model.  A generated plot of the regression model graph is show in the figure below.
+Either the printed or saved output can be passed manually to the Graphviz software to plot a visual representation of the model.  If **julia** is being used with a front-end that supports in-line graphics, like `IJulia` :cite:`johnson:2015:IJ`, and the `GraphViz` **julia** package :cite:`fischer:2014:GV` is installed, then the following code will plot the graph automatically.
+
+.. code-block:: julia
+
+	using GraphViz
+
+	>>> display(Graph(graph2dot(model)))
+
+A generated plot of the regression model graph is show in the figure below.
 
 .. figure:: tutorial/lineDAG.png
 	:align: center

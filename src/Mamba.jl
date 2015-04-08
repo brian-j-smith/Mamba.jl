@@ -186,6 +186,7 @@ module Mamba
     gradlogpdf,
     gradlogpdf!,
     graph,
+    graph2dot,
     hpd,
     insupport,
     invlink,
