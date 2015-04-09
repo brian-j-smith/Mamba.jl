@@ -410,7 +410,7 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
     ## Highest Posterior Density Intervals
     >>> hpd(sim1)
     
-               2.5%      97.5%
+             95% Lower 95% Upper
          s2  0.0746761 4.6285413
     beta[1] -1.9919011 3.0059020
     beta[2]  0.1162965 1.6180369
