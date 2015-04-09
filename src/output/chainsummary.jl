@@ -73,22 +73,3 @@ function Base.show(io::IO, s::ChainSummary)
     println(io)
   end
 end
-
-
-#################### PosteriorSummaries Type ####################
-
-immutable PosteriorSummaries
-  stats::ChainSummary
-  quantiles::ChainSummary
-end
-
-
-#################### PosteriorSummaries Base Methods ####################
-
-function Base.show(io::IO, ps::PosteriorSummaries)
-  println(io, ps.stats.header)
-  print(io, "Empirical Posterior Estimates:\n")
-  show(io, ps.stats)
-  print(io, "Quantiles:\n")
-  show(io, ps.quantiles)
-end
