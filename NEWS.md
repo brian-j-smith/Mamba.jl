@@ -2,9 +2,14 @@
 
 ## Version Updates
 
+### 0.4.7
+* Improved formatting and outputting of posterior summary statistics
+* Improved efficiency of DOT formatting of `Model` graphs.
+* Exported `graph2dot` function to allow in-line processing of `Model` graphs with GraphViz package.
+
 ### 0.4.6
 * Added `verbose` argument to `mcmc` methods to suppress printing of sampler progress to the console.
-* Fix calculation of effective sample size.
+* Fixed calculation of effective sample size.
 
 ### 0.4.5
 * Replaced the `Scale.discrete_color` function deprecated in the *Gadfly* package with `Scale.color_discrete`.
