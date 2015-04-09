@@ -60,7 +60,8 @@ end
 
 function hpd(c::Chains; alpha::Real=0.05)
   cc = combine(c)
-  labels = [string(100 * alpha / 2) * "%", string(100 * (1 - alpha / 2)) * "%"]
+  pct = first(showoff([100.0 * (1.0 - alpha), 0.0]))
+  labels = ["$(pct)% Lower", "$(pct)% Upper"]
   vals = mapslices(x -> hpd(x, alpha=alpha), cc, 1)'
   ChainSummary(vals, c.names, labels, header(c))
 end
