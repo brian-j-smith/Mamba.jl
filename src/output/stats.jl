@@ -15,13 +15,17 @@ function cor(c::Chains)
   ChainSummary(cor(combine(c)), c.names, c.names, header(c))
 end
 
-function describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
+describe(c::Chains; args...) = describe(STDOUT, c; args...)
+
+function describe(io::IO, c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],
                   etype=:bm, args...)
-  ps = PosteriorSummaries(
-    summarystats(c; etype=etype, args...),
-    quantile(c, q=q)
-  )
-  show(ps)
+  ps_stats = summarystats(c; etype=etype, args...)
+  ps_quantiles = quantile(c, q=q)
+  println(io, ps_stats.header)
+  print(io, "Empirical Posterior Estimates:\n")
+  show(io, ps_stats)
+  print(io, "Quantiles:\n")
+  show(io, ps_quantiles)
 end
 
 function dic(c::Chains)
