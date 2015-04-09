@@ -1,5 +1,5 @@
 .. index::
-	single: Examples; Linear Regression
+    single: Examples; Linear Regression
 
 .. _section-Line:
 
@@ -18,8 +18,8 @@ In the sections that follow, the Bayesian simple linear regression example from 
 
 .. math::
 
-	\bm{y} &\sim \text{Normal}(\bm{\mu}, \sigma^2 \bm{I}) \\
-	\bm{\mu} &= \bm{X} \bm{\beta}
+    \bm{y} &\sim \text{Normal}(\bm{\mu}, \sigma^2 \bm{I}) \\
+    \bm{\mu} &= \bm{X} \bm{\beta}
 
 with prior distribution specifications
 
@@ -43,7 +43,7 @@ where :math:`\bm{\beta} = (\beta_0, \beta_1)^\top`, and :math:`\bm{X}` is a desi
 
 .. math::
 
-  p(\bm{\beta}, \sigma^2 | \bm{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\bm{\beta}) p(\sigma^2) \\
+    p(\bm{\beta}, \sigma^2 | \bm{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\bm{\beta}) p(\sigma^2) \\
     &\propto \left(\sigma^2\right)^{-n/2} \exp\left\{-\frac{1}{2 \sigma^2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) \right\} \\
     &\quad \times \exp\left\{-\frac{1}{2} (\bm{\beta} - \bm{\mu}_\pi)^\top \bm{\Sigma}_\pi^{-1} (\bm{\beta} - \bm{\mu}_\pi) \right\}
     \left(\sigma^2\right)^{-\alpha_\pi - 1} \exp\left\{-\beta_\pi / \sigma^2\right\}
@@ -61,9 +61,9 @@ Nodes
 
 In the `Mamba` package, terms that appear in the Bayesian model specification are referred to as *nodes*.  Nodes are classified as one of three types:
 
-	* **Stochastic nodes** are any model terms that have likelihood or prior distributional specifications.  In the regression example, :math:`\bm{y}`, :math:`\bm{\beta}`, and :math:`\sigma^2` are stochastic nodes.
-	* **Logical nodes** are terms, like :math:`\bm{\mu}`, that are deterministic functions of other nodes.
-	* **Input nodes** are any remaining model terms (:math:`\bm{X}`) and are considered to be fixed quantities in the analysis.
+    * **Stochastic nodes** are any model terms that have likelihood or prior distributional specifications.  In the regression example, :math:`\bm{y}`, :math:`\bm{\beta}`, and :math:`\sigma^2` are stochastic nodes.
+    * **Logical nodes** are terms, like :math:`\bm{\mu}`, that are deterministic functions of other nodes.
+    * **Input nodes** are any remaining model terms (:math:`\bm{X}`) and are considered to be fixed quantities in the analysis.
 
 Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `Mamba` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
@@ -71,66 +71,66 @@ For model implementation, all nodes are stored in and accessible from a **julia*
 
 .. code-block:: julia
 
-	using Mamba
+    using Mamba
+    
+    ## Model Specification
+    
+    model = Model(
+      
+      y = Stochastic(1,
+        quote
+          mu = model[:mu]
+          s2 = model[:s2]
+          MvNormal(mu, sqrt(s2))
+        end,
+        false
+      ),
+      
+      mu = Logical(1,
+        :(model[:xmat] * model[:beta]),
+        false
+      ),
+      
+      beta = Stochastic(1,
+        :(MvNormal(2, sqrt(1000)))
+      ),
+      
+      s2 = Stochastic(
+        :(InverseGamma(0.001, 0.001))
+      )
+      
+    )
 
-	## Model Specification
-
-	model = Model(
-
-	  y = Stochastic(1,
-	    quote
-	      mu = model[:mu]
-	      s2 = model[:s2]
-	      MvNormal(mu, sqrt(s2))
-	    end,
-	    false
-	  ),
-
-	  mu = Logical(1,
-	    :(model[:xmat] * model[:beta]),
-	    false
-	  ),
-
-	  beta = Stochastic(1,
-	    :(MvNormal(2, sqrt(1000)))
-	  ),
-
-	  s2 = Stochastic(
-	    :(InverseGamma(0.001, 0.001))
-	  )
-
-	)
-	
 A single integer value for the first ``Stochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object from or compatible with the `Distributions` package :cite:`bates:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
 Stochastic expressions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distribution specifications for the ``beta`` node are shown below.
 
 .. code-block:: julia
 
-	# Case 1: Multivariate Normal with independence covariance matrix
-	beta = Stochastic(1,
-	  :(MvNormal(2, sqrt(1000)))
-	)
-
-	# Case 2: One common univariate Normal 
-	beta = Stochastic(1,
-	  :(Normal(0, sqrt(1000)))
-	)
-  
-	# Case 3: Array of univariate Normals
-	beta = Stochastic(1,
-	  :(Distribution[Normal(0, sqrt(1000)), Normal(0, sqrt(1000))])
-	)
-
-	# Case 4: Array of univariate Normals
-	beta = Stochastic(1,
-	  :(Distribution[Normal(0, sqrt(1000)) for i in 1:2])
-	)
+    # Case 1: Multivariate Normal with independence covariance matrix
+    beta = Stochastic(1,
+      :(MvNormal(2, sqrt(1000)))
+    )
+    
+    # Case 2: One common univariate Normal
+    beta = Stochastic(1,
+      :(Normal(0, sqrt(1000)))
+    )
+    
+    # Case 3: Array of univariate Normals
+    beta = Stochastic(1,
+      :(Distribution[Normal(0, sqrt(1000)), Normal(0, sqrt(1000))])
+    )
+    
+    # Case 4: Array of univariate Normals
+    beta = Stochastic(1,
+      :(Distribution[Normal(0, sqrt(1000)) for i in 1:2])
+    )
 
 Case 1 is one of the `multivariate normal distributions <http://distributionsjl.readthedocs.org/en/latest/multivariate.html#multivariate-normal-distribution>`_ available in the `Distributions` package, and the specification used in the example model implementation.  In Case 2, a single `univariate normal distribution <http://distributionsjl.readthedocs.org/en/latest/univariate.html#normal>`_ is specified to imply independent priors of the same type for all elements of ``beta``.  Cases 3 and 4 explicitly specify a univariate prior for each element of ``beta`` and allow for the possibility of differences among the priors.  Both return `arrays <http://docs.julialang.org/en/latest/manual/arrays/>`_ of Distribution objects, with the last case automating the specification of array elements.
 
 In summary, ``y`` and ``beta`` are stochastic vectors, ``s2`` is a stochastic scalar, and ``mu`` is a logical vector.  We note that the model could have been implemented without ``mu``.  It is included here primarily to illustrate use of a logical node.  Finally, note that nodes ``y`` and ``mu`` are not being monitored.
-	
+
 
 Sampling Schemes
 ^^^^^^^^^^^^^^^^
@@ -139,59 +139,60 @@ The package provides a flexible system for the specification of schemes to sampl
 
 .. code-block:: julia
 
-	## Hybrid No-U-Turn and Slice Sampling Scheme
-	scheme1 = [NUTS([:beta]),
-	           Slice([:s2], [3.0])]
-
-	## No-U-Turn Sampling Scheme
-	scheme2 = [NUTS([:beta, :s2])]
+    ## Hybrid No-U-Turn and Slice Sampling Scheme
+    scheme1 = [NUTS([:beta]),
+               Slice([:s2], [3.0])]
+    
+    ## No-U-Turn Sampling Scheme
+    scheme2 = [NUTS([:beta, :s2])]
 
 Additionally, users are free to create their own samplers with the generic ``Sampler`` constructor.  This is particularly useful in settings were full conditional distributions are of standard forms for some nodes and can be sampled from directly.  Such is the case for the full conditional of :math:`\bm{\beta}` which can be written as
 
 .. math::
-  p(\bm{\beta} | \sigma^2, \bm{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\bm{\beta}) \\
-  &\propto \exp\left\{-\frac{1}{2} (\bm{\beta} - \bm{\mu})^\top \bm{\Sigma}^{-1} (\bm{\beta} - \bm{\mu})\right\},
+
+    p(\bm{\beta} | \sigma^2, \bm{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\bm{\beta}) \\
+    &\propto \exp\left\{-\frac{1}{2} (\bm{\beta} - \bm{\mu})^\top \bm{\Sigma}^{-1} (\bm{\beta} - \bm{\mu})\right\},
 
 where :math:`\bm{\Sigma} = \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{X} + \bm{\Sigma}_\pi^{-1}\right)^{-1}` and :math:`\bm{\mu} = \bm{\Sigma} \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{y} + \bm{\Sigma}_\pi^{-1} \bm{\mu}_\pi\right)`, and is recognizable as multivariate normal.  Likewise, 
 
 .. math::
 
-	p(\sigma^2 | \bm{\beta}, \mathbf{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\sigma^2) \\
+    p(\sigma^2 | \bm{\beta}, \mathbf{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\sigma^2) \\
     &\propto \left(\sigma^2\right)^{-(n/2 + \alpha_\pi) - 1} \exp\left\{-\frac{1}{\sigma^2} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right) \right\},
 
 whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) / 2 + \beta_\pi` scale parameters.  A user-defined sampling scheme to generate draws from these full conditionals is constructed below.
 
 .. code-block:: julia
 
-	## User-Defined Samplers
-
-	Gibbs_beta = Sampler([:beta],
-	  quote
-	    beta = model[:beta]
-	    s2 = model[:s2]
-	    xmat = model[:xmat]
-	    y = model[:y]
-	    beta_mean = mean(beta.distr)
-	    beta_invcov = invcov(beta.distr)
-	    Sigma = inv(xmat' * xmat / s2 + beta_invcov)
-	    mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
-	    rand(MvNormal(mu, Sigma))
-	  end
-	)
-
-	Gibbs_s2 = Sampler([:s2],
-	  quote
-	    mu = model[:mu]
-	    s2 = model[:s2]
-	    y = model[:y]
-	    a = length(y) / 2.0 + shape(s2.distr)
-	    b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
-	    rand(InverseGamma(a, b))
-	  end
-	)
-	
-	## User-Defined Sampling Scheme
-	scheme3 = [Gibbs_beta, Gibbs_s2]
+    ## User-Defined Samplers
+    
+    Gibbs_beta = Sampler([:beta],
+      quote
+        beta = model[:beta]
+        s2 = model[:s2]
+        xmat = model[:xmat]
+        y = model[:y]
+        beta_mean = mean(beta.distr)
+        beta_invcov = invcov(beta.distr)
+        Sigma = inv(xmat' * xmat / s2 + beta_invcov)
+        mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
+        rand(MvNormal(mu, Sigma))
+      end
+    )
+    
+    Gibbs_s2 = Sampler([:s2],
+      quote
+        mu = model[:mu]
+        s2 = model[:s2]
+        y = model[:y]
+        a = length(y) / 2.0 + shape(s2.distr)
+        b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
+        rand(InverseGamma(a, b))
+      end
+    )
+    
+    ## User-Defined Sampling Scheme
+    scheme3 = [Gibbs_beta, Gibbs_s2]
 
 In these samplers, the respective ``MvNormal(2, sqrt(1000))`` and ``InverseGamma(0.001, 0.001)`` priors on stochastic nodes ``beta`` and ``s2`` are accessed directly through the ``distr`` :ref:`fields <section-Stochastic>`.  Features of the `Distributions` objects returned by ``beta.distr`` and ``s2.distr`` can, in turn, be extracted with method functions defined in that package or through their own fields.  For instance, ``mean(beta.distr)`` and ``invcov(beta.distr)`` apply method functions to extract the mean vector and inverse-covariance matrix of the ``beta`` prior.  Whereas, ``shape(s2.distr)`` and ``scale(s2.distr)`` extract the shape and scale parameters from fields of the inverse-gamma prior.  `Distributions` method functions can be found in that package's `documentation <http://distributionsjl.readthedocs.org>`_; whereas, fields are found in the `source code <https://github.com/JuliaStats/Distributions.jl>`_.
 
@@ -199,8 +200,8 @@ When possible to do so, direct sampling from full conditions is often preferred 
 
 .. code-block:: julia
 
-	## Sampling Scheme Assignment
-	setsamplers!(model, scheme1)
+    ## Sampling Scheme Assignment
+    setsamplers!(model, scheme1)
 
 Alternatively, a predefined scheme can be passed in to the ``Model`` constructor at the time of model implementation as the value to its ``samplers`` argument.
 
@@ -209,44 +210,44 @@ The Model Expression Macro
 
 .. function:: @modelexpr(args...)
 
-	A `macro <http://julia.readthedocs.org/en/latest/manual/metaprogramming/#macros>`_ to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``Logical``, and ``Sampler`` constructors. 
+    A `macro <http://julia.readthedocs.org/en/latest/manual/metaprogramming/#macros>`_ to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``Logical``, and ``Sampler`` constructors. 
 
-	**Arguments**
-	
-		* ``args...`` : sequence of one or more arguments, such that the last argument is a single expression or code block, and the previous ones are variable names of model nodes upon which the expression depends.
-		
-	**Value**
-	
-		An expression block of nodal variable declarations followed by the specified expression.
-		
-	**Example**
-	
-		Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``Sampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
-		
-		.. code-block:: julia
-		
-			Gibbs_beta = Sampler([:beta],
-			  @modelexpr(beta, s2, xmat, y,
-			    begin
-			      beta_mean = mean(beta.distr)
-			      beta_invcov = invcov(beta.distr)
-			      Sigma = inv(xmat' * xmat / s2 + beta_invcov)
-			      mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
-			      rand(MvNormal(mu, Sigma))
-			    end
-			  )
-			)
+    **Arguments**
 
-			Gibbs_s2 = Sampler([:s2],
-			  @modelexpr(mu, s2, y,
-			    begin
-			      a = length(y) / 2.0 + shape(s2.distr)
-			      b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
-			      rand(InverseGamma(a, b))
-			    end
-			  )
-			)
-	
+        * ``args...`` : sequence of one or more arguments, such that the last argument is a single expression or code block, and the previous ones are variable names of model nodes upon which the expression depends.
+
+    **Value**
+
+        An expression block of nodal variable declarations followed by the specified expression.
+
+    **Example**
+
+        Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``Sampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
+
+        .. code-block:: julia
+
+            Gibbs_beta = Sampler([:beta],
+              @modelexpr(beta, s2, xmat, y,
+                begin
+                  beta_mean = mean(beta.distr)
+                  beta_invcov = invcov(beta.distr)
+                  Sigma = inv(xmat' * xmat / s2 + beta_invcov)
+                  mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
+                  rand(MvNormal(mu, Sigma))
+                end
+              )
+            )
+            
+            Gibbs_s2 = Sampler([:s2],
+              @modelexpr(mu, s2, y,
+                begin
+                  a = length(y) / 2.0 + shape(s2.distr)
+                  b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
+                  rand(InverseGamma(a, b))
+                end
+              )
+            )
+
 
 .. _section-Line-DAG:
 
@@ -259,38 +260,38 @@ The DAG representation of a ``Model`` can be printed out at the command-line or 
 
 .. code-block:: julia
 
-	## Graph Representation of Nodes
-
-	>>> draw(model)
-	
-	digraph MambaModel {
-	  "mu" [shape="diamond", fillcolor="gray85", style="filled"];
-	    "mu" -> "y";
-	  "xmat" [shape="box", fillcolor="gray85", style="filled"];
-	    "xmat" -> "mu";
-	  "beta" [shape="ellipse"];
-	    "beta" -> "mu";
-	  "s2" [shape="ellipse"];
-	    "s2" -> "y";
-	  "y" [shape="ellipse", fillcolor="gray85", style="filled"];
-	}
-	
-	>>> draw(model, filename="lineDAG.dot")
+    ## Graph Representation of Nodes
+    
+    >>> draw(model)
+    
+    digraph MambaModel {
+      "mu" [shape="diamond", fillcolor="gray85", style="filled"];
+        "mu" -> "y";
+      "xmat" [shape="box", fillcolor="gray85", style="filled"];
+        "xmat" -> "mu";
+      "beta" [shape="ellipse"];
+        "beta" -> "mu";
+      "s2" [shape="ellipse"];
+        "s2" -> "y";
+      "y" [shape="ellipse", fillcolor="gray85", style="filled"];
+    }
+    
+    >>> draw(model, filename="lineDAG.dot")
 
 Either the printed or saved output can be passed manually to the Graphviz software to plot a visual representation of the model.  If **julia** is being used with a front-end that supports in-line graphics, like `IJulia` :cite:`johnson:2015:IJ`, and the `GraphViz` **julia** package :cite:`fischer:2014:GV` is installed, then the following code will plot the graph automatically.
 
 .. code-block:: julia
 
-	using GraphViz
-
-	>>> display(Graph(graph2dot(model)))
+    using GraphViz
+    
+    >>> display(Graph(graph2dot(model)))
 
 A generated plot of the regression model graph is show in the figure below.
 
 .. figure:: tutorial/lineDAG.png
-	:align: center
-	
-	Directed acyclic graph representation of the example regression model nodes.
+    :align: center
+
+    Directed acyclic graph representation of the example regression model nodes.
 
 Stochastic, logical, and input nodes are represented by ellipses, diamonds, and rectangles, respectively.  Gray-colored nodes are ones designated as unmonitored in MCMC simulations.  The DAG not only allows the user to visually check that the model specification is the intended one, but is also used internally to check that nodal relationships are acyclic.
 
@@ -307,12 +308,12 @@ For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia**
 
 .. code-block:: julia
 
-	## Data
-	line = (Symbol => Any)[
-	  :x => [1, 2, 3, 4, 5],
-	  :y => [1, 3, 3, 3, 5]
-	]
-	line[:xmat] = [ones(5) line[:x]]
+    ## Data
+    line = (Symbol => Any)[
+      :x => [1, 2, 3, 4, 5],
+      :y => [1, 3, 3, 3, 5]
+    ]
+    line[:xmat] = [ones(5) line[:x]]
 
 Initial Values
 ^^^^^^^^^^^^^^
@@ -321,11 +322,11 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 
 .. code-block:: julia
 
-	## Initial Values
-	inits = [[:y => line[:y],
-	          :beta => rand(Normal(0, 1), 2),
-	          :s2 => rand(Gamma(1, 1))]
-	         for i in 1:3]
+    ## Initial Values
+    inits = [[:y => line[:y],
+              :beta => rand(Normal(0, 1), 2),
+              :s2 => rand(Gamma(1, 1))]
+             for i in 1:3]
 
 Initial values for ``y`` are those in the observed response vector.  Likewise, the node is not updated in the sampling schemes defined earlier and thus retains its initial values throughout MCMC simulations.  Initial values are generated for ``beta`` from a normal distribution and for ``s2`` from a gamma distribution.
 
@@ -337,19 +338,18 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
 
 .. code-block:: julia
 
-	## MCMC Simulations
-	
-	setsamplers!(model, scheme1)
-	sim1 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
-
-	setsamplers!(model, scheme2)
-	sim2 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
-
-	setsamplers!(model, scheme3)
-	sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
+    ## MCMC Simulations
+    
+    setsamplers!(model, scheme1)
+    sim1 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
+    
+    setsamplers!(model, scheme2)
+    sim2 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
+    
+    setsamplers!(model, scheme3)
+    sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
 Results are retuned as ``Chains`` objects on which methods for posterior inference are defined.
-
 
 
 .. _section-Line-Inference:
@@ -364,18 +364,18 @@ Checks of MCMC output should be performed to assess convergence of simulated dra
 
 .. code-block:: julia
 
-	## Brooks, Gelman and Rubin Convergence Diagnostic
-	>>> gelmandiag(sim1, mpsrf=true, transform=true)
-
-	5x3 Array{Any,2}:
-	 ""               "PSRF"     "97.5%"
-	 "s2"            1.00458    1.00795
-	 "beta[1]"       1.00604    1.0062
-	 "beta[2]"       1.00618    1.00625
-	 "Multivariate"  1.00229  NaN
+    ## Brooks, Gelman and Rubin Convergence Diagnostic
+    >>> gelmandiag(sim1, mpsrf=true, transform=true)
+    
+    5x3 Array{Any,2}:
+     ""               "PSRF"     "97.5%"
+     "s2"            1.00458    1.00795
+     "beta[1]"       1.00604    1.0062
+     "beta[2]"       1.00618    1.00625
+     "Multivariate"  1.00229  NaN
 
 Values of the diagnostic that are greater than 1.2 are evidence of non-convergence.  The smaller diagnostic values for the regression example suggest that its draws have converged.
- 
+
 
 Posterior Summaries
 ^^^^^^^^^^^^^^^^^^^
@@ -384,66 +384,66 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
 
 .. code-block:: julia
 
-	## Summary Statistics
-	>>> describe(sim1)
-
-	Iterations = 252:10000
-	Thinning interval = 2
-	Chains = 1,2,3
-	Samples per chain = 4875
-
-	Empirical Posterior Estimates:
-	4x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"        "ESS"
-	 "s2"       1.31164   2.11701   0.0175055    0.084761    623.812
-	 "beta[1]"  0.550778  1.22685   0.0101448    0.0210359  3401.41
-	 "beta[2]"  0.814562  0.369994  0.00305947   0.0059836  3823.53
-
-	Quantiles:
-	4x6 Array{Any,2}:
-	 ""           "2.5%"      "25.0%"     "50.0%"   "75.0%"   "97.5%"
-	 "s2"        0.16892     0.378582    0.642709  1.29555   6.97178
-	 "beta[1]"  -2.07866    -0.00365545  0.598234  1.15534   2.92711
-	 "beta[2]"   0.0958658   0.633639    0.805068  0.980388  1.60718
-
-	## Highest Posterior Density Intervals
-	>>> hpd(sim1)
-
-	4x3 Array{Any,2}:
-	 ""           "2.5%"     "97.5%"
-	 "s2"        0.0746761  4.62854
-	 "beta[1]"  -1.9919     3.0059
-	 "beta[2]"   0.116297   1.61804
-
-	## Cross-Correlations
-	>>> cor(sim1)
-
-	4x5x3 Array{Any,3}:
-	[:, :, 1] =
-	 ""          "Lag 2"   "Lag 10"   "Lag 20"    "Lag 100"
-	 "s2"       0.930532  0.714716   0.500204   -0.0425769
-	 "beta[1]"  0.284165  0.0144642  0.018907    0.0169609
-	 "beta[2]"  0.241989  0.0556535  0.0327419   0.014708
-
-	[:, :, 2] =
-	 ""          "Lag 2"   "Lag 10"    "Lag 20"      "Lag 100"
-	 "s2"       0.832873  0.467837    0.207283     -0.0156335
-	 "beta[1]"  0.369299  0.0482333  -0.000475048  -0.0273017
-	 "beta[2]"  0.33367   0.0175654   0.0281708    -0.0297971
-
-	[:, :, 3] =
-	 ""          "Lag 2"   "Lag 10"    "Lag 20"    "Lag 100"
-	 "s2"       0.799945  0.395446    0.178554    0.0373555
-	 "beta[1]"  0.290369  0.0151255   0.0125144  -0.00971026
-	 "beta[2]"  0.235885  0.00979619  0.0172596  -0.0116234
-
-	## Deviance Information Criterion
-	>>> dic(sim1)
-
-	3x3 Array{Any,2}:
-	 ""      "DIC"   "Effective Parameters"
-	 "pD"  13.8117  1.02216
-	 "pV"  24.4234  6.32802
+    ## Summary Statistics
+    >>> describe(sim1)
+    
+    Iterations = 252:10000
+    Thinning interval = 2
+    Chains = 1,2,3
+    Samples per chain = 4875
+    
+    Empirical Posterior Estimates:
+    4x6 Array{Any,2}:
+     ""          "Mean"    "SD"      "Naive SE"   "MCSE"        "ESS"
+     "s2"       1.31164   2.11701   0.0175055    0.084761    623.812
+     "beta[1]"  0.550778  1.22685   0.0101448    0.0210359  3401.41
+     "beta[2]"  0.814562  0.369994  0.00305947   0.0059836  3823.53
+    
+    Quantiles:
+    4x6 Array{Any,2}:
+     ""           "2.5%"      "25.0%"     "50.0%"   "75.0%"   "97.5%"
+     "s2"        0.16892     0.378582    0.642709  1.29555   6.97178
+     "beta[1]"  -2.07866    -0.00365545  0.598234  1.15534   2.92711
+     "beta[2]"   0.0958658   0.633639    0.805068  0.980388  1.60718
+    
+    ## Highest Posterior Density Intervals
+    >>> hpd(sim1)
+    
+    4x3 Array{Any,2}:
+     ""           "2.5%"     "97.5%"
+     "s2"        0.0746761  4.62854
+     "beta[1]"  -1.9919     3.0059
+     "beta[2]"   0.116297   1.61804
+    
+    ## Cross-Correlations
+    >>> cor(sim1)
+    
+    4x5x3 Array{Any,3}:
+    [:, :, 1] =
+     ""          "Lag 2"   "Lag 10"   "Lag 20"    "Lag 100"
+     "s2"       0.930532  0.714716   0.500204   -0.0425769
+     "beta[1]"  0.284165  0.0144642  0.018907    0.0169609
+     "beta[2]"  0.241989  0.0556535  0.0327419   0.014708
+    
+    [:, :, 2] =
+     ""          "Lag 2"   "Lag 10"    "Lag 20"      "Lag 100"
+     "s2"       0.832873  0.467837    0.207283     -0.0156335
+     "beta[1]"  0.369299  0.0482333  -0.000475048  -0.0273017
+     "beta[2]"  0.33367   0.0175654   0.0281708    -0.0297971
+    
+    [:, :, 3] =
+     ""          "Lag 2"   "Lag 10"    "Lag 20"    "Lag 100"
+     "s2"       0.799945  0.395446    0.178554    0.0373555
+     "beta[1]"  0.290369  0.0151255   0.0125144  -0.00971026
+     "beta[2]"  0.235885  0.00979619  0.0172596  -0.0116234
+    
+    ## Deviance Information Criterion
+    >>> dic(sim1)
+    
+    3x3 Array{Any,2}:
+     ""      "DIC"   "Effective Parameters"
+     "pD"  13.8117  1.02216
+     "pV"  24.4234  6.32802
 
 
 Output Subsetting
@@ -453,26 +453,26 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 
 .. code-block:: julia
 
-	## Subset Sampler Output
-	>>> sim = sim1[1000:5000, ["beta[1]", "beta[2]"], :]
-	>>> describe(sim)
-
-	Iterations = 1000:5000
-	Thinning interval = 2
-	Chains = 1,2,3
-	Samples per chain = 2001
-
-	Empirical Posterior Estimates:
-	3x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
-	 "beta[1]"  0.542948  1.25353   0.0161789    0.0281539   1982.4
-	 "beta[2]"  0.816549  0.376113  0.00485438   0.00772927  2367.88
-
-	Quantiles:
-	3x6 Array{Any,2}:
-	 ""           "2.5%"      "25.0%"    "50.0%"   "75.0%"   "97.5%"
-	 "beta[1]"  -2.07867    -0.0116601  0.597137  1.13635   2.92063
-	 "beta[2]"   0.0820509   0.634681   0.802364  0.983083  1.60876
+    ## Subset Sampler Output
+    >>> sim = sim1[1000:5000, ["beta[1]", "beta[2]"], :]
+    >>> describe(sim)
+    
+    Iterations = 1000:5000
+    Thinning interval = 2
+    Chains = 1,2,3
+    Samples per chain = 2001
+    
+    Empirical Posterior Estimates:
+    3x6 Array{Any,2}:
+     ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
+     "beta[1]"  0.542948  1.25353   0.0161789    0.0281539   1982.4
+     "beta[2]"  0.816549  0.376113  0.00485438   0.00772927  2367.88
+    
+    Quantiles:
+    3x6 Array{Any,2}:
+     ""           "2.5%"      "25.0%"    "50.0%"   "75.0%"   "97.5%"
+     "beta[1]"  -2.07867    -0.0116601  0.597137  1.13635   2.92063
+     "beta[2]"   0.0820509   0.634681   0.802364  0.983083  1.60876
 
 
 Restarting the Sampler
@@ -482,28 +482,28 @@ Convergence diagnostics or posterior summaries may indicate that additional draw
 
 .. code-block:: julia
 
-	## Restart the Sampler
-	>>> sim = mcmc(sim1, 5000)
-	>>> describe(sim)
-
-	Iterations = 252:15000
-	Thinning interval = 2
-	Chains = 1,2,3
-	Samples per chain = 7375
-
-	Empirical Posterior Estimates:
-	4x6 Array{Any,2}:
-	 ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
-	 "s2"       1.29105   2.04292   0.0137344    0.0655282    971.953
-	 "beta[1]"  0.566042  1.20266   0.00808541   0.0158461   5760.26
-	 "beta[2]"  0.809893  0.362865  0.00243951   0.00454669  6369.41
-
-	Quantiles:
-	4x6 Array{Any,2}:
-	 ""           "2.5%"    "25.0%"     "50.0%"   "75.0%"   "97.5%"
-	 "s2"        0.169693  0.383207    0.649506  1.29165   6.85781
-	 "beta[1]"  -1.97969   0.00363272  0.603058  1.17107   2.89255
-	 "beta[2]"   0.107002  0.628224    0.801115  0.977443  1.57926
+    ## Restart the Sampler
+    >>> sim = mcmc(sim1, 5000)
+    >>> describe(sim)
+    
+    Iterations = 252:15000
+    Thinning interval = 2
+    Chains = 1,2,3
+    Samples per chain = 7375
+    
+    Empirical Posterior Estimates:
+    4x6 Array{Any,2}:
+     ""          "Mean"    "SD"      "Naive SE"   "MCSE"         "ESS"
+     "s2"       1.29105   2.04292   0.0137344    0.0655282    971.953
+     "beta[1]"  0.566042  1.20266   0.00808541   0.0158461   5760.26
+     "beta[2]"  0.809893  0.362865  0.00243951   0.00454669  6369.41
+    
+    Quantiles:
+    4x6 Array{Any,2}:
+     ""           "2.5%"    "25.0%"     "50.0%"   "75.0%"   "97.5%"
+     "s2"        0.169693  0.383207    0.649506  1.29165   6.85781
+     "beta[1]"  -1.97969   0.00363272  0.603058  1.17107   2.89255
+     "beta[2]"   0.107002  0.628224    0.801115  0.977443  1.57926
 
 
 .. _section-Line-Plotting:
@@ -515,29 +515,29 @@ Plotting of sampler output in `Mamba` is based on the `Gadfly` package :cite:`jo
 
 .. code-block:: julia
 
-	## Default summary plot (trace and density plots)
-	p = plot(sim1)
-
-	## Write plot to file
-	draw(p, filename="summaryplot.svg")
+    ## Default summary plot (trace and density plots)
+    p = plot(sim1)
+    
+    ## Write plot to file
+    draw(p, filename="summaryplot.svg")
 
 .. figure:: tutorial/summaryplot.*
-	:align: center
-	
-	Trace and density plots.
+    :align: center
+
+    Trace and density plots.
 
 The ``plot`` function can also be used to make autocorrelation and running means plots.  Legends can be added with the optional ``legend`` argument.  Arrays of plots can be created and passed to the ``draw`` function.  Use ``nrow`` and  ``ncol`` to determine how many rows and columns of plots to include in each drawing.
 
 .. code-block:: julia
 
-	## Autocorrelation and running mean plots
-	p = plot(sim1, [:autocor, :mean], legend=true)
-	draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
+    ## Autocorrelation and running mean plots
+    p = plot(sim1, [:autocor, :mean], legend=true)
+    draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
 
 .. figure:: tutorial/autocormeanplot.*
-	:align: center
-	
-	Autocorrelation and running mean plots.
+    :align: center
+
+    Autocorrelation and running mean plots.
 
 
 .. _section-Line-Performance:
@@ -549,15 +549,15 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 
 .. table:: Number of draws per second for select sampling algorithms in `Mamba`.
 
-	+--------------+--------------+--------+-------+--------------+--------------+
-	| Adaptive Metropolis         |        |       | Slice                       |
-	+--------------+--------------+        |       +--------------+--------------+
-	| Within Gibbs | Multivariate | Gibbs  | NUTS  | Within Gibbs | Multivariate |
-	+==============+==============+========+=======+==============+==============+
-	| 16,700       | 11,100       | 27,300 | 2,600 | 13,600       | 17,600       |
-	+--------------+--------------+--------+-------+--------------+--------------+
+    +--------------+--------------+--------+-------+--------------+--------------+
+    | Adaptive Metropolis         |        |       | Slice                       |
+    +--------------+--------------+        |       +--------------+--------------+
+    | Within Gibbs | Multivariate | Gibbs  | NUTS  | Within Gibbs | Multivariate |
+    +==============+==============+========+=======+==============+==============+
+    | 16,700       | 11,100       | 27,300 | 2,600 | 13,600       | 17,600       |
+    +--------------+--------------+--------+-------+--------------+--------------+
 
-	
+
 .. _section-Line-Development:
 
 Development and Testing
@@ -567,20 +567,20 @@ Command-line access is provided for all package functionality to aid in the deve
 
 .. code-block:: julia
 
-	## Development and Testing
-
-	setinputs!(model, line)             # Set input node values
-	setinits!(model, inits[1])          # Set initial values
-	setsamplers!(model, scheme1)        # Set sampling scheme
-
-	showall(model)                      # Show detailed node information
-
-	logpdf(model, 1)                    # Log-density sum for block 1
-	logpdf(model, 2)                    # Block 2
-	logpdf(model)                       # All blocks
-
-	simulate!(model, 1)                 # Simulate draws for block 1
-	simulate!(model, 2)                 # Block 2
-	simulate!(model)                    # All blocks
+    ## Development and Testing
+    
+    setinputs!(model, line)             # Set input node values
+    setinits!(model, inits[1])          # Set initial values
+    setsamplers!(model, scheme1)        # Set sampling scheme
+    
+    showall(model)                      # Show detailed node information
+    
+    logpdf(model, 1)                    # Log-density sum for block 1
+    logpdf(model, 2)                    # Block 2
+    logpdf(model)                       # All blocks
+    
+    simulate!(model, 1)                 # Simulate draws for block 1
+    simulate!(model, 2)                 # Block 2
+    simulate!(model)                    # All blocks
 
 In this example, functions ``setinputs!``, ``setinits!``, and ``setsampler!`` allow the user to manually set the input node values, the initial values, and the sampling scheme form the ``model`` object, and would need to be called prior to ``logpdf`` and ``simulate!``.  Updated model objects should be returned when called; otherwise, a problem with the supplied values may exist.  Method ``showall`` prints a detailed summary of all model nodes, their values, and attributes; ``logpdf`` sums the log-densities over nodes associated with a specified sampling block (second argument); and ``simulate!`` generates an MCMC draw for the nodes.  Non-numeric results may indicate problems with distributional specifications in the second case or with sampling functions in the last case.  The block arguments are optional; and, if left unspecified, will cause the corresponding functions to be applied over all sampling blocks.  This allows testing of some or all of the samplers.
