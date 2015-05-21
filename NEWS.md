@@ -9,6 +9,9 @@
 * Branched off of *Mamba* 0.4.4.
 * Initial release for the under-development version of julia 0.4.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
 
+### 0.4.8
+* Fixed `BoundsError()` occurring with autocorrelation plots.
+
 ### 0.4.7
 * Improved formatting and outputting of posterior summary statistics
 * Improved efficiency of DOT formatting of `Model` graphs.
