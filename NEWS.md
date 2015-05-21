@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.4.8
+* Fixed `BoundsError()` occurring with autocorrelation plots.
+
 ### 0.4.7
 * Improved formatting and outputting of posterior summary statistics
 * Improved efficiency of DOT formatting of `Model` graphs.
