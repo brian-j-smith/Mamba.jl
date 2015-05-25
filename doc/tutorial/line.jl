@@ -165,6 +165,9 @@ gelmandiag(sim1, mpsrf=true, transform=true) |> show
 ## Geweke Convergence Diagnostic
 gewekediag(sim1) |> show
 
+## Raftery-Lewis Convergence Diagnostic
+rafterydiag(sim1) |> showall
+
 
 ## Summary Statistics
 describe(sim1)
