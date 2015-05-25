@@ -156,7 +156,7 @@ sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
-gelmandiag(sim1, mpsrf=true, transform=true) |> show
+gelmandiag(sim1, mpsrf=true, transform=true) |> showall
 
 ## Geweke Convergence Diagnostic
 gewekediag(sim1) |> show
