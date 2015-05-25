@@ -99,8 +99,52 @@ Indexing
 	
 		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 
-Posterior Diagnostics and Summaries
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Convergence Diagnostics
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. index:: Chains; Gelman and Rubin Diagnostic
+
+.. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
+				transform::Bool=false)
+	
+	Compute the convergence diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.
+	
+	**Arguments**
+	
+		* ``c`` : sampler output on which to perform calculations.
+		* ``alpha`` : quantile (``1 - alpha / 2``) at which to estimate the upper limits of scale reduction factors.
+		* ``mpsrf`` : whether to compute the multivariate potential scale reduction factor.
+		
+	**Value**
+	
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
+
+	**Example**
+	
+		See the :ref:`section-Line-Inference` section of the tutorial.
+
+.. index:: Chains; Geweke Diagnostic
+
+.. function:: gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, \
+                etype=:imse, args...)
+	
+	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.
+	
+	**Arguments**
+	
+		* ``c`` : sampler output on which to perform calculations.
+		* ``first`` : Proportion of iterations to include in the first window.
+		* ``last`` : Proportion of iterations to include in the last window.
+		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+		* ``args...`` : additional arguments to be passed to the ``etype`` method.
+		
+	**Value**
+	
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
+
+
+Posterior Summary Statistics
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. index:: Chains; Autocorrelations
 
@@ -174,46 +218,6 @@ Posterior Diagnostics and Summaries
 	**Example**
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
-
-.. index:: Chains; Gelman and Rubin Diagnostic
-
-.. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
-				transform::Bool=false)
-	
-	Compute the convergence diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``alpha`` : quantile (``1 - alpha / 2``) at which to estimate the upper limits of scale reduction factors.
-		* ``mpsrf`` : whether to compute the multivariate potential scale reduction factor.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
-
-	**Example**
-	
-		See the :ref:`section-Line-Inference` section of the tutorial.
-
-.. index:: Chains; Geweke Diagnostic
-
-.. function:: gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, \
-                etype=:imse, args...)
-	
-	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``first`` : Proportion of iterations to include in the first window.
-		* ``last`` : Proportion of iterations to include in the last window.
-		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
-		* ``args...`` : additional arguments to be passed to the ``etype`` method.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
 
 .. index:: Chains; Highest Posterior Density (HPD) Intervals
 
