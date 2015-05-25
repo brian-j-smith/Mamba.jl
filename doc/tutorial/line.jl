@@ -159,7 +159,7 @@ sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 gelmandiag(sim1, mpsrf=true, transform=true) |> showall
 
 ## Geweke Convergence Diagnostic
-gewekediag(sim1) |> show
+gewekediag(sim1) |> showall
 
 ## Raftery-Lewis Convergence Diagnostic
 rafterydiag(sim1) |> showall
