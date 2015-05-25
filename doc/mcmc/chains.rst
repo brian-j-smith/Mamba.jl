@@ -117,7 +117,20 @@ Convergence Diagnostics
 		
 	**Value**
 	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
+		A ``ChainSummary`` type object of the form:
+
+		.. index:: ChainSummary
+
+		.. code-block:: julia
+
+			immutable ChainSummary
+			  value::Array{Float64,3}
+			  rownames::Vector{String}
+			  colnames::Vector{String}
+			  header::String
+			end
+
+		with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
 
 	**Example**
 	
@@ -142,6 +155,24 @@ Convergence Diagnostics
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
 
+.. index:: Chains; Raftery-Lewis Diagnostic
+
+.. function:: rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95, \
+                          eps::Real=0.001)
+
+    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples needed to estimate a desired quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, to a specified degree of accuracy.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated probability, then :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``q`` : posterior quantile of interest.
+        * ``r`` : margin of error for the estimated probability.
+        * ``s`` : probability for the margin of error.
+        * ``eps`` : precision at which the estimated transition probabilities should be within the equilibrium probabilities.
+
+    **Value**
+
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated number of iterations to thin (K), discard as a burn-in (M), total number (N) to burn-in and keep, number of independent samples that would be needed (Nmin), and the dependence factor (I = N / Nmin) in the columns.  Results are chain-specific.
 
 Posterior Summary Statistics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -160,20 +191,7 @@ Posterior Summary Statistics
 		
 	**Value**
 	
-		A ``ChainSummary`` type object of the form:
-		
-		.. index:: ChainSummary
-		
-		.. code-block:: julia
-		
-			immutable ChainSummary
-			  value::Array{Float64,3}
-			  rownames::Vector{String}
-			  colnames::Vector{String}
-			  header::String
-			end
-
-		with model parameters indexed by the first dimension of ``value``, lag-autocorrelations by the second, and chains by the third.
+		A ``ChainSummary`` type object with model parameters indexed by the first dimension of ``value``, lag-autocorrelations by the second, and chains by the third.
 		
 	**Example**
 	

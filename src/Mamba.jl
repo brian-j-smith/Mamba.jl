@@ -28,8 +28,8 @@ module Mamba
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
   import Showoff: showoff
-  import StatsBase: autocor, autocov, crosscov, describe, predict, quantile,
-         sem, StatsBase, summarystats
+  import StatsBase: autocor, autocov, counts, crosscov, describe, predict,
+         quantile, sem, StatsBase, summarystats
 
   include("distributions/pdmats2.jl")
   importall .PDMats2
@@ -135,6 +135,7 @@ module Mamba
   include("output/gewekediag.jl")
   include("output/mcse.jl")
   include("output/predict.jl")
+  include("output/rafterydiag.jl")
   include("output/stats.jl")
   include("output/plot.jl")
 
@@ -200,6 +201,7 @@ module Mamba
     plot,
     predict,
     quantile,
+    rafterydiag,
     relist,
     relist!,
     setinits!,
