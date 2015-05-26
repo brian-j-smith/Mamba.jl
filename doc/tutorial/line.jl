@@ -161,6 +161,9 @@ gelmandiag(sim1, mpsrf=true, transform=true) |> showall
 ## Geweke Convergence Diagnostic
 gewekediag(sim1) |> showall
 
+## Heidelberger-Welch Diagnostic
+heideldiag(sim1) |> showall
+
 ## Raftery-Lewis Convergence Diagnostic
 rafterydiag(sim1) |> showall
 
