@@ -127,6 +127,7 @@ module Mamba
   include("output/chainsummary.jl")
   include("output/gelmandiag.jl")
   include("output/gewekediag.jl")
+  include("output/heideldiag.jl")
   include("output/mcse.jl")
   include("output/predict.jl")
   include("output/rafterydiag.jl")
@@ -182,6 +183,7 @@ module Mamba
     gradlogpdf!,
     graph,
     graph2dot,
+    heideldiag,
     hpd,
     insupport,
     invlink,

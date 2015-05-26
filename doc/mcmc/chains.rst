@@ -155,6 +155,25 @@ Convergence Diagnostics
 	
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
 
+.. index:: Chains; Heidelberger-Welch Diagnostic
+
+.. function:: heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse, \
+                         args...)
+
+    Compute the convergence diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` for MCMC sampler output.  The diagnostic is designed to assess convergence of posterior means estimated with autocorrelated samples and to determine whether the estimates achieve a target level of precision.  A stationarity test is performed for convergence assessment by iteratively discarding 10\% of the initial samples until the test p-value is non-significant and stationarity is concluded or until 50\% have been discarded and stationarity is rejected, whichever occurs first.  Then, a halfwidth test is performed by comparing the absolute value of the halfwidth of a posterior mean credible interval, relative to the mean, to a target level of precision.  If the relative halfwidth is greater than the target precision, the test is rejected.  Rejection of either test indicates that additional samples are needed.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``alpha`` : significance level for evaluations of stationarity tests and calculations of posterior mean credible intervals.
+        * ``eps`` : target precision for the relative credible interval halfwidths.
+        * ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+        * ``args...`` : additional arguments to be passed to the ``etype`` method.
+
+    **Value**
+
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and numbers of burn-in sequences to discard, whether the stationarity tests are passed (1=yes, 0=no), their p-values (:math:`p > \alpha` implies stationarity), posterior means, halfwidths of their :math:`(1 - \alpha) 100\%` credible intervals, and whether target precisions are achieved (1=yes, 0=no) in the columns.  Results are chain-specific.
+
 .. index:: Chains; Raftery-Lewis Diagnostic
 
 .. function:: rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95, \
