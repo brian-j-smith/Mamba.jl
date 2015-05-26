@@ -99,15 +99,38 @@ Indexing
 	
 		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 
+.. index:: Convergence Diagnostics
+
 Convergence Diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. index:: Chains; Gelman and Rubin Diagnostic
+MCMC simulation provides autocorrelated samples from a target distribution.  Because of computation complexities in implementing MCMC algorithms, the autocorrelated nature of samples, and the need to choose initial sampling values at different points in target distributions; it is important to evaluate the quality of resulting samples.  Specifically, one should check that MCMC samples have converged to the target (or, more commonly, are stationary) and that the number of convergent samples provides sufficiently precise estimates of posterior statistics.
+
+Several established convergence diagnostics are supplied by *Mamba*.  The diagnostics and their features are summarized in the table below and described in detail in the subsequent function descriptions.  They differ with respect to the posterior statistics for which convergence is assessed (mean vs. quantiles), the number of parameters allowed in the assessment (1 = univariate, 2+ = multivariate), and the number of chains required for calculations.  Some diagnostics (i.e., Heidelberger and Welch and Raftery) additionally assess the precision in estimated posterior statistics.  A more comprehensive comparative review can be found in :cite:`cowles:1996:MCM`.  Since diagnostics differ in their focus and design, it is often good practice to use more than one to assess the convergence of MCMC output.
+
+.. table:: Comparative summary of features for the supplied MCMC convergence diagnostics.
+
+    +---------------------------+------------+------------+--------+-------------------------+
+    | Diagnostic                | Statistics | Parameters | Chains | Assessments             |
+    +                           |            |            |        +-------------+-----------+
+    |                           |            |            |        | Convergence | Precision |
+    +===========================+============+============+========+=============+===========+
+    | Gelman, Rubin, and Brooks | Mean       | 1+         | 2+     | Yes         | No        |
+    +---------------------------+------------+------------+--------+-------------+-----------+
+    | Geweke                    | Mean       | 1          | 1      | Yes         | No        |
+    +---------------------------+------------+------------+--------+-------------+-----------+
+    | Heidelberger and Welch    | Mean       | 1          | 1      | Yes         | Yes       |
+    +---------------------------+------------+------------+--------+-------------+-----------+
+    | Raftery                   | Quantiles  | 1          | 1      | Yes         | Yes       |
+    +---------------------------+------------+------------+--------+-------------+-----------+
+
+
+.. index:: Convergence Diagnostics; Gelman-Rubin-Brooks
 
 .. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
 				transform::Bool=false)
 	
-	Compute the convergence diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.
+	Compute the convergence diagnostic of Gelman, Rubin, and Brooks :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with multiple autocorrelated samples (chains).  It does so by comparing the between and within-chain variances with metrics called *potential scale reduction factors*.  Both univariate and multivariate factors are available to assess the convergence of parameters individually and jointly, respectively.  Scale factors close to one are indicative of convergence.  As a rule of thumb, convergence is concluded if the 0.975 quantile of an estimated factor is less than 1.2.  Multiple chains are required for calculation of the diagnostic.  It is recommended that at least three chains be generated, each with different starting values chosen to be diffuse with respect to the anticipated posterior distribution.  Use of multiple chains in the diagnostic provides for more robust assessment of convergence than is possible with single chain diagnostics.
 	
 	**Arguments**
 	
@@ -136,26 +159,26 @@ Convergence Diagnostics
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
-.. index:: Chains; Geweke Diagnostic
+.. index:: Convergence Diagnostics; Geweke
 
 .. function:: gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, \
-                etype=:imse, args...)
-	
-	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.
-	
+                         etype=:imse, args...)
+
+	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with autocorrelated samples.  It computes a normal-based test statistic comparing the sample means in two windows containing proportions of the first and last iterations.  There should be sufficient separation between the two windows so that independence of their samples can be assumed.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
+
 	**Arguments**
-	
+
 		* ``c`` : sampler output on which to perform calculations.
-		* ``first`` : Proportion of iterations to include in the first window.
-		* ``last`` : Proportion of iterations to include in the last window.
+		* ``first`` : proportion of iterations to include in the first window.
+		* ``last`` : proportion of iterations to include in the last window.
 		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
 		* ``args...`` : additional arguments to be passed to the ``etype`` method.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and Z-scores and p-values in the first and second columns.  Results are chain-specific.
 
-.. index:: Chains; Heidelberger-Welch Diagnostic
+	**Value**
+
+		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and test Z-scores and p-values in the first and second columns.  Results are chain-specific.
+
+.. index:: Convergence Diagnostics; Heidelberger-Welch
 
 .. function:: heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse, \
                          args...)
@@ -172,14 +195,14 @@ Convergence Diagnostics
 
     **Value**
 
-        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and numbers of burn-in sequences to discard, whether the stationarity tests are passed (1=yes, 0=no), their p-values (:math:`p > \alpha` implies stationarity), posterior means, halfwidths of their :math:`(1 - \alpha) 100\%` credible intervals, and whether target precisions are achieved (1=yes, 0=no) in the columns.  Results are chain-specific.
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and numbers of burn-in sequences to discard, whether the stationarity tests are passed (1 = yes, 0 = no), their p-values (:math:`p > \alpha` implies stationarity), posterior means, halfwidths of their :math:`(1 - \alpha) 100\%` credible intervals, and whether target precisions are achieved (1 = yes, 0 = no) in the columns.  Results are chain-specific.
 
-.. index:: Chains; Raftery-Lewis Diagnostic
+.. index:: Convergence Diagnostics; Raftery-Lewis
 
 .. function:: rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95, \
                           eps::Real=0.001)
 
-    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples needed to estimate a desired quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, to a specified degree of accuracy.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated probability, then :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.
+    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples needed to estimate a given quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, to a specified degree of precision.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated probability, then precision is specified in terms of :math:`r` and :math:`s`, where :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.
 
     **Arguments**
 
@@ -187,16 +210,18 @@ Convergence Diagnostics
         * ``q`` : posterior quantile of interest.
         * ``r`` : margin of error for the estimated probability.
         * ``s`` : probability for the margin of error.
-        * ``eps`` : precision at which the estimated transition probabilities should be within the equilibrium probabilities.
+        * ``eps`` : error in estimating the true equilibrium probabilities with the sample-based transition probabilities.
 
     **Value**
 
-        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated number of iterations to thin, discard as a burn-in, total number (:math:`N`) to burn-in and keep, number of independent samples that would be needed (:math:`Nmin`), and the dependence factor (:math:`N / Nmin`) in the columns.  Results are chain-specific.
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated thinning intervals, numbers of samples to discard as burn-in sequences, total numbers (:math:`N`) to burn-in and keep, numbers of independent samples that would be needed (:math:`Nmin`), and dependence factors (:math:`N / Nmin`) in the columns.  Results are chain-specific.
+
+.. index:: Posterior Summaries
 
 Posterior Summary Statistics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. index:: Chains; Autocorrelations
+.. index:: Posterior Summaries; Autocorrelations
 
 .. function:: autocor(c::Chains; lags::Vector=[1,5,10,50], relative::Bool=true)
 
@@ -216,7 +241,7 @@ Posterior Summary Statistics
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
-.. index:: Chains; Cross-Correlations
+.. index:: Posterior Summaries; Cross-Correlations
 
 .. function:: cor(c::Chains)
 
@@ -234,7 +259,7 @@ Posterior Summary Statistics
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
-.. index:: Chains; Summary Statistics
+.. index:: Posterior Summaries; Summary Statistics
 
 .. function:: describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975], \
                 etype=:bm, args...)
@@ -256,11 +281,11 @@ Posterior Summary Statistics
 	
 		See the :ref:`section-Line-Inference` section of the tutorial.
 
-.. index:: Chains; Highest Posterior Density (HPD) Intervals
+.. index:: Posterior Summaries; Highest Posterior Density (HPD) Intervals
 
 .. function:: hpd(c::Chains; alpha::Real=0.05)
 
-	Compute highest posterior density (HPD) intervals of Chen and Shao :cite:`chen:1999:MCE` for MCMC sampler output.
+	Compute highest posterior density (HPD) intervals of Chen and Shao :cite:`chen:1999:MCE` for MCMC sampler output.  HPD intervals have the desirable property of being the smallest intervals that contain a given probability.  However, their calculation assumes unimodal marginal posterior distributions, and they are not invariant to transformations of parameters like central (quantile-based) posterior intervals.
 	
 	**Arguments**
 	
@@ -374,7 +399,7 @@ Model-Based Inference
 Plotting
 ^^^^^^^^
 
-.. index:: Chains; Plotting
+.. index:: Posterior Summaries; Plotting
 
 .. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false, args...)
 			  plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
