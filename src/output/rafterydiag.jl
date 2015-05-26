@@ -2,7 +2,7 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
                               s::Real=0.95, eps::Real=0.001, thin::Integer=1)
   nx = length(x)
   phi = sqrt(2.0) * erfinv(s)
-  nmin = int(ceil(q * (1.0 - q) * (phi / r)^2))
+  nmin = iceil(q * (1.0 - q) * (phi / r)^2)
   if nmin > nx
     warn("At least $nmin samples are needed for specified q, r, and s")
     kthin = burnin = total = NaN
@@ -55,6 +55,5 @@ function rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95,
   hdr = header(c) * "\nRaftery-Lewis Diagnostic:\n" *
         "Quantile (q) = $q\nAccuracy (r) = $r\nProbability (s) = $s\n"
   ChainSummary(vals, c.names,
-               ["Thin (K)", "Burn-in (M)", "Total (N)", "Minimum (Nmin)",
-                "Dependence Factor (I)"], hdr)
+               ["Thin", "Burn-in", "Total", "Nmin", "Dependence Factor"], hdr)
 end

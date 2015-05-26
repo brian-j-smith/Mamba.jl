@@ -172,7 +172,7 @@ Convergence Diagnostics
 
     **Value**
 
-        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated number of iterations to thin (K), discard as a burn-in (M), total number (N) to burn-in and keep, number of independent samples that would be needed (Nmin), and the dependence factor (I = N / Nmin) in the columns.  Results are chain-specific.
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated number of iterations to thin, discard as a burn-in, total number (:math:`N`) to burn-in and keep, number of independent samples that would be needed (:math:`Nmin`), and the dependence factor (:math:`N / Nmin`) in the columns.  Results are chain-specific.
 
 Posterior Summary Statistics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
