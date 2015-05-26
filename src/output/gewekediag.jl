@@ -1,10 +1,10 @@
 function gewekediag{T<:Real}(x::Vector{T}; first::Real=0.1, last::Real=0.5,
-           etype=:imse, args...)
-  if !(0 < first < 1)
+                             etype=:imse, args...)
+  if !(0.0 < first < 1.0)
     error("first must be in (0, 1)")
-  elseif !(0 < last < 1)
+  elseif !(0.0 < last < 1.0)
     error("last must be in (0, 1)")
-  elseif first + last > 1
+  elseif first + last > 1.0
     error("first and last sequences are overlapping")
   end
   n = length(x)
@@ -16,12 +16,12 @@ function gewekediag{T<:Real}(x::Vector{T}; first::Real=0.1, last::Real=0.5,
 end
 
 function gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, etype=:imse,
-           args...)
+                    args...)
   _, p, m = size(c.value)
   vals = Array(Float64, p, 2, m)
   for j in 1:p, k in 1:m
-    vals[j,:,k] = gewekediag(c.value[:,j,k], first=first, last=last;
-                    etype=etype, args...)
+    vals[j,:,k] = gewekediag(c.value[:,j,k], first=first, last=last,
+                             etype=etype; args...)
   end
   hdr = header(c) * "\nGeweke Diagnostic:\nFirst Window Fraction = $first\n" *
         "Second Window Fraction = $last\n"
