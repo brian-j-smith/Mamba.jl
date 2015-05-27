@@ -25,79 +25,79 @@ Constructors
 ^^^^^^^^^^^^
 
 .. function:: Chains(iters::Integer, params::Integer; \
-				start::Integer=1, thin::Integer=1, chains::Integer=1, \
-				names::Vector{T<:String}=Array(String,0), model::Model=Model())
-			  Chains(value::Array{T<:Real,3}; \
-				start::Integer=1, thin::Integer=1, \
-				names::Vector{U<:String}=Array(String,0), \
-				chains::Vector{V<:Integer}=Array(Integer, 0), \
-				model::Model=Model())
-			  Chains(value::Matrix{T<:Real}; \
-				start::Integer=1, thin::Integer=1, \
-				names::Vector{U<:String}=Array(String,0), chains::Integer=1, \
-				model::Model=Model())
-			  Chains(value::Vector{T<:Real}; \
-				start::Integer=1, thin::Integer=1, names::String="Param1", \
-				chains::Integer=1, model::Model=Model())
-		
-	Construct a ``Chains`` object that stores MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``iters`` : total number of iterations in each sampler run, of which ``length(start:thin:iters)`` outputted iterations will be stored in the object.
-		* ``params`` : number of parameters to store.
-		* ``value`` : an array whose first, second (optional), and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
-		* ``start`` : number of the first iteration to be stored.
-		* ``thin`` : number of steps between consecutive iterations to be stored.
-		* ``chains`` : number of simulation runs for which to store output, or indices to the runs (default: 1, 2, ...).
-		* ``names`` : names to assign to the parameter elements (default: ``"Param1"``, ``"Param2"``, ...).
-		* ``model`` : the model for which the simulation was run.
-		
-	**Value**
-	
-		Returns a ``Chains`` type object.
+                     start::Integer=1, thin::Integer=1, chains::Integer=1, \
+                     names::Vector{T<:String}=Array(String,0), model::Model=Model())
+              Chains(value::Array{T<:Real,3}; \
+                     start::Integer=1, thin::Integer=1, \
+                     names::Vector{U<:String}=Array(String,0), \
+                     chains::Vector{V<:Integer}=Array(Integer, 0), \
+                     model::Model=Model())
+              Chains(value::Matrix{T<:Real}; \
+                     start::Integer=1, thin::Integer=1, \
+                     names::Vector{U<:String}=Array(String,0), chains::Integer=1, \
+                     model::Model=Model())
+              Chains(value::Vector{T<:Real}; \
+                     start::Integer=1, thin::Integer=1, names::String="Param1", \
+                     chains::Integer=1, model::Model=Model())
 
-	**Example**
-	
-		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
+    Construct a ``Chains`` object that stores MCMC sampler output.
+
+    **Arguments**
+
+        * ``iters`` : total number of iterations in each sampler run, of which ``length(start:thin:iters)`` outputted iterations will be stored in the object.
+        * ``params`` : number of parameters to store.
+        * ``value`` : an array whose first, second (optional), and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
+        * ``start`` : number of the first iteration to be stored.
+        * ``thin`` : number of steps between consecutive iterations to be stored.
+        * ``chains`` : number of simulation runs for which to store output, or indices to the runs (default: 1, 2, ...).
+        * ``names`` : names to assign to the parameter elements (default: ``"Param1"``, ``"Param2"``, ...).
+        * ``model`` : the model for which the simulation was run.
+
+    **Value**
+
+        Returns a ``Chains`` type object.
+
+    **Example**
+
+        See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 
 Indexing
 ^^^^^^^^
 
 .. function:: getindex(c::Chains, inds...)
 
-	Subset MCMC sampler output.  The syntax ``c[i, j, k]`` is converted to ``getindex(c, i, j, k)``.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output to subset.
-		* ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
-		
-	**Value**
-	
-		Returns a ``Chains`` object with the subsetted sampler output.
-		
-	**Example**
-	
-		See the :ref:`section-Line-Subsetting` section of the tutorial.
+    Subset MCMC sampler output.  The syntax ``c[i, j, k]`` is converted to ``getindex(c, i, j, k)``.
+
+    **Arguments**
+
+        * ``c`` : sampler output to subset.
+        * ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
+
+    **Value**
+
+        Returns a ``Chains`` object with the subsetted sampler output.
+
+    **Example**
+
+        See the :ref:`section-Line-Subsetting` section of the tutorial.
 
 .. function:: setindex!(c::Chains, value, inds...)
 
-	Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
-	
-	**Arguments**
-	
-		* ``c`` : object within which to store sampler output.
-		* ``value`` : sampler output.
-		* ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
-		
-	**Value**
-	
-		Returns a ``Chains`` object with the sampler output stored in the specified indices.
+    Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
 
-	**Example**
-	
-		See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
+    **Arguments**
+
+        * ``c`` : object within which to store sampler output.
+        * ``value`` : sampler output.
+        * ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
+
+    **Value**
+
+        Returns a ``Chains`` object with the sampler output stored in the specified indices.
+
+    **Example**
+
+        See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 
 .. index:: Convergence Diagnostics
 
@@ -130,35 +130,35 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 .. index:: Convergence Diagnostics; Gelman-Rubin-Brooks
 
 .. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
-				transform::Bool=false)
-	
-	Compute the convergence diagnostic of Gelman, Rubin, and Brooks :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with multiple autocorrelated samples (chains).  It does so by comparing the between and within-chain variances with metrics called *potential scale reduction factors*.  Both univariate and multivariate factors are available to assess the convergence of parameters individually and jointly, respectively.  Scale factors close to one are indicative of convergence.  As a rule of thumb, convergence is concluded if the 0.975 quantile of an estimated factor is less than 1.2.  Multiple chains are required for calculation of the diagnostic.  It is recommended that at least three chains be generated, each with different starting values chosen to be diffuse with respect to the anticipated posterior distribution.  Use of multiple chains in the diagnostic provides for more robust assessment of convergence than is possible with single chain diagnostics.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``alpha`` : quantile (``1 - alpha / 2``) at which to estimate the upper limits of scale reduction factors.
-		* ``mpsrf`` : whether to compute the multivariate potential scale reduction factor.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object of the form:
+                         transform::Bool=false)
 
-		.. index:: ChainSummary
+    Compute the convergence diagnostic of Gelman, Rubin, and Brooks :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with multiple autocorrelated samples (chains).  It does so by comparing the between and within-chain variances with metrics called *potential scale reduction factors*.  Both univariate and multivariate factors are available to assess the convergence of parameters individually and jointly, respectively.  Scale factors close to one are indicative of convergence.  As a rule of thumb, convergence is concluded if the 0.975 quantile of an estimated factor is less than 1.2.  Multiple chains are required for calculation of the diagnostic.  It is recommended that at least three chains be generated, each with different starting values chosen to be diffuse with respect to the anticipated posterior distribution.  Use of multiple chains in the diagnostic provides for more robust assessment of convergence than is possible with single chain diagnostics.
 
-		.. code-block:: julia
+    **Arguments**
 
-			immutable ChainSummary
-			  value::Array{Float64,3}
-			  rownames::Vector{String}
-			  colnames::Vector{String}
-			  header::String
-			end
+        * ``c`` : sampler output on which to perform calculations.
+        * ``alpha`` : quantile (``1 - alpha / 2``) at which to estimate the upper limits of scale reduction factors.
+        * ``mpsrf`` : whether to compute the multivariate potential scale reduction factor.
 
-		with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
+    **Value**
 
-	**Example**
-	
+        A ``ChainSummary`` type object of the form:
+
+        .. index:: ChainSummary
+
+        .. code-block:: julia
+
+            immutable ChainSummary
+              value::Array{Float64,3}
+              rownames::Vector{String}
+              colnames::Vector{String}
+              header::String
+            end
+
+        with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
+
+    **Example**
+
         See the :ref:`section-Line-Diagnostics` section of the tutorial.
 
 .. index:: Convergence Diagnostics; Geweke
@@ -166,19 +166,19 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 .. function:: gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, \
                          etype=:imse, args...)
 
-	Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with autocorrelated samples.  It computes a normal-based test statistic comparing the sample means in two windows containing proportions of the first and last iterations.  There should be sufficient separation between the two windows so that independence of their samples can be assumed.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
+    Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with autocorrelated samples.  It computes a normal-based test statistic comparing the sample means in two windows containing proportions of the first and last iterations.  There should be sufficient separation between the two windows so that independence of their samples can be assumed.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
 
-	**Arguments**
+    **Arguments**
 
-		* ``c`` : sampler output on which to perform calculations.
-		* ``first`` : proportion of iterations to include in the first window.
-		* ``last`` : proportion of iterations to include in the last window.
-		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
-		* ``args...`` : additional arguments to be passed to the ``etype`` method.
+        * ``c`` : sampler output on which to perform calculations.
+        * ``first`` : proportion of iterations to include in the first window.
+        * ``last`` : proportion of iterations to include in the last window.
+        * ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+        * ``args...`` : additional arguments to be passed to the ``etype`` method.
 
-	**Value**
+    **Value**
 
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and test Z-scores and p-values in the first and second columns.  Results are chain-specific.
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and test Z-scores and p-values in the first and second columns.  Results are chain-specific.
 
     **Example**
 
@@ -239,124 +239,124 @@ Posterior Summary Statistics
 
 .. function:: autocor(c::Chains; lags::Vector=[1,5,10,50], relative::Bool=true)
 
-	Compute lag-k autocorrelations for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``lags`` : lags at which to compute autocorrelations.
-		* ``relative`` : whether the lags are relative to the thinning interval of the output (``true``) or relative to the absolute iteration numbers (``false``).
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with model parameters indexed by the first dimension of ``value``, lag-autocorrelations by the second, and chains by the third.
-		
-	**Example**
-	
-		See the :ref:`section-Line-Summaries` section of the tutorial.
+    Compute lag-k autocorrelations for MCMC sampler output.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``lags`` : lags at which to compute autocorrelations.
+        * ``relative`` : whether the lags are relative to the thinning interval of the output (``true``) or relative to the absolute iteration numbers (``false``).
+
+    **Value**
+
+        A ``ChainSummary`` type object with model parameters indexed by the first dimension of ``value``, lag-autocorrelations by the second, and chains by the third.
+
+    **Example**
+
+        See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Summaries; Cross-Correlations
 
 .. function:: cor(c::Chains)
 
-	Compute cross-correlations for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with the first and second dimensions of the ``value`` field indexing the model parameters between which correlations.  Results are for all chains combined.
+    Compute cross-correlations for MCMC sampler output.
 
-	**Example**
-	
-		See the :ref:`section-Line-Summaries` section of the tutorial.
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+
+    **Value**
+
+        A ``ChainSummary`` type object with the first and second dimensions of the ``value`` field indexing the model parameters between which correlations.  Results are for all chains combined.
+
+    **Example**
+
+        See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Summaries; Summary Statistics
 
 .. function:: describe(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975], \
-                etype=:bm, args...)
-				
-	Compute summary statistics for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``q`` : probabilities at which to calculate quantiles.
-		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
-		* ``args...`` : additional arguments to be passed to the ``etype`` method.
-		
-	**Value**
-	
-		Results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)`` are printed for all chains combined, and a value of ``nothing`` is returned.
+                       etype=:bm, args...)
 
-	**Example**
-	
-		See the :ref:`section-Line-Summaries` section of the tutorial.
+    Compute summary statistics for MCMC sampler output.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``q`` : probabilities at which to calculate quantiles.
+        * ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+        * ``args...`` : additional arguments to be passed to the ``etype`` method.
+
+    **Value**
+
+        Results from calls to ``summarystats(c, etype, args...)`` and ``quantile(c, q)`` are printed for all chains combined, and a value of ``nothing`` is returned.
+
+    **Example**
+
+        See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Summaries; Highest Posterior Density (HPD) Intervals
 
 .. function:: hpd(c::Chains; alpha::Real=0.05)
 
-	Compute highest posterior density (HPD) intervals of Chen and Shao :cite:`chen:1999:MCE` for MCMC sampler output.  HPD intervals have the desirable property of being the smallest intervals that contain a given probability.  However, their calculation assumes unimodal marginal posterior distributions, and they are not invariant to transformations of parameters like central (quantile-based) posterior intervals.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``alpha`` : the ``100 * (1 - alpha)``\% interval to compute.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and lower and upper intervals in the first and second columns.  Results are for all chains combined.
+    Compute highest posterior density (HPD) intervals of Chen and Shao :cite:`chen:1999:MCE` for MCMC sampler output.  HPD intervals have the desirable property of being the smallest intervals that contain a given probability.  However, their calculation assumes unimodal marginal posterior distributions, and they are not invariant to transformations of parameters like central (quantile-based) posterior intervals.
 
-	**Example**
-	
-		See the :ref:`section-Line-Summaries` section of the tutorial.
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``alpha`` : the ``100 * (1 - alpha)``\% interval to compute.
+
+    **Value**
+
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and lower and upper intervals in the first and second columns.  Results are for all chains combined.
+
+    **Example**
+
+        See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. function:: mcse(x::Vector{T<:Real}, method::Symbol=:imse; args...)
 
-	Compute Monte Carlo standard errors.
-	
-	**Arguments**
-	
-		* ``x`` : a time series of values on which to perform calculations.
-		* ``method`` : method used for the calculations.  Options are
-			* ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.  This method requires that the number of values in ``x`` is at least 2 times the batch size.
-			* ``:imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
-			* ``:ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
-		* ``args...`` : additional arguments for the calculation method.
-		
-	**Value**
-	
-		The numeric standard error value.
+    Compute Monte Carlo standard errors.
+
+    **Arguments**
+
+        * ``x`` : a time series of values on which to perform calculations.
+        * ``method`` : method used for the calculations.  Options are
+            * ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.  This method requires that the number of values in ``x`` is at least 2 times the batch size.
+            * ``:imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
+            * ``:ipse`` : initial positive sequence estimator :cite:`geyer:1992:PMC`.
+        * ``args...`` : additional arguments for the calculation method.
+
+    **Value**
+
+        The numeric standard error value.
 
 .. function:: quantile(c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 
-	Compute posterior quantiles for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``q`` : probabilities at which to compute quantiles.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
+    Compute posterior quantiles for MCMC sampler output.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``q`` : probabilities at which to compute quantiles.
+
+    **Value**
+
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and quantiles in the columns.  Results are for all chains combined.
 
 .. function:: summarystats(c::Chains; etype=:bm, args...)
 
-	Compute posterior summary statistics for MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output on which to perform calculations.
-		* ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
-		* ``args...`` : additional arguments to be passed to the ``etype`` method.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with parameters in the rows of the ``value`` field; and the sample mean, standard deviation, standard error, Monte Carlo standard error, and effective sample size in the columns.  Results are for all chains combined.
+    Compute posterior summary statistics for MCMC sampler output.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+        * ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
+        * ``args...`` : additional arguments to be passed to the ``etype`` method.
+
+    **Value**
+
+        A ``ChainSummary`` type object with parameters in the rows of the ``value`` field; and the sample mean, standard deviation, standard error, Monte Carlo standard error, and effective sample size in the columns.  Results are for all chains combined.
 
 Model-Based Inference
 ^^^^^^^^^^^^^^^^^^^^^
@@ -365,50 +365,50 @@ Model-Based Inference
 
 .. function:: dic(c::Chains)
 
-	Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``c`` : sampler output from a model fit with the :func:`mcmc` function and for which all sampled nodes are monitored.
-		
-	**Value**
-	
-		A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns; where
-		
-		.. math::
-		
-			\text{DIC} = -2 \mathcal{L}(\bar{\Theta}) + 2 p,
-			
-		such that :math:`\mathcal{L}(\bar{\Theta})` is the log-likelihood of model outputs given the expected values of model parameters :math:`\Theta`, and :math:`p` is the effective number of parameters.  The latter is defined as :math:`p_D = -2 \bar{\mathcal{L}}(\Theta) + 2 \mathcal{L}(\bar{\Theta})` for the method of Spiegelhalter and as :math:`p_V = \frac{1}{2} \operatorname{var}(-2 \mathcal{L}(\Theta))` for the method of Gelman.  Results are for all chains combined.
+    Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
 
-	**Example**
-	
-		See the :ref:`section-Line-Summaries` section of the tutorial.
+    **Arguments**
+
+        * ``c`` : sampler output from a model fit with the :func:`mcmc` function and for which all sampled nodes are monitored.
+
+    **Value**
+
+        A ``ChainSummary`` type object with DIC results from the methods of Spiegelhalter and Gelman in the first and second rows of the ``value`` field, and the DIC value and effective numbers of parameters in the first and second columns; where
+
+        .. math::
+
+            \text{DIC} = -2 \mathcal{L}(\bar{\Theta}) + 2 p,
+
+        such that :math:`\mathcal{L}(\bar{\Theta})` is the log-likelihood of model outputs given the expected values of model parameters :math:`\Theta`, and :math:`p` is the effective number of parameters.  The latter is defined as :math:`p_D = -2 \bar{\mathcal{L}}(\Theta) + 2 \mathcal{L}(\bar{\Theta})` for the method of Spiegelhalter and as :math:`p_V = \frac{1}{2} \operatorname{var}(-2 \mathcal{L}(\Theta))` for the method of Gelman.  Results are for all chains combined.
+
+    **Example**
+
+        See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Predictive Distribution
 
 .. function:: predict(c::Chains, key::Symbol)
 
-	Generate MCMC draws from a posterior predictive distribution.
+    Generate MCMC draws from a posterior predictive distribution.
 
-	**Arguments**
-	
-		* ``c``: sampler output from a model fit with the :func:`mcmc` function.
-		* ``key``: name of an observed Stochastic model node for which to generate draws from its predictive distribution.
-		
-	**Value**
-	
-		A ``Chain`` object of simulated draws.  For observed data node :math:`y`, simulation is from the posterior predictive distribution 
-		
-		.. math::
-		
-			p(\tilde{y} | y) = \int p(\tilde{y} | \Theta) p(\Theta | y) d\Theta,
+    **Arguments**
 
-		where :math:`\tilde{y}` is an unknown observation on the node, :math:`p(\tilde{y} | \Theta)` is the data likelihood, and :math:`p(\Theta | y)` is the posterior distribution of unobserved parameters :math:`\Theta`.
+        * ``c``: sampler output from a model fit with the :func:`mcmc` function.
+        * ``key``: name of an observed Stochastic model node for which to generate draws from its predictive distribution.
 
-	**Example**
-	
-		See the :ref:`Pumps <example-Pumps>` example.
+    **Value**
+
+        A ``Chain`` object of simulated draws.  For observed data node :math:`y`, simulation is from the posterior predictive distribution
+
+        .. math::
+
+            p(\tilde{y} | y) = \int p(\tilde{y} | \Theta) p(\Theta | y) d\Theta,
+
+        where :math:`\tilde{y}` is an unknown observation on the node, :math:`p(\tilde{y} | \Theta)` is the data likelihood, and :math:`p(\Theta | y)` is the posterior distribution of unobserved parameters :math:`\Theta`.
+
+    **Example**
+
+        See the :ref:`Pumps <example-Pumps>` example.
 
 Plotting
 ^^^^^^^^
@@ -416,56 +416,56 @@ Plotting
 .. index:: Posterior Summaries; Plotting
 
 .. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false, args...)
-			  plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
+              plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
 
-	Various plots to summarize a ``Chains`` object.  Separate plots are produced for each parameter. 
-	
-	**Arguments**
-	
-		* ``c`` : sampler output to plot.
-		* ``ptype`` : plot type(s).  Options are
-			* ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=round(Integer, 10*log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
-			* ``:density`` : density plots.  Optional argument ``trim::Tuple{Real,Real}=(.025,.975)`` trims off lower and upper quantiles of density.
-			* ``:mean`` : running mean plots.
-			* ``:trace`` : trace plots.
-		* ``legend`` : whether to include legends in the plots to identify chain-specific results.
-		* ``args...`` : additional arguments to be passed to the ``ptype`` method, as described above.
-			
-	**Value**
-	
-		Returns a ``Vector{Plot}`` whose elements are individual parameter plots of the specified type if ``ptype`` is a symbol, and a ``Matrix{Plot}`` with plot types in the rows and parameters in the columns if ``ptype`` is a vector.  The result can be displayed or saved to a file with ``draw()``.
+    Various plots to summarize a ``Chains`` object.  Separate plots are produced for each parameter. 
+    
+    **Arguments**
+    
+        * ``c`` : sampler output to plot.
+        * ``ptype`` : plot type(s).  Options are
+            * ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=round(Integer, 10*log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
+            * ``:density`` : density plots.  Optional argument ``trim::Tuple{Real,Real}=(.025,.975)`` trims off lower and upper quantiles of density.
+            * ``:mean`` : running mean plots.
+            * ``:trace`` : trace plots.
+        * ``legend`` : whether to include legends in the plots to identify chain-specific results.
+        * ``args...`` : additional arguments to be passed to the ``ptype`` method, as described above.
+            
+    **Value**
+    
+        Returns a ``Vector{Plot}`` whose elements are individual parameter plots of the specified type if ``ptype`` is a symbol, and a ``Matrix{Plot}`` with plot types in the rows and parameters in the columns if ``ptype`` is a vector.  The result can be displayed or saved to a file with ``draw()``.
 
-	**Note**
-	
-		Plots are created using the `Gadfly` package :cite:`jones:2014:GP`.
-		
-	**Example**
-	
-		See the :ref:`section-Line-Plotting` section of the tutorial.
+    **Note**
+    
+        Plots are created using the `Gadfly` package :cite:`jones:2014:GP`.
+        
+    **Example**
+    
+        See the :ref:`section-Line-Plotting` section of the tutorial.
 
 .. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \
-			    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
-			    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
+                   width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
+                   nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
 
   Draw plots produced by :func:`plot` into display grids containing a default of 3 rows and 2 columns of plots.
-	
-	**Arguments**
-	
-		* ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
-		* ``fmt`` : output format. Options are
-			* ``:pdf`` : Portable Document Format (.pdf).
-			* ``:png`` : Portable Network Graphics (.png).
-			* ``:ps``  : Postscript (.ps).
-			* ``:svg`` : Scalable Vector Graphics (.svg).
-		* ``filename`` : an external file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
-		* ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
-		* ``nrow/ncol`` : number of rows/columns in the display grids.
-		* ``byrow`` : whether the display grids should be filled by row.
-		
-	**Value**
-	
-		Grids drawn to an external file or the display device.
 
-	**Example**
-	
-		See the :ref:`section-Line-Plotting` section of the tutorial.
+    **Arguments**
+
+        * ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
+        * ``fmt`` : output format. Options are
+            * ``:pdf`` : Portable Document Format (.pdf).
+            * ``:png`` : Portable Network Graphics (.png).
+            * ``:ps``  : Postscript (.ps).
+            * ``:svg`` : Scalable Vector Graphics (.svg).
+        * ``filename`` : an external file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
+        * ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
+        * ``nrow/ncol`` : number of rows/columns in the display grids.
+        * ``byrow`` : whether the display grids should be filled by row.
+
+    **Value**
+
+        Grids drawn to an external file or the display device.
+
+    **Example**
+
+        See the :ref:`section-Line-Plotting` section of the tutorial.
