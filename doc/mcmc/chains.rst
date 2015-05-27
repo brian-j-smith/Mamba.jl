@@ -79,7 +79,7 @@ Indexing
 		
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+		See the :ref:`section-Line-Subsetting` section of the tutorial.
 
 .. function:: setindex!(c::Chains, value, inds...)
 
@@ -101,12 +101,14 @@ Indexing
 
 .. index:: Convergence Diagnostics
 
+.. _section-Convergence-Diagnostics:
+
 Convergence Diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-MCMC simulation provides autocorrelated samples from a target distribution.  Because of computation complexities in implementing MCMC algorithms, the autocorrelated nature of samples, and the need to choose initial sampling values at different points in target distributions; it is important to evaluate the quality of resulting samples.  Specifically, one should check that MCMC samples have converged to the target (or, more commonly, are stationary) and that the number of convergent samples provides sufficiently precise estimates of posterior statistics.
+MCMC simulation provides autocorrelated samples from a target distribution.  Because of computational complexities in implementing MCMC algorithms, the autocorrelated nature of samples, and the need to choose initial sampling values at different points in target distributions; it is important to evaluate the quality of resulting samples.  Specifically, one should check that MCMC samples have converged to the target (or, more commonly, are stationary) and that the number of convergent samples provides sufficiently precise estimates of posterior statistics.
 
-Several established convergence diagnostics are supplied by *Mamba*.  The diagnostics and their features are summarized in the table below and described in detail in the subsequent function descriptions.  They differ with respect to the posterior statistics for which convergence is assessed (mean vs. quantiles), the number of parameters allowed in the assessment (1 = univariate, 2+ = multivariate), and the number of chains required for calculations.  Some diagnostics (i.e., Heidelberger and Welch and Raftery) additionally assess the precision in estimated posterior statistics.  A more comprehensive comparative review can be found in :cite:`cowles:1996:MCM`.  Since diagnostics differ in their focus and design, it is often good practice to use more than one to assess the convergence of MCMC output.
+Several established convergence diagnostics are supplied by *Mamba*.  The diagnostics and their features are summarized in the table below and described in detail in the subsequent function descriptions.  They differ with respect to the posterior statistics being assessed (mean vs. quantiles), the number of parameters over which the diagnostic can be computed (1 = univariate, 2+ = multivariate), and the number of chains required for calculations.  Diagnostics may assess convergence, precision in estimated posterior statistics, or both.  A more comprehensive comparative review can be found in :cite:`cowles:1996:MCM`.  Since diagnostics differ in their focus and design, it is often good practice to use more than one to assess the convergence of MCMC output.
 
 .. table:: Comparative summary of features for the supplied MCMC convergence diagnostics.
 
@@ -121,7 +123,7 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
     +---------------------------+------------+------------+--------+-------------+-----------+
     | Heidelberger and Welch    | Mean       | 1          | 1      | Yes         | Yes       |
     +---------------------------+------------+------------+--------+-------------+-----------+
-    | Raftery                   | Quantiles  | 1          | 1      | Yes         | Yes       |
+    | Raftery and Lewis         | Quantiles  | 1          | 1      | No          | Yes       |
     +---------------------------+------------+------------+--------+-------------+-----------+
 
 
@@ -157,7 +159,7 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+        See the :ref:`section-Line-Diagnostics` section of the tutorial.
 
 .. index:: Convergence Diagnostics; Geweke
 
@@ -178,6 +180,10 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
 		A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and test Z-scores and p-values in the first and second columns.  Results are chain-specific.
 
+    **Example**
+
+        See the :ref:`section-Line-Diagnostics` section of the tutorial.
+
 .. index:: Convergence Diagnostics; Heidelberger-Welch
 
 .. function:: heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse, \
@@ -197,12 +203,16 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
         A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and numbers of burn-in sequences to discard, whether the stationarity tests are passed (1 = yes, 0 = no), their p-values (:math:`p > \alpha` implies stationarity), posterior means, halfwidths of their :math:`(1 - \alpha) 100\%` credible intervals, and whether target precisions are achieved (1 = yes, 0 = no) in the columns.  Results are chain-specific.
 
+    **Example**
+
+        See the :ref:`section-Line-Diagnostics` section of the tutorial.
+
 .. index:: Convergence Diagnostics; Raftery-Lewis
 
 .. function:: rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95, \
                           eps::Real=0.001)
 
-    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples needed to estimate a given quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, to a specified degree of precision.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated probability, then precision is specified in terms of :math:`r` and :math:`s`, where :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.
+    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples required to estimate a given quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, within a specified degree of accuracy.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated cumulative probability, then accuracy is specified in terms of :math:`r` and :math:`s`, where :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.
 
     **Arguments**
 
@@ -215,6 +225,10 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
     **Value**
 
         A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated thinning intervals, numbers of samples to discard as burn-in sequences, total numbers (:math:`N`) to burn-in and keep, numbers of independent samples that would be needed (:math:`Nmin`), and dependence factors (:math:`N / Nmin`) in the columns.  Results are chain-specific.
+
+    **Example**
+
+        See the :ref:`section-Line-Diagnostics` section of the tutorial.
 
 .. index:: Posterior Summaries
 
@@ -239,7 +253,7 @@ Posterior Summary Statistics
 		
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+		See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Summaries; Cross-Correlations
 
@@ -257,7 +271,7 @@ Posterior Summary Statistics
 
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+		See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Summaries; Summary Statistics
 
@@ -279,7 +293,7 @@ Posterior Summary Statistics
 
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+		See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Summaries; Highest Posterior Density (HPD) Intervals
 
@@ -298,7 +312,7 @@ Posterior Summary Statistics
 
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+		See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. function:: mcse(x::Vector{T<:Real}, method::Symbol=:imse; args...)
 
@@ -369,7 +383,7 @@ Model-Based Inference
 
 	**Example**
 	
-		See the :ref:`section-Line-Inference` section of the tutorial.
+		See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. index:: Posterior Predictive Distribution
 

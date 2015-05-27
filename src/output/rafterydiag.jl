@@ -1,5 +1,6 @@
 function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
-                              s::Real=0.95, eps::Real=0.001, thin::Integer=1)
+                              s::Real=0.95, eps::Real=0.001,
+                              range::Range=1:length(x))
   nx = length(x)
   phi = sqrt(2.0) * erfinv(s)
   nmin = iceil(q * (1.0 - q) * (phi / r)^2)
@@ -32,10 +33,10 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
     tranfinal = counts(test[1:(ntest-1)] + 2 * test[2:ntest], 0:3)
     alpha = tranfinal[3] / (tranfinal[1] + tranfinal[3])
     beta = tranfinal[2] / (tranfinal[2] + tranfinal[4])
-    kthin *= thin
+    kthin *= step(range)
     m = log(eps * (alpha + beta) / max(alpha, beta)) /
         log(abs(1.0 - alpha - beta))
-    burnin = int(kthin * ceil(m))
+    burnin = int(kthin * ceil(m)) + start(range) - 1
     n = ((2.0 - alpha - beta) * alpha * beta * phi^2) /
         (r^2 * (alpha + beta)^3)
     keep = int(kthin * ceil(n))
@@ -50,9 +51,9 @@ function rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95,
   vals = Array(Float64, p, 5, m)
   for j in 1:p, k in 1:m
     vals[j,:,k] = rafterydiag(c.value[:,j,k], q=q, r=r, s=s, eps=eps,
-                              thin=step(c.range))
+                              range=c.range)
   end
-  hdr = header(c) * "\nRaftery-Lewis Diagnostic:\n" *
+  hdr = header(c) * "\nRaftery and Lewis Diagnostic:\n" *
         "Quantile (q) = $q\nAccuracy (r) = $r\nProbability (s) = $s\n"
   ChainSummary(vals, c.names,
                ["Thin", "Burn-in", "Total", "Nmin", "Dependence Factor"], hdr)
