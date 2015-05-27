@@ -441,19 +441,19 @@ The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is
     Probability (s) = 0.95
 
             Thin Burn-in    Total   Nmin Dependence Factor
-         s2    2     255 8.1370×10³ 3746         2.1721837
-    beta[1]    4     283 3.7515×10⁴ 3746        10.0146823
-    beta[2]    2     267 1.8257×10⁴ 3746         4.8737320
+         s2    2     255 8.1370x103 3746         2.1721837
+    beta[1]    4     283 3.7515x104 3746        10.0146823
+    beta[2]    2     267 1.8257x104 3746         4.8737320
 
             Thin Burn-in    Total   Nmin Dependence Factor
-         s2    2     257 8.2730×10³ 3746          2.208489
-    beta[1]    4     279 3.0899×10⁴ 3746          8.248532
-    beta[2]    2     267 1.7209×10⁴ 3746          4.593967
+         s2    2     257 8.2730x103 3746          2.208489
+    beta[1]    4     279 3.0899x104 3746          8.248532
+    beta[2]    2     267 1.7209x104 3746          4.593967
 
             Thin Burn-in    Total   Nmin Dependence Factor
-         s2    2     253 7.7470×10³ 3746         2.0680726
-    beta[1]    2     273 2.4635×10⁴ 3746         6.5763481
-    beta[2]    4     271 2.4375×10⁴ 3746         6.5069407
+         s2    2     253 7.7470x103 3746         2.0680726
+    beta[1]    2     273 2.4635x104 3746         6.5763481
+    beta[2]    4     271 2.4375x104 3746         6.5069407
 
 More information on the diagnostic functions can be found in the :ref:`section-Convergence-Diagnostics` section.
 
