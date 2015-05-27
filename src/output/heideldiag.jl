@@ -32,7 +32,7 @@ function heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse,
     vals[j,:,k] = heideldiag(c.value[:,j,k], alpha=alpha, eps=eps, etype=etype,
                              start=start(c.range); args...)
   end
-  hdr = header(c) * "\nHeidelberger-Welch Diagnostic:\n" *
+  hdr = header(c) * "\nHeidelberger and Welch Diagnostic:\n" *
         "Target Halfwidth Ratio = $eps\nAlpha = $alpha\n"
   ChainSummary(vals, c.names, ["Burn-in", "Stationarity", "p-value", "Mean",
                                "Halfwidth", "Precision"], hdr)

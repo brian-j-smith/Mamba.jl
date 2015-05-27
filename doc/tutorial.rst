@@ -357,24 +357,104 @@ Results are retuned as ``Chains`` objects on which methods for posterior inferen
 Posterior Inference
 -------------------
 
+.. _section-Line-Diagnostics:
+
 Convergence Diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Checks of MCMC output should be performed to assess convergence of simulated draws to the posterior distribution.  One popular check is the diagnostic of Brooks, Gelman, and Rubin :cite:`brooks:1998:GMM,gelman:1992:IIS`.  It is available through the ``gelmandiag`` function.
+Checks of MCMC output should be performed to assess convergence of simulated draws to the posterior distribution.  Checks can be performed with a variety of methods.  The diagnostic of Gelman, Rubin, and Brooks :cite:`brooks:1998:GMM,gelman:1992:IIS` is one method for assessing convergence of posterior mean estimates.  Values of the diagnostic's *potential scale reduction factor* (PSRF) that are close to one suggest convergence.  As a rule-of-thumb, convergence is rejected if the 97.5 percentile of a PSRF is greater than 1.2.
 
 .. code-block:: julia
 
-    ## Brooks, Gelman and Rubin Convergence Diagnostic
-    >>> gelmandiag(sim1, mpsrf=true, transform=true)
-    
+    >>> gelmandiag(sim1, mpsrf=true, transform=true) |> showall
+
+    Gelman, Rubin, and Brooks Diagnostic:
                   PSRF 97.5%
               s2 1.005 1.008
          beta[1] 1.006 1.006
          beta[2] 1.006 1.006
     Multivariate 1.002   NaN
 
-Values of the diagnostic that are greater than 1.2 are evidence of non-convergence.  The smaller diagnostic values for the regression example suggest that its draws have converged.
+The diagnostic of Geweke :cite:`geweke:1992:EAS` tests for non-convergence of posterior mean estimates.  It provides chain-specific test p-values.  Convergence is rejected for significant p-values, like those obtained for ``s2``. 
 
+.. code-block:: julia
+
+    >>> gewekediag(sim1) |> showall
+
+    Geweke Diagnostic:
+    First Window Fraction = 0.1
+    Second Window Fraction = 0.5
+
+            Z-score p-value
+         s2  -2.321  0.0203
+    beta[1]   0.381  0.7035
+    beta[2]  -0.273  0.7851
+
+            Z-score p-value
+         s2   0.079  0.9370
+    beta[1]   0.700  0.4839
+    beta[2]  -0.651  0.5150
+
+            Z-score p-value
+         s2  -2.101  0.0356
+    beta[1]   0.932  0.3515
+    beta[2]  -0.685  0.4934
+
+The diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` tests for non-convergence (non-stationarity) and whether ratios of credible interval halfwidths to mean estimates are within a target value.  Stationarity is rejected (0) for significant test p-values.  Tests of halfwidth precision are rejected (0) if observed ratios are greater than the target, as is the case for ``s2`` and ``beta[1]``.
+
+.. code-block:: julia
+
+    >>> heideldiag(sim1) |> showall
+
+    Heidelberger and Welch Diagnostic:
+    Target Halfwidth Ratio = 0.1
+    Alpha = 0.05
+
+            Burn-in Stationarity p-value    Mean     Halfwidth  Precision
+         s2     251            1  0.2407 1.54572606 0.559718246         0
+    beta[1]     251            1  0.5330 0.53489109 0.065861054         0
+    beta[2]     251            1  0.5058 0.81767861 0.018822591         1
+
+            Burn-in Stationarity p-value    Mean     Halfwidth  Precision
+         s2     251            1  0.8672 1.26092566  0.27625544         0
+    beta[1]     251            1  0.8806 0.55820771  0.07672180         0
+    beta[2]     251            1  0.9330 0.81398205  0.02254785         1
+
+            Burn-in Stationarity p-value    Mean     Halfwidth  Precision
+         s2     251            1  0.8145 1.12827403 0.196179015         0
+    beta[1]     251            1  0.4017 0.55923590 0.056504387         0
+    beta[2]     251            1  0.4216 0.81202489 0.016274601         1
+
+The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is used to determine the number of iterations required to estimate a given quantile within a specified degree of accuracy.  For example, below are required total numbers of iterations, numbers to discard as burn-in sequences, and thinning intervals for estimating 0.025 quantiles so that their estimated cumulative probabilities are within 0.025±0.005 with probability 0.95.
+
+.. code-block:: julia
+
+    >>> rafterydiag(sim1) |> showall
+
+    Raftery and Lewis Diagnostic:
+    Quantile (q) = 0.025
+    Accuracy (r) = 0.005
+    Probability (s) = 0.95
+
+            Thin Burn-in    Total   Nmin Dependence Factor
+         s2    2     255 8.1370×10³ 3746         2.1721837
+    beta[1]    4     283 3.7515×10⁴ 3746        10.0146823
+    beta[2]    2     267 1.8257×10⁴ 3746         4.8737320
+
+            Thin Burn-in    Total   Nmin Dependence Factor
+         s2    2     257 8.2730×10³ 3746          2.208489
+    beta[1]    4     279 3.0899×10⁴ 3746          8.248532
+    beta[2]    2     267 1.7209×10⁴ 3746          4.593967
+
+            Thin Burn-in    Total   Nmin Dependence Factor
+         s2    2     253 7.7470×10³ 3746         2.0680726
+    beta[1]    2     273 2.4635×10⁴ 3746         6.5763481
+    beta[2]    4     271 2.4375×10⁴ 3746         6.5069407
+
+More information on the diagnostic functions can be found in the :ref:`section-Convergence-Diagnostics` section.
+
+
+.. _section-Line-Summaries:
 
 Posterior Summaries
 ^^^^^^^^^^^^^^^^^^^
@@ -444,6 +524,8 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
     pD 13.811678             1.022158
     pV 24.423410             6.328024
 
+
+.. _section-Line-Subsetting:
 
 Output Subsetting
 ^^^^^^^^^^^^^^^^^

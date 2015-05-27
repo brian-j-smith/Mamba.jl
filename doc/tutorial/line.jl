@@ -155,7 +155,7 @@ setsamplers!(model, scheme3)
 sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
 
-## Brooks, Gelman and Rubin Convergence Diagnostic
+## Gelman, Rubin, and Brooks Convergence Diagnostic
 gelmandiag(sim1, mpsrf=true, transform=true) |> showall
 
 ## Geweke Convergence Diagnostic
