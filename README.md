@@ -14,15 +14,17 @@ Several software options are available for MCMC sampling of Bayesian models.  In
 * An interactive and extensible interface.
 * Support for a wide range of model and distributional specifications.
 * An environment in which all interactions with the software are made through a single, interpreted programming language.
-	* Any **julia** operator, function, type, or package can be used for model specification.
-	* Custom distributions and samplers can be written in **julia** to extend the package.
+    * Any **julia** operator, function, type, or package can be used for model specification.
+    * Custom distributions and samplers can be written in **julia** to extend the package.
 * Directed acyclic graph representations of models.
 * Arbitrary blocking of model parameters and designation of block-specific samplers.
-* Samplers that can be used with the included simulation engine or apart from it.
+* Samplers that can be used with the included simulation engine or apart from it, including Slice, adaptive multivariate Metropolis, adaptive Metropolis within Gibbs, and No-U-Turn (Hamiltonian Monte Carlo) samplers.
 * Automatic parallel execution of parallel MCMC chains on multi-processor systems.
 * Restarting of chains.
 * Command-line access to all package functionality, including its simulation API.
-* Tools for convergence diagnostics and posterior inference.
+* Convergence diagnostics: Gelman, Rubin, and Brooks; Geweke; Heidelberger and Welch; Raftery and Lewis.
+* Posterior summaries: moments, quantiles, HPD, cross-covariance, autocorrelation, MCSE, ESS.
+* [Gadfly](https://github.com/dcjones/Gadfly.jl) plotting: trace, density, running mean, autocorrelation.
 * Run-time performance on par with compiled MCMC software.
 
 ## Getting Started

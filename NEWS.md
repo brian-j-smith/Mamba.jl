@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.4.9
+* Added Heidelberger and Welch, and Raftery and Lewis convergence diagnostics.
+* Added documentation and illustrations for all included diagnostics.
+* Added documentation for creating user-defined distributions.
+
 ### 0.4.8
 * Fixed `BoundsError()` occurring with autocorrelation plots.
 
