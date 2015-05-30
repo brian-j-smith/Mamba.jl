@@ -37,9 +37,9 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # ones.
 extensions = [
     'sphinx.ext.pngmath',
-	'sphinxcontrib.bibtex',
-	'juliadoc.julia',
-	'juliadoc.jlhelp'
+    'sphinxcontrib.bibtex',
+    'juliadoc.julia',
+    'juliadoc.jlhelp'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
