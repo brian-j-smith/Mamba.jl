@@ -20,7 +20,7 @@ function heideldiag{T<:Real}(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
     i += delta
   end
   halfwidth = sqrt(2.0) * erfinv(1.0 - alpha) * mcse(y, etype; args...)
-  passed = abs(halfwidth / ybar) <= eps
+  passed = halfwidth / abs(ybar) <= eps
   [i + start - 2, converged, round(pvalue, 4), ybar, halfwidth, passed]
 end
 
@@ -35,5 +35,5 @@ function heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse,
   hdr = header(c) * "\nHeidelberger and Welch Diagnostic:\n" *
         "Target Halfwidth Ratio = $eps\nAlpha = $alpha\n"
   ChainSummary(vals, c.names, ["Burn-in", "Stationarity", "p-value", "Mean",
-                               "Halfwidth", "Precision"], hdr)
+                               "Halfwidth", "Test"], hdr)
 end

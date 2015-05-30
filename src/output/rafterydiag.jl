@@ -8,8 +8,7 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
     warn("At least $nmin samples are needed for specified q, r, and s")
     kthin = burnin = total = NaN
   else
-    xq = quantile(x, q)
-    dichot = map(y -> int(y <= xq), x)
+    dichot = Int[(x .<= quantile(x, q))...]
     kthin = 0
     bic = 1.0
     local test, ntest
@@ -36,10 +35,10 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
     kthin *= step(range)
     m = log(eps * (alpha + beta) / max(alpha, beta)) /
         log(abs(1.0 - alpha - beta))
-    burnin = int(kthin * ceil(m)) + start(range) - 1
+    burnin = kthin * ceil(m) + start(range) - 1
     n = ((2.0 - alpha - beta) * alpha * beta * phi^2) /
         (r^2 * (alpha + beta)^3)
-    keep = int(kthin * ceil(n))
+    keep = kthin * ceil(n)
     total = burnin + keep
   end
   [kthin, burnin, total, nmin, total / nmin]
@@ -55,6 +54,6 @@ function rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95,
   end
   hdr = header(c) * "\nRaftery and Lewis Diagnostic:\n" *
         "Quantile (q) = $q\nAccuracy (r) = $r\nProbability (s) = $s\n"
-  ChainSummary(vals, c.names,
-               ["Thin", "Burn-in", "Total", "Nmin", "Dependence Factor"], hdr)
+  ChainSummary(vals, c.names, ["Thinning", "Burn-in", "Total", "Nmin",
+                               "Dependence Factor"], hdr)
 end
