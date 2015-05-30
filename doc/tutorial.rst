@@ -222,9 +222,35 @@ The Model Expression Macro
 
     **Example**
 
-        Calls to ``@modelexpr`` can be used to shorten the expressions specified in previous calls to ``Sampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
+        Calls to ``@modelexpr`` can be used to shorten the expressions specified in the previous ``Model`` specification and calls to ``Sampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
 
         .. code-block:: julia
+
+            model = Model(
+
+              y = Stochastic(1,
+                @modelexpr(mu, s2,
+                  MvNormal(mu, sqrt(s2))
+                ),
+                false
+              ),
+
+              mu = Logical(1,
+                @modelexpr(xmat, beta,
+                  xmat * beta
+                ),
+                false
+              ),
+
+              beta = Stochastic(1,
+                :(MvNormal(2, sqrt(1000)))
+              ),
+
+              s2 = Stochastic(
+                :(InverseGamma(0.001, 0.001))
+              )
+
+            )
 
             Gibbs_beta = Sampler([:beta],
               @modelexpr(beta, s2, xmat, y,
@@ -362,7 +388,7 @@ Posterior Inference
 Convergence Diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Checks of MCMC output should be performed to assess convergence of simulated draws to the posterior distribution.  Checks can be performed with a variety of methods.  The diagnostic of Gelman, Rubin, and Brooks :cite:`brooks:1998:GMM,gelman:1992:IIS` is one method for assessing convergence of posterior mean estimates.  Values of the diagnostic's *potential scale reduction factor* (PSRF) that are close to one suggest convergence.  As a rule-of-thumb, convergence is rejected if the 97.5 percentile of a PSRF is greater than 1.2.
+Checks of MCMC output should be performed to assess convergence of simulated draws to the posterior distribution.  Checks can be performed with a variety of methods.  The diagnostic of Gelman, Rubin, and Brooks :cite:`gelman:1992:IIS,brooks:1998:GMM` is one method for assessing convergence of posterior mean estimates.  Values of the diagnostic's *potential scale reduction factor (PSRF)* that are close to one suggest convergence.  As a rule-of-thumb, convergence is rejected if the 97.5 percentile of a PSRF is greater than 1.2.
 
 .. code-block:: julia
 
@@ -400,7 +426,7 @@ The diagnostic of Geweke :cite:`geweke:1992:EAS` tests for non-convergence of po
     beta[1]   0.932  0.3515
     beta[2]  -0.685  0.4934
 
-The diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` tests for non-convergence (non-stationarity) and whether ratios of credible interval halfwidths to mean estimates are within a target value.  Stationarity is rejected (0) for significant test p-values.  Tests of halfwidth precision are rejected (0) if observed ratios are greater than the target, as is the case for ``s2`` and ``beta[1]``.
+The diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` tests for non-convergence (non-stationarity) and whether ratios of estimation interval halfwidths to means are within a target ratio.  Stationarity is rejected (0) for significant test p-values.  Halfwidth tests are rejected (0) if observed ratios are greater than the target, as is the case for ``s2`` and ``beta[1]``.
 
 .. code-block:: julia
 
@@ -410,22 +436,22 @@ The diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` tests for
     Target Halfwidth Ratio = 0.1
     Alpha = 0.05
 
-            Burn-in Stationarity p-value    Mean     Halfwidth  Precision
-         s2     251            1  0.2407 1.54572606 0.559718246         0
-    beta[1]     251            1  0.5330 0.53489109 0.065861054         0
-    beta[2]     251            1  0.5058 0.81767861 0.018822591         1
+            Burn-in Stationarity p-value    Mean     Halfwidth  Test
+         s2     251            1  0.2407 1.54572606 0.559718246    0
+    beta[1]     251            1  0.5330 0.53489109 0.065861054    0
+    beta[2]     251            1  0.5058 0.81767861 0.018822591    1
 
-            Burn-in Stationarity p-value    Mean     Halfwidth  Precision
-         s2     251            1  0.8672 1.26092566  0.27625544         0
-    beta[1]     251            1  0.8806 0.55820771  0.07672180         0
-    beta[2]     251            1  0.9330 0.81398205  0.02254785         1
+            Burn-in Stationarity p-value    Mean     Halfwidth  Test
+         s2     251            1  0.8672 1.26092566  0.27625544    0
+    beta[1]     251            1  0.8806 0.55820771  0.07672180    0
+    beta[2]     251            1  0.9330 0.81398205  0.02254785    1
 
-            Burn-in Stationarity p-value    Mean     Halfwidth  Precision
-         s2     251            1  0.8145 1.12827403 0.196179015         0
-    beta[1]     251            1  0.4017 0.55923590 0.056504387         0
-    beta[2]     251            1  0.4216 0.81202489 0.016274601         1
+            Burn-in Stationarity p-value    Mean     Halfwidth  Test
+         s2     251            1  0.8145 1.12827403 0.196179015    0
+    beta[1]     251            1  0.4017 0.55923590 0.056504387    0
+    beta[2]     251            1  0.4216 0.81202489 0.016274601    1
 
-The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is used to determine the number of iterations required to estimate a given quantile within a specified degree of accuracy.  For example, below are required total numbers of iterations, numbers to discard as burn-in sequences, and thinning intervals for estimating 0.025 quantiles so that their estimated cumulative probabilities are within 0.025±0.005 with probability 0.95.
+The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is used to determine the number of iterations required to estimate a specified quantile within a desired degree of accuracy.  For example, below are required total numbers of iterations, numbers to discard as burn-in sequences, and thinning intervals for estimating 0.025 quantiles so that their estimated cumulative probabilities are within 0.025±0.005 with probability 0.95.
 
 .. code-block:: julia
 
@@ -436,20 +462,20 @@ The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is
     Accuracy (r) = 0.005
     Probability (s) = 0.95
 
-            Thin Burn-in    Total   Nmin Dependence Factor
-         s2    2     255 8.1370x103 3746         2.1721837
-    beta[1]    4     283 3.7515x104 3746        10.0146823
-    beta[2]    2     267 1.8257x104 3746         4.8737320
+            Thinning Burn-in    Total   Nmin Dependence Factor
+         s2        2     255 8.1370x103 3746         2.1721837
+    beta[1]        4     283 3.7515x104 3746        10.0146823
+    beta[2]        2     267 1.8257x104 3746         4.8737320
 
-            Thin Burn-in    Total   Nmin Dependence Factor
-         s2    2     257 8.2730x103 3746          2.208489
-    beta[1]    4     279 3.0899x104 3746          8.248532
-    beta[2]    2     267 1.7209x104 3746          4.593967
+            Thinning Burn-in    Total   Nmin Dependence Factor
+         s2        2     257 8.2730x103 3746          2.208489
+    beta[1]        4     279 3.0899x104 3746          8.248532
+    beta[2]        2     267 1.7209x104 3746          4.593967
 
-            Thin Burn-in    Total   Nmin Dependence Factor
-         s2    2     253 7.7470x103 3746         2.0680726
-    beta[1]    2     273 2.4635x104 3746         6.5763481
-    beta[2]    4     271 2.4375x104 3746         6.5069407
+            Thinning Burn-in    Total   Nmin Dependence Factor
+         s2        2     253 7.7470x103 3746         2.0680726
+    beta[1]        2     273 2.4635x104 3746         6.5763481
+    beta[2]        4     271 2.4375x104 3746         6.5069407
 
 More information on the diagnostic functions can be found in the :ref:`section-Convergence-Diagnostics` section.
 
@@ -628,7 +654,7 @@ Computing runtimes were recorded for different sampling algorithms applied to th
 
     +--------------+--------------+--------+-------+--------------+--------------+
     | Adaptive Metropolis         |        |       | Slice                       |
-    +--------------+--------------+        |       +--------------+--------------+
+    +--------------+--------------+--------+-------+--------------+--------------+
     | Within Gibbs | Multivariate | Gibbs  | NUTS  | Within Gibbs | Multivariate |
     +==============+==============+========+=======+==============+==============+
     | 16,700       | 11,100       | 27,300 | 2,600 | 13,600       | 17,600       |

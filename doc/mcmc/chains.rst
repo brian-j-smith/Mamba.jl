@@ -106,39 +106,45 @@ Indexing
 Convergence Diagnostics
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-MCMC simulation provides autocorrelated samples from a target distribution.  Because of computational complexities in implementing MCMC algorithms, the autocorrelated nature of samples, and the need to choose initial sampling values at different points in target distributions; it is important to evaluate the quality of resulting samples.  Specifically, one should check that MCMC samples have converged to the target (or, more commonly, are stationary) and that the number of convergent samples provides sufficiently precise estimates of posterior statistics.
+MCMC simulation provides autocorrelated samples from a target distribution.  Because of computational complexities in implementing MCMC algorithms, the autocorrelated nature of samples, and the need to choose initial sampling values at different points in target distributions; it is important to evaluate the quality of resulting output.  Specifically, one should check that MCMC samples have converged to the target (or, more commonly, are stationary) and that the number of convergent samples provides sufficiently accurate and precise estimates of posterior statistics.
 
-Several established convergence diagnostics are supplied by *Mamba*.  The diagnostics and their features are summarized in the table below and described in detail in the subsequent function descriptions.  They differ with respect to the posterior statistics being assessed (mean vs. quantiles), the number of parameters over which the diagnostic can be computed (1 = univariate, 2+ = multivariate), and the number of chains required for calculations.  Diagnostics may assess convergence, precision in estimated posterior statistics, or both.  A more comprehensive comparative review can be found in :cite:`cowles:1996:MCM`.  Since diagnostics differ in their focus and design, it is often good practice to use more than one to assess the convergence of MCMC output.
+Several established convergence diagnostics are supplied by *Mamba*.  The diagnostics and their features are summarized in the table below and described in detail in the subsequent function descriptions.  They differ with respect to the posterior statistic being assessed (mean vs. quantile), whether the application is to parameters univariately or multivariately, and the number of chains required for calculations.  Diagnostics may assess stationarity, estimation accuracy and precision, or both.  A more comprehensive comparative review can be found in :cite:`cowles:1996:MCM`.  Since diagnostics differ in their focus and design, it is often good practice to employ more than one to assess convergence.  Note too that diagnostics generally test for non-convergence and that non-significant test results do not prove convergence.  Thus, non-significant results should be interpreted with care.
 
 .. table:: Comparative summary of features for the supplied MCMC convergence diagnostics.
 
-    +---------------------------+------------+------------+--------+-------------------------+
-    | Diagnostic                | Statistics | Parameters | Chains | Assessments             |
-    +                           |            |            |        +-------------+-----------+
-    |                           |            |            |        | Convergence | Precision |
-    +===========================+============+============+========+=============+===========+
-    | Gelman, Rubin, and Brooks | Mean       | 1+         | 2+     | Yes         | No        |
-    +---------------------------+------------+------------+--------+-------------+-----------+
-    | Geweke                    | Mean       | 1          | 1      | Yes         | No        |
-    +---------------------------+------------+------------+--------+-------------+-----------+
-    | Heidelberger and Welch    | Mean       | 1          | 1      | Yes         | Yes       |
-    +---------------------------+------------+------------+--------+-------------+-----------+
-    | Raftery and Lewis         | Quantiles  | 1          | 1      | No          | Yes       |
-    +---------------------------+------------+------------+--------+-------------+-----------+
+    +---------------------------+-----------+--------------+--------+---------------------------+
+    |                           |           |              |        | Convergence Assessments   |
+    +---------------------------+-----------+--------------+--------+--------------+------------+
+    | Diagnostic                | Statistic | Parameters   | Chains | Stationarity | Estimation |
+    +===========================+===========+==============+========+==============+============+
+    | Gelman, Rubin, and Brooks | Mean      | Univariate   | 2+     | Yes          | No         |
+    +---------------------------+-----------+--------------+--------+--------------+------------+
+    |                           |           | Multivariate | 2+     | Yes          | No         |
+    +---------------------------+-----------+--------------+--------+--------------+------------+
+    | Geweke                    | Mean      | Univariate   | 1      | Yes          | No         |
+    +---------------------------+-----------+--------------+--------+--------------+------------+
+    | Heidelberger and Welch    | Mean      | Univariate   | 1      | Yes          | Yes        |
+    +---------------------------+-----------+--------------+--------+--------------+------------+
+    | Raftery and Lewis         | Quantile  | Univariate   | 1      | Yes          | Yes        |
+    +---------------------------+-----------+--------------+--------+--------------+------------+
 
 
 .. index:: Convergence Diagnostics; Gelman-Rubin-Brooks
 
+Gelman, Rubin, and Brooks Diagnostics
+`````````````````````````````````````
+
 .. function:: gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false, \
                          transform::Bool=false)
 
-    Compute the convergence diagnostic of Gelman, Rubin, and Brooks :cite:`brooks:1998:GMM,gelman:1992:IIS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with multiple autocorrelated samples (chains).  It does so by comparing the between and within-chain variances with metrics called *potential scale reduction factors*.  Both univariate and multivariate factors are available to assess the convergence of parameters individually and jointly, respectively.  Scale factors close to one are indicative of convergence.  As a rule of thumb, convergence is concluded if the 0.975 quantile of an estimated factor is less than 1.2.  Multiple chains are required for calculation of the diagnostic.  It is recommended that at least three chains be generated, each with different starting values chosen to be diffuse with respect to the anticipated posterior distribution.  Use of multiple chains in the diagnostic provides for more robust assessment of convergence than is possible with single chain diagnostics.
+    Compute the convergence diagnostics of Gelman, Rubin, and Brooks :cite:`gelman:1992:IIS,brooks:1998:GMM` for MCMC sampler output.  The diagnostics are designed to asses convergence of posterior means estimated with multiple autocorrelated samples (chains).  They does so by comparing the between and within-chain variances with metrics called *potential scale reduction factors (PSRF)*.  Both univariate and multivariate factors are available to assess the convergence of parameters individually and jointly.  Scale factors close to one are indicative of convergence.  As a rule of thumb, convergence is concluded if the 0.975 quantile of an estimated factor is less than 1.2.  Multiple chains are required for calculations.  It is recommended that at least three chains be generated, each with different starting values chosen to be diffuse with respect to the anticipated posterior distribution.  Use of multiple chains in the diagnostic provides for more robust assessment of convergence than is possible with single chain diagnostics.
 
     **Arguments**
 
         * ``c`` : sampler output on which to perform calculations.
         * ``alpha`` : quantile (``1 - alpha / 2``) at which to estimate the upper limits of scale reduction factors.
-        * ``mpsrf`` : whether to compute the multivariate potential scale reduction factor.
+        * ``mpsrf`` : whether to compute the multivariate potential scale reduction factor.  This factor will not be calculable if any one of the parameters in the output is a linear combination of others.
+        * ``transform`` : whether to apply log or logit transformations, as appropriate, to parameters in the chain to potentially produce output that is more normally distributed, an assumption of the PSRF formulations.
 
     **Value**
 
@@ -163,10 +169,13 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
 .. index:: Convergence Diagnostics; Geweke
 
+Geweke Diagnostic
+`````````````````
+
 .. function:: gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, \
                          etype=:imse, args...)
 
-    Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with autocorrelated samples.  It computes a normal-based test statistic comparing the sample means in two windows containing proportions of the first and last iterations.  There should be sufficient separation between the two windows so that independence of their samples can be assumed.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
+    Compute the convergence diagnostic of Geweke :cite:`geweke:1992:EAS` for MCMC sampler output.  The diagnostic is designed to asses convergence of posterior means estimated with autocorrelated samples.  It computes a normal-based test statistic comparing the sample means in two windows containing proportions of the first and last iterations.  Users should ensure that there is sufficient separation between the two windows to assume that their samples are independent.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
 
     **Arguments**
 
@@ -186,22 +195,25 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
 .. index:: Convergence Diagnostics; Heidelberger-Welch
 
+Heidelberger and Welch Diagnostic
+`````````````````````````````````
+
 .. function:: heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse, \
                          args...)
 
-    Compute the convergence diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` for MCMC sampler output.  The diagnostic is designed to assess convergence of posterior means estimated with autocorrelated samples and to determine whether the estimates achieve a target level of precision.  A stationarity test is performed for convergence assessment by iteratively discarding 10\% of the initial samples until the test p-value is non-significant and stationarity is concluded or until 50\% have been discarded and stationarity is rejected, whichever occurs first.  Then, a halfwidth test is performed by comparing the absolute value of the halfwidth of a posterior mean credible interval, relative to the mean, to a target level of precision.  If the relative halfwidth is greater than the target precision, the test is rejected.  Rejection of either test indicates that additional samples are needed.
+    Compute the convergence diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` for MCMC sampler output.  The diagnostic is designed to assess convergence of posterior means estimated with autocorrelated samples and to determine whether a target degree of accuracy is achieved.  A stationarity test is performed for convergence assessment by iteratively discarding 10\% of the initial samples until the test p-value is non-significant and stationarity is concluded or until 50\% have been discarded and stationarity is rejected, whichever occurs first.  Then, a halfwidth test is performed by calculating the relative halfwidth of a posterior mean estimation interval as :math:`z_{1 - \alpha / 2} \hat{s} / |\bar{\theta}|`; where :math:`z` is a standard normal quantile, :math:`\hat{s}` is the Monte Carlo standard error, and :math:`\bar{\theta}` is the estimated posterior mean.  If the relative halfwidth is greater than a target ratio, the test is rejected.  Rejection of the stationarity or halfwidth test suggests that additional samples are needed.
 
     **Arguments**
 
         * ``c`` : sampler output on which to perform calculations.
-        * ``alpha`` : significance level for evaluations of stationarity tests and calculations of posterior mean credible intervals.
-        * ``eps`` : target precision for the relative credible interval halfwidths.
+        * ``alpha`` : significance level for evaluations of stationarity tests and calculations of relative estimation interval halfwidths.
+        * ``eps`` : target ratio for the relative halfwidths.
         * ``etype`` : method for computing Monte Carlo standard errors.  See :func:`mcse` for options.
         * ``args...`` : additional arguments to be passed to the ``etype`` method.
 
     **Value**
 
-        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and numbers of burn-in sequences to discard, whether the stationarity tests are passed (1 = yes, 0 = no), their p-values (:math:`p > \alpha` implies stationarity), posterior means, halfwidths of their :math:`(1 - \alpha) 100\%` credible intervals, and whether target precisions are achieved (1 = yes, 0 = no) in the columns.  Results are chain-specific.
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and numbers of burn-in sequences to discard, whether the stationarity tests are passed (1 = yes, 0 = no), their p-values (:math:`p > \alpha` implies stationarity), posterior means, halfwidths of their :math:`(1 - \alpha) 100\%` estimation intervals, and whether the halfwidth tests are passed (1 = yes, 0 = no) in the columns.  Results are chain-specific.
 
     **Example**
 
@@ -209,22 +221,25 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
 .. index:: Convergence Diagnostics; Raftery-Lewis
 
+Raftery and Lewis Diagnostic
+````````````````````````````
+
 .. function:: rafterydiag(c::Chains; q::Real=0.025, r::Real=0.005, s::Real=0.95, \
                           eps::Real=0.001)
 
-    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples required to estimate a given quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, within a specified degree of accuracy.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated cumulative probability, then accuracy is specified in terms of :math:`r` and :math:`s`, where :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.
+    Compute the convergence diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` for MCMC sampler output.  The diagnostic is designed to determine the number of autocorrelated samples required to estimate a specified quantile :math:`\theta_q`, such that :math:`\Pr(\theta \le \theta_q) = q`, within a desired degree of accuracy.  In particular, if :math:`\hat{\theta}_q` is the estimand and :math:`\Pr(\theta \le \hat{\theta}_q) = \hat{P}_q` the estimated cumulative probability, then accuracy is specified in terms of :math:`r` and :math:`s`, where :math:`\Pr(q - r < \hat{P}_q < q + r) = s`.  Thinning may be employed in the calculation of the diagnostic to satisfy its underlying assumptions.  However, users may not want to apply the same (or any) thinning when estimating posterior summary statistics because doing so results in a loss of information.  Accordingly, sample sizes estimated by the diagnostic tend to be conservative (too large).
 
     **Arguments**
 
         * ``c`` : sampler output on which to perform calculations.
         * ``q`` : posterior quantile of interest.
-        * ``r`` : margin of error for the estimated probability.
+        * ``r`` : margin of error for estimated cumulative probabilities.
         * ``s`` : probability for the margin of error.
-        * ``eps`` : error in estimating the true equilibrium probabilities with the sample-based transition probabilities.
+        * ``eps`` : tolerance within which the probabilities of transitioning from initial to retained iterations are within the equilibrium probabilities for the chain.  This argument determines the number of samples to discard as a burn-in sequence and is typically left at its default value.
 
     **Value**
 
-        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and estimated thinning intervals, numbers of samples to discard as burn-in sequences, total numbers (:math:`N`) to burn-in and keep, numbers of independent samples that would be needed (:math:`Nmin`), and dependence factors (:math:`N / Nmin`) in the columns.  Results are chain-specific.
+        A ``ChainSummary`` type object with parameters contained in the rows of the ``value`` field, and thinning intervals employed, numbers of samples to discard as burn-in sequences, total numbers (:math:`N`) to burn-in and retain, numbers of independent samples that would be needed (:math:`Nmin`), and dependence factors (:math:`N / Nmin`) in the columns.  Results are chain-specific.
 
     **Example**
 
