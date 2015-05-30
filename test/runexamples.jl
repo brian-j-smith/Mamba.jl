@@ -2,7 +2,7 @@ using Mamba
 
 include("utils.jl")
 
-examples = [
+test_examples = [
   "blocker",
   "bones",
   "dogs",
@@ -27,7 +27,7 @@ examples = [
 
 println("Running examples:")
 
-for t in examples
+for t in test_examples
   @everywhere srand(123)
   @runtest "../doc/examples/" t
   gelmandiag(sim) |> show
