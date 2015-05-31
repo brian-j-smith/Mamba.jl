@@ -22,13 +22,9 @@
   ## Dimension of the distribution
   length(d::NewMultivarDist) = length(d.mu)
 
-  ## Minimum and maximum support values
-  minimum(d::NewMultivarDist) = -Inf
-  maximum(d::NewMultivarDist) = Inf
-
   ## Logicals indicating whether elements of x are in the support
   function insupport{T<:Real}(d::NewMultivarDist, x::Vector{T})
-    minimum(d) .<= x .<= maximum(d)
+    length(d) == length(x) && all(isfinite(x))
   end
 
   ## Normalized or unnormalized log-density value
@@ -42,8 +38,6 @@ end
 module Testing end
 eval(Testing, extensions)
 d = Testing.NewMultivarDist([0.0, 0.0], 1.0)
-Testing.minimum(d)
-Testing.maximum(d)
 Testing.insupport(d, [2.0, 3.0])
 Testing.logpdf(d, [2.0, 3.0])
 

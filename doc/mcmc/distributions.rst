@@ -169,17 +169,9 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
             Return the sample space size (dimension) of ``d``.
 
-        .. function:: minimum(d::D)
-
-            Return the lower bound of the support of ``d``.
-
-        .. function:: maximum(d::D)
-
-            Return the upper bound of the support of ``d``.
-
         .. function:: insupport{T<:Real}(d::D, x::Vector{T})
 
-            Return a vector of logicals indicating whether corresponding elements of ``x`` are in the support of ``d``.
+            Return a logical indicating whether ``x`` is in the support of ``d``.
 
         .. function:: _logpdf{T<:Real}(d::D, x::Vector{T})
 
