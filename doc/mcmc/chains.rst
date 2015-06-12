@@ -460,7 +460,8 @@ Plotting
 
 .. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \
                    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
-                   nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
+                   nrow::Integer=3, ncol::Integer=2, byrow::Bool=true, \
+                   ask::Bool=true)
 
   Draw plots produced by :func:`plot` into display grids containing a default of 3 rows and 2 columns of plots.
 
@@ -476,6 +477,7 @@ Plotting
         * ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
         * ``nrow/ncol`` : number of rows/columns in the display grids.
         * ``byrow`` : whether the display grids should be filled by row.
+        * ``ask`` : whether to prompt users before displaying subsequent grids to a single named file or the display device.
 
     **Value**
 

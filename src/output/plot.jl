@@ -93,7 +93,8 @@ end
 
 function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
               width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch,
-              nrow::Integer=3, ncol::Integer=2, byrow::Bool=true)
+              nrow::Integer=3, ncol::Integer=2, byrow::Bool=true,
+              ask::Bool=true)
 
   in(fmt, [:pdf, :png, :ps, :svg]) ||
     error("$(fmt) is not a supported draw format")
@@ -112,7 +113,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
 
   mat = Array(Context, pp)
   for page in 1:np
-    if page > 1 && !addextension
+    if ask && page > 1 && !addextension
       println("Press ENTER to draw next plot")
       readline(STDIN)
     end
