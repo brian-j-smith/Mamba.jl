@@ -400,10 +400,10 @@ Checks of MCMC output should be performed to assess convergence of simulated dra
 
     Gelman, Rubin, and Brooks Diagnostic:
                   PSRF 97.5%
-              s2 1.005 1.008
+              s2 1.005 1.010
          beta[1] 1.006 1.006
          beta[2] 1.006 1.006
-    Multivariate 1.002   NaN
+    Multivariate 1.004   NaN
 
 The diagnostic of Geweke :cite:`geweke:1992:EAS` tests for non-convergence of posterior mean estimates.  It provides chain-specific test p-values.  Convergence is rejected for significant p-values, like those obtained for ``s2``. 
 

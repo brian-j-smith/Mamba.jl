@@ -7,21 +7,21 @@ function gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false,
 
   psi = transform ? link(c) : c.value
 
-  S2 = mapslices(x -> reshape(crosscov(x, x, [0]), p, p), psi, [1,2])
-  W = mapreduce(i -> S2[:,:,i], +, 1:m) / m
+  S2 = mapslices(cov, psi, [1,2])
+  W = squeeze(mapslices(mean, S2, 3), 3)
 
   psibar = reshape(mapslices(mean, psi, 1), p, m)'
-  B = n * reshape(crosscov(psibar, psibar, [0]), p, p)
+  B = n * cov(psibar)
 
   w = diag(W)
   b = diag(B)
   s2 = reshape(mapslices(diag, S2, [1,2]), p, m)'
-  psibar2 = map(i -> mean(psibar[:,i]), 1:p)
+  psibar2 = vec(mapslices(mean, psibar, 1))
 
-  var_w = map(i -> var(s2[:,i]), 1:p) / m
+  var_w = vec(mapslices(var, s2, 1)) / m
   var_b = (2.0 / (m - 1)) * b.^2
-  var_wb = (n / m) * (diag(reshape(crosscov(s2, psibar.^2, [0]), p, p)) -
-           2.0 * psibar2 .* diag(reshape(crosscov(s2, psibar, [0]), p, p)))
+  var_wb = (n / m) * (diag(cov(s2, psibar.^2))
+                      - 2.0 * psibar2 .* diag(cov(s2, psibar)))
 
   V = ((n - 1) / n) * w + ((m + 1) / (m * n)) * b
   var_V = ((n - 1)^2 * var_w + ((m + 1) / m)^2 * var_b +
@@ -30,21 +30,27 @@ function gelmandiag(c::Chains; alpha::Real=0.05, mpsrf::Bool=false,
   B_df = m - 1
   W_df = 2.0 * w.^2 ./ var_w
 
+  psrf = Array(Float64, p, 2)
   R_fixed = (n - 1) / n
-  R_random = ((m + 1) / (m * n)) * b ./ w
-  R_est = R_fixed + R_random
+  R_random_scale = (m + 1) / (m * n)
   q = 1.0 - alpha / 2.0
-  R_upper = R_fixed + R_random .*
-            map(df2 -> quantile(FDist(B_df, df2), q), W_df)
-
-  correction = (df + 3.0) ./ (df + 1.0)
-  psrf = sqrt([correction .* R_est  correction .* R_upper])
+  for i in 1:p
+    correction = (df[i] + 3.0) / (df[i] + 1.0)
+    R_random = R_random_scale * b[i] / w[i]
+    psrf[i, 1] = sqrt(correction * (R_fixed + R_random))
+    if !isnan(R_random)
+      R_random *= quantile(FDist(B_df, W_df[i]), q)
+    end
+    psrf[i, 2] = sqrt(correction * (R_fixed + R_random))
+  end
   psrf_labels = ["PSRF", string(100 * q) * "%"]
   psrf_names = c.names
 
   if mpsrf
-    x = [(n - 1) / n + (m + 1) / m * eigmax(inv(cholfact(W)) * B) / n NaN]
-    psrf = vcat(psrf, x)
+    x = isposdef(W) ?
+      R_fixed + R_random_scale * eigmax(inv(cholfact(W)) * B) :
+      NaN
+    psrf = vcat(psrf, [x NaN])
     psrf_names = [psrf_names; "Multivariate"]
   end
 
