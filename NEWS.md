@@ -9,6 +9,10 @@
 * Branched off of *Mamba* 0.4.4.
 * Initial release for the under-development version of julia 0.4.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
 
+### 0.4.10
+* Optimized code and improved handling of sampler output in the Gelman convergence diagnostic.
+* Added ``ask`` argument to the ``draw`` plot method.
+
 ### 0.4.9
 * Added Heidelberger and Welch, and Raftery and Lewis convergence diagnostics.
 * Added documentation and illustrations for all included diagnostics.
