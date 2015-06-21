@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+### 0.4.10
+* Optimized code and improved handling of sampler output in the Gelman convergence diagnostic.
+* Added ``ask`` argument to the ``draw`` plot method.
+
 ### 0.4.9
 * Added Heidelberger and Welch, and Raftery and Lewis convergence diagnostics.
 * Added documentation and illustrations for all included diagnostics.
