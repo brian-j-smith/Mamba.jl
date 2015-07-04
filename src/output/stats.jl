@@ -15,6 +15,28 @@ function cor(c::Chains)
   ChainSummary(cor(combine(c)), c.names, c.names, header(c))
 end
 
+function changerate(c::Chains)
+  n, p, m = size(c.value)
+  r = zeros(Float64, p, 1, 1)
+  r_mv = 0.0
+  delta = Array(Bool, p)
+  for k in 1:m
+    prev = c.value[1,:,k]
+    for i in 2:n
+      for j in 1:p
+        x = c.value[i,j,k]
+        dx = x != prev[j]
+        r[j] += dx
+        delta[j] = dx
+        prev[j] = x
+      end
+      r_mv += any(delta)
+    end
+  end
+  vals = round([r; r_mv] / (m * (n - 1)), 3)
+  ChainSummary(vals, [c.names; "Multivariate"], ["Change Rate"], header(c))
+end
+
 describe(c::Chains; args...) = describe(STDOUT, c; args...)
 
 function describe(io::IO, c::Chains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975],

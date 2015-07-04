@@ -543,6 +543,15 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
     beta[1] 0.29036852  0.0151255  0.01251444   -0.00971026
     beta[2] 0.23588485  0.0097962  0.01725959   -0.01162341
     
+    ## State Space Change Rate (per Iteration)
+    >>> changerate(sim1)
+    
+                 Change Rate
+              s2       1.000
+         beta[1]       0.782
+         beta[2]       0.782
+    Multivariate       1.000
+    
     ## Deviance Information Criterion
     >>> dic(sim1)
     

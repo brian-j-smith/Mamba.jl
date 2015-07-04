@@ -270,6 +270,22 @@ Posterior Summary Statistics
 
         See the :ref:`section-Line-Summaries` section of the tutorial.
 
+.. function:: changerate(c::Chains)
+
+    Estimate the probability, or rate per iteration, :math:`\Pr(\theta^i \ne \theta^{i-1})` of a state space change for iterations :math:`i = 2, \ldots, N` in MCMC sampler output.  Estimation is performed for each parameter univariately as well as for the full parameter vector multivariately.  For continuous output generated from samplers, like Metropolis-Hastings, whose algorithms conditionally accept candidate draws, the probability can be viewed as the acceptance rate.
+
+    **Arguments**
+
+        * ``c`` : sampler output on which to perform calculations.
+
+    **Value**
+
+        A ``ChainSummary`` type object with parameters in the rows of the ``value`` field, and the estimated rates in the column.  Results are for all chains combined.
+
+    **Example**
+
+        See the :ref:`section-Line-Summaries` section of the tutorial.
+
 .. index:: Posterior Summaries; Cross-Correlations
 
 .. function:: cor(c::Chains)
