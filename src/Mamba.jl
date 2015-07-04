@@ -173,6 +173,7 @@ module Mamba
   export
     @modelexpr,
     autocor,
+    changerate,
     cor,
     describe,
     dic,

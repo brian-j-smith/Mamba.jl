@@ -184,6 +184,9 @@ cor(sim1) |> show
 ## Lag-Autocorrelations
 autocor(sim1) |> show
 
+## State Space Change Rate (per Iteration)
+changerate(sim1) |> show
+
 ## Deviance Information Criterion
 dic(sim1) |> show
 
