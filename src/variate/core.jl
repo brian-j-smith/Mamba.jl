@@ -22,12 +22,20 @@ function Base.getindex(v::UniVariate, i::Real)
   v.value[i]
 end
 
+function Base.getindex(v::UniVariate, ::Colon)
+  v.value
+end
+
 function Base.getindex(v::UniVariate, inds)
   map(i -> v.value[i], inds)
 end
 
 function Base.setindex!{N}(v::MultiVariate{N}, x, inds...)
   setindex!(v.value, x, inds...)
+end
+
+function Base.setindex!(v::UniVariate, x, ::Colon)
+  v[1] = x
 end
 
 function Base.setindex!(v::UniVariate, x, inds)
