@@ -37,7 +37,7 @@ function setmonitor!(d::Dependent, monitor::Vector{Int})
   d.nlink = length(link(d, d.value, false))
   if d.nlink > 0 && length(monitor) > 0
     if monitor[1] == 0
-      values = [1:d.nlink]
+      values = [1:d.nlink;]
     elseif minimum(monitor) < 1 || maximum(monitor) > d.nlink
       throw(BoundsError())
     end

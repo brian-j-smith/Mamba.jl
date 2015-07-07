@@ -67,7 +67,8 @@ model = Model(
 
   tau = Logical(1,
     @modelexpr(priors, s2_0,
-      [ sqrt(priors[1]),
+      Float64[
+        sqrt(priors[1]),
         sqrt(priors[2]),
         priors[3],
         sqrt(s2_0 * (1 / priors[4] - 1)),

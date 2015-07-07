@@ -213,8 +213,8 @@ const UnaryMethods = [
   :(Base.transpose)
 ]
 
-for op in [ArithMethods2, CompareMethods2, DivideMethods2, MathMethods2,
-           PowerMethods2, SignMethods2, StatMethods2, TrigMethods2]
+for op in [ArithMethods2; CompareMethods2; DivideMethods2; MathMethods2;
+           PowerMethods2; SignMethods2; StatMethods2; TrigMethods2]
   @eval begin
     ($op)(x::Array, v::Variate) = ($op)(x, v.value)
     ($op)(x::Number, v::Variate) = ($op)(x, v.value)
@@ -224,8 +224,8 @@ for op in [ArithMethods2, CompareMethods2, DivideMethods2, MathMethods2,
   end
 end
 
-for op in [ArrayMethods, MathMethods, PowerMethods, RoundMethods,
-           SignMethods, StatMethods, TrigMethods, UnaryMethods]
+for op in [ArrayMethods; MathMethods; PowerMethods; RoundMethods;
+           SignMethods; StatMethods; TrigMethods; UnaryMethods]
   @eval ($op)(v::Variate) = ($op)(v.value)
 end
 

@@ -23,7 +23,7 @@ model = Model(
         sigma = sqrt(s2)
         Distribution[
           begin
-            mu = lambda[T[i]]
+            mu = lambda[Int(T[i])]
             Normal(mu, sigma)
           end
           for i in 1:N
@@ -36,7 +36,7 @@ model = Model(
   T = Stochastic(1,
     @modelexpr(p, N,
       begin
-        P = Float64[p, 1 - p]
+        P = Float64[p; 1 - p]
         Distribution[Categorical(P) for i in 1:N]
       end
     ),
@@ -49,7 +49,7 @@ model = Model(
 
   lambda = Logical(1,
     @modelexpr(lambda0, theta,
-      Float64[lambda0, lambda0 + theta]
+      Float64[lambda0; lambda0 + theta]
     )
   ),
 

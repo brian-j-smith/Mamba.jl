@@ -9,7 +9,7 @@ function DGS(params::Vector{Symbol})
       x = unlist(model, blockkeys)
       i = 0
       for key in blockkeys
-        for d in [model[key].distr]
+        for d in [model[key].distr;]
           i += 1
           f = function(v)
             x[i] = v

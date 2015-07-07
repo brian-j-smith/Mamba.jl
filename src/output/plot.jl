@@ -23,8 +23,8 @@ function traceplot(c::Chains; legend::Bool=false, na...)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
-    plots[i] = plot(y=[[c.value[:,i,j] for j in 1:nchains]...],
-                    x=[[c.range for j in 1:nchains]...],
+    plots[i] = plot(y=vec(c.value[:,i,:]),
+                    x=repeat([c.range;], outer=[nchains]),
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
@@ -41,10 +41,12 @@ function densityplot(c::Chains; legend::Bool=false,
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
-    qs = [quantile(c.value[:,i,j],[trim[1],trim[2]]) for j in 1:nchains]
-    val = [c.value[ qs[j][1] .<= c.value[:,i,j] .<= qs[j][2],i,j]
-            for j in 1:nchains]
-    plots[i] = plot(x=[val...], Geom.density,
+    val = Array(Vector{Float64}, nchains)
+    for j in 1:nchains
+      qs = quantile(c.value[:,i,j], [trim[1], trim[2]])
+      val[j] = c.value[qs[1] .<= c.value[:,i,j] .<= qs[2], i, j]
+    end
+    plots[i] = plot(x=[val...;], Geom.density,
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
@@ -60,13 +62,13 @@ function autocorplot(c::Chains;
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
-  lags = [(0:maxlag) * step(c.range)]
-  ac = autocor(c, lags=[0:maxlag;])
+  lags = 0:maxlag
+  ac = autocor(c, lags=[lags;])
   for i in 1:nvars
-    plots[i] = plot(y=[[ac.value[i,:,j]' for j in 1:nchains]...],
-                    x=[[lags for j in 1:nchains]...],
+    plots[i] = plot(y=vec(ac.value[i,:,:]),
+                    x=repeat([lags * step(c.range);], outer=[nchains]),
                     Geom.line,
-                    color=repeat(c.chains, inner=[maxlag]),
+                    color=repeat(c.chains, inner=[length(lags)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Lag", orientation=:horizontal),
                     Guide.ylabel("Autocorrelation", orientation=:vertical),
@@ -75,13 +77,24 @@ function autocorplot(c::Chains;
   return plots
 end
 
+function cummean{T<:Real}(x::Array{T})
+  y = similar(x, Float64)
+  xs = 0.0
+  for i in 1:length(x)
+    xs += x[i]
+    y[i] = xs / i
+  end
+  y
+end
+
 function meanplot(c::Chains; legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
+  val = mapslices(cummean, c.value, [1])
   for i in 1:nvars
-    plots[i] = plot(y=[[cumsum(c.value[:,i,j])./[1:nrows;] for j in 1:nchains]...],
-                    x=[[c.range for j in 1:nchains]...],
+    plots[i] = plot(y=vec(val[:,i,:]),
+                    x=repeat([c.range;], outer=[nchains]),
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),

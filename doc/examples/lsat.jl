@@ -43,7 +43,7 @@ lsat = Dict{Symbol,Any}(
 lsat[:R] = size(lsat[:response], 1)
 lsat[:T] = size(lsat[:response], 2)
 
-n = [lsat[:culm][1], diff(lsat[:culm])]
+n = [lsat[:culm][1]; diff(lsat[:culm])]
 idx = mapreduce(i -> fill(i, n[i]), vcat, 1:length(n))
 lsat[:r] = lsat[:response][idx,:]
 

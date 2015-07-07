@@ -110,7 +110,7 @@ module PDMats2
                                Vector{Matrix{T}},
                                Vector{UpperTriangular{T, Matrix{T}}}),
                              n::Integer=1)
-    vn = [fill(v, n)...]
+    vn = [fill(v, n)...;]
 
     len = mapreduce(splength, +, vn)
     I = Array(Int, len)

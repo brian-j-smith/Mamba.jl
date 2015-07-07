@@ -38,7 +38,7 @@ dogs[:Dogs] = size(dogs[:Y], 1)
 dogs[:Trials] = size(dogs[:Y], 2)
 
 dogs[:xa] = mapslices(cumsum, dogs[:Y], 2)
-dogs[:xs] = mapslices(x -> [1:25] - x, dogs[:xa], 2)
+dogs[:xs] = mapslices(x -> [1:25;] - x, dogs[:xa], 2)
 dogs[:y] = 1 - dogs[:Y][:, 2:25]
 
 

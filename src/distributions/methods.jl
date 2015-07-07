@@ -22,7 +22,7 @@ typealias GridUnivariateDistribution
           Union(Bernoulli, Binomial, Categorical, DiscreteUniform,
                 Hypergeometric, NoncentralHypergeometric)
 
-grid(d::GridUnivariateDistribution) = Float64[minimum(d):maximum(d)]
+grid(d::GridUnivariateDistribution) = Float64[minimum(d):maximum(d);]
 grid(d::Distribution) =
   error("discrete grid not available for ", typeof(d), " distributions")
 
