@@ -4,6 +4,7 @@
 
   ## Load packages needed for the definition
   using Distributions
+  import Distributions: minimum, maximum
 
   ## Type declaration
   type NewUnivarDist <: ContinuousUnivariateDistribution
@@ -21,11 +22,6 @@
   ## Minimum and maximum support values
   minimum(d::NewUnivarDist) = -Inf
   maximum(d::NewUnivarDist) = Inf
-
-  ## Logical indicating whether x is in the support
-  function insupport(d::NewUnivarDist, x::Real)
-    minimum(d) <= x <= maximum(d)
-  end
 
   ## Normalized or unnormalized log-density value
   function logpdf(d::NewUnivarDist, x::Real)

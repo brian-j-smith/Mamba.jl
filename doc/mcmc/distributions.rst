@@ -56,11 +56,12 @@ New known, unknown, or unnormalized univariate distributions can be created and 
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
-    #. The *Distributions* packages contains the types and method definitions for new distributions.  Load the package within the block.
+    #. The *Distributions* packages contains the types and method definitions for new distributions.  Load the package and import some needed methods within the block.
 
         .. code-block:: julia
 
             using Distributions
+            import Distributions: minimum, maximum
 
     #. Declare a new subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
@@ -73,10 +74,6 @@ New known, unknown, or unnormalized univariate distributions can be created and 
         .. function:: maximum(d::D)
 
             Return the upper bound of the support of ``d``.
-
-        .. function:: insupport(d::D, x::Real)
-
-            Return a logical indicating whether ``x`` is in the support of ``d``.
 
         .. function:: logpdf(d::D, x::Real)
 
