@@ -9,5 +9,5 @@ insupport(d::Flat, x::Real) = true
 logpdf(d::Flat, x::Real) = 0.0
 
 function Truncated(d::Flat, l::Float64, u::Float64)
-  Truncated{typeof(d)}(d, l, u, 0.0, 1.0, 1.0, 0.0)
+  Truncated{typeof(d), Continuous}(d, l, u, 0.0, 1.0, 1.0, 0.0)
 end
