@@ -36,7 +36,7 @@ function traceplot(c::Chains; legend::Bool=false, na...)
 end
 
 function densityplot(c::Chains; legend::Bool=false,
-                     trim::(Real,Real)=(0.025,0.975), na...)
+                     trim::Tuple{Real,Real}=(0.025,0.975), na...)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
