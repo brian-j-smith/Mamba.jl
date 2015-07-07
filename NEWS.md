@@ -2,8 +2,12 @@
 
 ## Version Updates
 
+### 0.5.1
+* Applied *Mamba* changes through 0.4.7 and updated compatibility with julia 0.4.0-dev.
+
 ### 0.5.0
-* Initial release for the under-development version of julia 0.4.0.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
+* Branched off of *Mamba* 0.4.4.
+* Initial release for the under-development version of julia 0.4.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
 
 ### 0.4.7
 * Improved formatting and outputting of posterior summary statistics
