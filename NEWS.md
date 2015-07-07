@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.4.11
+* Implemented `Chains` method function ``changerate`` to calculate parameter state space change rates (per iteration).
+* Updated `Truncated` constructor for `Flat` distributions for compatibility with latest *Distributions* package.
+* Simplified documentation instructions for user-defined univariate distributions.
+
 ### 0.4.10
 * Optimized code and improved handling of sampler output in the Gelman convergence diagnostic.
 * Added ``ask`` argument to the ``draw`` plot method.
