@@ -2,6 +2,7 @@ Mamba: Markov chain Monte Carlo (MCMC) for Bayesian analysis in julia
 =====================================================================
 
 :Version: |release|
+:Requires: julia 0.4
 :Date: |today|
 :Maintainer: Brian J Smith (brian-j-smith@uiowa.edu)
 :Contributors: Benjamin Deonovic (benjamin-deonovic@uiowa.edu), Brian J Smith (brian-j-smith@uiowa.edu), and `others <https://github.com/brian-j-smith/Mamba.jl/contributors>`_
