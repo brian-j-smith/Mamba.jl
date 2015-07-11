@@ -2,9 +2,9 @@
 ## The definition must be placed within an unevaluated quote block.
 @everywhere extensions = quote
 
-  ## Load packages and functions needed for the definition
+  ## Load needed packages and import methods to be extended
   using Distributions
-  import Distributions: _logpdf, length
+  import Distributions: length, insupport, _logpdf
 
   ## Type declaration
   type NewMultivarDist <: ContinuousMultivariateDistribution
