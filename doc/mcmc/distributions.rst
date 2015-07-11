@@ -56,16 +56,11 @@ New known, unknown, or unnormalized univariate distributions can be created and 
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
-    #. The *Distributions* packages contains the types and method definitions for new distributions.  Load the package and import some needed methods within the block.
+    #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
 
-        .. code-block:: julia
+    #. Declare a new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
-            using Distributions
-            import Distributions: minimum, maximum
-
-    #. Declare a new subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
-
-    #. Define the following method functions within the block.
+    #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
 
         .. function:: minimum(d::D)
 
@@ -151,16 +146,11 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
-    #. The *Distributions* packages contains the types and method definitions for new distributions.  Load the package and import some needed methods within the block.
+    #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
 
-        .. code-block:: julia
+    #. Declare a new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
-            using Distributions
-            import Distributions: _logpdf, length
-
-    #. Declare a new subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
-
-    #. Define the following method functions within the block.
+    #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
 
         .. function:: length(d::D)
 

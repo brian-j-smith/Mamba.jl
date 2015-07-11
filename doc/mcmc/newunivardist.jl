@@ -2,9 +2,9 @@
 ## The definition must be placed within an unevaluated quote block.
 @everywhere extensions = quote
 
-  ## Load packages needed for the definition
+  ## Load needed packages and import methods to be extended
   using Distributions
-  import Distributions: minimum, maximum
+  import Distributions: minimum, maximum, logpdf
 
   ## Type declaration
   type NewUnivarDist <: ContinuousUnivariateDistribution
