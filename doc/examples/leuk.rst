@@ -5,7 +5,7 @@
 Leuk: Cox Regression
 --------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Ezzet and Whitehead :cite:`frierich:1963:E6M` concerning survival in 42 leukemia patients treated with 6-mercaptopurine or placebo. 
+An example from OpenBUGS :cite:`openbugs:2014:ex1` and Ezzet and Whitehead :cite:`frierich:1963:E6M` concerning survival in 42 leukemia patients treated with 6-mercaptopurine or placebo.
 
 Model
 ^^^^^

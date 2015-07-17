@@ -1,24 +1,24 @@
 digraph Variate {
-	fontname = "Helvetica"
-	fontsize = 11
+    fontname = "Helvetica"
+    fontsize = 11
 
-	node [fontname = "Helvetica", fontsize = 11, shape = record]
+    node [fontname = "Helvetica", fontsize = 11, shape = record]
 
-	edge [fontname = "Helvetica", fontsize = 11, dir = back, arrowtail = empty]
+    edge [fontname = "Helvetica", fontsize = 11, dir = back, arrowtail = empty]
 
-	Variate [label = "{Variate\{T\}|+ value : T\l}"]
+    Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
-	
-	Logical [label = "{Logical\{T\}}"]
-	
-	Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
+    Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 
-	SamplerVariate [label = "{SamplerVariate\{Vector\{VariateType\}\}|+ tune : SamplerTune\l}"]
-	
-	Variate -> Dependent
-	Dependent -> Logical
-	Dependent -> Stochastic
-	Variate -> SamplerVariate
+    Logical [label = "{Logical\{T\}}"]
+
+    Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
+
+    SamplerVariate [label = "{SamplerVariate\{Vector\{VariateType\}\}|+ tune : SamplerTune\l}"]
+
+    Variate -> Dependent
+    Dependent -> Logical
+    Dependent -> Stochastic
+    Variate -> SamplerVariate
 
 }

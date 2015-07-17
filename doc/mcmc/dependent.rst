@@ -30,66 +30,66 @@ Methods
 
 .. function:: invlink(d::Dependent, x, transform::Bool=true)
 
-	Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
-	
-	**Arguments**
-	
-		* ``d`` : a node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the inverse-link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the inverse-link-transformed version of ``x``.
+    Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``Dependent`` to implement different link transformations.
+
+    **Arguments**
+
+        * ``d`` : a node on which a ``link()`` transformation method is defined.
+        * ``x`` : an object to which to apply the inverse-link transformation.
+        * ``transform`` : whether to transform ``x`` or assume an identity link.
+
+    **Value**
+
+        Returns the inverse-link-transformed version of ``x``.
 
 .. function:: link(d::Dependent, x, transform::Bool=true)
 
-	Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
-	
-	**Arguments**
-	
-		* ``d`` : a node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the link-transformed version of ``x``.
+    Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``Dependent`` to implement different link transformations.
+
+    **Arguments**
+
+        * ``d`` : a node on which a ``link()`` transformation method is defined.
+        * ``x`` : an object to which to apply the link transformation.
+        * ``transform`` : whether to transform ``x`` or assume an identity link.
+
+    **Value**
+
+        Returns the link-transformed version of ``x``.
 
 .. function:: logpdf(d::Dependent, transform::Bool=false)
 
-	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``Dependent`` that have distributional specifications.
-	
-	**Arguments**
-	
-		* ``d`` : a node containing values at which to compute the log-density.
-		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
-		
-	**Value**
-	
-		The resulting numeric value of the log-density.
+    Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``Dependent`` that have distributional specifications.
+
+    **Arguments**
+
+        * ``d`` : a node containing values at which to compute the log-density.
+        * ``transform`` : whether to evaluate the log-density on the link-transformed scale.
+
+    **Value**
+
+        The resulting numeric value of the log-density.
 
 .. function:: setmonitor!(d::Dependent, monitor::Bool)
               setmonitor!(d::Dependent, monitor::Vector{Int})
 
-	Specify node elements to be included in monitored MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``d`` : a node whose elements contain sampled MCMC values.
-		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-		
-	**Value**
-	
-		Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
+    Specify node elements to be included in monitored MCMC sampler output.
+
+    **Arguments**
+
+        * ``d`` : a node whose elements contain sampled MCMC values.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+
+    **Value**
+
+        Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
 
 .. function:: show(d::Dependent)
 
-	Write a text representation of nodal values and attributes to the current output stream.  
+    Write a text representation of nodal values and attributes to the current output stream.
 
 .. function:: showall(d::Dependent)
 
-	Write a verbose text representation of nodal values and attributes to the current output stream.  
+    Write a verbose text representation of nodal values and attributes to the current output stream.
 
 
 .. index:: Logical
@@ -103,7 +103,7 @@ Type ``Logical`` inherits the fields and method functions from the ``Dependent``
 
 .. code-block:: julia
 
-	function(model::Mamba.Model)
+    function(model::Mamba.Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
 
@@ -129,50 +129,50 @@ Constructors
 .. function:: Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
               Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
-	Construct a ``Logical`` object that defines a logical model node.
-	
-	**Arguments**
-	
-		* ``d`` : number of dimensions for array nodes.
-		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
-		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-		
-	**Value**
-	
-		Returns a ``Logical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Logical{VariateType}`` if not.
-		
-	**Example**
-	
-		See the :ref:`section-Line-Specification` section of the tutorial.
+    Construct a ``Logical`` object that defines a logical model node.
+
+    **Arguments**
+
+        * ``d`` : number of dimensions for array nodes.
+        * ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+
+    **Value**
+
+        Returns a ``Logical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Logical{VariateType}`` if not.
+
+    **Example**
+
+        See the :ref:`section-Line-Specification` section of the tutorial.
 
 Methods
 ^^^^^^^
 
 .. function:: setinits!(l::Logical, m::Model, ::Any=nothing)
 
-	Set initial values for a logical node.
-	
-	**Arguments**
-	
-		* ``l`` : a logical node to which to assign initial values.
-		* ``m`` : a model that contains the node.
-		
-	**Value**
-	
-		Returns the result of a call to ``update!(l, m)``.
+    Set initial values for a logical node.
+
+    **Arguments**
+
+        * ``l`` : a logical node to which to assign initial values.
+        * ``m`` : a model that contains the node.
+
+    **Value**
+
+        Returns the result of a call to ``update!(l, m)``.
 
 .. function:: update!(l::Logical, m::Model)
 
-	Update the values of a logical node according to its relationship with others in a model.
-	
-	**Arguments**
-	
-		* ``l`` : a logical node to update.
-		* ``m`` : a model that contains the node.
-		
-	**Value**
-	
-		Returns the node with its values updated.
+    Update the values of a logical node according to its relationship with others in a model.
+
+    **Arguments**
+
+        * ``l`` : a logical node to update.
+        * ``m`` : a model that contains the node.
+
+    **Value**
+
+        Returns the node with its values updated.
 
 
 .. index:: Stochastic
@@ -186,7 +186,7 @@ Type ``Stochastic`` inherits the fields and method functions from the ``Dependen
 
 .. code-block:: julia
 
-	function(model::Mamba.Model)
+    function(model::Mamba.Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single :ref:`section-Distributions` object for all node elements or a structure of the same type as the node with element-specific :ref:`section-Distributions` objects.
 
@@ -212,7 +212,7 @@ Aliases
 
 .. code-block:: julia
 
-	typealias DistributionStruct Union(Distribution, Array{Distribution})
+    typealias DistributionStruct Union(Distribution, Array{Distribution})
 
 Constructors
 ^^^^^^^^^^^^
@@ -220,106 +220,106 @@ Constructors
 .. function:: Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
               Stochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 
-	Construct a ``Stochastic`` object that defines a stochastic model node.
-	
-	**Arguments**
-	
-		* ``d`` : number of dimensions for array nodes.
-		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
-		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-		
-	**Value**
-	
-		Returns a ``Stochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Stochastic{VariateType}`` if not.
+    Construct a ``Stochastic`` object that defines a stochastic model node.
 
-	**Example**
-	
-		See the :ref:`section-Line-Specification` section of the tutorial.
+    **Arguments**
+
+        * ``d`` : number of dimensions for array nodes.
+        * ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+
+    **Value**
+
+        Returns a ``Stochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Stochastic{VariateType}`` if not.
+
+    **Example**
+
+        See the :ref:`section-Line-Specification` section of the tutorial.
 
 Methods
 ^^^^^^^
 
 .. function:: insupport(s::Stochastic)
 
-	Check whether stochastic node values are within the support of its distribution.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node on which to perform the check.
-		
-	**Value**
-	
-		Returns ``true`` if all values are within the support, and ``false`` otherwise.
+    Check whether stochastic node values are within the support of its distribution.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node on which to perform the check.
+
+    **Value**
+
+        Returns ``true`` if all values are within the support, and ``false`` otherwise.
 
 .. function:: invlink(s::Stochastic, x, transform::Bool=true)
 
-	Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the inverse-link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the inverse-link-transformed version of ``x``.
+    Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
+        * ``x`` : an object to which to apply the inverse-link transformation.
+        * ``transform`` : whether to transform ``x`` or assume an identity link.
+
+    **Value**
+
+        Returns the inverse-link-transformed version of ``x``.
 
 .. function:: link(s::Stochastic, x, transform::Bool=true)
 
-	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
-	
-		* Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
-		* Lower bounded: shifted to zero and log-transformed.
-		* Upper bounded: scaled by -1, shifted to zero, and log-transformed.
-		* Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector of length :math:`n (n + 1) / 2`, where :math:`n` is the matrix dimension.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the link-transformed version of ``x``.
+    Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
+
+        * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
+        * Lower bounded: shifted to zero and log-transformed.
+        * Upper bounded: scaled by -1, shifted to zero, and log-transformed.
+        * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector of length :math:`n (n + 1) / 2`, where :math:`n` is the matrix dimension.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
+        * ``x`` : an object to which to apply the link transformation.
+        * ``transform`` : whether to transform ``x`` or assume an identity link.
+
+    **Value**
+
+        Returns the link-transformed version of ``x``.
 
 .. function:: logpdf(s::MCMStochastic, transform::Bool=false)
 
-	Evaluate the log-density function for a stochastic node.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node containing values at which to compute the log-density.
-		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
-		
-	**Value**
-	
-		The resulting numeric value of the log-density.
+    Evaluate the log-density function for a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node containing values at which to compute the log-density.
+        * ``transform`` : whether to evaluate the log-density on the link-transformed scale.
+
+    **Value**
+
+        The resulting numeric value of the log-density.
 
 .. function:: setinits!(s::Stochastic, m::Model, x=nothing)
 
-	Set initial values for a stochastic node.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node to which to assign initial values.
-		* ``m`` : a model that contains the node.
-		* ``x`` : values to assign to the node.
-		
-	**Value**
-	
-		Returns the node with its assigned initial values.
+    Set initial values for a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node to which to assign initial values.
+        * ``m`` : a model that contains the node.
+        * ``x`` : values to assign to the node.
+
+    **Value**
+
+        Returns the node with its assigned initial values.
 
 .. function:: update!(s::Stochastic, m::Model)
 
-	Update the values of a stochastic node according to its relationship with others in a model.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node to update.
-		* ``m`` : a model that contains the node.
-		
-	**Value**
-	
-		Returns the node with its values updated.
+    Update the values of a stochastic node according to its relationship with others in a model.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node to update.
+        * ``m`` : a model that contains the node.
+
+    **Value**
+
+        Returns the node with its values updated.

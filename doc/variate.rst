@@ -28,12 +28,12 @@ Aliases
 
 .. code-block:: julia
 
-	typealias VariateType Float64
+    typealias VariateType Float64
 
-	typealias UniVariate Variate{VariateType}
-	typealias MultiVariate{N} Variate{Array{VariateType,N}}
-	typealias VectorVariate MultiVariate{1}
-	typealias MatrixVariate MultiVariate{2}
+    typealias UniVariate Variate{VariateType}
+    typealias MultiVariate{N} Variate{Array{VariateType,N}}
+    typealias VectorVariate MultiVariate{1}
+    typealias MatrixVariate MultiVariate{2}
 
 Field
 ^^^^^
@@ -50,18 +50,18 @@ Array Functions
 
 .. code-block:: julia
 
-	cummin      cumsum         maximum     prod
-	cummax      cumsum_kbn     minimum     sum
-	cumprod     diff           norm        sum_kbn
+    cummin      cumsum         maximum     prod
+    cummax      cumsum_kbn     minimum     sum
+    cumprod     diff           norm        sum_kbn
 
 Collections
 ```````````
 
 .. code-block:: julia
 
-	endof      size          show
-	length     getindex      showcompact
-	ndims      setindex!
+    endof      size          show
+    length     getindex      showcompact
+    ndims      setindex!
 
 Distributions
 `````````````
@@ -73,7 +73,7 @@ Linear Algebra
 
 .. code-block:: julia
 
-	dot
+    dot
 
 Mathematical Operators and Elementary Functions
 ```````````````````````````````````````````````
@@ -92,9 +92,9 @@ Statistics
 
 .. code-block:: julia
 
-	cor      median     var
-	cov      std        varm
-	mean     stdm
+    cor      median     var
+    cov      std        varm
+    mean     stdm
 
 
 Subtypes
@@ -103,6 +103,6 @@ Subtypes
 Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logical`, and :ref:`section-Stochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
 
 .. figure:: images/variateUML.png
-	:align: center
+    :align: center
 
-	UML relational diagram of ``Variate`` types and their fields.
+    UML relational diagram of ``Variate`` types and their fields.

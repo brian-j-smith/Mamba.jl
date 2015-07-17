@@ -18,24 +18,24 @@ The Mamba Package
 .. _figure-Gibbs:
 
 .. figure:: images/gibbs.png
-	:align: center
+    :align: center
 
-	*Mamba* Gibbs sampling scheme
-	
+    *Mamba* Gibbs sampling scheme
+
 A summary of the steps involved in using the package to perform MCMC simulation for a Bayesian model is given below.
 
-	#. Decide on names to use for **julia** objects that will represent the model data structures and parameters (:math:`\theta_1, \ldots, \theta_p`).  For instance, the :ref:`section-Line` section describes a linear regression example in which predictor :math:`\bm{x}` and response :math:`\bm{y}` are represented by objects ``x`` and ``y``, and regression parameters :math:`\beta_0`, :math:`\beta_1`, and :math:`\sigma^2` by objects ``b0``, ``b1``, and ``s2``.
+    #. Decide on names to use for **julia** objects that will represent the model data structures and parameters (:math:`\theta_1, \ldots, \theta_p`).  For instance, the :ref:`section-Line` section describes a linear regression example in which predictor :math:`\bm{x}` and response :math:`\bm{y}` are represented by objects ``x`` and ``y``, and regression parameters :math:`\beta_0`, :math:`\beta_1`, and :math:`\sigma^2` by objects ``b0``, ``b1``, and ``s2``.
 
-	#. Create a dictionary to store all structures considered to be fixed in the simulation; e.g., the ``line`` dictionary in the regression example.
+    #. Create a dictionary to store all structures considered to be fixed in the simulation; e.g., the ``line`` dictionary in the regression example.
 
-	#. Specify the model using the constructors described in the :ref:`section-MCMC-Types` section, to create the following:
- 
-		a. A ``Stochastic`` object for each model term that has a distributional specification.  This includes parameters and data, such as the regression parameters ``b0``, ``b1``, and ``s2`` that have prior distributions and ``y`` that has a likelihood specification.
+    #. Specify the model using the constructors described in the :ref:`section-MCMC-Types` section, to create the following:
 
-		b. A vector of ``Sampler`` objects containing supplied, user-defined, or external functions :math:`\{f_j\}_{j=1}^{B}` for sampling each parameter block :math:`\Theta_j`.
+        a. A ``Stochastic`` object for each model term that has a distributional specification.  This includes parameters and data, such as the regression parameters ``b0``, ``b1``, and ``s2`` that have prior distributions and ``y`` that has a likelihood specification.
 
-		c. A ``Model`` object from the resulting stochastic nodes and sampler vector.
+        b. A vector of ``Sampler`` objects containing supplied, user-defined, or external functions :math:`\{f_j\}_{j=1}^{B}` for sampling each parameter block :math:`\Theta_j`.
 
-	#. Simulate parameter values with the :func:`mcmc` function.
-	
-	#. Use the MCMC output to check convergence and perform posterior inference.
+        c. A ``Model`` object from the resulting stochastic nodes and sampler vector.
+
+    #. Simulate parameter values with the :func:`mcmc` function.
+
+    #. Use the MCMC output to check convergence and perform posterior inference.

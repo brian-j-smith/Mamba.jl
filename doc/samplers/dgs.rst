@@ -10,16 +10,16 @@ Sampler Constructor
 
 .. function:: DGS(params::Vector{Symbol})
 
-	Construct a ``Sampler`` object for direct grid sampling.  Parameters are assumed to have discrete uniform distributions with finite supports.
-	
-	**Arguments**
-	
-		*  ``params`` : stochastic nodes to be updated with the sampler.
+    Construct a ``Sampler`` object for direct grid sampling.  Parameters are assumed to have discrete uniform distributions with finite supports.
 
-	**Value**
-	
-		Returns a ``Sampler`` type object.
+    **Arguments**
 
-	**Example**
-	
-		See the :ref:`Eyes <example-Eyes>` example.
+        *  ``params`` : stochastic nodes to be updated with the sampler.
+
+    **Value**
+
+        Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`Eyes <example-Eyes>` example.

@@ -10,16 +10,16 @@ Sampler Constructor
 
 .. function:: MISS(params::Vector{Symbol})
 
-	Construct a ``Sampler`` object to sampling missing output values.  The constructor should only be used to sample stochastic nodes upon which no other stochastic node depends.  So-called 'output nodes' can be identified with the :func:`keys` function.  Moreover, when the ``MISS`` constructor is included in a vector of ``Sampler`` objects to define a sampling scheme, it should be positioned at the beginning of the vector.  This ensures that missing output values are updated before any other samplers are executed.
-	
-	**Arguments**
-	
-		* ``params`` : stochastic nodes that contain missing values (``NaN``) to be updated with the sampler.
+    Construct a ``Sampler`` object to sampling missing output values.  The constructor should only be used to sample stochastic nodes upon which no other stochastic node depends.  So-called 'output nodes' can be identified with the :func:`keys` function.  Moreover, when the ``MISS`` constructor is included in a vector of ``Sampler`` objects to define a sampling scheme, it should be positioned at the beginning of the vector.  This ensures that missing output values are updated before any other samplers are executed.
 
-	**Value**
-	
-		Returns a ``Sampler`` type object.
-		
-	**Example**
-	
-		See the :ref:`Bones <example-Bones>` and :ref:`Mice <example-Mice>` examples.
+    **Arguments**
+
+        * ``params`` : stochastic nodes that contain missing values (``NaN``) to be updated with the sampler.
+
+    **Value**
+
+        Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`Bones <example-Bones>` and :ref:`Mice <example-Mice>` examples.

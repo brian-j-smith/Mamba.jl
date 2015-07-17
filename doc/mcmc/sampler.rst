@@ -9,7 +9,7 @@ Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gib
 
 .. code-block:: julia
 
-	function(model::Mamba.Model, block::Integer)
+    function(model::Mamba.Model, block::Integer)
 
 where ``model`` contains all model nodes, and ``block`` is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function may return an updated sample for the nodes identified in its ``params`` field.  Such a return value can be a structure of the same type as the node if the block consists of only one node, or a dictionary of node structures with keys equal to the block node symbols if one or more.  Alternatively, a value of ``nothing`` may be returned.  Return values that are not ``nothing`` will be used to automatically update the node values and propagate them to dependent nodes.  No automatic updating will be done if ``nothing`` is returned.
 
@@ -31,21 +31,21 @@ Constructor
 
 .. function:: Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
 
-	Construct a ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
-	
-	**Arguments**
-	
-		* ``params`` : symbols of nodes that are being block-updated by the sampler.
-		* ``expr`` : a quoted expression that makes up the body of the sampling function whose definition is described above.
-		* ``tune`` : tuning parameters needed by the sampling function.
-		
-	**Value**
-	
-		Returns a ``Sampler`` type object.
+    Construct a ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
 
-	**Example**
-	
-		See the :ref:`section-Line-Specification` section of the tutorial.
+    **Arguments**
+
+        * ``params`` : symbols of nodes that are being block-updated by the sampler.
+        * ``expr`` : a quoted expression that makes up the body of the sampling function whose definition is described above.
+        * ``tune`` : tuning parameters needed by the sampling function.
+
+    **Value**
+
+        Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`section-Line-Specification` section of the tutorial.
 
 Methods
 ^^^^^^^

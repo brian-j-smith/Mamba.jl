@@ -5,7 +5,7 @@
 Bones: Latent Trait Model for Multiple Ordered Categorical Responses
 --------------------------------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Roche *et al.* :cite:`roche:1975:SM`, and Thissen :cite:`thissen:1986:MUG` concerning skeletal age in 13 boys predicted from 34 radiograph indicators of skeletal maturity. 
+An example from OpenBUGS :cite:`openbugs:2014:ex1`, Roche *et al.* :cite:`roche:1975:SM`, and Thissen :cite:`thissen:1986:MUG` concerning skeletal age in 13 boys predicted from 34 radiograph indicators of skeletal maturity.
 
 Model
 ^^^^^

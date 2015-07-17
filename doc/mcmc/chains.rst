@@ -449,10 +449,10 @@ Plotting
 .. function:: plot(c::Chains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false, args...)
               plot(c::Chains, ptype::Symbol; legend::Bool=false, args...)
 
-    Various plots to summarize a ``Chains`` object.  Separate plots are produced for each parameter. 
-    
+    Various plots to summarize a ``Chains`` object.  Separate plots are produced for each parameter.
+
     **Arguments**
-    
+
         * ``c`` : sampler output to plot.
         * ``ptype`` : plot type(s).  Options are
             * ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=round(Integer, 10*log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
@@ -461,17 +461,17 @@ Plotting
             * ``:trace`` : trace plots.
         * ``legend`` : whether to include legends in the plots to identify chain-specific results.
         * ``args...`` : additional arguments to be passed to the ``ptype`` method, as described above.
-            
+
     **Value**
-    
+
         Returns a ``Vector{Plot}`` whose elements are individual parameter plots of the specified type if ``ptype`` is a symbol, and a ``Matrix{Plot}`` with plot types in the rows and parameters in the columns if ``ptype`` is a vector.  The result can be displayed or saved to a file with ``draw()``.
 
     **Note**
-    
+
         Plots are created using the `Gadfly` package :cite:`jones:2014:GP`.
-        
+
     **Example**
-    
+
         See the :ref:`section-Line-Plotting` section of the tutorial.
 
 .. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \

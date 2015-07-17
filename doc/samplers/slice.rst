@@ -10,29 +10,29 @@ Stand-Alone Function
 
 .. function:: slice!(v::SliceVariate, width::Vector{Float64}, logf::Function, stype::Symbol=:multivar)
 
-	Simulate one draw from a target distribution using a shrinkage slice sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-	
-	**Arguments**
-	
-		* ``v`` : current state of parameters to be simulated.
-		* ``width`` : vector of the same length as ``v``, defining initial widths of a hyperrectangle from which to simulate values.
-		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
-		* ``stype`` : sampler type. Options are
-			* ``:multivar`` : Joint multivariate sampling of parameters.
-			* ``:univar`` : Sequential univariate sampling.
-		
-	**Value**
-	
-		Returns ``v`` updated with simulated values and associated tuning parameters.
-	
-	.. _example-slice:
-	
-	**Example**
+    Simulate one draw from a target distribution using a shrinkage slice sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
-		The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
-		
-		.. literalinclude:: slice.jl
-			:language: julia
+    **Arguments**
+
+        * ``v`` : current state of parameters to be simulated.
+        * ``width`` : vector of the same length as ``v``, defining initial widths of a hyperrectangle from which to simulate values.
+        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``stype`` : sampler type. Options are
+            * ``:multivar`` : Joint multivariate sampling of parameters.
+            * ``:univar`` : Sequential univariate sampling.
+
+    **Value**
+
+        Returns ``v`` updated with simulated values and associated tuning parameters.
+
+    .. _example-slice:
+
+    **Example**
+
+        The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
+
+        .. literalinclude:: slice.jl
+            :language: julia
 
 
 .. index:: SliceVariate
@@ -57,16 +57,16 @@ Constructors
 .. function:: SliceVariate(x::Vector{VariateType}, tune::SliceTune)
               SliceVariate(x::Vector{VariateType}, tune=nothing)
 
-  	Construct a ``SliceVariate`` object that stores sampled values and tuning parameters for slice sampling.
-	
-	**Arguments**
-	
-		* ``x`` : vector of sampled values.
-		* ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
-		
-	**Value**
-	
-		Returns a ``SliceVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+    Construct a ``SliceVariate`` object that stores sampled values and tuning parameters for slice sampling.
+
+    **Arguments**
+
+        * ``x`` : vector of sampled values.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+
+    **Value**
+
+        Returns a ``SliceVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 .. index:: SliceTune
 
@@ -87,23 +87,23 @@ Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: Slice(params::Vector{Symbol}, width::Vector{T<:Real}, \
-                stype::Symbol=:multivar; transform::Bool=false)
+                    stype::Symbol=:multivar; transform::Bool=false)
 
-	Construct a ``Sampler`` object for shrinkage slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-	
-	**Arguments**
-	
-		*  ``params`` : stochastic nodes to be updated with the sampler.
-		* ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
-		* ``stype`` : sampler type. Options are
-			* ``:multivar`` : Joint multivariate sampling of parameters.
-			* ``:univar`` : Sequential univariate sampling.
-		* ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
+    Construct a ``Sampler`` object for shrinkage slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
-	**Value**
-	
-		Returns a ``Sampler`` type object.
+    **Arguments**
 
-	**Example**
-	
-		See the :ref:`section-Examples` section.
+        *  ``params`` : stochastic nodes to be updated with the sampler.
+        * ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
+        * ``stype`` : sampler type. Options are
+            * ``:multivar`` : Joint multivariate sampling of parameters.
+            * ``:univar`` : Sequential univariate sampling.
+        * ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
+
+    **Value**
+
+        Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`section-Examples` section.

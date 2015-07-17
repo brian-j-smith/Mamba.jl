@@ -1,34 +1,34 @@
 graph MCMC {
-	fontname = "Helvetica"
-	fontsize = 11
-	overlap = scalexy
-	sep = "+0,26"
+    fontname = "Helvetica"
+    fontsize = 11
+    overlap = scalexy
+    sep = "+0,26"
 
-	node [fontname = "Helvetica", fontsize = 11, shape = record]
+    node [fontname = "Helvetica", fontsize = 11, shape = record]
 
-	edge [fontname = "Helvetica", fontsize = 11, dir = both, arrowtail = none, arrowhead = none]
+    edge [fontname = "Helvetica", fontsize = 11, dir = both, arrowtail = none, arrowhead = none]
 
-	Variate [label = "{Variate\{T\}|+ value : T\l}"]
+    Variate [label = "{Variate\{T\}|+ value : T\l}"]
 
-	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
-	
-	Logical [label = "{Logical\{T\}}"]
-	
-	Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
+    Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
 
-	Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}"]
-	
-	Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{VariateType\}\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
-	
-	Chains [label = "{Chains|+ value : Array\{VariateType, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Integer\}\l+ model : Model\l}"]
+    Logical [label = "{Logical\{T\}}"]
 
-	Dependent -- Variate[len = 0.9, arrowhead = empty]
-	Logical -- Dependent[arrowhead = empty]
-	Stochastic -- Dependent[arrowhead = empty]
-	Sampler -- Stochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
-	Model -- Sampler[arrowtail = odiamond, headlabel = "0..*"]
-	Model -- Logical[arrowtail = odiamond, headlabel = "0..*"]
-	Model -- Stochastic[arrowtail = odiamond, headlabel = "0..*"]
-	Chains -- Model[len = 1.2, arrowtail = odiamond, headlabel = "1"]
+    Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
+
+    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}"]
+
+    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{VariateType\}\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
+
+    Chains [label = "{Chains|+ value : Array\{VariateType, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Integer\}\l+ model : Model\l}"]
+
+    Dependent -- Variate[len = 0.9, arrowhead = empty]
+    Logical -- Dependent[arrowhead = empty]
+    Stochastic -- Dependent[arrowhead = empty]
+    Sampler -- Stochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
+    Model -- Sampler[arrowtail = odiamond, headlabel = "0..*"]
+    Model -- Logical[arrowtail = odiamond, headlabel = "0..*"]
+    Model -- Stochastic[arrowtail = odiamond, headlabel = "0..*"]
+    Chains -- Model[len = 1.2, arrowtail = odiamond, headlabel = "1"]
 
 }

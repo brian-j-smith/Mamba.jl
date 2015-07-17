@@ -9,43 +9,43 @@ Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: nutsepsilon(v::NUTSVariate, fx::Function)
-	
-	Generate an initial value for the step size parameter of the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
-	
-	**Arguments**
-	
-		* ``v`` : the current state of parameters to be simulated.
-		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
-		
-	**Value**
-	
-		A numeric step size value.
+
+    Generate an initial value for the step size parameter of the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
+
+    **Arguments**
+
+        * ``v`` : the current state of parameters to be simulated.
+        * ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
+
+    **Value**
+
+        A numeric step size value.
 
 .. function:: nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false, \
-                target::Real=0.6)
+                    target::Real=0.6)
 
-	Simulate one draw from a target distribution using the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
-	
-	**Arguments**
-	
-		* ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
-		* ``epsilon`` : the NUTS algorithm step size parameter.
-		* ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
-		* ``adapt`` : whether to adaptively update the ``epsilon`` step size parameter.
-		* ``target`` : a target acceptance rate for the algorithm.
-		
-	**Value**
-	
-		Returns ``v`` updated with simulated values and associated tuning parameters.
-	
-	.. _example-nuts:
-	
-	**Example**
+    Simulate one draw from a target distribution using the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 
-		The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
-		
-		.. literalinclude:: nuts.jl
-			:language: julia
+    **Arguments**
+
+        * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
+        * ``epsilon`` : the NUTS algorithm step size parameter.
+        * ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
+        * ``adapt`` : whether to adaptively update the ``epsilon`` step size parameter.
+        * ``target`` : a target acceptance rate for the algorithm.
+
+    **Value**
+
+        Returns ``v`` updated with simulated values and associated tuning parameters.
+
+    .. _example-nuts:
+
+    **Example**
+
+        The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
+
+        .. literalinclude:: nuts.jl
+            :language: julia
 
 .. index:: NUTSVariate
 
@@ -69,16 +69,16 @@ Constructors
 .. function:: NUTSVariate(x::Vector{VariateType}, tune::NUTSTune)
               NUTSVariate(x::Vector{VariateType}, tune=nothing)
 
-	Construct a ``NUTSVariate`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
-	
-	**Arguments**
-	
-		* ``x`` : vector of sampled values.
-		* ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
-		
-	**Value**
-	
-		Returns a ``NUTSVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+    Construct a ``NUTSVariate`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
+
+    **Arguments**
+
+        * ``x`` : vector of sampled values.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+
+    **Value**
+
+        Returns a ``NUTSVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 
 .. index:: NUTSTune
@@ -110,22 +110,22 @@ Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
-				target::Real=0.6)
+                   target::Real=0.6)
 
-	Construct a ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-	
-	**Arguments**
-	
-		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
-		* ``dtype`` : type of differentiation for gradient calculations.  Options are
-			* ``:central`` : central differencing.
-			* ``:forward`` : forward differencing.
-		* ``target`` : a target acceptance rate for the algorithm.
+    Construct a ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
-	**Value**
-	
-		Returns a ``Sampler`` type object.
+    **Arguments**
 
-	**Example**
-	
-		See the :ref:`section-Examples` section.
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
+        * ``dtype`` : type of differentiation for gradient calculations.  Options are
+            * ``:central`` : central differencing.
+            * ``:forward`` : forward differencing.
+        * ``target`` : a target acceptance rate for the algorithm.
+
+    **Value**
+
+        Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`section-Examples` section.
