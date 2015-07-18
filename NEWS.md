@@ -9,6 +9,9 @@
 * Branched off of *Mamba* 0.4.4.
 * Initial release for the under-development version of julia 0.4.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
 
+### 0.4.12
+* Updated documentation for user-defined distributions.
+
 ### 0.4.11
 * Implemented `Chains` method function ``changerate`` to calculate parameter state space change rates (per iteration).
 * Updated `Truncated` constructor for `Flat` distributions for compatibility with latest *Distributions* package.
