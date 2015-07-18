@@ -7,13 +7,13 @@ type SliceTune
 end
 
 type SliceVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::SliceTune
 
-  SliceVariate(x::Vector{VariateType}, tune::SliceTune) = new(x, tune)
+  SliceVariate(x::Vector{Float64}, tune::SliceTune) = new(x, tune)
 end
 
-function SliceVariate(x::Vector{VariateType}, tune=nothing)
+function SliceVariate(x::Vector{Float64}, tune=nothing)
   tune = SliceTune(
     Array(Float64, 0)
   )

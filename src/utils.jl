@@ -13,6 +13,12 @@ macro modelexpr(args...)
   end
 end
 
+macro promote_scalarvariate(V)
+  quote
+    Base.promote_rule{T<:Real}(::Type{$V}, ::Type{T}) = Float64
+  end
+end
+
 
 #################### Utility Functions ####################
 

@@ -18,13 +18,13 @@ type NUTSTune
 end
 
 type NUTSVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::NUTSTune
 
-  NUTSVariate(x::Vector{VariateType}, tune::NUTSTune) = new(x, tune)
+  NUTSVariate(x::Vector{Float64}, tune::NUTSTune) = new(x, tune)
 end
 
-function NUTSVariate(x::Vector{VariateType}, tune=nothing)
+function NUTSVariate(x::Vector{Float64}, tune=nothing)
   tune = NUTSTune(
     false,
     0.0,

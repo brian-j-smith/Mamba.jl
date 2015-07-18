@@ -4,12 +4,12 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
            samplers::Vector{Sampler}=Sampler[], nodes...)
   nodedict = Dict{Symbol,Any}()
   for (key, value) in nodes
-    isa(value, Dependent) || error("nodes must be Dependent types")
+    isa(value, AbstractDependent) || error("nodes must be Dependent types")
     node = deepcopy(value)
     node.symbol = key
     nodedict[key] = node
   end
-  m = Model(nodedict, Symbol[], Sampler[], Vector{VariateType}[], iter, burnin,
+  m = Model(nodedict, Symbol[], Sampler[], Vector{Float64}[], iter, burnin,
             chain, false, false)
   g = graph(m)
   V = vertices(g)
@@ -36,7 +36,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   values = Symbol[]
   if ntype == :all
     for key in keys(m.nodes)
-      if isa(m[key], Dependent)
+      if isa(m[key], AbstractDependent)
         values = [values; key; m[key].sources]
       end
     end
@@ -51,7 +51,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
     values = unique(values)
   elseif ntype == :dependent
     for key in keys(m.nodes)
-      if isa(m[key], Dependent)
+      if isa(m[key], AbstractDependent)
         push!(values, key)
       end
     end
@@ -59,27 +59,27 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
     values = setdiff(keys(m, :all), keys(m, :dependent))
   elseif ntype == :logical
     for key in keys(m.nodes)
-      if isa(m[key], Logical)
+      if isa(m[key], AbstractLogical)
         push!(values, key)
       end
     end
   elseif ntype == :monitor
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, Dependent) && length(node.monitor) > 0
+      if isa(node, AbstractDependent) && length(node.monitor) > 0
         push!(values, key)
       end
     end
   elseif ntype == :output
     g = graph(m)
     for v in vertices(g)
-      if isa(m[v.key], Stochastic) && !any_stochastic(v, g, m)
+      if isa(m[v.key], AbstractStochastic) && !any_stochastic(v, g, m)
         push!(values, v.key)
       end
     end
   elseif ntype == :stochastic
     for key in keys(m.nodes)
-      if isa(m[key], Stochastic)
+      if isa(m[key], AbstractStochastic)
         push!(values, key)
       end
     end

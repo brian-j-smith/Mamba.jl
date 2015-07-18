@@ -48,14 +48,14 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : vector of sampled values.
 * ``tune::AMWGTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: AMWGVariate(x::Vector{VariateType}, tune::AMWGTune)
-              AMWGVariate(x::Vector{VariateType}, tune=nothing)
+.. function:: AMWGVariate(x::Vector{Float64}, tune::AMWGTune)
+              AMWGVariate(x::Vector{Float64}, tune=nothing)
 
     Construct a ``AMWGVariate`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
 

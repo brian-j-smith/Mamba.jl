@@ -56,7 +56,7 @@ end
 
 function invlink(D::PDMatDistribution, x::Vector, transform::Bool=true)
   n = dim(D)
-  value = zeros(VariateType, n, n)
+  value = zeros(Float64, n, n)
   k = 1
   if transform
     for i in 1:n

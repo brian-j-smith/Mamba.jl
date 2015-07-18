@@ -1,0 +1,3 @@
+dot -T png -o variateUML.png variateUML.dot
+neato -n -T png -o dependentUML.png dependentUML.dot
+neato -n -T png -o mcmcUML.png mcmcUML.dot

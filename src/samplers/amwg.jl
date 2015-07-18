@@ -12,13 +12,13 @@ type AMWGTune
 end
 
 type AMWGVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::AMWGTune
 
-  AMWGVariate(x::Vector{VariateType}, tune::AMWGTune) = new(x, tune)
+  AMWGVariate(x::Vector{Float64}, tune::AMWGTune) = new(x, tune)
 end
 
-function AMWGVariate(x::Vector{VariateType}, tune=nothing)
+function AMWGVariate(x::Vector{Float64}, tune=nothing)
   tune = AMWGTune(
     false,
     zeros(Integer, length(x)),

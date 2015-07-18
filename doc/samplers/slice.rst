@@ -48,14 +48,14 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : vector of sampled values.
 * ``tune::SliceTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: SliceVariate(x::Vector{VariateType}, tune::SliceTune)
-              SliceVariate(x::Vector{VariateType}, tune=nothing)
+.. function:: SliceVariate(x::Vector{Float64}, tune::SliceTune)
+              SliceVariate(x::Vector{Float64}, tune=nothing)
 
     Construct a ``SliceVariate`` object that stores sampled values and tuning parameters for slice sampling.
 

@@ -31,14 +31,12 @@ module Mamba
 
   #################### Variate Types ####################
 
-  typealias VariateType Float64
+  abstract ScalarVariate <: Real
+  abstract ArrayVariate{N} <: DenseArray{Float64,N}
 
-  abstract Variate{T<:Union(VariateType, Array{VariateType})}
-
-  typealias UniVariate Variate{VariateType}
-  typealias MultiVariate{N} Variate{Array{VariateType,N}}
-  typealias VectorVariate MultiVariate{1}
-  typealias MatrixVariate MultiVariate{2}
+  typealias AbstractVariate Union(ScalarVariate,ArrayVariate)
+  typealias VectorVariate ArrayVariate{1}
+  typealias MatrixVariate ArrayVariate{2}
 
 
   #################### Distribution Types ####################
@@ -48,10 +46,8 @@ module Mamba
 
   #################### Dependent Types ####################
 
-  abstract Dependent{T} <: Variate{T}
-
-  type Logical{T} <: Dependent{T}
-    value::T
+  type ScalarLogical <: ScalarVariate
+    value::Float64
     symbol::Symbol
     nlink::Integer
     monitor::Vector{Int}
@@ -60,8 +56,18 @@ module Mamba
     targets::Vector{Symbol}
   end
 
-  type Stochastic{T} <: Dependent{T}
-    value::T
+  type ArrayLogical{N} <: ArrayVariate{N}
+    value::Array{Float64,N}
+    symbol::Symbol
+    nlink::Integer
+    monitor::Vector{Int}
+    eval::Function
+    sources::Vector{Symbol}
+    targets::Vector{Symbol}
+  end
+
+  type ScalarStochastic <: ScalarVariate
+    value::Float64
     symbol::Symbol
     nlink::Integer
     monitor::Vector{Int}
@@ -70,6 +76,21 @@ module Mamba
     targets::Vector{Symbol}
     distr::DistributionStruct
   end
+
+  type ArrayStochastic{N} <: ArrayVariate{N}
+    value::Array{Float64,N}
+    symbol::Symbol
+    nlink::Integer
+    monitor::Vector{Int}
+    eval::Function
+    sources::Vector{Symbol}
+    targets::Vector{Symbol}
+    distr::DistributionStruct
+  end
+
+  typealias AbstractLogical Union(ScalarLogical, ArrayLogical)
+  typealias AbstractStochastic Union(ScalarStochastic, ArrayStochastic)
+  typealias AbstractDependent Union(AbstractLogical, AbstractStochastic)
 
 
   #################### Sampler Type ####################
@@ -88,7 +109,7 @@ module Mamba
     nodes::Dict{Symbol,Any}
     dependents::Vector{Symbol}
     samplers::Vector{Sampler}
-    states::Vector{Vector{VariateType}}
+    states::Vector{Vector{Float64}}
     iter::Integer
     burnin::Integer
     chain::Integer
@@ -100,7 +121,7 @@ module Mamba
   #################### Chains Type ####################
 
   immutable Chains
-    value::Array{VariateType,3}
+    value::Array{Float64,3}
     range::Range{Int}
     names::Vector{String}
     chains::Vector{Integer}
@@ -109,6 +130,10 @@ module Mamba
 
 
   #################### Includes ####################
+
+  include("progress.jl")
+  include("utils.jl")
+  include("variate.jl")
 
   include("distributions/flat.jl")
   include("distributions/mvnormal.jl")
@@ -142,29 +167,27 @@ module Mamba
   include("samplers/sampler.jl")
   include("samplers/slice.jl")
 
-  include("variate/core.jl")
-  include("variate/numeric.jl")
-
-  include("progress.jl")
-  include("utils.jl")
-
 
   #################### Exports ####################
 
   export
-    MatrixVariate,
-    MultiVariate,
-    UniVariate,
-    Variate,
-    VariateType,
-    VectorVariate
-
-  export
+    AbstractDependent,
+    AbstractLogical,
+    AbstractStochastic,
+    AbstractVariate,
+    ArrayLogical,
+    ArrayStochastic,
+    ArrayVariate,
     Chains,
     Logical,
+    MatrixVariate,
     Model,
     Sampler,
-    Stochastic
+    ScalarLogical,
+    ScalarStochastic,
+    ScalarVariate,
+    Stochastic,
+    VectorVariate
 
   export
     BDiagNormal,

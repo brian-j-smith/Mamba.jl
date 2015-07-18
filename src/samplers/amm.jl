@@ -14,13 +14,13 @@ type AMMTune
 end
 
 type AMMVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::AMMTune
 
-  AMMVariate(x::Vector{VariateType}, tune::AMMTune) = new(x, tune)
+  AMMVariate(x::Vector{Float64}, tune::AMMTune) = new(x, tune)
 end
 
-function AMMVariate(x::Vector{VariateType}, tune=nothing)
+function AMMVariate(x::Vector{Float64}, tune=nothing)
   tune = AMMTune(
     false,
     0.05,

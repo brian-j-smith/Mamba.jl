@@ -3,7 +3,7 @@
 function Chains{T<:String}(iters::Integer, params::Integer;
            start::Integer=1, thin::Integer=1, chains::Integer=1,
            names::Vector{T}=String[], model::Model=Model())
-  value = Array(VariateType, length(start:thin:iters), params, chains)
+  value = Array(Float64, length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names, model=model)
 end
@@ -25,7 +25,7 @@ function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
     error("size(value, 3) and chains dimensions must match")
   end
 
-  v = convert(Array{VariateType, 3}, value)
+  v = convert(Array{Float64, 3}, value)
   Chains(v, range(start, thin, n), String[names...], Integer[chains...], model)
 end
 
@@ -122,7 +122,7 @@ end
 
 function combine(c::Chains)
   n, p, m = size(c.value)
-  value = Array(VariateType, n * m, p)
+  value = Array(Float64, n * m, p)
   for j in 1:p
     idx = 1
     for i in 1:n, k in 1:m

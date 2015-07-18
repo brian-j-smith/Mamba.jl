@@ -60,14 +60,14 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : vector of sampled values.
 * ``tune::NUTSTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: NUTSVariate(x::Vector{VariateType}, tune::NUTSTune)
-              NUTSVariate(x::Vector{VariateType}, tune=nothing)
+.. function:: NUTSVariate(x::Vector{Float64}, tune::NUTSTune)
+              NUTSVariate(x::Vector{Float64}, tune=nothing)
 
     Construct a ``NUTSVariate`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
 

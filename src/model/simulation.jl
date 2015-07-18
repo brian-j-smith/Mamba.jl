@@ -126,7 +126,7 @@ function unlist(m::Model, block::Integer=0, transform::Bool=false)
 end
 
 function unlist(m::Model, monitoronly::Bool)
-  values = VariateType[]
+  values = Float64[]
   for key in keys(m, :dependent)
     node = m[key]
     lvalue = [link(node, node.value, false);]
@@ -138,7 +138,7 @@ end
 
 function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
   N = Integer[m[key].nlink for key in nkeys]
-  values = Array(VariateType, sum(N))
+  values = Array(Float64, sum(N))
   i = 0
   for k in 1:length(nkeys)
     node = m[nkeys[k]]

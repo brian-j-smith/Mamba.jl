@@ -10,95 +10,31 @@ Variate Types
 Variate
 -------
 
-``Variate`` is an abstract type that serves as the basis for several concrete types in the *Mamba* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``Variate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type (see `julia Types <http://docs.julialang.org/en/latest/manual/types/>`_).  Accordingly, a core set of functionality is defined for the ``Variate`` type through the field and method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``value`` field shown.
+``Variate`` is a set of abstract types that serves as the basis for several concrete types in the *Mamba* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``Variate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type (see `julia Types <http://docs.julialang.org/en/latest/manual/types/>`_).  Accordingly, a core set of functionality is defined for the ``Variate`` type through the field and method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``value`` field shown.
 
 Declaration
 ^^^^^^^^^^^
 
-``abstract Variate{T<:Union(VariateType, Array{VariateType})}``
+.. code-block:: julia
+
+    abstract ScalarVariate <: Real
+    abstract ArrayVariate{N} <: DenseArray{Float64,N}
 
 Aliases
 ^^^^^^^
 
-.. index:: VariateType
-.. index:: UniVariate
-.. index:: MultiVariate
+.. index:: AbstractVariate
 .. index:: VectorVariate
 .. index:: MatrixVariate
 
 .. code-block:: julia
 
-    typealias VariateType Float64
+    typealias AbstractVariate Union(ScalarVariate,ArrayVariate)
+    typealias VectorVariate ArrayVariate{1}
+    typealias MatrixVariate ArrayVariate{2}
 
-    typealias UniVariate Variate{VariateType}
-    typealias MultiVariate{N} Variate{Array{VariateType,N}}
-    typealias VectorVariate MultiVariate{1}
-    typealias MatrixVariate MultiVariate{2}
-
-Field
-^^^^^
-
-* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
-
-Methods
-^^^^^^^
-
-Method functions supported on all ``Variate`` types are summarized in the following sections; and, unless otherwise specified, are detailed in `The Julia Standard Library <http://docs.julialang.org/en/release-0.3/stdlib/base>`_ documentation.
-
-Array Functions
-```````````````
-
-.. code-block:: julia
-
-    cummin      cumsum         maximum     prod
-    cummax      cumsum_kbn     minimum     sum
-    cumprod     diff           norm        sum_kbn
-
-Collections
-```````````
-
-.. code-block:: julia
-
-    endof      size          show
-    length     getindex      showcompact
-    ndims      setindex!
-
-Distributions
-`````````````
-
-The univariate, multivariate, and matrix distributions described in the :ref:`section-Distributions` Section are supported.
-
-Linear Algebra
-``````````````
-
-.. code-block:: julia
-
-    dot
-
-Mathematical Operators and Elementary Functions
-```````````````````````````````````````````````
-
-The basic numerical `Mathematical Operators and Elementary Functions <http://julia.readthedocs.org/en/release-0.3/manual/mathematical-operations/>`_ of the **julia** language are supported, and the ones below added.
-
-=============== ================
-Function        Description
-=============== ================
-``logit(x)``    log-odds
-``invlogit(x)`` inverse log-odds
-=============== ================
-
-Statistics
-``````````
-
-.. code-block:: julia
-
-    cor      median     var
-    cov      std        varm
-    mean     stdm
-
-
-Subtypes
-----------
+Type Hierarchy
+^^^^^^^^^^^^^^
 
 Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logical`, and :ref:`section-Stochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
 
@@ -106,3 +42,19 @@ Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logi
     :align: center
 
     UML relational diagram of ``Variate`` types and their fields.
+
+Field
+^^^^^
+
+* ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
+
+Methods
+^^^^^^^
+Methods for ``ScalarVariate`` and ``ArrayVariate`` include `mathematical operators <http://julia.readthedocs.org/en/latest/stdlib/math/#mathematical-operators>`_, `mathematical functions <http://julia.readthedocs.org/en/latest/stdlib/math/#mathematical-functions>`_, and `statistics <http://julia.readthedocs.org/en/latest/stdlib/math/#statistics>`_ defined in the base **julia** language for parent types ``Real`` and ``DenseArray``.  In addition, the following functions are provided.
+
+=============== ================
+Function        Description
+=============== ================
+``logit(x)``    log-odds
+``invlogit(x)`` inverse log-odds
+=============== ================

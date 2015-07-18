@@ -46,14 +46,14 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : vector of sampled values.
 * ``tune::AMMTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: AMMVariate(x::Vector{VariateType}, tune::AMMTune)
-              AMMVariate(x::Vector{VariateType}, tune=nothing)
+.. function:: AMMVariate(x::Vector{Float64}, tune::AMMTune)
+              AMMVariate(x::Vector{Float64}, tune=nothing)
 
     Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
 

@@ -32,7 +32,7 @@ function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
 
   mm = deepcopy(m)
   setinputs!(mm, inputs)
-  mm.states = Array(Vector{VariateType}, chains)
+  mm.states = Array(Vector{Float64}, chains)
   mm.burnin = burnin
 
   mcmc_master!(mm, inits, iters, burnin, thin, chains, verbose)

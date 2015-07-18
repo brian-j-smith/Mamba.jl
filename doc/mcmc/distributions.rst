@@ -20,15 +20,17 @@ The following `univariate types <http://distributionsjl.readthedocs.org/en/lates
 
 .. code-block:: julia
 
-    Arcsine       Cosine            Hypergeometric    NegativeBinomial   Rayleigh
-    Bernoulli     DiscreteUniform   InverseGamma      NoncentralBeta     Skellam
-    Beta          Edgeworth         InverseGaussian   NoncentralChisq    TDist
-    BetaPrime     Erlang            KSDist            NoncentralF        TriangularDist
-    Binomial      Exponential       KSOneSided        NoncentralT        Uniform
-    Categorical   FDist             Laplace           Normal             Weibull
-    Cauchy        Gamma             Levy              NormalCanon
-    Chi           Geometric         Logistic          Pareto
-    Chisq         Gumbel            LogNormal         Poisson
+    Arcsine       DiscreteUniform   InverseGamma       NoncentralChisq            SymTriangularDist
+    Bernoulli     Edgeworth         InverseGaussian    NoncentralF                TDist
+    Beta          Epanechnikov      Kolmogorov         NoncentralHypergeometric   TriangularDist
+    BetaPrime     Erlang            KSDist             NoncentralT                Triweight
+    Binomial      Exponential       KSOneSided         Normal                     Uniform
+    Biweight      FDist             Laplace            NormalCanon                VonMises
+    Categorical   Frechet           Levy               Pareto                     Weibull
+    Cauchy        Gamma             Logistic           PoissonBinomial
+    Chi           Geometric         LogNormal          Poisson
+    Chisq         Gumbel            NegativeBinomial   Rayleigh
+    Cosine        Hypergeometric    NoncentralBeta     Skellam
 
 .. index:: Distributions; Flat
 

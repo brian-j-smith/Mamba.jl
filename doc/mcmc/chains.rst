@@ -15,7 +15,7 @@ Declaration
 Fields
 ^^^^^^
 
-* ``value::Array{VariateType,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
+* ``value::Array{Float64,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
 * ``names::Vector{String}`` : names assigned to the parameter elements.
 * ``chains::Vector{Integer}`` : indices to the MCMC runs.

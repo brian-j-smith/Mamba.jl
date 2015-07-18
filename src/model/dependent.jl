@@ -1,13 +1,13 @@
 #################### Dependent Methods ####################
 
-function Base.show(io::IO, d::Dependent)
+function Base.show(io::IO, d::AbstractDependent)
   msg = string(ifelse(length(d.monitor) > 0, "A ", "An un"),
                "monitored node of type \"", summary(d), "\"\n")
   print(io, msg)
   show(io, d.value)
 end
 
-function Base.showall(io::IO, d::Dependent)
+function Base.showall(io::IO, d::AbstractDependent)
   show(io, d)
   print(io, "\nFunction:\n")
   show(io, d.eval.code)
@@ -17,22 +17,22 @@ function Base.showall(io::IO, d::Dependent)
   show(io, d.targets)
 end
 
-invlink(d::Dependent, x, transform::Bool=true) = x
+invlink(d::AbstractDependent, x, transform::Bool=true) = x
 
-link(d::Dependent, x, transform::Bool=true) = x
+link(d::AbstractDependent, x, transform::Bool=true) = x
 
-logpdf(d::Dependent, transform::Bool=false) = 0.0
+logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
 
-function names(d::Dependent)
+function names(d::AbstractDependent)
   names(d, d.symbol)
 end
 
-function setmonitor!(d::Dependent, monitor::Bool)
+function setmonitor!(d::AbstractDependent, monitor::Bool)
   value = monitor ? Int[0] : Int[]
   setmonitor!(d, value)
 end
 
-function setmonitor!(d::Dependent, monitor::Vector{Int})
+function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   values = monitor
   d.nlink = length(link(d, d.value, false))
   if d.nlink > 0 && length(monitor) > 0
@@ -47,61 +47,67 @@ function setmonitor!(d::Dependent, monitor::Vector{Int})
 end
 
 
+#################### Logical Methods ####################
+
+@promote_scalarvariate ScalarLogical
+
+
 #################### Logical Constructors ####################
 
-function Logical(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
-  d = Logical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr), Symbol[])
-  setmonitor!(d, monitor)
-end
-
 function Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-  value = convert(VariateType, NaN)
-  Logical(value, expr, monitor)
+  value = Float64(NaN)
+  l = ScalarLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
+                    Symbol[])
+  setmonitor!(l, monitor)
 end
 
 function Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-  value = Array(VariateType, tuple(zeros(Integer, d)...))
-  Logical(value, expr, monitor)
+  value = Array(Float64, fill(0, d)...)
+  l = ArrayLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
+                   Symbol[])
+  setmonitor!(l, monitor)
 end
 
 
+#################### Logical Updating ####################
 
-#################### Logical Methods ####################
-
-function setinits!(l::Logical, m::Model, ::Any=nothing)
+function setinits!(l::AbstractLogical, m::Model, ::Any=nothing)
   l.value = l.eval(m)
   setmonitor!(l, l.monitor)
 end
 
-function update!(l::Logical, m::Model)
+function update!(l::AbstractLogical, m::Model)
   l[:] = l.eval(m)
   l
 end
 
 
+#################### Stochastic Methods ####################
+
+@promote_scalarvariate ScalarStochastic
+
+
 #################### Stochastic Constructors ####################
 
-function Stochastic(value, expr::Expr, monitor::Union(Bool,Vector{Int}))
-  d = Stochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr), Symbol[],
-                 NullDistribution())
-  setmonitor!(d, monitor)
-end
-
 function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-  value = convert(VariateType, NaN)
-  Stochastic(value, expr, monitor)
+  value = Float64(NaN)
+  s = ScalarStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
+                       Symbol[], NullDistribution())
+  setmonitor!(s, monitor)
 end
 
 function Stochastic(d::Integer, expr::Expr,
                     monitor::Union(Bool,Vector{Int})=true)
-  value = Array(VariateType, tuple(zeros(Integer, d)...))
-  Stochastic(value, expr, monitor)
+  value = Array(Float64, fill(0, d)...)
+  s = ArrayStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
+                      Symbol[], NullDistribution())
+  setmonitor!(s, monitor)
 end
 
 
 #################### Stochastic Methods ####################
 
-function Base.showall(io::IO, s::Stochastic)
+function Base.showall(io::IO, s::AbstractStochastic)
   show(io, s)
   print(io, "\n\nDistribution:\n")
   show(io, s.distr)
@@ -113,7 +119,7 @@ function Base.showall(io::IO, s::Stochastic)
   show(io, s.targets)
 end
 
-function setinits!(s::Stochastic, m::Model, x)
+function setinits!(s::AbstractStochastic, m::Model, x)
   T = typeof(s.value)
   s.value = isa(x, T) ? copy(x) : convert(T, x)
   s.distr = s.eval(m)
@@ -123,24 +129,24 @@ function setinits!(s::Stochastic, m::Model, x)
   setmonitor!(s, s.monitor)
 end
 
-insupport(s::Stochastic) = all(mapdistr(insupport, s, s.value))
+insupport(s::AbstractStochastic) = all(mapdistr(insupport, s, s.value))
 
-function invlink(s::Stochastic, x, transform::Bool=true)
+function invlink(s::AbstractStochastic, x, transform::Bool=true)
   f(d, x) = invlink(d, x, transform)
   mapdistr(f, s, x)
 end
 
-function link(s::Stochastic, x, transform::Bool=true)
+function link(s::AbstractStochastic, x, transform::Bool=true)
   f(d, x) = link(d, x, transform)
   mapdistr(f, s, x)
 end
 
-function logpdf(s::Stochastic, transform::Bool=false)
+function logpdf(s::AbstractStochastic, transform::Bool=false)
   f(d, x) = logpdf(d, x, transform)
   sum(mapdistr(f, s, s.value))
 end
 
-function mapdistr(f::Function, s::Stochastic, x)
+function mapdistr(f::Function, s::AbstractStochastic, x)
   if isa(s.distr, Array)
     y = similar(x)
     for i in 1:length(y)
@@ -152,13 +158,13 @@ function mapdistr(f::Function, s::Stochastic, x)
   end
 end
 
-function update!(s::Stochastic, m::Model)
+function update!(s::AbstractStochastic, m::Model)
   s.distr = s.eval(m)
   s
 end
 
 
-#################### Utility Functions ####################
+#################### Auxiliary Functions ####################
 
 function depsrc(expr::Expr)
   if expr.head == :ref && expr.args[1] == :model && isa(expr.args[2], QuoteNode)

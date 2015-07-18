@@ -3,7 +3,7 @@
 function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   found = false
   for v in out_neighbors(v, g)
-    if isa(m[v.key], Stochastic) || any_stochastic(v, g, m)
+    if isa(m[v.key], AbstractStochastic) || any_stochastic(v, g, m)
       found = true
       break
     end
@@ -29,7 +29,7 @@ function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   values = Symbol[]
   for v in out_neighbors(v, g)
     push!(values, v.key)
-    if !isa(m[v.key], Stochastic)
+    if !isa(m[v.key], AbstractStochastic)
       values = union(values, gettargets(v, g, m))
     end
   end
@@ -61,9 +61,9 @@ function graph2dot(m::Model)
     attr = Dict{String,String}()
     if in(v.key, deps)
       node = m[v.key]
-      if isa(node, Logical)
+      if isa(node, AbstractLogical)
         attr["shape"] = "diamond"
-      elseif isa(node, Stochastic)
+      elseif isa(node, AbstractStochastic)
         attr["shape"] = "ellipse"
       end
       if length(node.monitor) == 0

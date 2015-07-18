@@ -6,19 +6,28 @@ digraph Variate {
 
     edge [fontname = "Helvetica", fontsize = 11, dir = back, arrowtail = empty]
 
-    Variate [label = "{Variate\{T\}|+ value : T\l}"]
+    AbstractVariate [label = "{AbstractVariate|+ value\l}"]
 
-    Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
+    ArrayVariate [label = "{ArrayVariate\{N\}|+ value : Array\{Float64,N\}\l}"]
 
-    Logical [label = "{Logical\{T\}}"]
+    DenseArray [label = "{DenseArray}"]
 
-    Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
+    MatrixVariate [label = "{MatrixVariate|+ value : Array\{Float64,2\}\l}"]
 
-    SamplerVariate [label = "{SamplerVariate\{Vector\{VariateType\}\}|+ tune : SamplerTune\l}"]
+    Real [label = "{Real}"]
 
-    Variate -> Dependent
-    Dependent -> Logical
-    Dependent -> Stochastic
-    Variate -> SamplerVariate
+    SamplerVariate [label = "{\<Sampler\>Variate|+ tune : \<Sampler\>Tune\l}"]
+
+    ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}"]
+
+    VectorVariate [label = "{VectorVariate|+ value : Array\{Float64,1\}\l}"]
+
+    AbstractVariate -> ArrayVariate
+    AbstractVariate -> ScalarVariate
+    ArrayVariate -> MatrixVariate
+    ArrayVariate -> VectorVariate
+    DenseArray -> ArrayVariate
+    Real -> ScalarVariate
+    VectorVariate -> SamplerVariate
 
 }
