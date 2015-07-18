@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.5.2
+* Applied *Mamba* changes through 0.4.12.
+
 ### 0.5.1
 * Applied *Mamba* changes through 0.4.7 and updated compatibility with julia 0.4.0-dev.
 
