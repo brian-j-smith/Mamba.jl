@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.4.12
+* Updated documentation for user-defined distributions.
+
 ### 0.4.11
 * Implemented `Chains` method function ``changerate`` to calculate parameter state space change rates (per iteration).
 * Updated `Truncated` constructor for `Flat` distributions for compatibility with latest *Distributions* package.
