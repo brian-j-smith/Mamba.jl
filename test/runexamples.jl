@@ -2,7 +2,7 @@ using Mamba
 
 include("utils.jl")
 
-test_examples = [
+test_openbugs = [
   "blocker",
   "bones",
   "dogs",
@@ -25,10 +25,19 @@ test_examples = [
   "surgical"
 ]
 
+test_contributed = [
+  "line_amwg_slice"
+]
+
 println("Running examples:")
 
-for t in test_examples
+for t in test_openbugs
   @everywhere srand(123)
   @runtest "../doc/examples/" t
   gelmandiag(sim) |> show
+end
+
+for t in test_contributed
+  @everywhere srand(123)
+  @runtest "../doc/examples/" t
 end

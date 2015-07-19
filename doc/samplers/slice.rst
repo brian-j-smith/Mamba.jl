@@ -29,7 +29,7 @@ Stand-Alone Function
 
     **Example**
 
-        The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
+        The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.  Also, see the :ref:`example-Line_AMWG_Slice` example.
 
         .. literalinclude:: slice.jl
             :language: julia
