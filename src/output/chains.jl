@@ -44,31 +44,51 @@ function Chains{T<:Real}(value::Vector{T};
 end
 
 
-#################### Chains Base/Utility Methods ####################
+#################### Chains Indexing ####################
 
-function Base.getindex(c::Chains, iters::Range, names, chains)
-  from = max(ceil(Integer, (first(iters) - first(c.range)) / step(c.range) + 1),
-             1)
-  thin = step(iters)
-  to = min(floor(Integer, (last(iters) - first(c.range)) / step(c.range) + 1),
-           length(c.range))
-
-  Chains(c.value[from:thin:to, names, chains],
-         start = first(c.range) + (from - 1) * step(c.range),
-         thin = thin * step(c.range), names = c.names[names],
+function Base.getindex(c::Chains, window, names, chains)
+  inds1 = window2inds(c, window)
+  inds2 = names2inds(c, names)
+  Chains(c.value[inds1, inds2, chains],
+         start = first(c.range) + (first(inds1) - 1) * step(c.range),
+         thin = step(inds1) * step(c.range), names = c.names[inds2],
          chains = c.chains[chains], model = c.model)
 end
 
-function Base.getindex(c::Chains, iters::Range, names::String, chains)
-  getindex(c, iters, [names], chains)
+function Base.setindex!(c::Chains, value, iters, names, chains)
+  setindex!(c.value, value, iters2inds(c, iters), names2inds(c, names), chains)
 end
 
-function Base.getindex{T<:String}(c::Chains, iters::Range, names::Vector{T},
-           chains)
-  idx = findin(c.names, names)
-  length(idx) == length(names) || throw(BoundsError())
-  getindex(c, iters, idx, chains)
+window2inds(c::Chains, window) =
+  error("indexing Chains iterations with $(typeof(window)) is not supported")
+window2inds(c::Chains, ::Colon) = window2inds(c, 1:size(c,1))
+window2inds(c::Chains, window::Range) = begin
+  range = (window - first(c.range)) / step(c.range) + 1.0
+  a = max(ceil(Integer, first(range)), 1)
+  b = step(window)
+  c = min(floor(Integer, last(range)), size(c.value,1))
+  a:b:c
 end
+
+iters2inds(c::Chains, iters) = iters
+iters2inds(c::Chains, ::Colon) = 1:size(c.value,1)
+iters2inds(c::Chains, iters::Range) =
+  convert(StepRange{Int,Int}, (iters - first(c.range)) / step(c.range) + 1.0)
+iters2inds(c::Chains, iter::Real) =
+  Int((iter - first(c.range)) / step(c.range) + 1.0)
+iters2inds{T<:Real}(c::Chains, iters::Vector{T}) = begin
+  shift, scale = first(c.range), step(c.range)
+  Int[(i - shift) / scale + 1.0 for i in iters]
+end
+
+names2inds(c::Chains, names) = names
+names2inds(c::Chains, ::Colon) = 1:size(c.value,2)
+names2inds(c::Chains, name::Real) = [name]
+names2inds(c::Chains, name::String) = names2inds(c, [name])
+names2inds{T<:String}(c::Chains, names::Vector{T}) = indexin(names, c.names)
+
+
+#################### Chains Base/Utility Methods ####################
 
 function Base.keys(c::Chains)
   c.names
@@ -76,33 +96,6 @@ end
 
 function Base.ndims(c::Chains)
   ndims(c.value)
-end
-
-function Base.setindex!(c::Chains, value, iters::Range, names, chains)
-  setindex!(c, value, collect(iters), names, chains)
-end
-
-function Base.setindex!(c::Chains, value, iters::Real, names, chains)
-  setindex!(c, value, [iters], names, chains)
-end
-
-function Base.setindex!{T<:Real}(c::Chains, value, iters::Vector{T}, names,
-           chains)
-  start, thin = first(c.range), step(c.range)
-  idx = Int[(x - start) / thin + 1.0 for x in iters]
-  setindex!(c.value, value, idx, names, chains)
-end
-
-function Base.setindex!{T<:Real}(c::Chains, value, iters::Vector{T},
-           names::String, chains)
-  setindex!(c, value, iters, [names], chains)
-end
-
-function Base.setindex!{T<:Real,U<:String}(c::Chains, value, iters::Vector{T},
-           names::Vector{U}, chains)
-  idx = findin(c.names, names)
-  length(idx) == length(names) || throw(BoundsError())
-  setindex!(c, value, iters, idx, chains)
 end
 
 function Base.show(io::IO, c::Chains)

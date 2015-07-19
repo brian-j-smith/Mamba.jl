@@ -71,13 +71,11 @@ function mcmc_worker!(args::Vector)
   sim = Chains(iters, length(pnames), start=burnin+thin, thin=thin,
                names=pnames, model=model)
 
-  i = 1
   reset!(meter)
-  for t in 1:iters
+  for i in 1:iters
     simulate!(model)
-    if t > burnin && (t - burnin) % thin == 0
-      sim.value[i,:,1] = unlist(model, true)
-      i += 1
+    if i > burnin && (i - burnin) % thin == 0
+      sim[i,:,1] = unlist(model, true)
     end
     next!(meter)
   end
