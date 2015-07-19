@@ -94,10 +94,6 @@ function Base.keys(c::Chains)
   c.names
 end
 
-function Base.ndims(c::Chains)
-  ndims(c.value)
-end
-
 function Base.show(io::IO, c::Chains)
   print(io, "Object of type \"$(summary(c))\"\n\n")
   println(io, header(c))
