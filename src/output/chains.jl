@@ -1,4 +1,6 @@
-#################### Chains Constructor ####################
+#################### Chains Methods ####################
+
+#################### Constructors ####################
 
 function Chains{T<:String}(iters::Integer, params::Integer;
            start::Integer=1, thin::Integer=1, chains::Integer=1,
@@ -44,7 +46,7 @@ function Chains{T<:Real}(value::Vector{T};
 end
 
 
-#################### Chains Indexing ####################
+#################### Indexing ####################
 
 function Base.getindex(c::Chains, window, names, chains)
   inds1 = window2inds(c, window)
@@ -52,7 +54,7 @@ function Base.getindex(c::Chains, window, names, chains)
   Chains(c.value[inds1, inds2, chains],
          start = first(c.range) + (first(inds1) - 1) * step(c.range),
          thin = step(inds1) * step(c.range), names = c.names[inds2],
-         chains = c.chains[chains], model = c.model)
+         chains = c.chains[chains])
 end
 
 function Base.setindex!(c::AbstractChains, value, iters, names, chains)
@@ -89,7 +91,7 @@ names2inds{T<:String}(c::AbstractChains, names::Vector{T}) =
   indexin(names, c.names)
 
 
-#################### Chains Base/Utility Methods ####################
+#################### Auxilliary Functions ####################
 
 function Base.keys(c::AbstractChains)
   c.names
@@ -134,16 +136,7 @@ end
 
 function link(c::AbstractChains)
   cc = copy(c.value)
-  idx0 = 1:length(c.names)
-  for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
-    node = c.model[key]
-    idx = findin(c.names, names(node))
-    if length(idx) > 0
-      cc[:,idx,:] = mapslices(x -> link(node, x), cc[:,idx,:], 2)
-      idx0 = setdiff(idx0, idx)
-    end
-  end
-  for j in idx0
+  for j in 1:length(c.names)
     x = cc[:,j,:]
     if minimum(x) > 0.0
       cc[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)

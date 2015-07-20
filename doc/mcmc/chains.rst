@@ -71,15 +71,19 @@ Constructors
 Indexing
 ^^^^^^^^
 
-.. function:: getindex(c::Chains, inds...)
-              getindex(mc::ModelChains, inds...)
+.. function:: getindex(c::Chains, window, names, chains)
+              getindex(mc::ModelChains, window, names, chains)
 
     Subset MCMC sampler output.  The syntax ``c[i, j, k]`` is converted to ``getindex(c, i, j, k)``.
 
     **Arguments**
 
         * ``c`` : sampler output to subset.
-        * ``inds...`` : a tuple of ``i, j, k`` indices to the iterations, parameters, and chains to be subsetted.  Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.  Indices for subsetting of parameters can be specified as strings, integers, or booleans identifying parameters to be kept.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
+        * ``window`` : Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.
+        * ``names`` : Indices for subsetting of parameters that can be specified as strings, integers, or booleans identifying parameters to be kept.
+        * ``chains`` : Indices for chains can be integers or booleans.
+
+    A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
 
     **Value**
 
@@ -89,7 +93,7 @@ Indexing
 
         See the :ref:`section-Line-Subsetting` section of the tutorial.
 
-.. function:: setindex!(c::AbstractChains, value, inds...)
+.. function:: setindex!(c::AbstractChains, value, iters, names, chains)
 
     Store MCMC sampler output at a given index.  The syntax ``c[i, j, k] = value`` is converted to ``setindex!(c, value, i, j, k)``.
 
@@ -97,7 +101,11 @@ Indexing
 
         * ``c`` : object within which to store sampler output.
         * ``value`` : sampler output.
-        * ``inds...`` : a tuple of ``i, j, k`` indices to iterations, parameters, and chains within the object.  Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.  Indices for subsetting of parameters can be specified as strings, integers, or booleans.  Indices for chains can be integers or booleans.  A value of ``:`` can be specified for the parameters or chains to index all corresponding elements.
+        * ``iters`` : Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.
+        * ``names`` : Indices for subsetting of parameters can be specified as strings, integers, or booleans.
+        * ``chains`` : Indices for chains can be integers or booleans.
+
+        A value of ``:`` can be specified for any of the dimensions to index all corresponding elements.
 
     **Value**
 
