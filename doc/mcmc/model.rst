@@ -183,14 +183,14 @@ Methods
                    inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
                    burnin::Integer=0, thin::Integer=1, chains::Integer=1, \
                    verbose::Bool=true)
-              mcmc(c::Chains, iters::Integer; verbose::Bool=true)
+              mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
 
     Simulate MCMC draws for a specified model.
 
     **Arguments**
 
-        * ``m`` : a specified mode.
-        * ``c`` : chains from a previous call to ``mcmc`` for which to simulate additional draws.
+        * ``m`` : a specified model.
+        * ``mc`` : chains from a previous call to ``mcmc`` for which to simulate additional draws.
         * ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
         * ``inits`` : a vector of dictionaries that contain initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.  Consecutive runs of the simulator will iterate through the vector's dictionary elements.
         * ``iters`` : number of draws to generate for each simulation run.
@@ -201,7 +201,7 @@ Methods
 
     **Value**
 
-        A ``Chains`` type object of simulated draws.
+        A ``ModelChains`` type object of simulated draws.
 
     **Example**
 

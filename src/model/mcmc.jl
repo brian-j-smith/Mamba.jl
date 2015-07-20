@@ -1,25 +1,22 @@
 #################### MCMC Simulation Engine ####################
 
 
-function mcmc(c::Chains, iters::Integer; verbose::Bool=true)
-
-  ismodelbased(c) || error("mcmc restart requires Chains from a Model fit")
-
-  burnin = last(c.range) - c.model.iter
-  thin = step(c.range)
+function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
+  burnin = last(mc.range) - mc.model.iter
+  thin = step(mc.range)
   burnin + thin > 0 ||
     error("Chains have been subsetted to exclude the last iteration")
 
-  mm = deepcopy(c.model)
-  c2 = mcmc_master!(mm, mm.states[c.chains], iters, burnin, thin, size(c, 3),
+  mm = deepcopy(mc.model)
+  mc2 = mcmc_master!(mm, mm.states[mc.chains], iters, burnin, thin, size(mc,3),
                     verbose)
-  c2.model.iter += c.model.iter
-  if c2.names != c.names
-    c2 = c2[:,c.names,:]
+  mc2.model.iter += mc.model.iter
+  if mc2.names != mc.names
+    mc2 = mc2[:,mc.names,:]
   end
 
-  Chains(cat(1, c.value, c2.value), start=first(c.range), thin=thin,
-         names=c.names, model=c2.model)
+  ModelChains(Chains(cat(1, mc.value, mc2.value), start=first(mc.range),
+                     thin=thin, names=mc.names), mc2.model)
 end
 
 
@@ -55,8 +52,8 @@ function mcmc_master!(m::Model, inits, iters::Integer, burnin::Integer,
 
   m = sims[1].model
   m.states = map(k -> sims[k].model.states[k], 1:chains)
-  Chains(cat(3, map(k -> sims[k].value, 1:chains)...),
-         start=burnin+thin, thin=thin, names=sims[1].names, model=m)
+  ModelChains(Chains(cat(3, map(k -> sims[k].value, 1:chains)...),
+                     start=burnin+thin, thin=thin, names=sims[1].names), m)
 end
 
 
@@ -68,8 +65,8 @@ function mcmc_worker!(args::Vector)
   model.chain = chain
 
   pnames = names(model, true)
-  sim = Chains(iters, length(pnames), start=burnin+thin, thin=thin,
-               names=pnames, model=model)
+  sim = ModelChains(Chains(iters, length(pnames), start=burnin+thin, thin=thin,
+                           names=pnames), model)
 
   reset!(meter)
   for i in 1:iters

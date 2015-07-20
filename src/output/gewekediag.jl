@@ -15,8 +15,8 @@ function gewekediag{T<:Real}(x::Vector{T}; first::Real=0.1, last::Real=0.5,
   [round(z, 3), round(1.0 - erf(abs(z) / sqrt(2.0)), 4)]
 end
 
-function gewekediag(c::Chains; first::Real=0.1, last::Real=0.5, etype=:imse,
-                    args...)
+function gewekediag(c::AbstractChains; first::Real=0.1, last::Real=0.5,
+                    etype=:imse, args...)
   _, p, m = size(c.value)
   vals = Array(Float64, p, 2, m)
   for j in 1:p, k in 1:m

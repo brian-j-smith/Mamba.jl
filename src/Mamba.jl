@@ -120,7 +120,16 @@ module Mamba
 
   #################### Chains Type ####################
 
-  immutable Chains
+  abstract AbstractChains
+
+  immutable Chains <: AbstractChains
+    value::Array{Float64,3}
+    range::Range{Int}
+    names::Vector{String}
+    chains::Vector{Integer}
+  end
+
+  immutable ModelChains <: AbstractChains
     value::Array{Float64,3}
     range::Range{Int}
     names::Vector{String}
@@ -154,7 +163,8 @@ module Mamba
   include("output/gewekediag.jl")
   include("output/heideldiag.jl")
   include("output/mcse.jl")
-  include("output/predict.jl")
+  include("output/modelchains.jl")
+  include("output/modelstats.jl")
   include("output/rafterydiag.jl")
   include("output/stats.jl")
   include("output/plot.jl")
@@ -171,6 +181,7 @@ module Mamba
   #################### Exports ####################
 
   export
+    AbstractChains,
     AbstractDependent,
     AbstractLogical,
     AbstractStochastic,
@@ -182,6 +193,7 @@ module Mamba
     Logical,
     MatrixVariate,
     Model,
+    ModelChains,
     Sampler,
     ScalarLogical,
     ScalarStochastic,

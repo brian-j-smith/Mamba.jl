@@ -24,8 +24,8 @@ function heideldiag{T<:Real}(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
   [i + start - 2, converged, round(pvalue, 4), ybar, halfwidth, passed]
 end
 
-function heideldiag(c::Chains; alpha::Real=0.05, eps::Real=0.1, etype=:imse,
-                    args...)
+function heideldiag(c::AbstractChains; alpha::Real=0.05, eps::Real=0.1,
+                    etype=:imse, args...)
   _, p, m = size(c.value)
   vals = Array(Float64, p, 6, m)
   for j in 1:p, k in 1:m

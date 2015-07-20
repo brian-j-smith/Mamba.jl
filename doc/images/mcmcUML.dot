@@ -14,12 +14,12 @@ graph MCMC {
 
     Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="50,25"]
 
-    Chains [label = "{Chains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Integer\}\l+ model : Model\l}", pos="275,0"]
+    ModelChains [label = "{ModelChains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Integer\}\l+ model : Model\l}", pos="275,0"]
 
     Sampler -- Stochastic[taillabel = "1", headlabel = "1..*"]
     Model -- Sampler[arrowtail = odiamond, headlabel = "0..*"]
     Model -- Logical[arrowtail = odiamond, headlabel = "0..*"]
     Model -- Stochastic[arrowtail = odiamond, headlabel = "0..*"]
-    Chains -- Model[arrowtail = odiamond, headlabel = "1"]
+    ModelChains -- Model[arrowtail = odiamond, headlabel = "1"]
 
 }
