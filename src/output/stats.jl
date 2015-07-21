@@ -58,31 +58,37 @@ function hpd{T<:Real}(x::Vector{T}; alpha::Real=0.05)
   y = sort(x)
   a = y[1:m]
   b = y[(n - m + 1):n]
-  _,i = findmin(b - a)
+  _, i = findmin(b - a)
 
   [a[i], b[i]]
 end
 
 function hpd(c::AbstractChains; alpha::Real=0.05)
-  cc = combine(c)
   pct = first(showoff([100.0 * (1.0 - alpha)]))
   labels = ["$(pct)% Lower", "$(pct)% Upper"]
-  vals = mapslices(x -> hpd(x, alpha=alpha), cc, 1)'
+  vals = permutedims(
+    mapslices(x -> hpd(vec(x), alpha=alpha), c.value, [1,3]),
+    [2,1,3]
+  )
   ChainSummary(vals, c.names, labels, header(c))
 end
 
 function quantile(c::AbstractChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
-  cc = combine(c)
   labels = map(x -> string(100 * x) * "%", q)
-  vals = mapslices(x -> quantile(x, q), cc, 1)'
+  vals = permutedims(
+    mapslices(x -> quantile(vec(x), q), c.value, [1,3]),
+    [2,1,3]
+  )
   ChainSummary(vals, c.names, labels, header(c))
 end
 
 function summarystats(c::AbstractChains; etype=:bm, args...)
-  cc = combine(c)
-  f = x -> [mean(x), std(x), sem(x), mcse(x, etype; args...)]
+  f = x -> [mean(x), std(x), sem(x), mcse(vec(x), etype; args...)]
   labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]
-  vals = mapslices(x -> f(x), cc, 1)'
-  vals = [vals  min((vals[:,2] ./ vals[:,4]).^2, size(cc, 1))]
-  ChainSummary(vals, c.names, labels, header(c))
+  vals = permutedims(
+    mapslices(x -> f(x), c.value, [1,3]),
+    [2,1,3]
+  )
+  stats = [vals  min((vals[:,2] ./ vals[:,4]).^2, size(c.value, 1))]
+  ChainSummary(stats, c.names, labels, header(c))
 end
