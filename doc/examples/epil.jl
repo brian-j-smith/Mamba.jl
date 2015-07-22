@@ -96,7 +96,7 @@ model = Model(
     @modelexpr(a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,
                alpha_BT, BT, BTbar, alpha_Age, logAge, logAgebar, alpha_V4, V4,
                V4bar, b1, b, N, T,
-      Distribution[
+      [
         begin
           mu = exp(a0 + alpha_Base * (logBase4[i] - logBase4bar) +
                    alpha_Trt * (Trt[i] - Trtbar) + alpha_BT * (BT[i] - BTbar) +

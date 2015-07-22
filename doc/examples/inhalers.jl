@@ -47,7 +47,7 @@ model = Model(
     @modelexpr(a1, a2, a3, mu, group, b, N, T,
       begin
         a = Float64[a1, a2, a3]
-        Distribution[
+        [
           begin
             eta = mu[group[i],t] + b[i]
             p = ones(4)

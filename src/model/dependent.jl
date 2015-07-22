@@ -92,7 +92,7 @@ end
 function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
   value = Float64(NaN)
   s = ScalarStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
-                       Symbol[], NullDistribution())
+                       Symbol[], NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
 
@@ -100,7 +100,7 @@ function Stochastic(d::Integer, expr::Expr,
                     monitor::Union(Bool,Vector{Int})=true)
   value = Array(Float64, fill(0, d)...)
   s = ArrayStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
-                      Symbol[], NullDistribution())
+                      Symbol[], NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
 

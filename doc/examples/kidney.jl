@@ -44,7 +44,7 @@ model = Model(
                tcensor, N, M,
       begin
         beta_dis = Dx * beta_Dx
-        Distribution[
+        [
           begin
             mu = alpha + beta_age * age[i,j] + beta_sex * sex[i] + beta_dis[i] +
                  b[i]

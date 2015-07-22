@@ -48,7 +48,7 @@ model = Model(
 
   y = Stochastic(2,
     @modelexpr(Dogs, Trials, alpha, xa, beta, xs,
-      Distribution[
+      UnivariateDistribution[
         begin
           p = exp(alpha * xa[i,j] + beta * xs[i,j])
           Bernoulli(p)

@@ -14,7 +14,7 @@ model = Model(
 
   r = Stochastic(1,
     @modelexpr(n, p, N,
-      Distribution[Binomial(n[i], p[i]) for i in 1:N]
+      UnivariateDistribution[Binomial(n[i], p[i]) for i in 1:N]
     ),
     false
   ),

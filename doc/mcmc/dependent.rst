@@ -222,14 +222,19 @@ Fields
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
-* ``distr::DistributionStruct`` : the distributional specification for the node.
+* ``distr`` : a distributional specification of type ``UnivariateDistribution`` for ``ScalarStochastic`` nodes and ``DistributionStruct`` for ``ArrayStochastic`` nodes.
 
 Aliases
 ^^^^^^^
 
+``DistributionStruct`` defines the types of distribution structures supported for ``ArrayStochastic`` nodes.  Currently, those include single ``Distribution`` types or arrays of same or mixed ``UnivariateDistribution`` types.  Support for arrays of ``MultivariateDistribution`` types is under development for future inclusion in the package.
+
 .. code-block:: julia
 
-    typealias DistributionStruct Union(Distribution, Array{Distribution})
+    typealias UnivariateDistributionArray{T<:UnivariateDistribution}
+              Union(Array{T}, Array{Distribution{T}})
+    typealias DistributionStruct
+              Union(Distribution, UnivariateDistributionArray)
 
 Constructors
 ^^^^^^^^^^^^

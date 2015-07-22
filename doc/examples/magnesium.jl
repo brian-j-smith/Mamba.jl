@@ -23,7 +23,7 @@ model = Model(
 
   rcx = Stochastic(2,
     @modelexpr(nc, pc,
-      Distribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8]
+      UnivariateDistribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8]
     ),
     false
   ),
@@ -35,7 +35,7 @@ model = Model(
 
   rtx = Stochastic(2,
     @modelexpr(nt, pc, theta,
-      Distribution[
+      UnivariateDistribution[
         begin
           phi = logit(pc[i,j])
           pt = invlogit(theta[i,j] + phi)
@@ -49,7 +49,7 @@ model = Model(
 
   theta = Stochastic(2,
     @modelexpr(mu, tau,
-      Distribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8]
+      UnivariateDistribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8]
     ),
     false
   ),
@@ -79,7 +79,7 @@ model = Model(
 
   priors = Stochastic(1,
     @modelexpr(s2_0,
-      Distribution[
+      UnivariateDistribution[
         InverseGamma(0.001, 0.001),
         Uniform(0, 50),
         Uniform(0, 50),

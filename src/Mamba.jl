@@ -41,7 +41,10 @@ module Mamba
 
   #################### Distribution Types ####################
 
-  typealias DistributionStruct Union(Distribution, Array{Distribution})
+  typealias UnivariateDistributionArray{T<:UnivariateDistribution}
+            Union(Array{T}, Array{Distribution{T}})
+  typealias DistributionStruct
+            Union(Distribution, UnivariateDistributionArray)
 
 
   #################### Dependent Types ####################
@@ -74,7 +77,7 @@ module Mamba
     eval::Function
     sources::Vector{Symbol}
     targets::Vector{Symbol}
-    distr::DistributionStruct
+    distr::UnivariateDistribution
   end
 
   type ArrayStochastic{N} <: ArrayVariate{N}

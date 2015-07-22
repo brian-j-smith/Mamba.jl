@@ -50,7 +50,7 @@ model = Model(
     @modelexpr(mu, s2,
       begin
         sigma = sqrt(s2)
-        Distribution[NewUnivarDist(mu[i], sigma) for i in 1:length(mu)]
+        [NewUnivarDist(mu[i], sigma) for i in 1:length(mu)]
       end
     ),
     false

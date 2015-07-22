@@ -58,7 +58,7 @@ model = Model(
     @modelexpr(ncat, delta, theta, gamma, nChild, nInd,
       begin
         p = Array(Float64, 5)
-        Distribution[
+        [
           begin
             n = ncat[j]
             p[1] = 1.0

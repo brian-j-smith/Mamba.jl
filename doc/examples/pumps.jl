@@ -14,7 +14,7 @@ model = Model(
 
   y = Stochastic(1,
     @modelexpr(theta, t, N,
-      Distribution[
+      UnivariateDistribution[
         begin
           lambda = theta[i] * t[i]
           Poisson(lambda)

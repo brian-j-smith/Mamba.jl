@@ -18,7 +18,7 @@ model = Model(
 
   r = Stochastic(1,
     @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,
-      Distribution[
+      UnivariateDistribution[
         begin
           p = invlogit(alpha0 + alpha1 * x1[i] + alpha2 * x2[i] +
                        alpha12 * x1[i] * x2[i] + b[i])

@@ -1,3 +1,3 @@
 #################### Null Distribution ####################
 
-type NullDistribution <: Distribution end
+type NullUnivariateDistribution <: UnivariateDistribution{ValueSupport} end

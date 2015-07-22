@@ -45,7 +45,7 @@ model = Model(
   y = Stochastic(1,
     @modelexpr(mu, s2, N,
       begin
-        Distribution[Laplace(mu[i], s2) for i in 1:N]
+        [Laplace(mu[i], s2) for i in 1:N]
       end
     ),
     false

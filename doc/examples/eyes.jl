@@ -21,7 +21,7 @@ model = Model(
     @modelexpr(lambda, T, s2, N,
       begin
         sigma = sqrt(s2)
-        Distribution[
+        [
           begin
             mu = lambda[Int(T[i])]
             Normal(mu, sigma)
@@ -37,7 +37,7 @@ model = Model(
     @modelexpr(p, N,
       begin
         P = Float64[p; 1 - p]
-        Distribution[Categorical(P) for i in 1:N]
+        [Categorical(P) for i in 1:N]
       end
     ),
     false
