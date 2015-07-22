@@ -1,4 +1,5 @@
-.. index:: Dependent
+.. index:: Dependent Types
+.. index:: Dependent Types; AbstractDependent
 
 .. _section-Dependent:
 
@@ -92,7 +93,10 @@ Methods
     Write a verbose text representation of nodal values and attributes to the current output stream.
 
 
-.. index:: Logical
+.. index:: Logical Types
+.. index:: Logical Types; AbstractLogical
+.. index:: Logical Types; ScalarLogical
+.. index:: Logical Types; ArrayLogical
 
 .. _section-Logical:
 
@@ -107,21 +111,20 @@ The ``Logical`` types inherit fields and method functions from the ``AbstractDep
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
 
-Declaration
-^^^^^^^^^^^
+Declarations
+^^^^^^^^^^^^
 
 .. code-block:: julia
 
     type ScalarLogical <: ScalarVariate
     type ArrayLogical{N} <: ArrayVariate{N}
-
     typealias AbstractLogical Union(ScalarLogical, ArrayLogical)
 
 
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
+* ``value`` : values of type ``Float64`` for ``ScalarLogical`` nodes and ``Array{Float64}`` for ``ArrayLogical`` nodes that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
 * ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
@@ -181,7 +184,10 @@ Methods
         Returns the node with its values updated.
 
 
-.. index:: Stochastic
+.. index:: StochasticTypes
+.. index:: StochasticTypes; AbstractStochastic
+.. index:: StochasticTypes; ScalarStochastic
+.. index:: StochasticTypes; ArrayStochastic
 
 .. _section-Stochastic:
 
@@ -196,21 +202,20 @@ The ``Stochastic`` types inherit fields and method functions from the ``Abstract
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single :ref:`section-Distributions` object for all node elements or a structure of the same type as the node with element-specific :ref:`section-Distributions` objects.
 
-Declaration
-^^^^^^^^^^^
+Declarations
+^^^^^^^^^^^^
 
 .. code-block:: julia
 
     type ScalarStochastic <: ScalarVariate
     type ArrayStochastic{N} <: ArrayVariate{N}
-
     typealias AbstractStochastic Union(ScalarStochastic, ArrayStochastic)
 
 
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
+* ``value`` : values of type ``Float64`` for ``ScalarStochastic`` nodes and ``Array{Float64}`` for ``ArrayStochastic`` nodes that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
 * ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.

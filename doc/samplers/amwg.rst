@@ -35,7 +35,7 @@ Stand-Alone Function
         .. literalinclude:: amwg.jl
             :language: julia
 
-.. index:: AMWGVariate
+.. index:: Sampler Types; AMWGVariate
 
 AMWGVariate Type
 ^^^^^^^^^^^^^^^^
@@ -69,7 +69,7 @@ Constructors
         Returns a ``AMWGVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 
-.. index:: AMWGTune
+.. index:: Sampler Types; AMWGTune
 
 AMWGTune Type
 ^^^^^^^^^^^^^

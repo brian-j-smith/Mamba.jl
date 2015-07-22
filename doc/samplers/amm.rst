@@ -33,7 +33,7 @@ Stand-Alone Function
         .. literalinclude:: amm.jl
             :language: julia
 
-.. index:: AMMVariate
+.. index:: Sampler Types; AMMVariate
 
 AMMVariate Type
 ^^^^^^^^^^^^^^^
@@ -67,7 +67,7 @@ Constructors
         Returns a ``AMMVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 
-.. index:: AMMTune
+.. index:: Sampler Types; AMMTune
 
 AMMTune Type
 ^^^^^^^^^^^^

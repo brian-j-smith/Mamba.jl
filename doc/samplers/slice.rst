@@ -35,7 +35,7 @@ Stand-Alone Function
             :language: julia
 
 
-.. index:: SliceVariate
+.. index:: Sampler Types; SliceVariate
 
 SliceVariate Type
 ^^^^^^^^^^^^^^^^^
@@ -68,7 +68,7 @@ Constructors
 
         Returns a ``SliceVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
-.. index:: SliceTune
+.. index:: Sampler Types; SliceTune
 
 SliceTune Type
 ^^^^^^^^^^^^^^

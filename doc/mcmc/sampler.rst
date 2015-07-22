@@ -1,4 +1,4 @@
-.. index:: Sampler
+.. index:: Sampler Types
 
 .. _section-Sampler:
 

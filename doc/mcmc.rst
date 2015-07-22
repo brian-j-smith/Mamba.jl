@@ -5,9 +5,6 @@ MCMC Types
 
 The *MCMC* types and their relationships are depicted below with a Unified Modelling Language (UML) diagram.  In the diagram, types are represented with boxes that display their respective names in the top-most panels, and fields in the second panels.  By convention, plus signs denote fields that are publicly accessible, which is always the case for these structures in **julia**.  Hollow triangle arrows point to types that the originator extends.  Solid diamond arrows indicate that a number of instances of the type being pointed to are contained in the originator.  The undirected line between ``Sampler`` and ``Stochastic`` represents a bi-directional association.  Numbers on the graph indicate that there is one (1), zero or more (0..*), or one or more (1..*) instances of a type at the corresponding end of a relationship.
 
-.. figure:: images/dependentUML.png
-    :align: center
-
 .. figure:: images/mcmcUML.png
     :align: center
 

@@ -47,7 +47,7 @@ Stand-Alone Functions
         .. literalinclude:: nuts.jl
             :language: julia
 
-.. index:: NUTSVariate
+.. index:: Sampler Types; NUTSVariate
 
 NUTSVariate Type
 ^^^^^^^^^^^^^^^^
@@ -81,7 +81,7 @@ Constructors
         Returns a ``NUTSVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
 
-.. index:: NUTSTune
+.. index:: Sampler Types; NUTSTune
 
 NUTSTune Type
 ^^^^^^^^^^^^^

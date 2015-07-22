@@ -49,135 +49,8 @@ Constructor
 
         See the :ref:`section-Line-Specification` section of the tutorial.
 
-Methods
-^^^^^^^
-
-.. function:: draw(m::Model; filename::String="")
-
-    Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
-
-    **Arguments**
-
-        * ``m`` : a model for which to construct a graph.
-        * ``filename`` : an external file to which to save the resulting graph, or an empty string to draw to standard output (default).  If a supplied external file name does not include a dot (``.``), the file extension ``.dot`` will be appended automatically.
-
-    **Value**
-
-        The model drawn to an external file or standard output.  Stochastic, logical, and input nodes will be represented by ellipses, diamonds, and rectangles, respectively.  Nodes that are unmonitored in MCMC simulations will be gray-colored.
-
-    **Example**
-
-        See the :ref:`section-Line-DAG` section of the tutorial.
-
-.. function:: getindex(m::Model, key::Symbol)
-
-    Returns a model node identified by its symbol.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
-
-    **Arguments**
-
-        * ``m`` : a model contining the node to get.
-        * ``key`` : symbol of the node to get.
-
-    **Value**
-
-        The specified node.
-
-.. function:: gradlogpdf(m::Model, block::Integer=0, transform::Bool=false; \
-                         dtype::Symbol=:forward)
-              gradlogpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
-                         transform::Bool=false; dtype::Symbol=:forward)
-              gradlogpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
-                          transform::Bool=false; dtype::Symbol=:forward)
-
-    Compute the gradient of log-densities for stochastic nodes.
-
-    **Arguments**
-
-        * ``m`` : a model containing the stochastic nodes for which to compute the gradient.
-        * ``x`` : a value (possibly different than the current one) at which to compute the gradient.
-        * ``block`` : the sampling block of stochastic nodes for which to compute the gradient, if specified; otherwise, all sampling blocks are included.
-        * ``transform`` : whether to compute the gradient of block parameters on the link–transformed scale.
-        * ``dtype`` : type of differentiation for gradient calculations.  Options are
-            * ``:central`` : central differencing.
-            * ``:forward`` : forward differencing.
-
-    **Value**
-
-        The resulting gradient vector.  Method ``gradlogpdf!()`` additionally updates model ``m`` with supplied values ``x``.
-
-    **Note**
-
-        Numerical approximation of derivatives by central and forward differencing is performed with the `Calculus` package :cite:`white:2014:CP`.
-
-.. function:: graph(m::Model)
-
-    Construct a graph representation of model nodes and their relationships.
-
-    **Arguments**
-
-        * ``m`` : a model for which to construct a graph.
-
-    **Value**
-
-        Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
-
-.. function:: graph2dot(m::Model)
-
-    Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
-
-    **Arguments**
-
-        * ``m`` : a model for which to construct a graph.
-
-    **Value**
-
-        A character string representation of the graph suitable for in-line processing.  Stochastic, logical, and input nodes will be represented by ellipses, diamonds, and rectangles, respectively.  Nodes that are unmonitored in MCMC simulations will be gray-colored.
-
-    **Example**
-
-        See the :ref:`section-Line-DAG` section of the tutorial.
-
-.. function:: keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
-
-    Return the symbols of nodes of a specified type.
-
-    **Arguments**
-
-        * ``m`` : a model containing the nodes of interest.
-        * ``ntype`` : the type of nodes to return.  Options are
-            * ``:all`` : all input, logical, and stochastic model nodes.
-            * ``:assigned`` : nodes that have been assigned values.
-            * ``:block`` : stochastic nodes being block-sampled.
-            * ``:dependent`` : logical or stochastic (dependent) nodes.
-            * ``:independent`` or ``:input`` : input (independent) nodes.
-            * ``:logical`` : logical nodes.
-            * ``:monitor`` : stochastic nodes being monitored in MCMC sampler output.
-            * ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
-            * ``:stochastic`` : stochastic nodes.
-        * ``block`` : the block for which to return nodes if ``ntype = :block``, or all blocks if ``block = 0`` (default).
-
-    **Value**
-
-        A vector of node symbols.
-
-.. function:: logpdf(m::Model, block::Integer=0, transform::Bool=false)
-              logpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
-                     transform::Bool=false)
-              logpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
-                      transform::Bool=false)
-
-    Compute the sum of log-densities for stochastic nodes.
-
-    **Arguments**
-
-        * ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
-        * ``x`` : a value (possibly different than the current one) at which to evaluate densities.
-        * ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all stochastic nodes are included.
-        * ``transform`` : whether to evaluate evaluate log-densities of block parameters on the link–transformed scale.
-
-    **Value**
-
-        The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
+MCMC Engine
+^^^^^^^^^^^
 
 .. function:: mcmc(m::Model, inputs::Dict{Symbol}, \
                    inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
@@ -207,43 +80,80 @@ Methods
 
         See the :ref:`section-Line-Simulation` section of the tutorial.
 
-.. function:: relist(m::Model, values::Vector{T<:Real}, block::Integer=0, \
-                     transform::Bool=false)
-              relist(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
-                     transform::Bool=false)
+Indexing
+^^^^^^^^
 
-    Convert a vector of values to a set of logical and/or stochastic node values.
+.. function:: getindex(m::Model, key::Symbol)
 
-    **Arguments**
-
-        * ``m`` : a model with nodes to serve as the template for conversion.
-        * ``values`` : values to convert.
-        * ``block`` : the sampling block of nodes to which to convert ``values``.  Defaults to all blocks.
-        * ``nkeys`` : a vector of symbols identifying the nodes to which to convert ``values``.
-        * ``transform`` : whether to apply an inverse-link transformation in the conversion.
-
-    **Value**
-
-        A dictionary of node symbols and converted values.
-
-.. function:: relist!(m::Model, values::Vector{T<:Real}, block::Integer=0, \
-                      transform::Bool=false)
-              relist!(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
-                      transform::Bool=false)
-
-    Copy a vector of values to a set of logical and/or stochastic nodes.
+    Returns a model node identified by its symbol.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
 
     **Arguments**
 
-        * ``m`` : a model with nodes to which values will be copied.
-        * ``values`` : values to copy.
-        * ``block`` : the sampling block of nodes to which to copy ``values``.  Defaults to all blocks.
-        * ``nkeys`` : a vector of symbols identifying the nodes to which to copy ``values``.
-        * ``transform`` : whether to apply an inverse-link transformation in the copy.
+        * ``m`` : a model contining the node to get.
+        * ``key`` : symbol of the node to get.
 
     **Value**
 
-        Returns the model with copied node values.
+        The specified node.
+
+Display
+^^^^^^^
+
+.. function:: draw(m::Model; filename::String="")
+
+    Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
+
+    **Arguments**
+
+        * ``m`` : a model for which to construct a graph.
+        * ``filename`` : an external file to which to save the resulting graph, or an empty string to draw to standard output (default).  If a supplied external file name does not include a dot (``.``), the file extension ``.dot`` will be appended automatically.
+
+    **Value**
+
+        The model drawn to an external file or standard output.  Stochastic, logical, and input nodes will be represented by ellipses, diamonds, and rectangles, respectively.  Nodes that are unmonitored in MCMC simulations will be gray-colored.
+
+    **Example**
+
+        See the :ref:`section-Line-DAG` section of the tutorial.
+
+.. function:: graph(m::Model)
+
+    Construct a graph representation of model nodes and their relationships.
+
+    **Arguments**
+
+        * ``m`` : a model for which to construct a graph.
+
+    **Value**
+
+        Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
+
+.. function:: graph2dot(m::Model)
+
+    Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
+
+    **Arguments**
+
+        * ``m`` : a model for which to construct a graph.
+
+    **Value**
+
+        A character string representation of the graph suitable for in-line processing.  Stochastic, logical, and input nodes will be represented by ellipses, diamonds, and rectangles, respectively.  Nodes that are unmonitored in MCMC simulations will be gray-colored.
+
+    **Example**
+
+        See the :ref:`section-Line-DAG` section of the tutorial.
+
+.. function:: show(m::Model)
+
+    Write a text representation of the model, nodes, and attributes to the current output stream.
+
+.. function:: showall(m::Model)
+
+    Write a verbose text representation of the model, nodes, and attributes to the current output stream.
+
+Initialization
+^^^^^^^^^^^^^^
 
 .. function:: setinits!(m::Model, inits::Dict{Symbol,Any})
 
@@ -296,13 +206,115 @@ Methods
 
         See the :ref:`section-Line-Specification` and :ref:`section-Line-Simulation` sections of the tutorial.
 
-.. function:: show(m::Model)
+Parameter Block Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    Write a text representation of the model, nodes, and attributes to the current output stream.
+.. function:: gradlogpdf(m::Model, block::Integer=0, transform::Bool=false; \
+                         dtype::Symbol=:forward)
+              gradlogpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+                         transform::Bool=false; dtype::Symbol=:forward)
+              gradlogpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+                          transform::Bool=false; dtype::Symbol=:forward)
 
-.. function:: showall(m::Model)
+    Compute the gradient of log-densities for stochastic nodes.
 
-    Write a verbose text representation of the model, nodes, and attributes to the current output stream.
+    **Arguments**
+
+        * ``m`` : a model containing the stochastic nodes for which to compute the gradient.
+        * ``x`` : a value (possibly different than the current one) at which to compute the gradient.
+        * ``block`` : the sampling block of stochastic nodes for which to compute the gradient, if specified; otherwise, all sampling blocks are included.
+        * ``transform`` : whether to compute the gradient of block parameters on the link–transformed scale.
+        * ``dtype`` : type of differentiation for gradient calculations.  Options are
+            * ``:central`` : central differencing.
+            * ``:forward`` : forward differencing.
+
+    **Value**
+
+        The resulting gradient vector.  Method ``gradlogpdf!()`` additionally updates model ``m`` with supplied values ``x``.
+
+    **Note**
+
+        Numerical approximation of derivatives by central and forward differencing is performed with the `Calculus` package :cite:`white:2014:CP`.
+
+.. function:: keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
+
+    Return the symbols of nodes of a specified type.
+
+    **Arguments**
+
+        * ``m`` : a model containing the nodes of interest.
+        * ``ntype`` : the type of nodes to return.  Options are
+            * ``:all`` : all input, logical, and stochastic model nodes.
+            * ``:assigned`` : nodes that have been assigned values.
+            * ``:block`` : stochastic nodes being block-sampled.
+            * ``:dependent`` : logical or stochastic (dependent) nodes.
+            * ``:independent`` or ``:input`` : input (independent) nodes.
+            * ``:logical`` : logical nodes.
+            * ``:monitor`` : stochastic nodes being monitored in MCMC sampler output.
+            * ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
+            * ``:stochastic`` : stochastic nodes.
+        * ``block`` : the block for which to return nodes if ``ntype = :block``, or all blocks if ``block = 0`` (default).
+
+    **Value**
+
+        A vector of node symbols.
+
+.. function:: logpdf(m::Model, block::Integer=0, transform::Bool=false)
+              logpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+                     transform::Bool=false)
+              logpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+                      transform::Bool=false)
+
+    Compute the sum of log-densities for stochastic nodes.
+
+    **Arguments**
+
+        * ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
+        * ``x`` : a value (possibly different than the current one) at which to evaluate densities.
+        * ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all stochastic nodes are included.
+        * ``transform`` : whether to evaluate evaluate log-densities of block parameters on the link–transformed scale.
+
+    **Value**
+
+        The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
+
+.. function:: relist(m::Model, values::Vector{T<:Real}, block::Integer=0, \
+                     transform::Bool=false)
+              relist(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
+                     transform::Bool=false)
+
+    Convert a vector of values to a set of logical and/or stochastic node values.
+
+    **Arguments**
+
+        * ``m`` : a model with nodes to serve as the template for conversion.
+        * ``values`` : values to convert.
+        * ``block`` : the sampling block of nodes to which to convert ``values``.  Defaults to all blocks.
+        * ``nkeys`` : a vector of symbols identifying the nodes to which to convert ``values``.
+        * ``transform`` : whether to apply an inverse-link transformation in the conversion.
+
+    **Value**
+
+        A dictionary of node symbols and converted values.
+
+.. function:: relist!(m::Model, values::Vector{T<:Real}, block::Integer=0, \
+                      transform::Bool=false)
+              relist!(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
+                      transform::Bool=false)
+
+    Copy a vector of values to a set of logical and/or stochastic nodes.
+
+    **Arguments**
+
+        * ``m`` : a model with nodes to which values will be copied.
+        * ``values`` : values to copy.
+        * ``block`` : the sampling block of nodes to which to copy ``values``.  Defaults to all blocks.
+        * ``nkeys`` : a vector of symbols identifying the nodes to which to copy ``values``.
+        * ``transform`` : whether to apply an inverse-link transformation in the copy.
+
+    **Value**
+
+        Returns the model with copied node values.
 
 .. function:: simulate!(m::Model, block::Integer=0)
 
