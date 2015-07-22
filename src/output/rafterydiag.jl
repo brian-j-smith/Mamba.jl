@@ -3,7 +3,7 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
                               range::Range=1:length(x))
   nx = length(x)
   phi = sqrt(2.0) * erfinv(s)
-  nmin = ceil(Integer, q * (1.0 - q) * (phi / r)^2)
+  nmin = ceil(Int, q * (1.0 - q) * (phi / r)^2)
   if nmin > nx
     warn("At least $nmin samples are needed for specified q, r, and s")
     kthin = burnin = total = NaN

@@ -100,9 +100,9 @@ Fields
 * ``gamma::Float64`` : dual averaging parameter, fixed at :math:`\gamma = 0.05`.
 * ``Hbar::Float64`` : dual averaging parameter, defied as :math:`\bar{H}_m = \left(1 - \frac{1}{m + t_0}\right) \bar{H}_{m-1} + \frac{1}{m + t_0} \left(\text{target} - \frac{\alpha}{n_\alpha}\right)`.
 * ``kappa::Float64`` : dual averaging parameter, fixed at :math:`\kappa = 0.05`.
-* ``m::Integer`` : number of adaptive update iterations :math:`m` that have been performed.
+* ``m::Int`` : number of adaptive update iterations :math:`m` that have been performed.
 * ``mu::Float64`` : dual averaging parameter, defined as :math:`\mu = \log(10 \epsilon_0)`.
-* ``nalpha::Integer`` : the total number :math:`n_\alpha` of leapfrog steps performed.
+* ``nalpha::Int`` : the total number :math:`n_\alpha` of leapfrog steps performed.
 * ``t0::Float64`` : dual averaging parameter, fixed at :math:`t_0 = 10`.
 * ``target::Float64`` : target acceptance rate for the adaptive algorithm.
 

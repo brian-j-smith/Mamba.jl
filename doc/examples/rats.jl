@@ -39,8 +39,8 @@ rats[:xbar] = mean(rats[:x])
 rats[:N] = size(rats[:y], 1)
 rats[:T] = size(rats[:y], 2)
 
-rats[:rat] = Integer[div(i - 1, 5) + 1 for i in 1:150]
-rats[:week] = Integer[(i - 1) % 5 + 1 for i in 1:150]
+rats[:rat] = Int[div(i - 1, 5) + 1 for i in 1:150]
+rats[:week] = Int[(i - 1) % 5 + 1 for i in 1:150]
 rats[:X] = rats[:x][rats[:week]]
 rats[:Xm] = rats[:X] - rats[:xbar]
 

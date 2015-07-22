@@ -10,9 +10,9 @@ type NUTSTune
   gamma::Float64
   Hbar::Float64
   kappa::Float64
-  m::Integer
+  m::Int
   mu::Float64
-  nalpha::Integer
+  nalpha::Int
   t0::Float64
   target::Float64
 end

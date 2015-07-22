@@ -52,7 +52,7 @@ module Mamba
   type ScalarLogical <: ScalarVariate
     value::Float64
     symbol::Symbol
-    nlink::Integer
+    nlink::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -62,7 +62,7 @@ module Mamba
   type ArrayLogical{N} <: ArrayVariate{N}
     value::Array{Float64,N}
     symbol::Symbol
-    nlink::Integer
+    nlink::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -72,7 +72,7 @@ module Mamba
   type ScalarStochastic <: ScalarVariate
     value::Float64
     symbol::Symbol
-    nlink::Integer
+    nlink::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -83,7 +83,7 @@ module Mamba
   type ArrayStochastic{N} <: ArrayVariate{N}
     value::Array{Float64,N}
     symbol::Symbol
-    nlink::Integer
+    nlink::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -113,9 +113,9 @@ module Mamba
     dependents::Vector{Symbol}
     samplers::Vector{Sampler}
     states::Vector{Vector{Float64}}
-    iter::Integer
-    burnin::Integer
-    chain::Integer
+    iter::Int
+    burnin::Int
+    chain::Int
     hasinputs::Bool
     hasinits::Bool
   end
@@ -129,14 +129,14 @@ module Mamba
     value::Array{Float64,3}
     range::Range{Int}
     names::Vector{String}
-    chains::Vector{Integer}
+    chains::Vector{Int}
   end
 
   immutable ModelChains <: AbstractChains
     value::Array{Float64,3}
     range::Range{Int}
     names::Vector{String}
-    chains::Vector{Integer}
+    chains::Vector{Int}
     model::Model
   end
 

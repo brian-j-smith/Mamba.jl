@@ -38,7 +38,7 @@ end
 
 function graph(m::Model)
   g = graph(KeyVertex{Symbol}[], Edge{KeyVertex{Symbol}}[])
-  lookup = Dict{Symbol,Integer}()
+  lookup = Dict{Symbol,Int}()
   for key in keys(m, :all)
     lookup[key] = length(lookup) + 1
     add_vertex!(g, KeyVertex(lookup[key], key))

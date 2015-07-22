@@ -13,7 +13,7 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
             chain, false, false)
   g = graph(m)
   V = vertices(g)
-  lookup = Dict{Symbol,Integer}()
+  lookup = Dict{Symbol,Int}()
   for v in V
     setindex!(lookup, v.index, v.key)
   end

@@ -12,7 +12,7 @@ end
 
 function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           chains::Vector{V}=Integer[])
+           chains::Vector{V}=Int[])
   n, p, m = size(value)
 
   if length(names) == 0
@@ -22,27 +22,27 @@ function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
   end
 
   if length(chains) == 0
-    chains = Integer[1:m;]
+    chains = Int[1:m;]
   elseif length(chains) != m
     error("size(value, 3) and chains dimensions must match")
   end
 
   v = convert(Array{Float64, 3}, value)
-  Chains(v, range(start, thin, n), String[names...], Integer[chains...])
+  Chains(v, range(start, thin, n), String[names...], Int[chains...])
 end
 
 function Chains{T<:Real,U<:String}(value::Matrix{T};
            start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
            chains::Integer=1)
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
-         thin=thin, names=names, chains=Integer[chains])
+         thin=thin, names=names, chains=Int[chains])
 end
 
 function Chains{T<:Real}(value::Vector{T};
            start::Integer=1, thin::Integer=1, names::String="Param1",
            chains::Integer=1)
   Chains(reshape(value, length(value), 1, 1), start=start, thin=thin,
-         names=String[names], chains=Integer[chains])
+         names=String[names], chains=Int[chains])
 end
 
 
@@ -72,9 +72,9 @@ window2inds(c::AbstractChains, window) =
 window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c,1))
 window2inds(c::AbstractChains, window::Range) = begin
   range = @mapiters(window, c)
-  a = max(ceil(Integer, first(range)), 1)
+  a = max(ceil(Int, first(range)), 1)
   b = step(window)
-  c = min(floor(Integer, last(range)), size(c.value,1))
+  c = min(floor(Int, last(range)), size(c.value,1))
   a:b:c
 end
 

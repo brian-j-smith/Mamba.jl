@@ -57,7 +57,7 @@ function densityplot(c::AbstractChains; legend::Bool=false,
 end
 
 function autocorplot(c::AbstractChains;
-                     maxlag::Integer=round(Integer, 10*log10(length(c.range))),
+                     maxlag::Integer=round(Int, 10*log10(length(c.range))),
                      legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
@@ -123,7 +123,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
 
   pp = nrow * ncol               ## plots per page
   ps = length(p)                 ## number of plots
-  np = ceil(Integer, ps / pp)    ## number of pages
+  np = ceil(Int, ps / pp)    ## number of pages
 
   mat = Array(Context, pp)
   for page in 1:np

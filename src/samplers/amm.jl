@@ -5,7 +5,7 @@
 type AMMTune
   adapt::Bool
   beta::Real
-  m::Integer
+  m::Int
   Mv::Vector{Float64}
   Mvv::Matrix{Float64}
   scale::Real

@@ -1,8 +1,8 @@
 function heideldiag{T<:Real}(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
                              etype=:imse, start::Integer=1, args...)
   n = length(x)
-  delta = trunc(Integer, 0.10 * n)
-  y = x[trunc(Integer, n / 2):end]
+  delta = trunc(Int, 0.10 * n)
+  y = x[trunc(Int, n / 2):end]
   S0 = length(y) * mcse(y, etype; args...)^2
   i, pvalue, converged, ybar = 1, 1.0, false, NaN
   while i < n / 2

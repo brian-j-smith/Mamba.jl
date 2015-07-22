@@ -4,9 +4,9 @@
 
 type AMWGTune
   adapt::Bool
-  accept::Vector{Integer}
-  batchsize::Integer
-  m::Integer
+  accept::Vector{Int}
+  batchsize::Int
+  m::Int
   sigma::Vector{Float64}
   target::Real
 end
@@ -21,7 +21,7 @@ end
 function AMWGVariate(x::Vector{Float64}, tune=nothing)
   tune = AMWGTune(
     false,
-    zeros(Integer, length(x)),
+    zeros(Int, length(x)),
     50,
     0,
     Array(Float64, 0),

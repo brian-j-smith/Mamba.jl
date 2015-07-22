@@ -83,9 +83,9 @@ Fields
 ``````
 
 * ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
-* ``accept::Vector{Integer}`` : number of accepted candidate draws generated for each element of the parameter vector during adaptive updating.
-* ``batchsize::Integer`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
-* ``m::Integer`` : number of adaptive update iterations that have been performed.
+* ``accept::Vector{Int}`` : number of accepted candidate draws generated for each element of the parameter vector during adaptive updating.
+* ``batchsize::Int`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
+* ``m::Int`` : number of adaptive update iterations that have been performed.
 * ``sigma::Vector{Float64}`` : updated values of the proposal standard deviations if ``adapt = true``, and the user-defined values otherwise.
 * ``target::Real`` : target acceptance rate for the adaptive algorithm.
 
