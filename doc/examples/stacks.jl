@@ -45,7 +45,7 @@ model = Model(
   y = Stochastic(1,
     @modelexpr(mu, s2, N,
       begin
-        [Laplace(mu[i], s2) for i in 1:N]
+        UnivariateDistribution[Laplace(mu[i], s2) for i in 1:N]
       end
     ),
     false

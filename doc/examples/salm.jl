@@ -17,7 +17,7 @@ model = Model(
 
   y = Stochastic(2,
     @modelexpr(alpha, beta, gamma, x, lambda,
-      [
+      UnivariateDistribution[
         begin
           mu = exp(alpha + beta * log(x[j] + 10) + gamma * x[j] + lambda[i,j])
           Poisson(mu)

@@ -58,7 +58,7 @@ model = Model(
     @modelexpr(ncat, delta, theta, gamma, nChild, nInd,
       begin
         p = Array(Float64, 5)
-        [
+        UnivariateDistribution[
           begin
             n = ncat[j]
             p[1] = 1.0

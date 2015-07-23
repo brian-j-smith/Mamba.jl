@@ -26,7 +26,7 @@ model = Model(
     @modelexpr(mu, nc, N,
       begin
         pc = invlogit(mu)
-        [Binomial(nc[i], pc[i]) for i in 1:N]
+        UnivariateDistribution[Binomial(nc[i], pc[i]) for i in 1:N]
       end
     ),
     false
@@ -36,7 +36,7 @@ model = Model(
     @modelexpr(mu, delta, nt, N,
       begin
         pt = invlogit(mu + delta)
-        [Binomial(nt[i], pt[i]) for i in 1:N]
+        UnivariateDistribution[Binomial(nt[i], pt[i]) for i in 1:N]
       end
     ),
     false

@@ -51,7 +51,7 @@ model = Model(
     @modelexpr(mu, n0, K,
       begin
         p = invlogit(mu)
-        [Binomial(n0[i], p[i]) for i in 1:K]
+        UnivariateDistribution[Binomial(n0[i], p[i]) for i in 1:K]
       end
     ),
     false
@@ -59,7 +59,7 @@ model = Model(
 
   r1 = Stochastic(1,
     @modelexpr(mu, alpha, beta1, beta2, year, b, n1, K,
-      [
+      UnivariateDistribution[
         begin
           p = invlogit(mu[i] + alpha + beta1 * year[i] +
                        beta2 * (year[i]^2 - 22.0) + b[i])

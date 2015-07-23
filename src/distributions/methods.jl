@@ -1,18 +1,45 @@
-#################### Fallback Methods ####################
+#################### Insupport Fallbacks ####################
+
+function insupport(D::Array{UnivariateDistribution}, X::Array)
+  all(i -> insupport(D[i], X[i]), 1:length(D))
+end
+
+
+#################### Link Fallbacks ####################
 
 link(d::Distribution, x, transform::Bool=true) = x
+
+function link(D::Array{UnivariateDistribution}, X::Array, transform::Bool=true)
+  Y = similar(X)
+  map!(i -> link(D[i], X[i], transform), Y, 1:length(D))
+end
+
+
 invlink(d::Distribution, x, transform::Bool=true) = x
 
+function invlink(D::Array{UnivariateDistribution}, X::Array,
+                 transform::Bool=true)
+  Y = similar(X)
+  map!(i -> invlink(D[i], X[i], transform), Y, 1:length(D))
+end
+
+
+#################### Logpdf Fallbacks ####################
+
 function logpdf(d::UnivariateDistribution, x, transform::Bool)
-  all(insupport(d, x)) ? logpdf(d, x) : -Inf
+  all(insupport(d, x)) ? sum(logpdf(d, x)) : -Inf
 end
 
-function logpdf(d::MultivariateDistribution, x, transform::Bool)
-  all(insupport(d, x)) ? logpdf(d, x) : -Inf
+function logpdf(d::MultivariateDistribution, x::Vector, transform::Bool)
+  insupport(d, x) ? logpdf(d, x) : -Inf
 end
 
-function logpdf(d::MatrixDistribution, x, transform::Bool)
-  all(insupport(d, x)) ? logpdf(d, x) : -Inf
+function logpdf(d::MatrixDistribution, x::Matrix, transform::Bool)
+  insupport(d, x) ? logpdf(d, x) : -Inf
+end
+
+function logpdf(D::Array{UnivariateDistribution}, X::Array, transform::Bool=false)
+  mapreduce(i -> logpdf(D[i], X[i], transform), +, 1:length(D))
 end
 
 

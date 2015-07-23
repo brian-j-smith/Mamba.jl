@@ -231,10 +231,8 @@ Aliases
 
 .. code-block:: julia
 
-    typealias UnivariateDistributionArray{T<:UnivariateDistribution}
-              Union(Array{T}, Array{Distribution{T}})
-    typealias DistributionStruct
-              Union(Distribution, UnivariateDistributionArray)
+    typealias DistributionStruct Union(Distribution,
+                                       Array{UnivariateDistribution})
 
 Constructors
 ^^^^^^^^^^^^

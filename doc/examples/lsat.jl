@@ -54,7 +54,7 @@ model = Model(
 
   r = Stochastic(2,
     @modelexpr(beta, theta, alpha, N, T,
-      [
+      UnivariateDistribution[
         begin
           p = invlogit(beta * theta[i] - alpha[j])
           Bernoulli(p)

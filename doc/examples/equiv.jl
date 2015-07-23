@@ -29,7 +29,7 @@ model = Model(
     @modelexpr(delta, mu, phi, pi, s2_1, T,
       begin
         sigma = sqrt(s2_1)
-        [
+        UnivariateDistribution[
           begin
             m = mu + (-1)^(T[i,j]-1) * phi / 2 + (-1)^(j-1) * pi / 2 +
                 delta[i,j]

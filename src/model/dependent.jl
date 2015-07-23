@@ -86,6 +86,18 @@ end
 
 @promote_scalarvariate ScalarStochastic
 
+function Base.showall(io::IO, s::AbstractStochastic)
+  show(io, s)
+  print(io, "\n\nDistribution:\n")
+  show(io, s.distr)
+  print(io, "\nFunction:\n")
+  show(io, s.eval.code)
+  print(io, "\n\nSource Nodes:\n")
+  show(io, s.sources)
+  print(io, "\n\nTarget Nodes:\n")
+  show(io, s.targets)
+end
+
 
 #################### Stochastic Constructors ####################
 
@@ -105,62 +117,45 @@ function Stochastic(d::Integer, expr::Expr,
 end
 
 
-#################### Stochastic Methods ####################
+#################### Stochastic Updating ####################
 
-function Base.showall(io::IO, s::AbstractStochastic)
-  show(io, s)
-  print(io, "\n\nDistribution:\n")
-  show(io, s.distr)
-  print(io, "\nFunction:\n")
-  show(io, s.eval.code)
-  print(io, "\n\nSource Nodes:\n")
-  show(io, s.sources)
-  print(io, "\n\nTarget Nodes:\n")
-  show(io, s.targets)
-end
-
-function setinits!(s::AbstractStochastic, m::Model, x)
-  T = typeof(s.value)
-  s.value = isa(x, T) ? copy(x) : convert(T, x)
+function setinits!(s::ScalarStochastic, m::Model, x)
+  s.value = x
   s.distr = s.eval(m)
-  if isa(s.distr, Array) && size(s.value) != size(s.distr)
-    error("size of stochastic node and Distributions array must match")
-  end
   setmonitor!(s, s.monitor)
 end
 
-insupport(s::AbstractStochastic) = all(mapdistr(insupport, s, s.value))
-
-function invlink(s::AbstractStochastic, x, transform::Bool=true)
-  f(d, x) = invlink(d, x, transform)
-  mapdistr(f, s, x)
-end
-
-function link(s::AbstractStochastic, x, transform::Bool=true)
-  f(d, x) = link(d, x, transform)
-  mapdistr(f, s, x)
-end
-
-function logpdf(s::AbstractStochastic, transform::Bool=false)
-  f(d, x) = logpdf(d, x, transform)
-  sum(mapdistr(f, s, s.value))
-end
-
-function mapdistr(f::Function, s::AbstractStochastic, x)
-  if isa(s.distr, Array)
-    y = similar(x)
-    for i in 1:length(y)
-      y[i] = f(s.distr[i], x[i])
-    end
-    y
-  else
-    f(s.distr, x)
+function setinits!(s::ArrayStochastic, m::Model, x)
+  s.value = oftype(s.value, copy(x))
+  s.distr = s.eval(m)
+  if !isa(s.distr, UnivariateDistribution) && size(s) != size(s.distr)
+    error("dimensions of stochastic node and distribution structure differ")
   end
+  setmonitor!(s, s.monitor)
 end
 
 function update!(s::AbstractStochastic, m::Model)
   s.distr = s.eval(m)
   s
+end
+
+
+#################### Stochastic Distribution Methods ####################
+
+function insupport(s::AbstractStochastic)
+  all(insupport(s.distr, s.value))
+end
+
+function invlink(s::AbstractStochastic, x, transform::Bool=true)
+  invlink(s.distr, x, transform)
+end
+
+function link(s::AbstractStochastic, x, transform::Bool=true)
+  link(s.distr, x, transform)
+end
+
+function logpdf(s::AbstractStochastic, transform::Bool=false)
+  logpdf(s.distr, s.value, transform)
 end
 
 

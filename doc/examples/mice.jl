@@ -23,7 +23,7 @@ model = Model(
 
   t = Stochastic(2,
     @modelexpr(r, beta, tcensor, M, N,
-      [
+      UnivariateDistribution[
         begin
           lambda = exp(-beta[i] / r)
           0 < lambda < Inf ?

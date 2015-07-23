@@ -37,7 +37,7 @@ model = Model(
 
   dN = Stochastic(2,
     @modelexpr(Y, beta, Z, dL0, N, T,
-      [
+      UnivariateDistribution[
         Y[i,j] > 0 ? Poisson(exp(beta * Z[i]) * dL0[j]) : Flat()
         for i in 1:N, j in 1:T
       ]
@@ -54,7 +54,7 @@ model = Model(
 
   dL0 = Stochastic(1,
     @modelexpr(mu, c, T,
-      [Gamma(mu[j], 1 / c) for j in 1:T]
+      UnivariateDistribution[Gamma(mu[j], 1 / c) for j in 1:T]
     ),
     false
   ),
