@@ -259,18 +259,6 @@ Constructors
 Methods
 ^^^^^^^
 
-.. function:: insupport(s::AbstractStochastic)
-
-    Check whether stochastic node values are within the support of its distribution.
-
-    **Arguments**
-
-        * ``s`` : a stochastic node on which to perform the check.
-
-    **Value**
-
-        Returns ``true`` if all values are within the support, and ``false`` otherwise.
-
 .. function:: invlink(s::AbstractStochastic, x, transform::Bool=true)
 
     Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.

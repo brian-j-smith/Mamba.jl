@@ -1,10 +1,3 @@
-#################### Insupport Fallbacks ####################
-
-function insupport(D::Array{UnivariateDistribution}, X::Array)
-  all(i -> insupport(D[i], X[i]), 1:length(D))
-end
-
-
 #################### Link Fallbacks ####################
 
 link(d::Distribution, x, transform::Bool=true) = x

@@ -142,10 +142,6 @@ end
 
 #################### Stochastic Distribution Methods ####################
 
-function insupport(s::AbstractStochastic)
-  all(insupport(s.distr, s.value))
-end
-
 function invlink(s::AbstractStochastic, x, transform::Bool=true)
   invlink(s.distr, x, transform)
 end
