@@ -23,11 +23,11 @@ function gradlogpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
 end
 
 function logpdf(m::Model, block::Integer=0, transform::Bool=false)
-  value = 0
+  value = 0.0
   if block > 0
     sampler = m.samplers[block]
     params = sampler.params
-    nkeys = [setdiff(params, sampler.targets); sampler.targets]
+    nkeys = union(sampler.params, sampler.targets)
   else
     params = keys(m, :block)
     nkeys = m.dependents
@@ -49,7 +49,7 @@ end
 
 function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
            transform::Bool=false)
-  value = 0
+  value = 0.0
   if block > 0
     sampler = m.samplers[block]
     params = sampler.params

@@ -1,6 +1,6 @@
 #################### Flat Distribution ####################
 
-type Flat <: ContinuousUnivariateDistribution end
+immutable Flat <: ContinuousUnivariateDistribution end
 
 minimum(d::Flat) = -Inf
 maximum(d::Flat) = Inf

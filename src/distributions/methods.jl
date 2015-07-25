@@ -1,3 +1,5 @@
+#################### DistributionStruct Methods ####################
+
 #################### Link Fallbacks ####################
 
 link(d::Distribution, x, transform::Bool=true) = x
@@ -19,20 +21,18 @@ end
 
 #################### Logpdf Fallbacks ####################
 
-function logpdf(d::UnivariateDistribution, x, transform::Bool)
-  all(insupport(d, x)) ? sum(logpdf(d, x)) : -Inf
-end
-
-function logpdf(d::MultivariateDistribution, x::Vector, transform::Bool)
+function logpdf(d::Distribution, x, transform::Bool)
   insupport(d, x) ? logpdf(d, x) : -Inf
 end
 
-function logpdf(d::MatrixDistribution, x::Matrix, transform::Bool)
-  insupport(d, x) ? logpdf(d, x) : -Inf
+function logpdf(d::UnivariateDistribution, X::Array{Float64}, transform::Bool)
+  map(x -> logpdf(d, x, transform), X)
 end
 
-function logpdf(D::Array{UnivariateDistribution}, X::Array, transform::Bool=false)
-  mapreduce(i -> logpdf(D[i], X[i], transform), +, 1:length(D))
+function logpdf(D::Array{UnivariateDistribution}, X::Array{Float64},
+                transform::Bool=false)
+  Y = similar(D, Float64)
+  map!(i -> logpdf(D[i], X[i], transform), Y, 1:length(D))
 end
 
 
@@ -97,7 +97,7 @@ function invlink(D::PDMatDistribution, x::Vector, transform::Bool=true)
   end
 end
 
-function logpdf{T<:Real}(D::PDMatDistribution, X::Matrix{T}, transform::Bool)
+function logpdf(D::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
   value = logpdf(D, X)
   if transform && isfinite(value)
     U = chol(X)
@@ -152,7 +152,7 @@ function invlink(d::TransformDistribution, x, transform::Bool=true)
   end
 end
 
-function logpdf(d::TransformDistribution, x::Real, transform::Bool)
+function logpdf(d::TransformDistribution, x::Float64, transform::Bool)
   insupport(d, x) || return -Inf
   value = logpdf(d, x)
   if transform

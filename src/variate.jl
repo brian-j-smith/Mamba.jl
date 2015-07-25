@@ -59,11 +59,10 @@ function names(v::ScalarVariate, prefix)
 end
 
 function names(v::ArrayVariate, prefix)
-  dims = size(v)
   offset = ndims(v) > 1 ? 1 : 2
   values = similar(v.value, String)
   for i in 1:length(v)
-    s = string(ind2sub(dims, i))
+    s = string(ind2sub(size(v), i))
     values[i] = string(prefix, "[", s[2:end-offset], "]")
   end
   values

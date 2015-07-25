@@ -151,7 +151,7 @@ function link(s::AbstractStochastic, x, transform::Bool=true)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)
-  logpdf(s.distr, s.value, transform)
+  sum(logpdf(s.distr, s.value, transform))
 end
 
 
