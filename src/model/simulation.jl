@@ -34,7 +34,7 @@ function logpdf(m::Model, block::Integer=0, transform::Bool=false)
   end
   for key in nkeys
     value += logpdf(m[key], transform && in(key, params))
-    isfinite(value) || break
+    isfinite(value) || return -Inf
   end
   value
 end
@@ -61,12 +61,12 @@ function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
   m[params] = relist(m, x, params, transform)
   for key in setdiff(params, targets)
     value += logpdf(m[key], transform)
-    isfinite(value) || return value
+    isfinite(value) || return -Inf
   end
   for key in targets
     update!(m[key], m)
     value += logpdf(m[key], transform && in(key, params))
-    isfinite(value) || return value
+    isfinite(value) || return -Inf
   end
   value
 end
