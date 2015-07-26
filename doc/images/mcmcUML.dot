@@ -12,7 +12,7 @@ graph MCMC {
 
     DenseArray [label = "{DenseArray}", pos="324,570"]
 
-    AbstractDependent [label = "{AbstractDependent|+ value\l+ symbol : Symbol\l+ nlink::Int\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}", pos="275,425"]
+    AbstractDependent [label = "{AbstractDependent|+ value\l+ symbol : Symbol\l+ linklength::Int\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}", pos="275,425"]
 
     AbstractLogical [label = "{AbstractLogical}", pos="75,425"]
 

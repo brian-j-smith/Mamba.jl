@@ -51,7 +51,7 @@ module Mamba
   type ScalarLogical <: ScalarVariate
     value::Float64
     symbol::Symbol
-    nlink::Int
+    linklength::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -61,7 +61,7 @@ module Mamba
   type ArrayLogical{N} <: ArrayVariate{N}
     value::Array{Float64,N}
     symbol::Symbol
-    nlink::Int
+    linklength::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -71,7 +71,7 @@ module Mamba
   type ScalarStochastic <: ScalarVariate
     value::Float64
     symbol::Symbol
-    nlink::Int
+    linklength::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -82,7 +82,7 @@ module Mamba
   type ArrayStochastic{N} <: ArrayVariate{N}
     value::Array{Float64,N}
     symbol::Symbol
-    nlink::Int
+    linklength::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
