@@ -1,6 +1,6 @@
 # Mamba: Markov chain Monte Carlo (MCMC) for Bayesian analysis in julia
 
-[![Docs](https://readthedocs.org/projects/mambajl/badge/?version=julia-0.4)](http://mambajl.readthedocs.org/en/julia-0.4/)
+[![Docs](https://readthedocs.org/projects/mambajl/badge/?version=release-0.6)](http://mambajl.readthedocs.org/en/release-0.6/)
 [![Build Status](https://travis-ci.org/brian-j-smith/Mamba.jl.svg?branch=julia-0.4)](https://travis-ci.org/brian-j-smith/Mamba.jl)
 
 ## Purpose
@@ -34,5 +34,3 @@ The following **julia** command will install the package:
 ```julia
 julia> Pkg.add("Mamba")
 ```
-
-See the [Package Documentation](http://mambajl.readthedocs.org) for details and examples.
