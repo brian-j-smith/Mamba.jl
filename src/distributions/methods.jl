@@ -1,5 +1,19 @@
 #################### DistributionStruct Methods ####################
 
+dims(d::DistributionStruct) = size(d)
+
+function dims(D::Array{MultivariateDistribution})
+  if length(D) > 0
+    n = length(D[1])
+    all(i -> length(D[i]) == n, 2:length(D)) ||
+      error("lengths of distribution array elements differ")
+  else
+    n = 0
+  end
+  size(D)..., n
+end
+
+
 #################### Link Fallbacks ####################
 
 link(d::Distribution, x, transform::Bool=true) = x
@@ -9,6 +23,8 @@ function link(D::Array{UnivariateDistribution}, X::Array, transform::Bool=true)
   map!(i -> link(D[i], X[i], transform), Y, 1:length(D))
 end
 
+link(D::Array{MultivariateDistribution}, X::Array, transform::Bool=true) = X
+
 
 invlink(d::Distribution, x, transform::Bool=true) = x
 
@@ -17,6 +33,8 @@ function invlink(D::Array{UnivariateDistribution}, X::Array,
   Y = similar(X)
   map!(i -> invlink(D[i], X[i], transform), Y, 1:length(D))
 end
+
+invlink(D::Array{MultivariateDistribution}, X::Array, transform::Bool=true) = X
 
 
 #################### Logpdf Fallbacks ####################
@@ -33,6 +51,14 @@ function logpdf(D::Array{UnivariateDistribution}, X::Array{Float64},
                 transform::Bool=false)
   Y = similar(D, Float64)
   map!(i -> logpdf(D[i], X[i], transform), Y, 1:length(D))
+end
+
+function logpdf(D::Array{MultivariateDistribution}, X::Array{Float64},
+                transform::Bool=false)
+  Y = similar(D, Float64)
+  f(sub...) = Y[sub...] = logpdf(D[sub...], vec(X[sub...,:]), transform)
+  cartesianmap(f, size(D))
+  Y
 end
 
 

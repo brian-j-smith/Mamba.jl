@@ -42,7 +42,8 @@ module Mamba
   #################### Distribution Types ####################
 
   typealias DistributionStruct Union(Distribution,
-                                     Array{UnivariateDistribution})
+                                     Array{UnivariateDistribution},
+                                     Array{MultivariateDistribution})
 
 
   #################### Dependent Types ####################

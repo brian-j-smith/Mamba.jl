@@ -39,6 +39,7 @@ Volume II
 .. toctree::
     :maxdepth: 1
 
+    examples/birats.rst
     examples/jaws.rst
     examples/eyes.rst
 

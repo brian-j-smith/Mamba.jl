@@ -17,6 +17,8 @@ function Base.showall(io::IO, d::AbstractDependent)
   show(io, d.targets)
 end
 
+dims(d::AbstractDependent) = size(d)
+
 invlink(d::AbstractDependent, x, transform::Bool=true) = x
 
 link(d::AbstractDependent, x, transform::Bool=true) = x
@@ -128,8 +130,8 @@ end
 function setinits!(s::ArrayStochastic, m::Model, x)
   s.value = oftype(s.value, copy(x))
   s.distr = s.eval(m)
-  if !isa(s.distr, UnivariateDistribution) && size(s) != size(s.distr)
-    error("dimensions of stochastic node and distribution structure differ")
+  if !isa(s.distr, UnivariateDistribution) && dims(s) != dims(s.distr)
+    error("incompatible stochastic node and distribution structure dimensions")
   end
   setmonitor!(s, s.monitor)
 end

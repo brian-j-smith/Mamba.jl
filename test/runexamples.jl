@@ -4,6 +4,7 @@ include("utils.jl")
 
 test_openbugs = [
   "blocker",
+  "birats",
   "bones",
   "dogs",
   "dyes",
