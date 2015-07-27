@@ -2,6 +2,24 @@
 
 ## Version Updates
 
+### 0.6.0
+* Stable release for julia 0.4.
+* Added support for the specification of ``MultivariateDistribution`` arrays in stochastic nodes.
+* Arrays in stochastic nodes must now be declared as a ``UnivariateDistribution[]`` or as a ``MultivariateDistribution[]``.  In previous package versions, arrays could be declared as a generic ``Distribution[]`` array.  This is no longer allowable due to the need to distinguish between arrays of univariate and multivariate distributions.
+* The following changes were made to internal data structures and generally do not affect the user interface (i.e., model specification, sampling function calls, and sampler output diagnostics and summaries):
+    * The ``VariateType``, which aliases ``Float64``, is deprecated and will be removed in a future version.
+    * The abstract ``Variate`` type was separated into ``ScalarVariate`` and ``ArrayVariate`` types which are subtypes of ``Real`` and ``DenseArray``, respectively.
+    * ``AbstractVariate`` was defined as the ``Union(ScalarVariate,ArrayVariate)``.
+    * The ``Logical`` type was separated into ``ScalarLogical`` and ``ArrayLogical`` types which are subtypes of ``ScalarVariate`` and ``ArrayVariate``, respectively.
+    * ``AbstractLogical`` was defined as the ``Union(ScalarLogical,ArrayLogical)``.
+    * The ``Stochastic`` type was separated into ``ScalarStochastic`` and ``ArrayStochastic`` types which are subtypes of ``ScalarVariate`` and ``ArrayVariate``, respectively.
+    * ``AbstractStochastic`` was defined as the ``Union(ScalarStochastic,ArrayStochastic)``.
+    * ``AbstractDependent`` was defined as the ``Union(AbstractLogical,AbstractStochastic)``.
+    * The ``nlink`` field of logical and stochastic types was renamed to ``linklength``.
+    * An abstract ``AbstractChains`` type was implemented, the ``model`` field removed from the ``Chains`` type, and a new ``ModelChains`` type created to provide the ``model`` field.
+* Added an example of sampling different parameter blocks with different stand-alone samplers (``amwg!`` and ``slice!``).
+* Removed the ``insupport`` method for stochastic types.
+
 ### 0.5.2
 * Applied *Mamba* changes through 0.4.12.
 
