@@ -20,7 +20,7 @@ Fields
 
 * ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``linklength::Integer`` : number of elements returned by the ``link`` method defined on the type.  Generally, this will be the number of unique elements in the node.  In most cases, ``linklength`` will be equal to ``length(value)``.  However, for some structures, like stochastic covariance matrices, ``linklength`` may be smaller.
+* ``linklength::Int`` : number of elements returned by the ``link`` method defined on the type.  Generally, this will be the number of unique elements in the node.  In most cases, ``linklength`` will be equal to ``length(value)``.  However, for some structures, like stochastic covariance matrices, ``linklength`` may be smaller.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
@@ -126,7 +126,7 @@ Fields
 
 * ``value`` : values of type ``Float64`` for ``ScalarLogical`` nodes and ``Array{Float64}`` for ``ArrayLogical`` nodes that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``linklength::Integer`` : number of elements returned by the ``link`` method defined on the type.
+* ``linklength::Int`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
@@ -217,7 +217,7 @@ Fields
 
 * ``value`` : values of type ``Float64`` for ``ScalarStochastic`` nodes and ``Array{Float64}`` for ``ArrayStochastic`` nodes that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``linklength::Integer`` : number of elements returned by the ``link`` method defined on the type.
+* ``linklength::Int`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
