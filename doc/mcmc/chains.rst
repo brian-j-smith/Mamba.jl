@@ -26,7 +26,7 @@ Fields
 * ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
 * ``names::Vector{String}`` : names assigned to the parameter elements.
 * ``chains::Vector{Int}`` : indices to the MCMC runs.
-* ``model::Model`` : the model from which the sampled values were generated (``ModelChain`` only).
+* ``model::Model`` : the model from which the sampled values were generated (``ModelChains`` only).
 
 Constructors
 ^^^^^^^^^^^^
