@@ -56,9 +56,8 @@ end
 function logpdf(D::Array{MultivariateDistribution}, X::Array{Float64},
                 transform::Bool=false)
   Y = similar(D, Float64)
-  f(sub...) = Y[sub...] = logpdf(D[sub...], vec(X[sub...,:]), transform)
-  cartesianmap(f, size(D))
-  Y
+  map!(i -> logpdf(D[i], vec(X[ind2sub(D, i)..., :]), transform), Y,
+       1:length(D))
 end
 
 
