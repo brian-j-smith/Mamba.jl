@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.6.1
+* Compatibility updates for julia 0.4 prerelease.
+
 ### 0.6.0
 * Stable release for julia 0.4.
 * Added support for the specification of ``MultivariateDistribution`` arrays in stochastic nodes.
