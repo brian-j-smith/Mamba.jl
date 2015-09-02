@@ -2,7 +2,6 @@ using Distributions
 
 module Mamba
 
-  using Cairo
   using Distributions
   using Gadfly
 
