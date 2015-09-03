@@ -147,3 +147,36 @@ function link(c::AbstractChains)
   end
   cc
 end
+
+function iscontinuous(c::AbstractChains, threshold::Real=0)
+  nrows, nvars, nchains = size(c.value)
+  result = trues(nvars)
+  if threshold == 0
+    return trues(nvars)
+  elseif threshold == Inf
+    return falses(nvars)
+  end
+  seen = Dict{Float64,Int64}()
+  for i in 1:nvars
+    num_uniq = 0
+    for k in 1:nchains, j in 1:nrows
+      if haskey(seen,c.value[j,i,k])
+        seen[c.value[j,i,k]] += 1
+      else
+        seen[c.value[j,i,k]] = 1
+        num_uniq += 1
+      end
+      if num_uniq >= threshold
+        break
+      end
+    end
+    if num_uniq < threshold
+      result[i] = false
+    end
+  end
+  return result
+end
+
+function isdiscrete(c::AbstractChains, threshold::Int=0)
+  !iscontinuous(c,threshold)
+end

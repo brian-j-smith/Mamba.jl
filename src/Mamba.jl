@@ -5,6 +5,7 @@ module Mamba
   using Cairo
   using Distributions
   using Gadfly
+  using StatsBase
 
 
   #################### Imports ####################
@@ -228,6 +229,8 @@ module Mamba
     insupport,
     invlink,
     invlogit,
+    iscontinuous,
+    isdiscrete,
     link,
     logit,
     logpdf,
