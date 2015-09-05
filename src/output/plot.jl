@@ -1,4 +1,4 @@
-function plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :mixeddensity];
+function plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :density];
               legend::Bool=false, args...)
   n = length(ptype)
   p = Array(Plot, n, size(c, 2))
