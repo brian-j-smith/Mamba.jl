@@ -150,33 +150,27 @@ end
 
 function iscontinuous(c::AbstractChains, threshold::Real=0)
   nrows, nvars, nchains = size(c.value)
-  result = trues(nvars)
-  if threshold == 0
-    return trues(nvars)
+  result = Array(Bool, nvars * (nrows > 0))
+  if threshold < 1
+    result[:] = true
   elseif threshold == Inf
-    return falses(nvars)
-  end
-  seen = Dict{Float64,Int64}()
-  for i in 1:nvars
-    num_uniq = 0
-    for k in 1:nchains, j in 1:nrows
-      if haskey(seen,c.value[j,i,k])
-        seen[c.value[j,i,k]] += 1
-      else
-        seen[c.value[j,i,k]] = 1
-        num_uniq += 1
-      end
-      if num_uniq >= threshold
-        break
-      end
-    end
-    if num_uniq < threshold
+    result[:] = false
+  else
+    for i in 1:nvars
       result[i] = false
+      seen = Set{Float64}()
+      for k in 1:nchains, j in 1:nrows
+        union!(seen, c.value[j,i,k])
+        if length(seen) > threshold
+          result[i] = true
+          break
+        end
+      end
     end
   end
   return result
 end
 
-function isdiscrete(c::AbstractChains, threshold::Int=0)
-  !iscontinuous(c,threshold)
+function isdiscrete(c::AbstractChains, threshold::Real=0)
+  !iscontinuous(c, threshold)
 end
