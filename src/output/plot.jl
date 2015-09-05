@@ -37,12 +37,11 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
   return plots
 end
 
-function mixeddensityplot(c::AbstractChains; legend::Bool=false, maxbars::Real=10,
-                     trim::Tuple{Real,Real}=(0.025,0.975), position::Symbol=:stack, na...)
-  plots = Array(Plot, size(c)[2])
+function mixeddensityplot(c::AbstractChains; maxbars::Real=10, args...)
+  plots = Array(Plot, size(c, 2))
   continuous = iscontinuous(c, maxbars)
-  plots[continuous] = densityplot(c[:,continuous,:], legend=legend, trim=trim)
-  plots[!continuous] = barplot(c[:,!continuous,:], legend=legend, position=position)
+  plots[continuous] = plot(c[:,continuous,:], :density; args...)
+  plots[!continuous] = plot(c[:,!continuous,:], :bar; args...)
   return plots
 end
 
