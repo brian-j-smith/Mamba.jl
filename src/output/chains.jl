@@ -163,30 +163,3 @@ function link(c::AbstractChains)
   end
   cc
 end
-
-function iscontinuous(c::AbstractChains, threshold::Real=0)
-  nrows, nvars, nchains = size(c.value)
-  result = Array(Bool, nvars * (nrows > 0))
-  if threshold < 1
-    result[:] = true
-  elseif threshold == Inf
-    result[:] = false
-  else
-    for i in 1:nvars
-      result[i] = false
-      seen = Set{Float64}()
-      for k in 1:nchains, j in 1:nrows
-        union!(seen, c.value[j,i,k])
-        if length(seen) > threshold
-          result[i] = true
-          break
-        end
-      end
-    end
-  end
-  return result
-end
-
-function isdiscrete(c::AbstractChains, threshold::Real=0)
-  !iscontinuous(c, threshold)
-end

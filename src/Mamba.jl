@@ -228,8 +228,6 @@ module Mamba
     insupport,
     invlink,
     invlogit,
-    iscontinuous,
-    isdiscrete,
     link,
     logit,
     logpdf,
