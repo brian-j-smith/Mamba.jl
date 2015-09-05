@@ -66,43 +66,32 @@ function densityplot(c::AbstractChains; legend::Bool=false,
   return plots
 end
 
-function barplot(c::AbstractChains; legend::Bool=false, 
+function barplot(c::AbstractChains; legend::Bool=false,
                  position::Symbol=:stack, na...)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
+  ymax = position == :stack ? nchains : 1.0
   for i in 1:nvars
-    m = countmap(c.value[:,i,:])
-    if length(m) == 1
-      if haskey(m,1.0)
-        m[0.0] = 0
-      else
-        m[1.0] = 0
-      end
-    end
-    m0 = Dict{Real,Int64}([collect(keys(m))[j] => 0 for j in 1:length(m)]...)
-    x = Float64[]
-    y = Float64[]
-    lm = Int64[]
+    S = unique(c.value[:,i,:])
+    d = length(S)
+    x = Array(Float64, d, nchains)
+    y = Array(Float64, d, nchains)
     for j in 1:nchains
-      mj = merge(m0,countmap(c.value[:,i,j]))
-      for (key,value) in mj
-        push!(x,key)
-        push!(y,value/nrows)
+      m = countmap(c.value[:,i,j])
+      for key in setdiff(S, keys(m))
+        m[key] = 0
       end
-      push!(lm,length(mj))
+      x[:,j] = collect(keys(m))
+      y[:,j] = map(value -> value / nrows, values(m))
     end
-    maxvalue = 1.0
-    if position == :stack
-      maxvalue = nchains
-    end
-    plots[i] = plot(x = x, y=y, Geom.bar(position=position),
-                    color = [[ repeat([j],inner=[lm[j]]) for j in 1:nchains]...],
+    plots[i] = plot(x=vec(x), y=vec(y), Geom.bar(position=position),
+                    color=repeat(c.chains, inner=[d]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
                     Guide.ylabel("Density", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos),
-                    Scale.x_discrete, Scale.y_continuous(minvalue=0.0,maxvalue=maxvalue))
+                    Scale.y_continuous(minvalue=0.0, maxvalue=ymax))
   end
   return plots
 end
