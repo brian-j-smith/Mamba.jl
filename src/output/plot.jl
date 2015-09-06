@@ -37,9 +37,10 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
   return plots
 end
 
-function mixeddensityplot(c::AbstractChains; maxbars::Real=10, args...)
+function mixeddensityplot(c::AbstractChains;
+                          barbounds::Tuple{Real,Real}=(0,Inf), args...)
   plots = Array(Plot, size(c, 2))
-  discrete = indiscretesupport(c, (0, maxbars - 1))
+  discrete = indiscretesupport(c, barbounds)
   plots[discrete] = plot(c[:,discrete,:], :bar; args...)
   plots[!discrete] = plot(c[:,!discrete,:], :density; args...)
   return plots
