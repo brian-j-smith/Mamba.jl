@@ -71,22 +71,22 @@ function barplot(c::AbstractChains; legend::Bool=false,
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
-  ymax = position == :stack ? nchains : 1.0
   for i in 1:nvars
     S = unique(c.value[:,i,:])
-    d = length(S)
-    x = Array(Float64, d, nchains)
-    y = Array(Float64, d, nchains)
+    n = length(S)
+    x = repmat(S, 1, nchains)
+    y = zeros(n, nchains)
     for j in 1:nchains
       m = countmap(c.value[:,i,j])
-      for key in setdiff(S, keys(m))
-        m[key] = 0
+      for k in 1:n
+        if in(S[k], keys(m))
+          y[k,j] = m[S[k]] / nrows
+        end
       end
-      x[:,j] = collect(keys(m))
-      y[:,j] = map(value -> value / nrows, values(m))
     end
+    ymax = maximum(position == :stack ? mapslices(sum, y, [2]) : y)
     plots[i] = plot(x=vec(x), y=vec(y), Geom.bar(position=position),
-                    color=repeat(c.chains, inner=[d]),
+                    color=repeat(c.chains, inner=[n]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
                     Guide.ylabel("Density", orientation=:vertical),
