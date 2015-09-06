@@ -137,7 +137,7 @@ function header(c::AbstractChains)
   )
 end
 
-function isdiscrete(c::AbstractChains, bounds::Tuple{Real,Real}=(0,Inf))
+function indiscretesupport(c::AbstractChains, bounds::Tuple{Real,Real}=(0,Inf))
   nrows, nvars, nchains = size(c.value)
   result = Array(Bool, nvars * (nrows > 0))
   for i in 1:nvars

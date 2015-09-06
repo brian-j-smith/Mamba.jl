@@ -39,7 +39,7 @@ end
 
 function mixeddensityplot(c::AbstractChains; maxbars::Real=10, args...)
   plots = Array(Plot, size(c, 2))
-  discrete = isdiscrete(c, (0, maxbars - 1))
+  discrete = indiscretesupport(c, (0, maxbars - 1))
   plots[discrete] = plot(c[:,discrete,:], :bar; args...)
   plots[!discrete] = plot(c[:,!discrete,:], :density; args...)
   return plots
