@@ -10,14 +10,13 @@ function plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :density];
 end
 
 function plot(c::AbstractChains, ptype::Symbol; legend::Bool=false, args...)
-  ptype == :trace        ? traceplot(c; legend=legend, args...) :
-  ptype == :density      ? densityplot(c; legend=legend, args...) :
-  ptype == :bar          ? barplot(c; legend=legend, args...) :
-  ptype == :mixeddensity ? mixeddensityplot(c; legend=legend, args...) :
   ptype == :autocor      ? autocorplot(c; legend=legend, args...) :
+  ptype == :bar          ? barplot(c; legend=legend, args...) :
+  ptype == :density      ? densityplot(c; legend=legend, args...) :
   ptype == :mean         ? meanplot(c; legend=legend, args...) :
-  ptype == :summary      ? error("use plot type [:trace, :density] instead of :summary") :
-    error("unsupported plot type $ptype")
+  ptype == :mixeddensity ? mixeddensityplot(c; legend=legend, args...) :
+  ptype == :trace        ? traceplot(c; legend=legend, args...) :
+                           error("unsupported plot type $ptype")
 end
 
 function traceplot(c::AbstractChains; legend::Bool=false, na...)
@@ -164,7 +163,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
 
   pp = nrow * ncol               ## plots per page
   ps = length(p)                 ## number of plots
-  np = ceil(Int, ps / pp)    ## number of pages
+  np = ceil(Int, ps / pp)        ## number of pages
 
   mat = Array(Context, pp)
   for page in 1:np
@@ -187,10 +186,10 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
       if j <= nrem
         mat[j] = render(p[(page - 1) * pp + j])
       else
-        mat[j] = context() ## pad with blank plots
+        mat[j] = context()
       end
     end
-    result = byrow ? reshape(mat, ncol, nrow).' : reshape(mat, nrow, ncol)
+    result = byrow ? reshape(mat, ncol, nrow)' : reshape(mat, nrow, ncol)
 
     draw(img, gridstack(result))
   end
