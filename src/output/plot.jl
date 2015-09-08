@@ -10,11 +10,13 @@ function plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :density];
 end
 
 function plot(c::AbstractChains, ptype::Symbol; legend::Bool=false, args...)
-  ptype == :trace   ? traceplot(c; legend=legend, args...) :
-  ptype == :density ? densityplot(c; legend=legend, args...) :
-  ptype == :autocor ? autocorplot(c; legend=legend, args...) :
-  ptype == :mean    ? meanplot(c; legend=legend, args...) :
-  ptype == :summary ? error("use plot type [:trace, :density] instead of :summary") :
+  ptype == :trace        ? traceplot(c; legend=legend, args...) :
+  ptype == :density      ? densityplot(c; legend=legend, args...) :
+  ptype == :bar          ? barplot(c; legend=legend, args...) :
+  ptype == :mixeddensity ? mixeddensityplot(c; legend=legend, args...) :
+  ptype == :autocor      ? autocorplot(c; legend=legend, args...) :
+  ptype == :mean         ? meanplot(c; legend=legend, args...) :
+  ptype == :summary      ? error("use plot type [:trace, :density] instead of :summary") :
     error("unsupported plot type $ptype")
 end
 
@@ -35,6 +37,15 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
   return plots
 end
 
+function mixeddensityplot(c::AbstractChains;
+                          barbounds::Tuple{Real,Real}=(0,Inf), args...)
+  plots = Array(Plot, size(c, 2))
+  discrete = indiscretesupport(c, barbounds)
+  plots[discrete] = plot(c[:,discrete,:], :bar; args...)
+  plots[!discrete] = plot(c[:,!discrete,:], :density; args...)
+  return plots
+end
+
 function densityplot(c::AbstractChains; legend::Bool=false,
                      trim::Tuple{Real,Real}=(0.025,0.975), na...)
   nrows, nvars, nchains = size(c.value)
@@ -52,6 +63,36 @@ function densityplot(c::AbstractChains; legend::Bool=false,
                     Guide.xlabel("Value", orientation=:horizontal),
                     Guide.ylabel("Density", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
+  end
+  return plots
+end
+
+function barplot(c::AbstractChains; legend::Bool=false,
+                 position::Symbol=:stack, na...)
+  nrows, nvars, nchains = size(c.value)
+  plots = Array(Plot, nvars)
+  pos = legend ? :right : :none
+  for i in 1:nvars
+    S = unique(c.value[:,i,:])
+    n = length(S)
+    x = repmat(S, 1, nchains)
+    y = zeros(n, nchains)
+    for j in 1:nchains
+      m = countmap(c.value[:,i,j])
+      for k in 1:n
+        if in(S[k], keys(m))
+          y[k,j] = m[S[k]] / nrows
+        end
+      end
+    end
+    ymax = maximum(position == :stack ? mapslices(sum, y, [2]) : y)
+    plots[i] = plot(x=vec(x), y=vec(y), Geom.bar(position=position),
+                    color=repeat(c.chains, inner=[n]),
+                    Scale.color_discrete(), Guide.colorkey("Chain"),
+                    Guide.xlabel("Value", orientation=:horizontal),
+                    Guide.ylabel("Density", orientation=:vertical),
+                    Guide.title(c.names[i]), Theme(key_position=pos),
+                    Scale.y_continuous(minvalue=0.0, maxvalue=ymax))
   end
   return plots
 end

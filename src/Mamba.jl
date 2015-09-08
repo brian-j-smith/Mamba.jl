@@ -24,8 +24,8 @@ module Mamba
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
   import Showoff: showoff
-  import StatsBase: autocor, autocov, counts, describe, predict, quantile, sem,
-         StatsBase, summarystats
+  import StatsBase: autocor, autocov, countmap, counts, describe, predict,
+         quantile, sem, StatsBase, summarystats
 
   include("distributions/pdmats2.jl")
   importall .PDMats2

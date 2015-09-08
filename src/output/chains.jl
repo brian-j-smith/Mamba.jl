@@ -137,6 +137,22 @@ function header(c::AbstractChains)
   )
 end
 
+function indiscretesupport(c::AbstractChains, bounds::Tuple{Real,Real}=(0,Inf))
+  nrows, nvars, nchains = size(c.value)
+  result = Array(Bool, nvars * (nrows > 0))
+  for i in 1:nvars
+    result[i] = true
+    for j in 1:nrows, k in 1:nchains
+      x = c.value[j,i,k]
+      if !isinteger(x) || x < bounds[1] || x > bounds[2]
+        result[i] = false
+        break
+      end
+    end
+  end
+  result
+end
+
 function link(c::AbstractChains)
   cc = copy(c.value)
   for j in 1:length(c.names)
