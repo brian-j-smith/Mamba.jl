@@ -1,8 +1,11 @@
 # Mamba: Markov chain Monte Carlo (MCMC) for Bayesian analysis in julia
 
-[![Docs](https://readthedocs.org/projects/mambajl/badge/?version=release-0.6)](http://mambajl.readthedocs.org/en/release-0.6/)
-[![Mamba](http://pkg.julialang.org/badges/Mamba_nightly.svg)](http://pkg.julialang.org/?pkg=Mamba&ver=nightly)
-[![Build Status](https://travis-ci.org/brian-j-smith/Mamba.jl.svg?branch=release-0.6)](https://travis-ci.org/brian-j-smith/Mamba.jl)
+julia 0.4: [![Docs](https://readthedocs.org/projects/mambajl/badge/?version=release-0.6)](http://mambajl.readthedocs.org/en/release-0.6/)
+[![Mamba](http://pkg.julialang.org/badges/Mamba_0.4.svg)](http://pkg.julialang.org/?pkg=Mamba&ver=0.4)
+[![Build Status](https://travis-ci.org/brian-j-smith/Mamba.jl.svg?branch=release-0.6)](https://travis-ci.org/brian-j-smith/Mamba.jl)  
+julia 0.3: [![Docs](https://readthedocs.org/projects/mambajl/badge/?version=release-0.4)](http://mambajl.readthedocs.org/en/release-0.4/)
+[![Mamba](http://pkg.julialang.org/badges/Mamba_0.3.svg)](http://pkg.julialang.org/?pkg=Mamba&ver=0.3)
+[![Build Status](https://travis-ci.org/brian-j-smith/Mamba.jl.svg?branch=release-0.4)](https://travis-ci.org/brian-j-smith/Mamba.jl)
 
 ## Purpose
 
