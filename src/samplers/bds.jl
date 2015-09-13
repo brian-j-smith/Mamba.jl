@@ -30,6 +30,11 @@ function BDS(params::Vector{Symbol}, d::Integer)
   BDS(params, Γ)
 end
 
+function BDS(params::Vector{Symbol}, d::Integer, k::Integer=1)
+  Γ = collect(combinations([1:d;], k))
+  BDS(params, Γ)
+end
+
 function BDS(params::Vector{Symbol}, Γ::Vector{Vector{Int}})
   Sampler(params,
     quote
