@@ -1,39 +1,33 @@
+################################################################################
+## Linear Regression
+##   y ~ MvNormal(X * (beta0 .* gamma), 1)
+##   gamma ~ Bernoulli(0.5)
+################################################################################
+
 using Mamba
 
-p = 10
-n = 150
+## Data
+n, p = 25, 10
+X = randn(n, p)
+beta0 = randn(p)
+gamma0 = rand(0:1, p)
+y = X * (beta0 .* gamma0) + randn(n)
 
-X = reshape(rand(Normal(0,1),p*n),n,p)
-beta0 = rand(Normal(0,1),p)
-gamma0 = rand(Bernoulli(0.5),p)
-
-y = X*(beta0.*gamma0)
-
-data = Dict(
-  :y => y,
-  :X => X,
-  :beta0 => beta0,
-  :n => n,
-  :p => p
-)
-
-logf = function(x)
-  logpdf(MvNormal(data[:X]*(data[:beta0].*x),1),data[:y])
+## Log-transformed Posterior(gamma) + Constant
+logf = function(gamma)
+  logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
 end
 
+## MCMC Simulation with Binary Deterministic Sampling
 t = 10000
-gamma_names = fill("",p)
-for i in 1:p
-  gamma_names[i] = "gamma$i"
+sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
+gamma = BDSVariate(zeros(p))
+indexset = collect(combinations(1:p, 1))
+for i in 1:t
+  bds!(gamma, indexset, logf)
+  sim[i,:,1] = gamma
 end
-sim = Chains(t, p, names=gamma_names)
-nu = BDSVariate(zeros(p))
-
-for i in 1:t 
-  bds!(nu,Array{Int64,1}[[j] for j in 1:p],logf)
-  sim[i,:,1] = nu[1:p]
-end
-
-p=plot(sim,[:trace,:mixeddensity])
-draw(p,filename="example")
 describe(sim)
+
+p = plot(sim, [:trace, :mixeddensity])
+draw(p, filename = "bdsplot")
