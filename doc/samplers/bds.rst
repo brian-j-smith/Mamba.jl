@@ -1,11 +1,9 @@
-.. index:: Sampling Functions; Binary Deterministic
+.. index:: Sampling Functions; Binary Deterministic Sampler
 
-Binary Deterministic (BDS)
------------------------
+Binary Deterministic Sampler (BDS)
+----------------------------------
 
-Implementation of the binary deterministic sampler of Schafer :cite:`schafer:2013:SMCB` (sometimes referred to as the 
-metropolised Gibbs or Modiﬁed metropolised Gibbs) for simulating autocorrelated draws from a distribution that can 
-be specified up to a constant of proportionality.
+Implementation of the binary deterministic sampler of Schafer :cite:`schafer:2012:DIS,schafer:2013:SMCB` (sometimes referred to as the *Metropolized Gibbs* or *Modified Metropolized Gibbs*) for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 
 Stand-Alone Function
@@ -13,15 +11,14 @@ Stand-Alone Function
 
 .. function:: bds!(v::BDSVariate, Γ::Vector{Vector{Int}}, logf::Function)
 
-    Simulate one draw from a target distribution using a binary deterministic sampler.  Parameters are assumed to be binary
-    integer values (i.e. 0 or 1). 
+    Simulate one draw from a target distribution using a binary deterministic sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``Γ`` : Indices of parameters to flip to other state.
+        * ``Γ`` : candidate set of indices of the parameters whose states are to be flipped simultaneously.
         * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
-       
+
     **Value**
 
         Returns ``v`` updated with simulated values and associated tuning parameters.
@@ -36,8 +33,8 @@ Stand-Alone Function
 
 .. index:: Sampler Types; BDSVariate
 
-SliceVariate Type
-^^^^^^^^^^^^^^^^^
+BDSVariate Type
+^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
@@ -70,7 +67,7 @@ Constructors
 .. index:: Sampler Types; BDSTune
 
 BDSTune Type
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 
 Declaration
 ```````````
@@ -79,30 +76,24 @@ Declaration
 
 Fields
 ``````
-* ``Γ::Vector{Vector{Int}}`` : Indices of parameters to flip to other state.
+* ``Γ::Vector{Vector{Int}}`` : candidate set of indices of the parameters whose states are to be flipped simultaneously.
 
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: BDS(params::Vector{Symbol}, [d::Integer, k::Integer=1 | Γ::Vector{Vector{Int}}])
+.. function:: BDS(params::Vector{Symbol}, d::Integer, k::Integer=1)
+              BDS(params::Vector{Symbol}, Γ::Vector{Vector{Int}})
 
-    Construct a ``Sampler`` object for binary deterministic sampling.  Parameters are assumed to be binary integers 
-    (i.e. 0 or 1).
+    Construct a ``Sampler`` object for binary deterministic sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.
-        * ``d`` : Integer equal to the number of combined elements of nodes ``params``, used to determine the number of
-        parameters to flip at the same time.
-        * ``k`` : Number of parameters to flip at the same time.
-        * ``Γ::Vector{Vector{Int}}`` : Indices of parameters to flip to other state. If not provided it will be all possible
-        combinations of indices of size ``k``. 
+        * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
+        * ``d`` : total length of the parameters in the combined nodes.
+        * ``k`` : generate all combinations of ``k <= d`` candidate indices of the parameters to flip.
+        * ``Γ`` : candidate set of indices of the parameters to flip.
 
     **Value**
 
         Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`section-Examples` section.
