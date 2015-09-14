@@ -95,8 +95,7 @@ Sampler Constructor
         * ``params`` : stochastic nodes to be updated with the sampler.
         * ``d`` : Integer equal to the number of combined elements of nodes ``params``, used to determine the number of
         parameters to flip at the same time.
-        * ``k`` : Number of parameters to flip at the same time. If not provided it will be sampled from a truncated 
-        Geometric with mean d/2. 
+        * ``k`` : Number of parameters to flip at the same time.
         * ``Γ::Vector{Vector{Int}}`` : Indices of parameters to flip to other state. If not provided it will be all possible
         combinations of indices of size ``k``. 
 

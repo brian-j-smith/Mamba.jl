@@ -23,15 +23,9 @@ end
 
 #################### Sampler Constructor ####################
 
-function BDS(params::Vector{Symbol}, d::Integer)
-  G = Truncated(Geometric(2 / d), 1, d)
-  k = Int(rand(G))
-  Γ = collect(combinations([1:d;], k))
-  BDS(params, Γ)
-end
-
 function BDS(params::Vector{Symbol}, d::Integer, k::Integer=1)
-  Γ = collect(combinations([1:d;], k))
+  d >= k > 0 || throw(ArgumentError("values must be d >= k > 0"))
+  Γ = collect(combinations(1:d, k))
   BDS(params, Γ)
 end
 
