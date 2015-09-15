@@ -3,7 +3,7 @@
 #################### Types ####################
 
 type BDSTune
-  Γ::Vector{Vector{Int}}
+  indexset::Vector{Vector{Int}}
 end
 
 type BDSVariate <: VectorVariate
@@ -25,38 +25,38 @@ end
 
 function BDS(params::Vector{Symbol}, d::Integer, k::Integer=1)
   d >= k > 0 || throw(ArgumentError("values must be d >= k > 0"))
-  Γ = collect(combinations(1:d, k))
-  BDS(params, Γ)
+  indexset = collect(combinations(1:d, k))
+  BDS(params, indexset)
 end
 
-function BDS(params::Vector{Symbol}, Γ::Vector{Vector{Int}})
+function BDS(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
   Sampler(params,
     quote
       x = unlist(model, block, false)
       tunepar = tune(model, block)
       f = y -> logpdf!(model, y, block, false)
       v = BDSVariate(x)
-      bds!(v, tunepar["Γ"], f)
+      bds!(v, tunepar["indexset"], f)
       relist(model, v.value, block, false)
     end,
-    Dict("Γ" => Γ)
+    Dict("indexset" => indexset)
   )
 end
 
 
 #################### Sampling Functions ####################
 
-function bds!(v::BDSVariate, Γ::Vector{Vector{Int}}, logf::Function)
+function bds!(v::BDSVariate, indexset::Vector{Vector{Int}}, logf::Function)
   x = v[:]
 
   # sample indices and flip values
-  idx = Γ[rand(1:length(Γ))]
+  idx = indexset[rand(1:length(indexset))]
   x[idx] = 1.0 - v[idx]
 
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x
   end
-  v.tune.Γ = Γ
+  v.tune.indexset = indexset
 
   v
 end

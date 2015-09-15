@@ -9,14 +9,14 @@ Implementation of the binary deterministic sampler of Schafer :cite:`schafer:201
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bds!(v::BDSVariate, Γ::Vector{Vector{Int}}, logf::Function)
+.. function:: bds!(v::BDSVariate, indexset::Vector{Vector{Int}}, logf::Function)
 
     Simulate one draw from a target distribution using a binary deterministic sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``Γ`` : candidate set of indices of the parameters whose states are to be flipped simultaneously.
+        * ``indexset`` : candidate set of indices of the parameters whose states are to be flipped simultaneously.
         * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 
     **Value**
@@ -76,14 +76,14 @@ Declaration
 
 Fields
 ``````
-* ``Γ::Vector{Vector{Int}}`` : candidate set of indices of the parameters whose states are to be flipped simultaneously.
+* ``indexset::Vector{Vector{Int}}`` : candidate set of indices of the parameters whose states are to be flipped simultaneously.
 
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: BDS(params::Vector{Symbol}, d::Integer, k::Integer=1)
-              BDS(params::Vector{Symbol}, Γ::Vector{Vector{Int}})
+              BDS(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
 
     Construct a ``Sampler`` object for binary deterministic sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
@@ -92,7 +92,7 @@ Sampler Constructor
         * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
         * ``d`` : total length of the parameters in the combined nodes.
         * ``k`` : generate all combinations of ``k <= d`` candidate indices of the parameters to flip.
-        * ``Γ`` : candidate set of indices of the parameters to flip.
+        * ``indexset`` : candidate set of indices of the parameters to flip.
 
     **Value**
 
