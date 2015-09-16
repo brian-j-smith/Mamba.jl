@@ -1,5 +1,14 @@
 #################### Missing Values Sampler ####################
 
+#################### Types ####################
+
+type StochasticIndices
+  dims::Tuple
+  value::Vector{Int}
+  distr::Vector{Int}
+end
+
+
 #################### Sampler Constructor ####################
 
 function MISS(params::Vector{Symbol})
@@ -9,16 +18,16 @@ function MISS(params::Vector{Symbol})
       tunepar = tune(model, block)
       initialize = tunepar["sampler"] == nothing
       if initialize
-        tunepar["sampler"] = Dict{Symbol,Vector{Int}}()
+        tunepar["sampler"] = Dict{Symbol,StochasticIndices}()
       end
       for key in keys(model, :block, block)
         node = model[key]
         v = copy(node.value)
         if initialize
-          tunepar["sampler"][key] = find(isnan(node))
+          tunepar["sampler"][key] = findmissing(node)
         end
-        missing = tunepar["sampler"][key]
-        v[missing] = sample(node.distr, missing)
+        inds = tunepar["sampler"][key]
+        v[inds.value] = sample(node, inds)
         value[key] = v
       end
       value
@@ -30,25 +39,44 @@ end
 
 #################### Sampling Functions ####################
 
-function sample(d::Distribution, inds::Vector{Int})
-  length(inds) > 0 ? rand(d)[inds] : Float64[]
+function findmissing(s::AbstractStochastic)
+  valueinds = find(isnan(s))
+  StochasticIndices(
+    size(s),
+    valueinds,
+    mapindices(s.distr, valueinds)
+  )
 end
 
-function sample(D::Array{UnivariateDistribution}, inds::Vector{Int})
-  Float64[rand(d) for d in D[inds]]
+mapindices(d::Distribution, valueinds::Vector{Int}) = valueinds
+
+mapindices(D::Array{UnivariateDistribution}, valueinds::Vector{Int}) = valueinds
+
+function mapindices(D::Array{MultivariateDistribution}, valueinds::Vector{Int})
+  M = falses(D)
+  valuedims = dim(D)
+  for i in valueinds
+    sub = ind2sub(valuedims, i)[1:ndims(M)]
+    M[sub...] = true
+  end
+  find(M)
 end
 
-function sample(D::Array{MultivariateDistribution}, inds::Vector{Int})
-  X = Array(Float64, dim(D))
-  ID = falses(D)
-  for i in inds
-    sub = ind2sub(X, i)[1:ndims(D)]
-    ID[sub...] = true
+sample(s::AbstractStochastic, inds::StochasticIndices) = sample(s.distr, inds)
+
+function sample(d::Distribution, inds::StochasticIndices)
+  length(inds.value) > 0 ? rand(d)[inds.value] : Float64[]
+end
+
+function sample(D::Array{UnivariateDistribution}, inds::StochasticIndices)
+  Float64[rand(d) for d in D[inds.distr]]
+end
+
+function sample(D::Array{MultivariateDistribution}, inds::StochasticIndices)
+  X = Array(Float64, inds.dims)
+  for i in inds.distr
+    sub = ind2sub(size(D), i)
+    X[sub..., :] = rand(D[sub...])
   end
-  for sub in CartesianRange(size(D))
-    if ID[sub]
-      X[sub, :] = rand(D[sub])
-    end
-  end
-  X[inds]
+  X[inds.value]
 end
