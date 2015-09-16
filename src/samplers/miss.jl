@@ -1,4 +1,6 @@
-#################### Missing Value Sampler ####################
+#################### Missing Values Sampler ####################
+
+#################### Sampler Constructor ####################
 
 function MISS(params::Vector{Symbol})
   Sampler(params,
@@ -16,20 +18,37 @@ function MISS(params::Vector{Symbol})
           tunepar["sampler"][key] = find(isnan(node))
         end
         missing = tunepar["sampler"][key]
-        if isa(node.distr, Array)
-          for i in missing
-            v[i] = rand(node.distr[i])
-          end
-        elseif length(missing) > 0
-          pred = rand(node.distr)
-          for i in missing
-            v[i] = pred[i]
-          end
-        end
+        v[missing] = sample(node.distr, missing)
         value[key] = v
       end
       value
     end,
     Dict{String,Any}("sampler" => nothing)
   )
+end
+
+
+#################### Sampling Functions ####################
+
+function sample(d::Distribution, inds::Vector{Int})
+  length(inds) > 0 ? rand(d)[inds] : Float64[]
+end
+
+function sample(D::Array{UnivariateDistribution}, inds::Vector{Int})
+  Float64[rand(d) for d in D[inds]]
+end
+
+function sample(D::Array{MultivariateDistribution}, inds::Vector{Int})
+  X = Array(Float64, dim(D))
+  ID = falses(D)
+  for i in inds
+    sub = ind2sub(X, i)[1:ndims(D)]
+    ID[sub...] = true
+  end
+  for sub in CartesianRange(size(D))
+    if ID[sub]
+      X[sub, :] = rand(D[sub])
+    end
+  end
+  X[inds]
 end
