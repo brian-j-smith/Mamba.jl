@@ -179,6 +179,7 @@ module Mamba
   include("samplers/nuts.jl")
   include("samplers/sampler.jl")
   include("samplers/slice.jl")
+  include("samplers/slicesimplex.jl")
 
 
   #################### Exports ####################
@@ -264,7 +265,10 @@ module Mamba
     NUTSVariate,
     slice!,
     Slice,
-    SliceVariate
+    SliceVariate,
+    slicesimplex!,
+    SliceSimplex,
+    SliceSimplexVariate
 
   export
     cm,
