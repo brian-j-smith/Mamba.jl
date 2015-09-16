@@ -8,6 +8,10 @@ type StochasticIndices
   distr::Vector{Int}
 end
 
+function StochasticIndices(s::AbstractStochastic, valueinds::Vector{Int})
+  StochasticIndices(size(s), valueinds, mapindices(s.distr, valueinds))
+end
+
 
 #################### Sampler Constructor ####################
 
@@ -24,7 +28,7 @@ function MISS(params::Vector{Symbol})
         node = model[key]
         v = copy(node.value)
         if initialize
-          tunepar["sampler"][key] = findmissing(node)
+          tunepar["sampler"][key] = StochasticIndices(node, find(isnan(node)))
         end
         inds = tunepar["sampler"][key]
         v[inds.value] = sample(node, inds)
@@ -38,15 +42,6 @@ end
 
 
 #################### Sampling Functions ####################
-
-function findmissing(s::AbstractStochastic)
-  valueinds = find(isnan(s))
-  StochasticIndices(
-    size(s),
-    valueinds,
-    mapindices(s.distr, valueinds)
-  )
-end
 
 mapindices(d::Distribution, valueinds::Vector{Int}) = valueinds
 
