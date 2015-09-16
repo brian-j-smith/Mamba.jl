@@ -27,7 +27,7 @@ Stand-Alone Function
 
     **Example**
 
-        .. literalinclude:: bds.jl
+        .. literalinclude:: bmmg.jl
             :language: julia
 
 
