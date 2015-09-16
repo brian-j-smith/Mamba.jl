@@ -1,7 +1,7 @@
 ################################################################################
 ## Linear Regression
 ##   y ~ MvNormal(X * (beta0 .* gamma), 1)
-##   gamma ~ Bernoulli(0.5)
+##   gamma ~ DiscreteUniform(0, 1)
 ################################################################################
 
 using Mamba
@@ -18,16 +18,16 @@ logf = function(gamma)
   logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
 end
 
-## MCMC Simulation with Binary Deterministic Sampling
+## MCMC Simulation with Binary Modified Metropolised Gibbs Sampling
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = BDSVariate(zeros(p))
+gamma = BMMGVariate(zeros(p))
 indexset = collect(combinations(1:p, 1))
 for i in 1:t
-  bds!(gamma, indexset, logf)
+  bmmg!(gamma, indexset, logf)
   sim[i,:,1] = gamma
 end
 describe(sim)
 
 p = plot(sim, [:trace, :mixeddensity])
-draw(p, filename = "bdsplot")
+draw(p, filename = "bmmgplot")

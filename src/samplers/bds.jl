@@ -1,42 +1,42 @@
-#################### Binary Deterministic Sampler ####################
+#################### Binary Modified Metropolised Gibbs ####################
 
 #################### Types ####################
 
-type BDSTune
+type BMMGTune
   indexset::Vector{Vector{Int}}
 end
 
-type BDSVariate <: VectorVariate
+type BMMGVariate <: VectorVariate
   value::Vector{Float64}
-  tune::BDSTune
+  tune::BMMGTune
 
-  BDSVariate(x::Vector{Float64}, tune::BDSTune) = new(x, tune)
+  BMMGVariate(x::Vector{Float64}, tune::BMMGTune) = new(x, tune)
 end
 
-function BDSVariate(x::Vector{Float64}, tune=nothing)
-  tune = BDSTune(
+function BMMGVariate(x::Vector{Float64}, tune=nothing)
+  tune = BMMGTune(
     Vector{Vector{Int}}[]
   )
-  BDSVariate(x, tune)
+  BMMGVariate(x, tune)
 end
 
 
 #################### Sampler Constructor ####################
 
-function BDS(params::Vector{Symbol}, d::Integer, k::Integer=1)
+function BMMG(params::Vector{Symbol}, d::Integer, k::Integer=1)
   d >= k > 0 || throw(ArgumentError("values must be d >= k > 0"))
   indexset = collect(combinations(1:d, k))
-  BDS(params, indexset)
+  BMMG(params, indexset)
 end
 
-function BDS(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
+function BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
   Sampler(params,
     quote
       x = unlist(model, block, false)
       tunepar = tune(model, block)
       f = y -> logpdf!(model, y, block, false)
-      v = BDSVariate(x)
-      bds!(v, tunepar["indexset"], f)
+      v = BMMGVariate(x)
+      bmmg!(v, tunepar["indexset"], f)
       relist(model, v.value, block, false)
     end,
     Dict("indexset" => indexset)
@@ -46,10 +46,10 @@ end
 
 #################### Sampling Functions ####################
 
-function bds!(v::BDSVariate, indexset::Vector{Vector{Int}}, logf::Function)
+function bmmg!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
   x = v[:]
 
-  # sample indices and flip values
+  # sample indices and change values
   idx = indexset[rand(1:length(indexset))]
   x[idx] = 1.0 - v[idx]
 
