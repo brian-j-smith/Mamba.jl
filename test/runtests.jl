@@ -8,7 +8,8 @@ test_samplers = [
   "amm",
   "amwg",
   "nuts",
-  "slice"
+  "slice",
+  "slicesimplex"
 ]
 
 test_extensions = [
