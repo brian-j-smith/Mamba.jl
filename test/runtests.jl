@@ -7,7 +7,7 @@ test_tutorials = [
 test_samplers = [
   "amm",
   "amwg",
-  "bimh",
+  "bmg",
   "bmmg",
   "nuts",
   "slice"

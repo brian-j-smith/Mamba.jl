@@ -1,14 +1,14 @@
-############ Binary Independent Metropolis Hastings Sampler ##############
+############ Binary Metropolized Gibbs Sampler ##############
 
 #################### Sampler Constructor ####################
 
-function BIMH(params::Vector{Symbol})
+function BMG(params::Vector{Symbol})
   Sampler(params,
     quote
       x = round(Int,unlist(model,block,false)) #current state
       tunepar = tune(model, block)
       f = y -> logpdf!(model,y,block,false)
-      bimh!(x,f)
+      bmg!(x,f)
       relist(model,x,block,false)
     end
   )
@@ -16,7 +16,7 @@ end
 
 #################### Sampling Functions ####################
 
-function bimh!(x::Vector{Int}, logf::Function)
+function bmg!(x::Vector{Int}, logf::Function)
   #proposal, initialize to current state
   y = x[:]
  

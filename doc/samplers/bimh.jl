@@ -18,12 +18,12 @@ logf = function(gamma)
   logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
 end
 
-## MCMC Simulation with Binary Independent Metropolis Hastings
+## MCMC Simulation with Binary Metropolized Gibbs
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
 gamma = zeros(Int64,p)
 for i in 1:t
-  bimh!(gamma, logf)
+  bmg!(gamma, logf)
   sim[i,:,1] = gamma
 end
 describe(sim)
