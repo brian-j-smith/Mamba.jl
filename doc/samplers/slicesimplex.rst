@@ -1,26 +1,22 @@
-.. index:: Sampling Functions; Slice Simplex Sampler
+.. index:: Sampling Functions; Slice Simplex
 
-Slice Simplex
--------------
+Slice Simplex (SliceSimplex)
+----------------------------
 
-Implementation of the slice simplex sampler as described by Cowles et. al :cite:`cowles:2009:RAMPS` 
-for simulating autocorrelated draws on a simplex from a distribution that can be specified up to a 
-constant of proportionality.
+Implementation of the slice simplex sampler as described by Cowles et al. :cite:`cowles:2009:RAMPS` for simulating autocorrelated draws of parameters on the simplex :math:`\{\theta_1, \ldots, \theta_K : \theta_i \ge 0, \sum_{i=1}^K \theta_i = 1\}` and from a distribution that can be specified up to a constant of proportionality.
 
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function slicesimplex!(v::SliceSimplexVariate, width::Float64, logf::Function)
+.. function:: slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
 
-    Simulate one draw from a target distribution using a slice simplex sampler.  Parameters are assumed to be continuous
-    and constrained to a simplex (i.e. sum to 1). 
+    Simulate one draw from a target distribution using a slice simplex sampler.  Parameters are assumed to be continuous and constrained to a simplex.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``width`` : The next value is sampled from a shrunken simplex around the current value. The edge lengths of the 
-        shrunken simplex are equal to ``width`` times the edge length of the standard (n-1)-Simplex. 0 <= width <= 1. 
+        * ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
         * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 
     **Value**
@@ -80,28 +76,21 @@ Declaration
 
 Fields
 ``````
-* ``width`` : The next value is sampled from a shrunken simplex around the current value. The edge lengths of the 
-shrunken simplex are equal to ``width`` times the edge length of the standard (n-1)-Simplex. 0 <= width <= 1. 
+
+* ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
 
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
 
-.. function:: SliceSimplex{T<:Real}(params::Vector{Symbol}, width::T; transform::Bool=false)
+.. function:: SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
 
-    Construct a ``Sampler`` object for slice simplex sampling. Parameters are assumed to be continuous
-    and constrained to a simplex (i.e. sum to 1). 
+    Construct a ``Sampler`` object for which slice simplex sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to be continuous and constrained to a simplex.
 
     **Arguments**
 
         * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
-        * ``width`` : The next value is sampled from a shrunken simplex around the current value. The edge lengths of the 
-        shrunken simplex are equal to ``width`` times the edge length of the standard (n-1)-Simplex. 0 <= width <= 1.
-        * ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If 
-        ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the 
-        :ref:`section-Stochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained 
-        parameter space.  Otherwise, sampling is relative to the untransformed space.
-
+        * ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
 
     **Value**
 

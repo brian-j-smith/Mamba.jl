@@ -3,7 +3,7 @@
 #################### Types ####################
 
 type SliceSimplexTune
-  width::Float64
+  scale::Float64
 end
 
 type SliceSimplexVariate <: VectorVariate
@@ -14,80 +14,93 @@ type SliceSimplexVariate <: VectorVariate
 end
 
 function SliceSimplexVariate(x::Vector{Float64}, tune=nothing)
-  tune = SliceSimplexTune(1.0)
+  tune = SliceSimplexTune(
+    NaN
+  )
   SliceSimplexVariate(x, tune)
 end
 
 
 #################### Sampler Constructor ####################
 
-function SliceSimplex{T<:Real}(params::Vector{Symbol}, 
-                               width::T; transform::Bool=false)
+function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
   Sampler(params,
     quote
+      x = unlist(model, block)
       tunepar = tune(model, block)
-      x = unlist(model, block, tunepar["transform"])
-      f = x -> logpdf!(model, x, block, tunepar["transform"])
-      v = SliceSimplexVariate(x)
-      slicesimplex!(v, tunepar["width"], f)
-      relist(model, v.value, block, tunepar["transform"])
+      offset = 0
+      for key in keys(model, :block, block)
+        node = model[key]
+        SliceSimplex_sub!(node.distr)
+      end
+      relist(model, x, block)
     end,
-    ["width" => convert(Float64,width), "transform" => transform]
+    Dict("scale" => scale)
   )
+end
+
+function SliceSimplex_sub!(D::Array{MultivariateDistribution})
+  m = length(D)
+  n = dims(D)[end]
+  for i in 1:m
+    inds = range(i, m, n) + offset
+    v = SliceSimplexVariate(x[inds])
+    f = function(y)
+      x[inds] = y
+      logpdf!(model, x, block)
+    end
+    slicesimplex!(v, f, scale=tunepar["scale"])
+  end
+  offset += m * n
+end
+
+function SliceSimplex_sub!(d::MultivariateDistribution)
+  SliceSimplex_sub!(MultivariateDistribution[d])
+end
+
+function SliceSimplex_sub!(d)
+  error("unsupported distribution type $(typeof(d)) in SliceSimplex")
 end
 
 
 #################### Sampling Functions ####################
 
-function slicesimplex!(v::SliceSimplexVariate, width::Float64, logf::Function)
+function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
+  d = Dirichlet(ones(v))
+
+  insupport(d, v) || throw(ArgumentError("must supply a probability vector"))
+  0 < scale <= 1 || throw(ArgumentError("scale must be > 0 and <= 1"))
+
   p0 = logf(v.value) + log(rand())
-
-  #simplex for generating theta
-  vertices = makefirstsimplex(v.value,width)
-  vb = vertices\v.value
-
-  #candidate 
-  xb = rand(Dirichlet(ones(length(v.value))))
+  vertices = makefirstsimplex(v, scale)
+  vb = vertices \ v
+  xb = rand(d)
   x = vertices * xb
-
-  while logf(x) < p0 || !all(0.0 .< x .< 1)
-    vertices = shrinksimplex(vb,xb,v.value,x,vertices)
-    vb = vertices\v.value
-
-    xb = rand(Dirichlet(ones(length(v.value))))
+  while any(x .< 0.0) || any(x .> 1.0) || logf(x) < p0
+    vertices = shrinksimplex(vb, xb, v, x, vertices)
+    vb = vertices \ v
+    xb = rand(d)
     x = vertices * xb
   end
   v[:] = x
-  return v
+  v.tune.scale = scale
+
+  v
 end
 
-#################### Helper ####################
-
-function makefirstsimplex(kappa::Vector{Float64},width::Float64)
-  vertices = diagm(ones(length(kappa)))
-
-  if width < 1
-    # get the coordinates of hte simplex shrunk twoards vertex 1
-    vertices[:,2:end] = vertices[:,2:end] + 
-      (1-width) * (vertices[:,1] .- vertices[:,2:end])
-
-    # first, generate a point uniformly in appropriate size triangle
-    rbaryc = rand(Dirichlet(ones(length(kappa))))
-
-    # then translate vertices to make x correspond to random point
-    vertices = vertices .+ kappa .- vertices * rbaryc
-  end
-  return vertices
+function makefirstsimplex(x::AbstractVector{Float64}, scale::Real)
+  vertices = eye(length(x))
+  vertices[:,2:end] += (1.0 - scale) * (vertices[:,1] .- vertices[:,2:end])
+  vertices .+ x .- vertices * rand(Dirichlet(ones(x)))
 end
 
-function shrinksimplex(bx::Vector{Float64}, bc::Vector{Float64}, 
-                       cx::Vector{Float64}, cc::Vector{Float64},
-                       vertices::Matrix{Float64})
+function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
+                       cx::AbstractVector{Float64}, cc::AbstractVector{Float64},
+                       vertices::AbstractMatrix{Float64})
   for i in find(bc .< bx)
-    vertices[:,[1:(i-1);(i+1):end]] = vertices[:, [1:(i-1);(i+1):end]] + 
-      bc[i]*(vertices[:,i] .- vertices[:,[1:(i-1);(i+1):end]])
-
-    bc = vertices\cc # this is solution to (vertices)*x = cc
+    inds = [1:(i-1); (i+1):size(vertices,2)]
+    vertices[:,inds] += bc[i] * (vertices[:,i] .- vertices[:,inds])
+    bc = vertices \ cc
   end
-  return vertices
+  vertices
 end
