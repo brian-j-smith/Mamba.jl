@@ -36,7 +36,7 @@ function MISS(params::Vector{Symbol})
       end
       value
     end,
-    Dict{String,Any}("sampler" => nothing)
+    Dict{AbstractString,Any}("sampler" => nothing)
   )
 end
 

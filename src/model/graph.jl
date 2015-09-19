@@ -11,7 +11,7 @@ function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   found
 end
 
-function draw(m::Model; filename::String="")
+function draw(m::Model; filename::AbstractString="")
   dot = graph2dot(m)
   if length(filename) == 0
     print(dot)
@@ -58,7 +58,7 @@ function graph2dot(m::Model)
   write(io, "digraph MambaModel {\n")
   deps = keys(m, :dependent)
   for v in vertices(g)
-    attr = Dict{String,String}()
+    attr = Dict{AbstractString,AbstractString}()
     if in(v.key, deps)
       node = m[v.key]
       if isa(node, AbstractLogical)

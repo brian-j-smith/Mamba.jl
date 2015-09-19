@@ -99,7 +99,7 @@ Indexing
 Display
 ^^^^^^^
 
-.. function:: draw(m::Model; filename::String="")
+.. function:: draw(m::Model; filename::AbstractString="")
 
     Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
 

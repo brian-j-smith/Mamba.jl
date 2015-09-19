@@ -2,12 +2,14 @@
 
 immutable ChainSummary
   value::Array{Float64,3}
-  rownames::Vector{String}
-  colnames::Vector{String}
-  header::String
+  rownames::Vector{AbstractString}
+  colnames::Vector{AbstractString}
+  header::AbstractString
 
-  function ChainSummary(value::Array{Float64,3}, rownames::Vector{String},
-                        colnames::Vector{String}, header::String)
+  function ChainSummary(value::Array{Float64,3},
+                        rownames::Vector{AbstractString},
+                        colnames::Vector{AbstractString},
+                        header::AbstractString)
     dim = size(value)
     length(rownames) == dim[1] ||
       error("length of rownames not equal to number of rows")
@@ -20,16 +22,19 @@ end
 
 #################### ChainSummary Constructors ####################
 
-function ChainSummary{T<:String,U<:String}(value::Array{Float64,3},
-                     rownames::Vector{T}, colnames::Vector{U}, header::String)
-  ChainSummary(copy(value), String[rownames...], String[colnames...], header)
+function ChainSummary{T<:AbstractString,U<:AbstractString}(
+                     value::Array{Float64,3}, rownames::Vector{T},
+                     colnames::Vector{U}, header::AbstractString)
+  ChainSummary(copy(value), AbstractString[rownames...],
+               AbstractString[colnames...], header)
 end
 
-function ChainSummary{T<:String,U<:String}(value::Matrix{Float64},
-                     rownames::Vector{T}, colnames::Vector{U}, header::String)
+function ChainSummary{T<:AbstractString,U<:AbstractString}(
+                     value::Matrix{Float64}, rownames::Vector{T},
+                     colnames::Vector{U}, header::AbstractString)
   dim = size(value)
-  ChainSummary(reshape(value, dim[1], dim[2], 1), String[rownames...],
-               String[colnames...], header)
+  ChainSummary(reshape(value, dim[1], dim[2], 1), AbstractString[rownames...],
+               AbstractString[colnames...], header)
 end
 
 

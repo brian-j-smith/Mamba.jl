@@ -102,7 +102,7 @@ module Mamba
   type Sampler
     params::Vector{Symbol}
     eval::Function
-    tune::Dict{String,Any}
+    tune::Dict{AbstractString,Any}
     targets::Vector{Symbol}
   end
 
@@ -129,14 +129,14 @@ module Mamba
   immutable Chains <: AbstractChains
     value::Array{Float64,3}
     range::Range{Int}
-    names::Vector{String}
+    names::Vector{AbstractString}
     chains::Vector{Int}
   end
 
   immutable ModelChains <: AbstractChains
     value::Array{Float64,3}
     range::Range{Int}
-    names::Vector{String}
+    names::Vector{AbstractString}
     chains::Vector{Int}
     model::Model
   end

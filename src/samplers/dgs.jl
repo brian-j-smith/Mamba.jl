@@ -19,7 +19,7 @@ function DGS(params::Vector{Symbol})
       end
       relist(model, x, block)
     end,
-    Dict{String,Any}("sampler" => nothing)
+    Dict{AbstractString,Any}("sampler" => nothing)
   )
 end
 

@@ -2,21 +2,21 @@
 
 #################### Constructors ####################
 
-function Chains{T<:String}(iters::Integer, params::Integer;
+function Chains{T<:AbstractString}(iters::Integer, params::Integer;
                start::Integer=1, thin::Integer=1, chains::Integer=1,
-               names::Vector{T}=String[])
+               names::Vector{T}=AbstractString[])
   value = Array(Float64, length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names)
 end
 
-function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
-               start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-               chains::Vector{V}=Int[])
+function Chains{T<:Real,U<:AbstractString,V<:Integer}(value::Array{T,3};
+               start::Integer=1, thin::Integer=1,
+               names::Vector{U}=AbstractString[], chains::Vector{V}=Int[])
   n, p, m = size(value)
 
   if length(names) == 0
-    names = String[string("Param", i) for i in 1:p]
+    names = map(i -> "Param$i", 1:p)
   elseif length(names) != p
     error("size(value, 2) and names dimensions must match")
   end
@@ -28,21 +28,21 @@ function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
   end
 
   v = convert(Array{Float64, 3}, value)
-  Chains(v, range(start, thin, n), String[names...], Int[chains...])
+  Chains(v, range(start, thin, n), AbstractString[names...], Int[chains...])
 end
 
-function Chains{T<:Real,U<:String}(value::Matrix{T};
-               start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-               chains::Integer=1)
+function Chains{T<:Real,U<:AbstractString}(value::Matrix{T};
+               start::Integer=1, thin::Integer=1,
+               names::Vector{U}=AbstractString[], chains::Integer=1)
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
          thin=thin, names=names, chains=Int[chains])
 end
 
 function Chains{T<:Real}(value::Vector{T};
-               start::Integer=1, thin::Integer=1, names::String="Param1",
-               chains::Integer=1)
+               start::Integer=1, thin::Integer=1,
+               names::AbstractString="Param1", chains::Integer=1)
   Chains(reshape(value, length(value), 1, 1), start=start, thin=thin,
-         names=String[names], chains=Int[chains])
+         names=AbstractString[names], chains=Int[chains])
 end
 
 
@@ -89,8 +89,8 @@ iters2inds{T<:Real}(c::AbstractChains, iters::Vector{T}) =
 names2inds(c::AbstractChains, names) = names
 names2inds(c::AbstractChains, ::Colon) = 1:size(c.value,2)
 names2inds(c::AbstractChains, name::Real) = [name]
-names2inds(c::AbstractChains, name::String) = names2inds(c, [name])
-names2inds{T<:String}(c::AbstractChains, names::Vector{T}) =
+names2inds(c::AbstractChains, name::AbstractString) = names2inds(c, [name])
+names2inds{T<:AbstractString}(c::AbstractChains, names::Vector{T}) =
   indexin(names, c.names)
 
 

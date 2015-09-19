@@ -55,12 +55,12 @@ end
 #################### Auxiliary Functions ####################
 
 function names(v::ScalarVariate, prefix)
-  String[string(prefix)]
+  AbstractString[string(prefix)]
 end
 
 function names(v::ArrayVariate, prefix)
   offset = ndims(v) > 1 ? 1 : 2
-  values = similar(v.value, String)
+  values = similar(v.value, AbstractString)
   for i in 1:length(v)
     s = string(ind2sub(size(v), i))
     values[i] = string(prefix, "[", s[2:end-offset], "]")

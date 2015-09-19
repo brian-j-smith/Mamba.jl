@@ -2,7 +2,7 @@
 
 #################### Generic Methods ####################
 
-function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
+function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
               width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch,
               nrow::Integer=3, ncol::Integer=2, byrow::Bool=true,
               ask::Bool=true)
