@@ -1,7 +1,7 @@
 #################### Model Simulation Methods ####################
 
 function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
-           dtype::Symbol=:forward)
+                    dtype::Symbol=:forward)
   x0 = unlist(m, block, transform)
   value = gradlogpdf!(m, x0, block, transform, dtype=dtype)
   relist!(m, x0, block, transform)
@@ -9,7 +9,7 @@ function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
 end
 
 function gradlogpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
-           transform::Bool=false; dtype::Symbol=:forward)
+                             transform::Bool=false; dtype::Symbol=:forward)
   x0 = unlist(m, block)
   value = gradlogpdf!(m, x, block, transform, dtype=dtype)
   relist!(m, x0, block)
@@ -17,7 +17,7 @@ function gradlogpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
 end
 
 function gradlogpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
-           transform::Bool=false; dtype::Symbol=:forward)
+                              transform::Bool=false; dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
   gradient(f, x, dtype)
 end
@@ -40,7 +40,7 @@ function logpdf(m::Model, block::Integer=0, transform::Bool=false)
 end
 
 function logpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
-           transform::Bool=false)
+                         transform::Bool=false)
   x0 = unlist(m, block)
   value = logpdf!(m, x, block, transform)
   relist!(m, x0, block)
@@ -48,7 +48,7 @@ function logpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
 end
 
 function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
-           transform::Bool=false)
+                          transform::Bool=false)
   value = 0.0
   if block > 0
     sampler = m.samplers[block]
@@ -72,12 +72,12 @@ function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
 end
 
 function relist{T<:Real}(m::Model, values::Vector{T}, block::Integer=0,
-           transform::Bool=false)
+                         transform::Bool=false)
   relist(m, values, keys(m, :block, block), transform)
 end
 
 function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
-           transform::Bool=false)
+                         transform::Bool=false)
   x = Dict{Symbol,Any}()
   j = 0
   for key in nkeys
@@ -91,14 +91,14 @@ function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
 end
 
 function relist!{T<:Real}(m::Model, values::Vector{T}, block::Integer=0,
-           transform::Bool=false)
+                          transform::Bool=false)
   nkeys = keys(m, :block, block)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m, block)
 end
 
 function relist!{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
-           transform::Bool=false)
+                          transform::Bool=false)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m)
 end

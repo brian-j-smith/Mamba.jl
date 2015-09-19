@@ -1,7 +1,7 @@
 #################### Model Constructor ####################
 
 function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
-           samplers::Vector{Sampler}=Sampler[], nodes...)
+               samplers::Vector{Sampler}=Sampler[], nodes...)
   nodedict = Dict{Symbol,Any}()
   for (key, value) in nodes
     isa(value, AbstractDependent) || error("nodes must be Dependent types")

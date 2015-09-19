@@ -21,12 +21,12 @@ end
 #################### ChainSummary Constructors ####################
 
 function ChainSummary{T<:String,U<:String}(value::Array{Float64,3},
-           rownames::Vector{T}, colnames::Vector{U}, header::String)
+                     rownames::Vector{T}, colnames::Vector{U}, header::String)
   ChainSummary(copy(value), String[rownames...], String[colnames...], header)
 end
 
 function ChainSummary{T<:String,U<:String}(value::Matrix{Float64},
-           rownames::Vector{T}, colnames::Vector{U}, header::String)
+                     rownames::Vector{T}, colnames::Vector{U}, header::String)
   dim = size(value)
   ChainSummary(reshape(value, dim[1], dim[2], 1), String[rownames...],
                String[colnames...], header)

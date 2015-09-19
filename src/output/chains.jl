@@ -3,16 +3,16 @@
 #################### Constructors ####################
 
 function Chains{T<:String}(iters::Integer, params::Integer;
-           start::Integer=1, thin::Integer=1, chains::Integer=1,
-           names::Vector{T}=String[])
+               start::Integer=1, thin::Integer=1, chains::Integer=1,
+               names::Vector{T}=String[])
   value = Array(Float64, length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names)
 end
 
 function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
-           start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           chains::Vector{V}=Int[])
+               start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
+               chains::Vector{V}=Int[])
   n, p, m = size(value)
 
   if length(names) == 0
@@ -32,15 +32,15 @@ function Chains{T<:Real,U<:String,V<:Integer}(value::Array{T,3};
 end
 
 function Chains{T<:Real,U<:String}(value::Matrix{T};
-           start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
-           chains::Integer=1)
+               start::Integer=1, thin::Integer=1, names::Vector{U}=String[],
+               chains::Integer=1)
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
          thin=thin, names=names, chains=Int[chains])
 end
 
 function Chains{T<:Real}(value::Vector{T};
-           start::Integer=1, thin::Integer=1, names::String="Param1",
-           chains::Integer=1)
+               start::Integer=1, thin::Integer=1, names::String="Param1",
+               chains::Integer=1)
   Chains(reshape(value, length(value), 1, 1), start=start, thin=thin,
          names=String[names], chains=Int[chains])
 end

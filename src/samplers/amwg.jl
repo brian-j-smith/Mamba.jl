@@ -34,7 +34,8 @@ end
 #################### Sampler Constructor ####################
 
 function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
-           adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
+                       adapt::Symbol=:all, batchsize::Integer=50,
+                       target::Real=0.44)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
@@ -60,7 +61,7 @@ end
 #################### Sampling Functions ####################
 
 function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
-           adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
+               adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
   tune = v.tune
 
   if adapt

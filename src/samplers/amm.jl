@@ -38,7 +38,7 @@ end
 #################### Sampler Constructor ####################
 
 function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
-           adapt::Symbol=:all)
+                      adapt::Symbol=:all)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
@@ -62,7 +62,7 @@ end
 #################### Sampling Functions ####################
 
 function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
-           adapt::Bool=true)
+              adapt::Bool=true)
   tune = v.tune
 
   d = length(v)
