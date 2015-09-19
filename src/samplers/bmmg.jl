@@ -47,6 +47,9 @@ end
 #################### Sampling Functions ####################
 
 function bmmg!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
+  all(insupport(Bernoulli, v)) ||
+    throw(ArgumentError("must supply a binary vector"))
+
   x = v[:]
 
   # sample indices and change values

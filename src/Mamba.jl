@@ -13,7 +13,7 @@ module Mamba
   import Calculus: gradient
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
          pt, px
-  import Distributions: Continuous, ContinuousUnivariateDistribution,
+  import Distributions: Bernoulli, Continuous, ContinuousUnivariateDistribution,
          Distribution, Distributions, gradlogpdf, insupport, logpdf, logpdf!,
          minimum, maximum, MatrixDistribution, MultivariateDistribution,
          PDiagMat, PDMat, quantile, rand, ScalMat, Truncated,
