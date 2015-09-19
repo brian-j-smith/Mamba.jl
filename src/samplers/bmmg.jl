@@ -37,7 +37,7 @@ function BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
       f = y -> logpdf!(model, y, block)
       v = BMMGVariate(x)
       bmmg!(v, tunepar["indexset"], f)
-      relist(model, v.value, block)
+      relist(model, v, block)
     end,
     Dict("indexset" => indexset)
   )

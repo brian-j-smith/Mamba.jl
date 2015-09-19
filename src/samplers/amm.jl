@@ -52,7 +52,7 @@ function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
       f = x -> logpdf!(model, x, block, true)
       amm!(v, tunepar["SigmaF"], f, adapt=adapt)
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
     Dict("SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing)
   )

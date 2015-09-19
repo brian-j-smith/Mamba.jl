@@ -50,7 +50,7 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
       amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
     Dict("sigma" => Float64[sigma...], "adapt" => adapt,
          "batchsize" => batchsize, "target" => target, "sampler" => nothing)

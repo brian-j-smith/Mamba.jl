@@ -59,7 +59,7 @@ function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
       nuts!(v, tunepar["epsilon"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
     Dict("epsilon" => 1.0, "target" => target, "dtype" => dtype,
          "sampler" => nothing)

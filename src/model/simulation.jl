@@ -71,13 +71,13 @@ function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
   value
 end
 
-function relist{T<:Real}(m::Model, values::Vector{T}, block::Integer=0,
+function relist{T<:Real}(m::Model, values::AbstractVector{T}, block::Integer=0,
                          transform::Bool=false)
   relist(m, values, keys(m, :block, block), transform)
 end
 
-function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
-                         transform::Bool=false)
+function relist{T<:Real}(m::Model, values::AbstractVector{T},
+                         nkeys::Vector{Symbol}, transform::Bool=false)
   x = Dict{Symbol,Any}()
   j = 0
   for key in nkeys
@@ -90,15 +90,15 @@ function relist{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
   x
 end
 
-function relist!{T<:Real}(m::Model, values::Vector{T}, block::Integer=0,
+function relist!{T<:Real}(m::Model, values::AbstractVector{T}, block::Integer=0,
                           transform::Bool=false)
   nkeys = keys(m, :block, block)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m, block)
 end
 
-function relist!{T<:Real}(m::Model, values::Vector{T}, nkeys::Vector{Symbol},
-                          transform::Bool=false)
+function relist!{T<:Real}(m::Model, values::AbstractVector{T},
+                          nkeys::Vector{Symbol}, transform::Bool=false)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m)
 end
