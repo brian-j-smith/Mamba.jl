@@ -44,8 +44,8 @@ function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
 
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = AMMVariate(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false

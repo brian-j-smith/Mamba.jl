@@ -5,10 +5,9 @@
 function DGS(params::Vector{Symbol})
   Sampler(params,
     quote
-      blockkeys = keys(model, :block, block)
-      x = unlist(model, blockkeys)
+      x = unlist(model, block)
       i = 0
-      for key in blockkeys
+      for key in keys(model, :block, block)
         for d in [model[key].distr;]
           i += 1
           f = function(v)
@@ -18,7 +17,7 @@ function DGS(params::Vector{Symbol})
           x[i] = dgs(grid(d), f)
         end
       end
-      relist(model, x, blockkeys)
+      relist(model, x, block)
     end,
     Dict{String,Any}("sampler" => nothing)
   )

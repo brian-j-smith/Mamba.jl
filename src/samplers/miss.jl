@@ -18,15 +18,15 @@ end
 function MISS(params::Vector{Symbol})
   Sampler(params,
     quote
-      value = Dict{Symbol,Any}()
       tunepar = tune(model, block)
+      value = Dict{Symbol,Any}()
       initialize = tunepar["sampler"] == nothing
       if initialize
         tunepar["sampler"] = Dict{Symbol,StochasticIndices}()
       end
       for key in keys(model, :block, block)
         node = model[key]
-        v = copy(node.value)
+        v = node[:]
         if initialize
           tunepar["sampler"][key] = StochasticIndices(node, find(isnan(node)))
         end

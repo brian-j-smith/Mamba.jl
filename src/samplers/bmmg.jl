@@ -32,12 +32,12 @@ end
 function BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
   Sampler(params,
     quote
-      x = unlist(model, block, false)
       tunepar = tune(model, block)
-      f = y -> logpdf!(model, y, block, false)
+      x = unlist(model, block)
+      f = y -> logpdf!(model, y, block)
       v = BMMGVariate(x)
       bmmg!(v, tunepar["indexset"], f)
-      relist(model, v.value, block, false)
+      relist(model, v.value, block)
     end,
     Dict("indexset" => indexset)
   )
@@ -51,11 +51,8 @@ function bmmg!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
     throw(ArgumentError("must supply a binary vector"))
 
   x = v[:]
-
-  # sample indices and change values
   idx = indexset[rand(1:length(indexset))]
   x[idx] = 1.0 - v[idx]
-
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x
   end

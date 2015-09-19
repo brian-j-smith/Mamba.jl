@@ -13,11 +13,12 @@ module Mamba
   import Calculus: gradient
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
          pt, px
-  import Distributions: Bernoulli, Continuous, ContinuousUnivariateDistribution,
-         Distribution, Distributions, gradlogpdf, insupport, logpdf, logpdf!,
-         minimum, maximum, MatrixDistribution, MultivariateDistribution,
-         PDiagMat, PDMat, quantile, rand, ScalMat, Truncated,
-         UnivariateDistribution, ValueSupport
+  import Distributions: Bernoulli, Categorical, Continuous,
+         ContinuousUnivariateDistribution, Distribution, Distributions,
+         gradlogpdf, insupport, logpdf, logpdf!, minimum, maximum,
+         MatrixDistribution, MultivariateDistribution, PDiagMat, PDMat,
+         quantile, rand, ScalMat, Truncated, UnivariateDistribution,
+         ValueSupport
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,

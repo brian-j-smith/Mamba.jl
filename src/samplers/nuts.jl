@@ -48,8 +48,8 @@ end
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = NUTSVariate(x, tunepar["sampler"])
       if model.iter <= 1
         f = x -> nutsfx(model, x, block, tunepar["dtype"])
@@ -100,15 +100,6 @@ function nutsepsilon(v::NUTSVariate, fx::Function)
     prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
   end
   epsilon
-end
-
-function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
-           grad::Vector{V}, epsilon::Real, fx::Function)
-  r += (0.5 * epsilon) * grad
-  x += epsilon * r
-  logf, grad = fx(x)
-  r += (0.5 * epsilon) * grad
-  x, r, grad, logf
 end
 
 function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
@@ -169,6 +160,15 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
     v.tune.alpha, v.tune.nalpha = alpha, nalpha
   end
   v
+end
+
+function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
+           grad::Vector{V}, epsilon::Real, fx::Function)
+  r += (0.5 * epsilon) * grad
+  x += epsilon * r
+  logf, grad = fx(x)
+  r += (0.5 * epsilon) * grad
+  x, r, grad, logf
 end
 
 function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
