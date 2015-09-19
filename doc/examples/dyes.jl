@@ -14,7 +14,7 @@ dyes = Dict{Symbol,Any}(
 )
 
 dyes[:batch] = vcat([fill(i, dyes[:samples]) for i in 1:dyes[:batches]]...)
-dyes[:sample] = vcat(fill([1:dyes[:samples];], dyes[:batches])...)
+dyes[:sample] = vcat(fill(collect(1:dyes[:samples]), dyes[:batches])...)
 
 
 ## Model Specification
