@@ -13,7 +13,7 @@ Since parameter values in the ``AbstractDependent`` structure are stored as a sc
 Declaration
 ^^^^^^^^^^^
 
-``typealias AbstractDependent Union(AbstractLogical, AbstractStochastic)``
+``typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}``
 
 Fields
 ^^^^^^
@@ -118,7 +118,7 @@ Declarations
 
     type ScalarLogical <: ScalarVariate
     type ArrayLogical{N} <: ArrayVariate{N}
-    typealias AbstractLogical Union(ScalarLogical, ArrayLogical)
+    typealias AbstractLogical Union{ScalarLogical, ArrayLogical}
 
 
 Fields
@@ -135,8 +135,8 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-              Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+.. function:: Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+              Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
 
     Construct a ``Logical`` object that defines a logical model node.
 
@@ -209,7 +209,7 @@ Declarations
 
     type ScalarStochastic <: ScalarVariate
     type ArrayStochastic{N} <: ArrayVariate{N}
-    typealias AbstractStochastic Union(ScalarStochastic, ArrayStochastic)
+    typealias AbstractStochastic Union{ScalarStochastic, ArrayStochastic}
 
 
 Fields
@@ -231,15 +231,15 @@ Aliases
 
 .. code-block:: julia
 
-    typealias DistributionStruct Union(Distribution,
+    typealias DistributionStruct Union{Distribution,
                                        Array{UnivariateDistribution},
-                                       Array{MultivariateDistribution})
+                                       Array{MultivariateDistribution}}
 
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-              Stochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+.. function:: Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+              Stochastic(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
 
     Construct a ``Stochastic`` object that defines a stochastic model node.
 

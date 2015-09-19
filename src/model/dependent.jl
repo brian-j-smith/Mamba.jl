@@ -56,14 +56,14 @@ end
 
 #################### Logical Constructors ####################
 
-function Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
   l = ScalarLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                     Symbol[])
   setmonitor!(l, monitor)
 end
 
-function Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
   l = ArrayLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                    Symbol[])
@@ -103,7 +103,7 @@ end
 
 #################### Stochastic Constructors ####################
 
-function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
   s = ScalarStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                        Symbol[], NullUnivariateDistribution())
@@ -111,7 +111,7 @@ function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 end
 
 function Stochastic(d::Integer, expr::Expr,
-                    monitor::Union(Bool,Vector{Int})=true)
+                    monitor::Union{Bool,Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
   s = ArrayStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                       Symbol[], NullUnivariateDistribution())

@@ -106,9 +106,8 @@ module PDMats2
 
   mapchol(f::Function, a::PBDiagMat) = PBDiagMat(map(f, a.chol), a.scale)
 
-  function spbdiagm{T<:Real}(v::Union(
-                               Vector{Matrix{T}},
-                               Vector{UpperTriangular{T, Matrix{T}}}),
+  function spbdiagm{T<:Real}(v::Union{Vector{Matrix{T}},
+                                      Vector{UpperTriangular{T, Matrix{T}}}},
                              n::Integer=1)
     vn = [fill(v, n)...;]
 

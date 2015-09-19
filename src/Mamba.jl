@@ -36,16 +36,16 @@ module Mamba
   abstract ScalarVariate <: Real
   abstract ArrayVariate{N} <: DenseArray{Float64,N}
 
-  typealias AbstractVariate Union(ScalarVariate, ArrayVariate)
+  typealias AbstractVariate Union{ScalarVariate, ArrayVariate}
   typealias VectorVariate ArrayVariate{1}
   typealias MatrixVariate ArrayVariate{2}
 
 
   #################### Distribution Types ####################
 
-  typealias DistributionStruct Union(Distribution,
+  typealias DistributionStruct Union{Distribution,
                                      Array{UnivariateDistribution},
-                                     Array{MultivariateDistribution})
+                                     Array{MultivariateDistribution}}
 
 
   #################### Dependent Types ####################
@@ -92,9 +92,9 @@ module Mamba
     distr::DistributionStruct
   end
 
-  typealias AbstractLogical Union(ScalarLogical, ArrayLogical)
-  typealias AbstractStochastic Union(ScalarStochastic, ArrayStochastic)
-  typealias AbstractDependent Union(AbstractLogical, AbstractStochastic)
+  typealias AbstractLogical Union{ScalarLogical, ArrayLogical}
+  typealias AbstractStochastic Union{ScalarStochastic, ArrayStochastic}
+  typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}
 
 
   #################### Sampler Type ####################
