@@ -26,7 +26,7 @@ end
 
 #################### Sampling Functions ####################
 
-function dgs(grid::Vector, logf::Function)
+function dgs(grid::Vector{Float64}, logf::Function)
   n = length(grid)
   p = Array(Float64, n)
   psum = 0.0

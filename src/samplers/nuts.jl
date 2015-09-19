@@ -162,8 +162,8 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   v
 end
 
-function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
-                 grad::Vector{V}, epsilon::Real, fx::Function)
+function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
+                  epsilon::Real, fx::Function)
   r += (0.5 * epsilon) * grad
   x += epsilon * r
   logf, grad = fx(x)
