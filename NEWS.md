@@ -2,6 +2,12 @@
 
 ## Version Updates
 
+### 0.6.2
+* Added support for ``Array{MultivariateDistribution}`` to the missing values (MISS) sampler.
+* Added a Binary Modified Metropolised Gibbs (BMMG) sampler for binary model parameters.
+* Added bar plots for the summary of ``AbstractChains`` that contain values simulated for discrete model parameters.
+* Compatibility updates for julia 0.4 release candidate 2.
+
 ### 0.6.1
 * Compatibility updates for julia 0.4 prerelease.
 
