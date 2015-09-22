@@ -17,7 +17,7 @@ module Mamba
          ContinuousUnivariateDistribution, Distribution, Distributions,
          gradlogpdf, insupport, logpdf, logpdf!, minimum, maximum,
          MatrixDistribution, MultivariateDistribution, PDiagMat, PDMat,
-         quantile, rand, ScalMat, Truncated, UnivariateDistribution,
+         quantile, rand, ScalMat, support, Truncated, UnivariateDistribution,
          ValueSupport
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
@@ -261,7 +261,9 @@ module Mamba
     bmmg!,
     BMMG,
     BMMGVariate,
+    dgs!,
     DGS,
+    DGSVariate,
     MISS,
     nuts!,
     nutsepsilon,
