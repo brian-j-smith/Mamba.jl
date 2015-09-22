@@ -30,7 +30,8 @@ function link(c::ModelChains)
     node = c.model[key]
     inds = findin(c.names, names(node))
     if length(inds) > 0
-      cc[:,inds,:] = mapslices(x -> link(node, x), cc[:,inds,:], 2)
+      f(x) = unlist(node, link(node, relist(node, x)))
+      cc[:,inds,:] = mapslices(f, cc[:,inds,:], 2)
       inds_queue = setdiff(inds_queue, inds)
     end
   end

@@ -14,6 +14,17 @@ function dims(D::Array{MultivariateDistribution})
 end
 
 
+#################### List Fallbacks ####################
+
+unlist(d::Distribution, x) = x
+unlist(D::Array{UnivariateDistribution}, x) = x
+unlist(D::Array{MultivariateDistribution}, x) = x
+
+relist(d::Distribution, x) = x
+relist(D::Array{UnivariateDistribution}, x) = x
+relist(D::Array{MultivariateDistribution}, x) = x
+
+
 #################### Link Fallbacks ####################
 
 link(d::Distribution, x, transform::Bool=true) = x
@@ -72,57 +83,67 @@ typealias GridUnivariateDistribution
 
 typealias PDMatDistribution Union{InverseWishart, Wishart}
 
-function link(D::PDMatDistribution, X::Matrix, transform::Bool=true)
-  n = dim(D)
-  value = similar(X, Int(n * (n + 1) / 2))
-  k = 1
+function unlist(d::PDMatDistribution, X::Matrix)
+  n = dim(d)
+  y = similar(X, Int(n * (n + 1) / 2))
+  k = 0
+  for i in 1:n, j in i:n
+    k += 1
+    y[k] = X[i,j]
+  end
+  y
+end
+
+function relist(d::PDMatDistribution, x::Array)
+  n = dim(d)
+  Y = similar(x, n, n)
+  k = 0
+  for i in 1:n, j in i:n
+    k += 1
+    Y[i,j] = Y[j,i] = x[k]
+  end
+  Y
+end
+
+function link(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool=true)
   if transform
+    n = dim(d)
+    Y = zeros(n, n)
     U = chol(X)
     for i in 1:n
-      value[k] = log(U[i,i])
-      k += 1
+      Y[i,i] = log(U[i,i])
     end
     for i in 1:n, j in (i+1):n
-      value[k] = U[i,j]
-      k += 1
+      Y[i,j] = U[i,j]
     end
   else
-    for i in 1:n, j in i:n
-      value[k] = X[i,j]
-      k += 1
-    end
+    Y = X
   end
-  value
+  Y
 end
 
-function invlink(D::PDMatDistribution, x::Vector, transform::Bool=true)
-  n = dim(D)
-  value = zeros(Float64, n, n)
-  k = 1
+function invlink(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool=true)
   if transform
+    n = dim(d)
+    U = zeros(n, n)
     for i in 1:n
-      value[i,i] = exp(x[k])
-      k += 1
+      U[i,i] = exp(X[i,i])
     end
     for i in 1:n, j in (i+1):n
-      value[i,j] = x[k]
-      k += 1
+      U[i,j] = X[i,j]
     end
-    return At_mul_B(value, value)
+    Y = At_mul_B(U, U)
   else
-    for i in 1:n, j in i:n
-      value[i,j] = value[j,i] = x[k]
-      k += 1
-    end
-    return value
+    Y = X
   end
+  Y
 end
 
-function logpdf(D::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
-  value = logpdf(D, X)
+function logpdf(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
+  value = logpdf(d, X)
   if transform && isfinite(value)
     U = chol(X)
-    n = dim(D)
+    n = dim(d)
     for i in 1:n
       value += (n - i + 2) * log(U[i,i])
     end

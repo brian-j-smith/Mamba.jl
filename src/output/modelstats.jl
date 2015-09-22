@@ -62,7 +62,7 @@ function predict(mc::ModelChains, key::Symbol)
     for i in 1:iters
       relist!(m, vec(mc.value[i,idx,k]), sources)
       v = isa(node.distr, Array) ? map(rand, node.distr) : rand(node.distr)
-      value[i,:,k] = link(node, v, false)
+      value[i,:,k] = unlist(node, v)
     end
   end
 

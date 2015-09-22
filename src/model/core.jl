@@ -93,7 +93,7 @@ function names(m::Model, monitoronly::Bool)
   values = AbstractString[]
   for key in keys(m, :dependent)
     node = m[key]
-    lnames = link(node, names(node), false)
+    lnames = unlist(node, names(node))
     v = monitoronly ? lnames[node.monitor] : vec(lnames)
     append!(values, v)
   end
@@ -104,7 +104,7 @@ function names(m::Model, nkeys::Vector{Symbol})
   values = AbstractString[]
   for key in nkeys
     node = m[key]
-    lnames = link(node, names(node), false)
+    lnames = unlist(node, names(node))
     append!(values, vec(lnames))
   end
   values

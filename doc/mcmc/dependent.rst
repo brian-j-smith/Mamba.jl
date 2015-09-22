@@ -281,7 +281,7 @@ Methods
         * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
         * Lower bounded: shifted to zero and log-transformed.
         * Upper bounded: scaled by -1, shifted to zero, and log-transformed.
-        * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector of length :math:`n (n + 1) / 2`, where :math:`n` is the matrix dimension.
+        * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return it with the diagonal elements log-transformed.
 
     **Arguments**
 
