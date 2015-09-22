@@ -1,10 +1,10 @@
-#################### Direct Grid Sampler ####################
+#################### Discrete Gibbs Sampler ####################
 
 #################### Types ####################
 
 type DGSTune
-  grid::Vector
-  prob::Vector{Float64}
+  support::Vector
+  probs::Vector{Float64}
 end
 
 type DGSVariate <: VectorVariate
@@ -69,29 +69,29 @@ end
 
 #################### Sampling Functions ####################
 
-function dgs!(v::DGSVariate, grid::Vector, logf::Function)
-  v[:], prob = dgs(grid, logf)
-  v.tune.grid = grid
-  v.tune.prob = prob
+function dgs!(v::DGSVariate, support::Vector, logf::Function)
+  v[:], probs = dgs(support, logf)
+  v.tune.support = support
+  v.tune.probs = probs
   v
 end
 
-function dgs!(v::DGSVariate, grid::Vector, prob::Vector{Float64})
-  length(grid) == length(prob) ||
-    throw(ArgumentError("grid and prob lengths differ"))
+function dgs!(v::DGSVariate, support::Vector, probs::Vector{Float64})
+  length(support) == length(probs) ||
+    throw(ArgumentError("lengths of support and probs differ"))
 
-  v[:] = grid[rand(Categorical(prob))]
-  v.tune.grid = grid
-  v.tune.prob = prob
+  v[:] = support[rand(Categorical(probs))]
+  v.tune.support = support
+  v.tune.probs = probs
   v
 end
 
-function dgs(grid::AbstractVector, logf::Function)
-  n = length(grid)
+function dgs(support::AbstractVector, logf::Function)
+  n = length(support)
   p = Array(Float64, n)
   psum = 0.0
   for i in 1:n
-    value = exp(logf(grid[i]))
+    value = exp(logf(support[i]))
     p[i] = value
     psum += value
   end
@@ -100,7 +100,7 @@ function dgs(grid::AbstractVector, logf::Function)
   else
     p[:] = 1 / n
   end
-  grid[rand(Categorical(p))], p
+  support[rand(Categorical(p))], p
 end
 
 function dgs(d::GridUnivariateDistribution, logf::Function)
