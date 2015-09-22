@@ -3,7 +3,7 @@
 type ChainProgressFrame
   verbose::Bool
 
-  function ChainProgressFrame(title::String, verbose::Bool)
+  function ChainProgressFrame(title::AbstractString, verbose::Bool)
     verbose && print(title * "...\n\n")
     new(verbose)
   end

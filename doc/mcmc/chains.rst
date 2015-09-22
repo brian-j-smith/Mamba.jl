@@ -24,7 +24,7 @@ Fields
 
 * ``value::Array{Float64,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
-* ``names::Vector{String}`` : names assigned to the parameter elements.
+* ``names::Vector{AbstractString}`` : names assigned to the parameter elements.
 * ``chains::Vector{Int}`` : indices to the MCMC runs.
 * ``model::Model`` : the model from which the sampled values were generated (``ModelChains`` only).
 
@@ -33,16 +33,16 @@ Constructors
 
 .. function:: Chains(iters::Integer, params::Integer; \
                      start::Integer=1, thin::Integer=1, chains::Integer=1, \
-                     names::Vector{T<:String}=Array(String,0))
+                     names::Vector{T<:AbstractString}=Array(AbstractString,0))
               Chains(value::Array{T<:Real,3}; \
                      start::Integer=1, thin::Integer=1, \
-                     names::Vector{U<:String}=Array(String,0), \
+                     names::Vector{U<:AbstractString}=Array(AbstractString,0), \
                      chains::Vector{V<:Integer}=Array(Integer, 0))
               Chains(value::Matrix{T<:Real}; \
                      start::Integer=1, thin::Integer=1, \
-                     names::Vector{U<:String}=Array(String,0), chains::Integer=1)
+                     names::Vector{U<:AbstractString}=Array(AbstractString,0), chains::Integer=1)
               Chains(value::Vector{T<:Real}; \
-                     start::Integer=1, thin::Integer=1, names::String="Param1", \
+                     start::Integer=1, thin::Integer=1, names::AbstractString="Param1", \
                      chains::Integer=1)
               ModelChains(c::Chains, m::Model)
 
@@ -171,9 +171,9 @@ Gelman, Rubin, and Brooks Diagnostics
 
             immutable ChainSummary
               value::Array{Float64,3}
-              rownames::Vector{String}
-              colnames::Vector{String}
-              header::String
+              rownames::Vector{AbstractString}
+              colnames::Vector{AbstractString}
+              header::AbstractString
             end
 
         with parameters contained in the rows of the ``value`` field, and scale reduction factors and upper-limit quantiles in the first and second columns.
@@ -491,7 +491,7 @@ Plotting
 
         See the :ref:`section-Line-Plotting` section of the tutorial.
 
-.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="", \
+.. function:: draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="", \
                    width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch, \
                    nrow::Integer=3, ncol::Integer=2, byrow::Bool=true, \
                    ask::Bool=true)

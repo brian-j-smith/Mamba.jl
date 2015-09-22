@@ -34,14 +34,15 @@ end
 #################### Sampler Constructor ####################
 
 function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
-           adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
+                       adapt::Symbol=:all, batchsize::Integer=50,
+                       target::Real=0.44)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = AMWGVariate(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
@@ -49,7 +50,7 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
       amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
     Dict("sigma" => Float64[sigma...], "adapt" => adapt,
          "batchsize" => batchsize, "target" => target, "sampler" => nothing)
@@ -60,7 +61,7 @@ end
 #################### Sampling Functions ####################
 
 function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
-           adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
+               adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
   tune = v.tune
 
   if adapt

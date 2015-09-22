@@ -2,7 +2,7 @@
 
 #################### Generic Methods ####################
 
-function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::String="",
+function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
               width::MeasureOrNumber=8inch, height::MeasureOrNumber=8inch,
               nrow::Integer=3, ncol::Integer=2, byrow::Bool=true,
               ask::Bool=true)
@@ -84,10 +84,10 @@ function autocorplot(c::AbstractChains;
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
   lags = 0:maxlag
-  ac = autocor(c, lags=[lags;])
+  ac = autocor(c, lags=collect(lags))
   for i in 1:nvars
     plots[i] = plot(y=vec(ac.value[i,:,:]),
-                    x=repeat([lags * step(c.range);], outer=[nchains]),
+                    x=repeat(collect(lags * step(c.range)), outer=[nchains]),
                     Geom.line,
                     color=repeat(c.chains, inner=[length(lags)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
@@ -156,7 +156,7 @@ function meanplot(c::AbstractChains; legend::Bool=false, na...)
   val = mapslices(cummean, c.value, [1])
   for i in 1:nvars
     plots[i] = plot(y=vec(val[:,i,:]),
-                    x=repeat([c.range;], outer=[nchains]),
+                    x=repeat(collect(c.range), outer=[nchains]),
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
@@ -182,7 +182,7 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
   pos = legend ? :right : :none
   for i in 1:nvars
     plots[i] = plot(y=vec(c.value[:,i,:]),
-                    x=repeat([c.range;], outer=[nchains]),
+                    x=repeat(collect(c.range), outer=[nchains]),
                     Geom.line,
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),

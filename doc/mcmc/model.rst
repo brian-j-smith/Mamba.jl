@@ -99,7 +99,7 @@ Indexing
 Display
 ^^^^^^^
 
-.. function:: draw(m::Model; filename::String="")
+.. function:: draw(m::Model; filename::AbstractString="")
 
     Draw a `GraphViz <http://www.graphviz.org/>`_ DOT-formatted graph representation of model nodes and their relationships.
 
@@ -278,10 +278,10 @@ Parameter Block Operations
 
         The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 
-.. function:: relist(m::Model, values::Vector{T<:Real}, block::Integer=0, \
-                     transform::Bool=false)
-              relist(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
-                     transform::Bool=false)
+.. function:: relist(m::Model, values::AbstractVector{T<:Real}, \
+                     block::Integer=0, transform::Bool=false)
+              relist(m::Model, values::AbstractVector{T<:Real}, \
+                     nkeys::Vector{Symbol},transform::Bool=false)
 
     Convert a vector of values to a set of logical and/or stochastic node values.
 
@@ -297,10 +297,10 @@ Parameter Block Operations
 
         A dictionary of node symbols and converted values.
 
-.. function:: relist!(m::Model, values::Vector{T<:Real}, block::Integer=0, \
-                      transform::Bool=false)
-              relist!(m::Model, values::Vector{T<:Real}, nkeys::Vector{Symbol}, \
-                      transform::Bool=false)
+.. function:: relist!(m::Model, values::AbstractVector{T<:Real}, \
+                      block::Integer=0, transform::Bool=false)
+              relist!(m::Model, values::AbstractVector{T<:Real}, \
+                      nkeys::Vector{Symbol}, transform::Bool=false)
 
     Copy a vector of values to a set of logical and/or stochastic nodes.
 

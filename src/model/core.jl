@@ -1,7 +1,7 @@
 #################### Model Constructor ####################
 
 function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
-           samplers::Vector{Sampler}=Sampler[], nodes...)
+               samplers::Vector{Sampler}=Sampler[], nodes...)
   nodedict = Dict{Symbol,Any}()
   for (key, value) in nodes
     isa(value, AbstractDependent) || error("nodes must be Dependent types")
@@ -90,7 +90,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
 end
 
 function names(m::Model, monitoronly::Bool)
-  values = String[]
+  values = AbstractString[]
   for key in keys(m, :dependent)
     node = m[key]
     lnames = link(node, names(node), false)
@@ -101,7 +101,7 @@ function names(m::Model, monitoronly::Bool)
 end
 
 function names(m::Model, nkeys::Vector{Symbol})
-  values = String[]
+  values = AbstractString[]
   for key in nkeys
     node = m[key]
     lnames = link(node, names(node), false)

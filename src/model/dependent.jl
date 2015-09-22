@@ -39,7 +39,7 @@ function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   d.linklength = length(link(d, d.value, false))
   if d.linklength > 0 && length(monitor) > 0
     if monitor[1] == 0
-      values = [1:d.linklength;]
+      values = collect(1:d.linklength)
     elseif minimum(monitor) < 1 || maximum(monitor) > d.linklength
       throw(BoundsError())
     end
@@ -56,14 +56,14 @@ end
 
 #################### Logical Constructors ####################
 
-function Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
   l = ScalarLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                     Symbol[])
   setmonitor!(l, monitor)
 end
 
-function Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
   l = ArrayLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                    Symbol[])
@@ -103,7 +103,7 @@ end
 
 #################### Stochastic Constructors ####################
 
-function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+function Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
   s = ScalarStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                        Symbol[], NullUnivariateDistribution())
@@ -111,7 +111,7 @@ function Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
 end
 
 function Stochastic(d::Integer, expr::Expr,
-                    monitor::Union(Bool,Vector{Int})=true)
+                    monitor::Union{Bool,Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
   s = ArrayStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
                       Symbol[], NullUnivariateDistribution())

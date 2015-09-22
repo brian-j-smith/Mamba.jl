@@ -9,7 +9,7 @@ function heideldiag{T<:Real}(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
     y = x[i:end]
     m = length(y)
     ybar = mean(y)
-    B = cumsum(y) - ybar * [1:m;]
+    B = cumsum(y) - ybar * collect(1:m)
     Bsq = (B .* B) ./ (m * S0)
     I = sum(Bsq) / m
     pvalue = 1.0 - pcramer(I)

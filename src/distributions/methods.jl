@@ -64,17 +64,13 @@ end
 #################### Discrete Support Grids ####################
 
 typealias GridUnivariateDistribution
-          Union(Bernoulli, Binomial, Categorical, DiscreteUniform,
-                Hypergeometric, NoncentralHypergeometric)
-
-grid(d::GridUnivariateDistribution) = Float64[minimum(d):maximum(d);]
-grid(d::Distribution) =
-  error("discrete grid not available for ", typeof(d), " distributions")
+          Union{Bernoulli, Binomial, Categorical, DiscreteUniform,
+                Hypergeometric, NoncentralHypergeometric}
 
 
 #################### PDMatDistribution ####################
 
-typealias PDMatDistribution Union(InverseWishart, Wishart)
+typealias PDMatDistribution Union{InverseWishart, Wishart}
 
 function link(D::PDMatDistribution, X::Matrix, transform::Bool=true)
   n = dim(D)
@@ -139,7 +135,7 @@ end
 #################### TransformDistribution ####################
 
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
-  Union(T, Truncated{T})
+  Union{T, Truncated{T}}
 
 function link(d::TransformDistribution, x, transform::Bool=true)
   if transform

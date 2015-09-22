@@ -48,8 +48,8 @@ end
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = NUTSVariate(x, tunepar["sampler"])
       if model.iter <= 1
         f = x -> nutsfx(model, x, block, tunepar["dtype"])
@@ -59,7 +59,7 @@ function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
       nuts!(v, tunepar["epsilon"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
     Dict("epsilon" => 1.0, "target" => target, "dtype" => dtype,
          "sampler" => nothing)
@@ -102,17 +102,8 @@ function nutsepsilon(v::NUTSVariate, fx::Function)
   epsilon
 end
 
-function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
-           grad::Vector{V}, epsilon::Real, fx::Function)
-  r += (0.5 * epsilon) * grad
-  x += epsilon * r
-  logf, grad = fx(x)
-  r += (0.5 * epsilon) * grad
-  x, r, grad, logf
-end
-
 function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
-           target::Real=0.6)
+               target::Real=0.6)
   tune = v.tune
 
   if adapt
@@ -171,8 +162,17 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   v
 end
 
+function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
+                  epsilon::Real, fx::Function)
+  r += (0.5 * epsilon) * grad
+  x += epsilon * r
+  logf, grad = fx(x)
+  r += (0.5 * epsilon) * grad
+  x, r, grad, logf
+end
+
 function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
-           epsilon::Real, fx::Function, logp0::Real, logu0::Real)
+                   epsilon::Real, fx::Function, logp0::Real, logu0::Real)
   if j == 0
     xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, d * epsilon, fx)
     logpprime = logfprime - 0.5 * dot(rprime)

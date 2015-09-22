@@ -38,21 +38,21 @@ end
 #################### Sampler Constructor ####################
 
 function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
-           adapt::Symbol=:all)
+                      adapt::Symbol=:all)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = AMMVariate(x, tunepar["sampler"])
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
       f = x -> logpdf!(model, x, block, true)
       amm!(v, tunepar["SigmaF"], f, adapt=adapt)
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
     Dict("SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing)
   )
@@ -62,7 +62,7 @@ end
 #################### Sampling Functions ####################
 
 function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
-           adapt::Bool=true)
+              adapt::Bool=true)
   tune = v.tune
 
   d = length(v)

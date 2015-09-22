@@ -21,7 +21,7 @@ Declarations
 
     abstract ScalarVariate <: Real
     abstract ArrayVariate{N} <: DenseArray{Float64,N}
-    typealias AbstractVariate Union(ScalarVariate, ArrayVariate)
+    typealias AbstractVariate Union{ScalarVariate, ArrayVariate}
     typealias VectorVariate ArrayVariate{1}
     typealias MatrixVariate ArrayVariate{2}
 

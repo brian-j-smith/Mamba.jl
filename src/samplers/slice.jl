@@ -24,7 +24,7 @@ end
 #################### Sampler Constructor ####################
 
 function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
-           stype::Symbol=:multivar; transform::Bool=false)
+                        stype::Symbol=:multivar; transform::Bool=false)
   Sampler(params,
     quote
       tunepar = tune(model, block)
@@ -32,7 +32,7 @@ function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
       f = x -> logpdf!(model, x, block, tunepar["transform"])
       v = SliceVariate(x)
       slice!(v, tunepar["width"], f, tunepar["stype"])
-      relist(model, v.value, block, tunepar["transform"])
+      relist(model, v, block, tunepar["transform"])
     end,
     Dict("width" => Float64[width...], "stype" => stype,
          "transform" => transform)
@@ -43,7 +43,7 @@ end
 #################### Sampling Functions ####################
 
 function slice!(v::SliceVariate, width::Vector{Float64}, logf::Function,
-           stype::Symbol=:multivar)
+                stype::Symbol=:multivar)
   stype == :multivar ? slice_multi!(v, width, logf) :
   stype == :univar   ? slice_uni!(v, width, logf) :
     error("unsupported slice sampler type $stype")

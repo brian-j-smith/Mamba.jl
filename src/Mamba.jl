@@ -13,11 +13,12 @@ module Mamba
   import Calculus: gradient
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
          pt, px
-  import Distributions: Continuous, ContinuousUnivariateDistribution,
-         Dirichlet, Distribution, Distributions, gradlogpdf, insupport, logpdf,
-         logpdf!, minimum, maximum, MatrixDistribution,
-         MultivariateDistribution, PDiagMat, PDMat, quantile, rand, ScalMat,
-         Truncated, UnivariateDistribution, ValueSupport
+  import Distributions: Bernoulli, Categorical, Continuous,
+         ContinuousUnivariateDistribution, Dirichlet, Distribution,
+         Distributions, gradlogpdf, insupport, logpdf, logpdf!, minimum,
+         maximum, MatrixDistribution, MultivariateDistribution, PDiagMat, PDMat,
+         quantile, rand, ScalMat, support, Truncated, UnivariateDistribution,
+         ValueSupport
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
@@ -35,16 +36,16 @@ module Mamba
   abstract ScalarVariate <: Real
   abstract ArrayVariate{N} <: DenseArray{Float64,N}
 
-  typealias AbstractVariate Union(ScalarVariate, ArrayVariate)
+  typealias AbstractVariate Union{ScalarVariate, ArrayVariate}
   typealias VectorVariate ArrayVariate{1}
   typealias MatrixVariate ArrayVariate{2}
 
 
   #################### Distribution Types ####################
 
-  typealias DistributionStruct Union(Distribution,
+  typealias DistributionStruct Union{Distribution,
                                      Array{UnivariateDistribution},
-                                     Array{MultivariateDistribution})
+                                     Array{MultivariateDistribution}}
 
 
   #################### Dependent Types ####################
@@ -91,9 +92,9 @@ module Mamba
     distr::DistributionStruct
   end
 
-  typealias AbstractLogical Union(ScalarLogical, ArrayLogical)
-  typealias AbstractStochastic Union(ScalarStochastic, ArrayStochastic)
-  typealias AbstractDependent Union(AbstractLogical, AbstractStochastic)
+  typealias AbstractLogical Union{ScalarLogical, ArrayLogical}
+  typealias AbstractStochastic Union{ScalarStochastic, ArrayStochastic}
+  typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}
 
 
   #################### Sampler Type ####################
@@ -101,7 +102,7 @@ module Mamba
   type Sampler
     params::Vector{Symbol}
     eval::Function
-    tune::Dict{String,Any}
+    tune::Dict{AbstractString,Any}
     targets::Vector{Symbol}
   end
 
@@ -128,14 +129,14 @@ module Mamba
   immutable Chains <: AbstractChains
     value::Array{Float64,3}
     range::Range{Int}
-    names::Vector{String}
+    names::Vector{AbstractString}
     chains::Vector{Int}
   end
 
   immutable ModelChains <: AbstractChains
     value::Array{Float64,3}
     range::Range{Int}
-    names::Vector{String}
+    names::Vector{AbstractString}
     chains::Vector{Int}
     model::Model
   end
@@ -174,6 +175,7 @@ module Mamba
 
   include("samplers/amm.jl")
   include("samplers/amwg.jl")
+  include("samplers/bmmg.jl")
   include("samplers/dgs.jl")
   include("samplers/miss.jl")
   include("samplers/nuts.jl")
@@ -257,7 +259,12 @@ module Mamba
     amwg!,
     AMWG,
     AMWGVariate,
+    bmmg!,
+    BMMG,
+    BMMGVariate,
+    dgs!,
     DGS,
+    DGSVariate,
     MISS,
     nuts!,
     nutsepsilon,
