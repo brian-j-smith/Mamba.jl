@@ -38,6 +38,7 @@ function BHMC(params::Vector{Symbol}, T::Real)
     v = BHMCVariate(x,tunepar["sampler"])
     f = x -> logpdf!(model,x,block,false)
     bhmc!(v, tunepar["T"], f)
+    tunepar["sampler"] = v.tune
     relist(model,x,block,false)
   end,
   Dict("T" => convert(Float64,T), "sampler" => nothing)
