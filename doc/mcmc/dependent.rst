@@ -227,7 +227,7 @@ Fields
 Aliases
 ^^^^^^^
 
-``DistributionStruct`` defines the types of distribution structures supported for ``ArrayStochastic`` nodes.  Currently, single ``Distribution`` objects, arrays of ``UnivariateDistribution`` objects, and arrays of ``MultivariateDistribution`` objects are supported.  Distribution objects supplied in an array must all be of the same length.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Model specification syntax for all three can be seen in the :ref:`Birats Example <example-Birats>`.
+``DistributionStruct`` defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution``, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
 
 .. code-block:: julia
 

@@ -3,26 +3,44 @@
 dims(d::DistributionStruct) = size(d)
 
 function dims(D::Array{MultivariateDistribution})
-  if length(D) > 0
-    n = length(D[1])
-    all(i -> length(D[i]) == n, 2:length(D)) ||
-      error("lengths of distribution array elements differ")
-  else
-    n = 0
-  end
-  size(D)..., n
+  size(D)..., mapreduce(length, max, D)
 end
 
 
 #################### List Fallbacks ####################
 
 unlist(d::Distribution, x) = x
+
 unlist(D::Array{UnivariateDistribution}, x) = x
-unlist(D::Array{MultivariateDistribution}, x) = x
+
+function unlist(D::Array{MultivariateDistribution}, X::Array)
+  y = similar(X, length(X))
+  offset = 0
+  for sub in CartesianRange(size(D))
+    n = length(D[sub])
+    inds = 1:n
+    y[inds + offset] = X[sub, inds]
+    offset += n
+  end
+  resize!(y, offset)
+end
+
 
 relist(d::Distribution, x) = x
+
 relist(D::Array{UnivariateDistribution}, x) = x
-relist(D::Array{MultivariateDistribution}, x) = x
+
+function relist(D::Array{MultivariateDistribution}, x::Array)
+  Y = similar(x, dims(D))
+  offset = 0
+  for sub in CartesianRange(size(D))
+    n = length(D[sub])
+    inds = 1:n
+    Y[sub, inds] = x[inds + offset]
+    offset += n
+  end
+  Y
+end
 
 
 #################### Link Fallbacks ####################
@@ -67,8 +85,11 @@ end
 function logpdf(D::Array{MultivariateDistribution}, X::Array{Float64},
                 transform::Bool=false)
   Y = similar(D, Float64)
-  map!(i -> logpdf(D[i], vec(X[ind2sub(D, i)..., :]), transform), Y,
-       1:length(D))
+  for sub in CartesianRange(size(D))
+    d = D[sub]
+    Y[sub] = logpdf(d, vec(X[sub, 1:length(d)]), transform)
+  end
+  Y
 end
 
 
