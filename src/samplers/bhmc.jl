@@ -19,7 +19,7 @@ end
 
 function BHMCVariate(x::Vector{Float64}, tune=nothing)
   tune = BHMCTune(
-    0,
+    NaN,
     rand(Normal(0,1),length(x)),
     rand(Normal(0,1),length(x)),
     0,
