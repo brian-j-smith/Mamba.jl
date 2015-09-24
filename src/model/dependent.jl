@@ -151,23 +151,23 @@ end
 
 #################### Stochastic Distribution Methods ####################
 
-unlist(s::AbstractStochastic, x) = unlist(s.distr, x)
+unlist(s::AbstractStochastic, x) = unlist_sub(s.distr, x)
 
-relist(s::AbstractStochastic, x) = relist(s.distr, x)
+relist(s::AbstractStochastic, x) = relist_sub(s.distr, x)
 
 function link(s::AbstractStochastic, x, transform::Bool=true)
-  link(s.distr, x, transform)
+  link_sub(s.distr, x, transform)
 end
 
 function invlink(s::AbstractStochastic, x, transform::Bool=true)
-  invlink(s.distr, x, transform)
+  invlink_sub(s.distr, x, transform)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)
-  sum(logpdf(s.distr, s.value, transform))
+  sum(logpdf_sub(s.distr, s.value, transform))
 end
 
-rand(s::AbstractStochastic) = _rand(s.distr)
+rand(s::AbstractStochastic) = rand_sub(s.distr)
 
 
 #################### Auxiliary Functions ####################

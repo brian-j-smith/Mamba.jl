@@ -67,9 +67,9 @@ function findmissing(D::Array{MultivariateDistribution}, v::Array)
 end
 
 
-rand(s::AbstractStochastic, inds::StochasticIndices) = _rand(s.distr, inds)
+rand(s::AbstractStochastic, inds::StochasticIndices) = rand_sub(s.distr, inds)
 
-function _rand(d::Distribution, inds::StochasticIndices)
+function rand_sub(d::Distribution, inds::StochasticIndices)
   if length(inds.value) > 0
     x = rand(d)
     Float64[x[i] for i in inds.value]
@@ -78,11 +78,11 @@ function _rand(d::Distribution, inds::StochasticIndices)
   end
 end
 
-function _rand(D::Array{UnivariateDistribution}, inds::StochasticIndices)
+function rand_sub(D::Array{UnivariateDistribution}, inds::StochasticIndices)
   Float64[rand(d) for d in D[inds.value]]
 end
 
-function _rand(D::Array{MultivariateDistribution}, inds::StochasticIndices)
+function rand_sub(D::Array{MultivariateDistribution}, inds::StochasticIndices)
   X = Array(Float64, inds.dims)
   for i in inds.distr
     d = D[i]
