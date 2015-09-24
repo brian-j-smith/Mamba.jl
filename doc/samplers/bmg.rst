@@ -9,13 +9,13 @@ Implementation of the binary-state Metropolized Gibbs sampler of Schafer :cite:`
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bmg!(x::Vector{Int}, logf::Function)
+.. function:: bmg!(v::BMGVariate, logf::Function)
 
     Simulate one draw from a target distribution using the BMG sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
-        * ``x`` : current state of parameters to be simulated.
+        * ``v`` : current state of parameters to be simulated.
         * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``x``.
 
     **Value**
@@ -28,6 +28,36 @@ Stand-Alone Function
 
         .. literalinclude:: bmg.jl
             :language: julia
+
+.. index:: Sampler Types; BMGVariate
+
+BMGVariate Type
+^^^^^^^^^^^^^^^^
+
+Declaration
+```````````
+
+``BMGVariate <: VectorVariate``
+
+Fields
+``````
+
+* ``value::Vector{Float64}`` : vector of sampled values.
+
+Constructors
+````````````
+
+.. function:: BMGVariate(x::Vector{Float64})
+
+    Construct a ``BMGVariate`` object that stores sampled values for BMG sampling.
+
+    **Arguments**
+
+        * ``x`` : vector of sampled values.
+
+    **Value**
+
+        Returns a ``BMGVariate`` type object with fields pointing to the values supplied to arguments ``x``.
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^

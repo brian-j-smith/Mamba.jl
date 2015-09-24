@@ -1,41 +1,45 @@
 ############ Binary Metropolized Gibbs Sampler ##############
 
+#################### Types ####################
+
+type BMGVariate <: VectorVariate
+  value::Vector{Float64}
+
+  BMGVariate(x::Vector{Float64}) = new(x)
+end
+
 #################### Sampler Constructor ####################
 
 function BMG(params::Vector{Symbol})
   Sampler(params,
     quote
-      x = round(Int,unlist(model,block,false)) #current state
-      tunepar = tune(model, block)
-      f = y -> logpdf!(model,y,block,false)
-      bmg!(x,f)
-      relist(model,x,block,false)
+      x = unlist(model,block)
+      f = y -> logpdf!(model,y,block)
+      v = BMGVariate(x)
+      bmg!(v,f)
+      relist(model,v.value,block,false)
     end
   )
 end
 
 #################### Sampling Functions ####################
 
-function bmg!(x::Vector{Int}, logf::Function)
+function bmg!(v::BMGVariate, logf::Function)
   #proposal, initialize to current state
-  y = x[:]
+  y = v[:]
  
-  m = fill(0.5,length(x))
-  @inbounds for i in 1:length(x)
-    x1 = x[:]; x0 = x[:]
-    x1[i] = 1; x0[i] = 0
+  m = fill(0.5,length(v.value))
+  for i in 1:length(v.value)
+    v1 = v[:]; v0 = v[:]
+    v1[i] = 1; v0[i] = 0
 
-    x1l = logf(x1)
-    x0l = logf(x0)
+    v1l = logf(v1)
+    v0l = logf(v0)
 
-    # next line is equivalent to 
-    # m[i] = exp(x1l)/(exp(x0l)+exp(x1l))
-    # but more precise for log posteriors close to 1
-    m[i] = 1/(2 + expm1(x0l-x1l))
-
+    m[i] = exp(v1l)/(exp(v0l)+exp(v1l))
     y[i] = rand(Bernoulli(m[i]))
   end
-  if rand() < exp(logf(y) - logf(x))
-    x[:] = y
+  if rand() < exp(logf(y) - logf(v.value))
+    v[:] = y
   end
 end

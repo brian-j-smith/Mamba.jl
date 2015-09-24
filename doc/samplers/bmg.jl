@@ -21,7 +21,7 @@ end
 ## MCMC Simulation with Binary Metropolized Gibbs
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = zeros(Int64,p)
+gamma = BMGVariate(zeros(p))
 for i in 1:t
   bmg!(gamma, logf)
   sim[i,:,1] = gamma

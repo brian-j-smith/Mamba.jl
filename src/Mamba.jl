@@ -260,6 +260,7 @@ module Mamba
     AMWGVariate,
     bmg!,
     BMG,
+    BMGVariate,
     bmmg!,
     BMMG,
     BMMGVariate,
