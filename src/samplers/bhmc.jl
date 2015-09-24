@@ -30,7 +30,7 @@ end
 
 #################### Sampler Constructor ####################
 
-function BHMC(params::Vector{Symbol}, traveltime::Real)
+function BHMC(params::Vector{Symbol}, traveltime::Real=(50+0.5)*pi)
   Sampler(params,
   quote
     x = unlist(model,block)
