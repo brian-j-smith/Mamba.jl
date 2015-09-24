@@ -105,7 +105,7 @@ function bhmc!(v::BHMCVariate, traveltime::Float64, logf::Function)
     S1 = (S + ones(d))/2; S1[j] = 0
     S2 = (S + ones(d))/2; S2[j] = 1
 
-    v2_new = tune.velocity[j]^2 + sign(tune.velocity[j]) * 2 * (logf(S1)-logf(S2))
+    v2_new = tune.velocity[j]^2 + sign(tune.velocity[j]) * 2 * (logf(S2)-logf(S1))
     if v2_new > 0
       tune.velocity[j] = sqrt(v2_new) * sign(tune.velocity[j])
       S[j] = -S[j]
