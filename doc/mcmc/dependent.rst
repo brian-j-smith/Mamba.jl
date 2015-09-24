@@ -306,6 +306,18 @@ Methods
 
         The resulting numeric value of the log-density.
 
+.. function:: rand(s::AbstractStochastic)
+
+    Draw a sample from the distributional specification on a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node from which to generate a random sample.
+
+    **Value**
+
+        Returns the sampled value(s).
+
 .. function:: setinits!(s::Stochastic, m::Model, x=nothing)
 
     Set initial values for a stochastic node.

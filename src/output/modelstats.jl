@@ -61,20 +61,7 @@ function predict(mc::ModelChains, key::Symbol)
   for k in 1:chains
     for i in 1:iters
       relist!(m, vec(mc.value[i,idx,k]), sources)
-
-      if isa(node.distr, Distribution)
-        x = rand(node.distr)
-      elseif isa(node.distr, Array{UnivariateDistribution})
-        x = map(rand, node.distr)
-      elseif isa(node.distr, Array{MultivariateDistribution})
-        x = Array(Float64, dims(node.distr))
-        for sub in CartesianRange(size(node.distr))
-          d = node.distr[sub]
-          x[sub, 1:length(d)] = rand(d)
-        end
-      end
-
-      value[i,:,k] = unlist(node, x)
+      value[i,:,k] = unlist(node, rand(node))
     end
   end
 

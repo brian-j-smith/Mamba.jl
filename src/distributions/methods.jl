@@ -93,6 +93,22 @@ function logpdf(D::Array{MultivariateDistribution}, X::Array{Float64},
 end
 
 
+#################### Rand Fallbacks ####################
+
+_rand(d::Distribution) = rand(d)
+
+_rand(D::Array{UnivariateDistribution}) = map(rand, D)
+
+function _rand(D::Array{MultivariateDistribution})
+  x = fill(NaN, dims(D))
+  for sub in CartesianRange(size(D))
+    d = D[sub]
+    x[sub, 1:length(d)] = rand(d)
+  end
+  x
+end
+
+
 #################### Discrete Support Grids ####################
 
 typealias GridUnivariateDistribution

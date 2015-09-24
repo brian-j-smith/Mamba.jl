@@ -167,6 +167,8 @@ function logpdf(s::AbstractStochastic, transform::Bool=false)
   sum(logpdf(s.distr, s.value, transform))
 end
 
+rand(s::AbstractStochastic) = _rand(s.distr)
+
 
 #################### Auxiliary Functions ####################
 
