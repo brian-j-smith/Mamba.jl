@@ -174,6 +174,7 @@ module Mamba
 
   include("samplers/amm.jl")
   include("samplers/amwg.jl")
+  include("samplers/bmg.jl")
   include("samplers/bmmg.jl")
   include("samplers/dgs.jl")
   include("samplers/miss.jl")
@@ -257,6 +258,9 @@ module Mamba
     amwg!,
     AMWG,
     AMWGVariate,
+    bmg!,
+    BMG,
+    BMGVariate,
     bmmg!,
     BMMG,
     BMMGVariate,
