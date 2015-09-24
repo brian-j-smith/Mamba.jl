@@ -32,17 +32,17 @@ function DGS(params::Vector{Symbol})
       offset = 0
       for key in keys(model, :block, block)
 
+        sim = function(inds, d, logf)
+          x[inds + offset], _ = dgs(d, logf)
+        end
+
         logf = function(inds, value)
           x[inds + offset] = value
           logpdf!(model, x, block)
         end
 
-        sim = function(inds, d, logf)
-          x[inds + offset], _ = dgs(d, logf)
-        end
-
         node = model[key]
-        DGS_sub!(node.distr, logf, sim)
+        DGS_sub!(node.distr, sim, logf)
         offset += length(node)
       end
       relist(model, x, block)
@@ -51,18 +51,18 @@ function DGS(params::Vector{Symbol})
   )
 end
 
-function DGS_sub!(d::UnivariateDistribution, logf::Function, sim::Function)
+function DGS_sub!(d::UnivariateDistribution, sim::Function, logf::Function)
   sim(1, d, x -> logf(1, x))
 end
 
-function DGS_sub!(D::Array{UnivariateDistribution}, logf::Function,
-                  sim::Function)
+function DGS_sub!(D::Array{UnivariateDistribution}, sim::Function,
+                  logf::Function)
   for i in 1:length(D)
     sim(i, D[i], x -> logf(i, x))
   end
 end
 
-function DGS_sub!(d, logf::Function, sim::Function)
+function DGS_sub!(d, sim::Function, logf::Function)
   throw(ArgumentError("unsupported distribution structure $(typeof(d))"))
 end
 

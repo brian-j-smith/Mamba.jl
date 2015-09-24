@@ -44,9 +44,9 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = AMWGVariate(x, tunepar["sampler"])
+      f = x -> logpdf!(model, x, block, true)
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      f = x -> logpdf!(model, x, block, true)
       amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune

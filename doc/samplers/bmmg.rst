@@ -76,6 +76,7 @@ Declaration
 
 Fields
 ``````
+
 * ``indexset::Vector{Vector{Int}}`` : candidate set of indices of the parameters whose states are to be changed simultaneously.
 
 

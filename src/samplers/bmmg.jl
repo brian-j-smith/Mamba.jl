@@ -34,12 +34,13 @@ function BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
     quote
       tunepar = tune(model, block)
       x = unlist(model, block)
-      f = y -> logpdf!(model, y, block)
-      v = BMMGVariate(x)
+      v = BMMGVariate(x, tunepar["sampler"])
+      f = x -> logpdf!(model, x, block)
       bmmg!(v, tunepar["indexset"], f)
+      tunepar["sampler"] = v.tune
       relist(model, v, block)
     end,
-    Dict("indexset" => indexset)
+    Dict("indexset" => indexset, "sampler" => nothing)
   )
 end
 
