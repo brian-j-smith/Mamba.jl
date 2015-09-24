@@ -55,8 +55,6 @@ function bhmc!(v::BHMCVariate, traveltime::Float64, logf::Function)
   totaltime = 0                       # records how much time the particle already moved
 
   d = size(v.value,1)                 # length of binary vector
-  tune.velocity = rand(Normal(0,1),d) # initialize velocity/momentum
-
   S = sign(tune.position)
   
   while true
