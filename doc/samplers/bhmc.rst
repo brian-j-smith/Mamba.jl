@@ -9,14 +9,14 @@ Implementation of the binary-state Hamiltonian Monte Carlo sampler of Pakman :ci
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bhmc!(v::BHMCVariate, T::Real, logf::Function)
+.. function:: bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
 
     Simulate one draw from a target distribution using the BHMC sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``T`` : Length of time over which particle paths are simulated.
+        * ``traveltime`` : Length of time over which particle paths are simulated.
         * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
 
     **Value**
@@ -76,23 +76,23 @@ Declaration
 
 Fields
 ``````
-* ``T::Float64`` : Length of time over which particle paths are simulated.
-* ``X::Vector{Float64}`` : Initial particle positions.
-* ``V::Vector{Float64}`` : Initial particle velocites. 
+* ``traveltime::Float64`` : Length of time over which particle paths are simulated.
+* ``position::Vector{Float64}`` : Initial particle positions.
+* ``velocity::Vector{Float64}`` : Initial particle velocites. 
 * ``wallhits::Int`` : Number of times particles are reflected off the 0 threshold.
 * ``wallcrosses::Int`` :Number of times particles travel through 0 threshold. 
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
 
-.. function:: BHMC(params::Vector{Symbol}, T::Real)
+.. function:: BHMC(params::Vector{Symbol}, traveltime::Real)
 
     Construct a ``Sampler`` object for BHMC sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
-        * ``T::Real`` : Length of time over which particle paths are simulated.
+        * ``traveltime::Real`` : Length of time over which particle paths are simulated.
         
     **Value**
 

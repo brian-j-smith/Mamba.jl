@@ -18,16 +18,15 @@ logf = function(gamma)
   logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
 end
 
-## MCMC Simulation with Binary Modified Metropolised Gibbs Sampling
+## MCMC Simulation with Binary Hamiltonian Monte Carlo Sampling
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = BMMGVariate(zeros(p))
-indexset = collect(combinations(1:p, 1))
+gamma = BHMCVariate(zeros(p))
 for i in 1:t
-  bmmg!(gamma, indexset, logf)
+  bhmc!(gamma, (2*p+0.5)*pi, logf)
   sim[i,:,1] = gamma
 end
 describe(sim)
 
 p = plot(sim, [:trace, :mixeddensity])
-draw(p, filename = "bmmgplot")
+draw(p, filename = "bhmcplot")
