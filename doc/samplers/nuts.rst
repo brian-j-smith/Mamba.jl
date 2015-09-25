@@ -93,6 +93,7 @@ Declaration
 
 Fields
 ``````
+
 * ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
 * ``alpha::Float64`` : cumulative acceptance probabilities :math:`\alpha` from leapfrog steps.
 * ``epsilon::Float64`` : updated value of the step size parameter :math:`\epsilon_m = \exp\left(\mu - \sqrt{m} \bar{H}_m / \gamma\right)` if ``adapt = true``, and the user-defined value otherwise.

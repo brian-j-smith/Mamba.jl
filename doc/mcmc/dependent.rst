@@ -227,7 +227,7 @@ Fields
 Aliases
 ^^^^^^^
 
-``DistributionStruct`` defines the types of distribution structures supported for ``ArrayStochastic`` nodes.  Currently, single ``Distribution`` objects, arrays of ``UnivariateDistribution`` objects, and arrays of ``MultivariateDistribution`` objects are supported.  Distribution objects supplied in an array must all be of the same length.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Model specification syntax for all three can be seen in the :ref:`Birats Example <example-Birats>`.
+``DistributionStruct`` defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution``, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
 
 .. code-block:: julia
 
@@ -281,7 +281,7 @@ Methods
         * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
         * Lower bounded: shifted to zero and log-transformed.
         * Upper bounded: scaled by -1, shifted to zero, and log-transformed.
-        * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector of length :math:`n (n + 1) / 2`, where :math:`n` is the matrix dimension.
+        * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return it with the diagonal elements log-transformed.
 
     **Arguments**
 
@@ -305,6 +305,18 @@ Methods
     **Value**
 
         The resulting numeric value of the log-density.
+
+.. function:: rand(s::AbstractStochastic)
+
+    Draw a sample from the distributional specification on a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node from which to generate a random sample.
+
+    **Value**
+
+        Returns the sampled value(s).
 
 .. function:: setinits!(s::Stochastic, m::Model, x=nothing)
 

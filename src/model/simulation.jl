@@ -83,7 +83,7 @@ function relist{T<:Real}(m::Model, values::AbstractVector{T},
   for key in nkeys
     node = m[key]
     n = node.linklength
-    x[key] = invlink(node, values[j+(1:n)], transform)
+    x[key] = invlink(node, relist(node, values[j+(1:n)]), transform)
     j += n
   end
   j == length(values) || throw(ErrorException("argument dimensions must match"))
@@ -129,7 +129,7 @@ function unlist(m::Model, monitoronly::Bool)
   values = Float64[]
   for key in keys(m, :dependent)
     node = m[key]
-    lvalue = [link(node, node.value, false);]
+    lvalue = [unlist(node, node.value);]
     v = monitoronly ? lvalue[node.monitor] : vec(lvalue)
     append!(values, v)
   end
@@ -143,7 +143,7 @@ function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
   for k in 1:length(nkeys)
     node = m[nkeys[k]]
     n = N[k]
-    values[i+(1:n)] = link(node, node.value, transform)
+    values[i+(1:n)] = unlist(node, link(node, node.value, transform))
     i += n
   end
   values

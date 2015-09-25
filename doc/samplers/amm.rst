@@ -79,6 +79,7 @@ Declaration
 
 Fields
 ``````
+
 * ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
 * ``beta::Real`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaF``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.  Fixed at ``beta = 0.05``.
 * ``m::Int`` : number of adaptive update iterations that have been performed.

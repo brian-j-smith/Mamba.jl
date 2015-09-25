@@ -29,13 +29,14 @@ function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, tunepar["transform"])
+      v = SliceVariate(x, tunepar["sampler"])
       f = x -> logpdf!(model, x, block, tunepar["transform"])
-      v = SliceVariate(x)
       slice!(v, tunepar["width"], f, tunepar["stype"])
+      tunepar["sampler"] = v.tune
       relist(model, v, block, tunepar["transform"])
     end,
     Dict("width" => Float64[width...], "stype" => stype,
-         "transform" => transform)
+         "transform" => transform, "sampler" => nothing)
   )
 end
 

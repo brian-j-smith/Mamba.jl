@@ -19,12 +19,6 @@ end
 
 dims(d::AbstractDependent) = size(d)
 
-invlink(d::AbstractDependent, x, transform::Bool=true) = x
-
-link(d::AbstractDependent, x, transform::Bool=true) = x
-
-logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
-
 function names(d::AbstractDependent)
   names(d, d.symbol)
 end
@@ -36,7 +30,7 @@ end
 
 function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   values = monitor
-  d.linklength = length(link(d, d.value, false))
+  d.linklength = length(unlist(d, d.value))
   if d.linklength > 0 && length(monitor) > 0
     if monitor[1] == 0
       values = collect(1:d.linklength)
@@ -47,6 +41,19 @@ function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   d.monitor = values
   d
 end
+
+
+#################### Dependent Distribution Fallbacks ####################
+
+unlist(d::AbstractDependent, x) = x
+
+relist(d::AbstractDependent, x) = x
+
+link(d::AbstractDependent, x, transform::Bool=true) = x
+
+invlink(d::AbstractDependent, x, transform::Bool=true) = x
+
+logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
 
 
 #################### Logical Methods ####################
@@ -144,17 +151,23 @@ end
 
 #################### Stochastic Distribution Methods ####################
 
-function invlink(s::AbstractStochastic, x, transform::Bool=true)
-  invlink(s.distr, x, transform)
-end
+unlist(s::AbstractStochastic, x) = unlist_sub(s.distr, x)
+
+relist(s::AbstractStochastic, x) = relist_sub(s.distr, x)
 
 function link(s::AbstractStochastic, x, transform::Bool=true)
-  link(s.distr, x, transform)
+  link_sub(s.distr, x, transform)
+end
+
+function invlink(s::AbstractStochastic, x, transform::Bool=true)
+  invlink_sub(s.distr, x, transform)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)
-  sum(logpdf(s.distr, s.value, transform))
+  sum(logpdf_sub(s.distr, s.value, transform))
 end
+
+rand(s::AbstractStochastic) = rand_sub(s.distr)
 
 
 #################### Auxiliary Functions ####################

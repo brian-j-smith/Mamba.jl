@@ -1,24 +1,24 @@
-.. index:: Sampling Functions; Direct Grid Sampler
+.. index:: Sampling Functions; Discrete Gibbs Sampler
 
-Direct Grid Sampler (DGS)
--------------------------
+Discrete Gibbs Sampler (DGS)
+----------------------------
 
 Implementation of a sampler for the simulation of discrete or discretized model parameters with finite support.  Draws are simulated directly from a probability mass function that can be specified up to a constant of proportionality.  Note that versions of this sampler evaluate the probability function over all points in the parameter space; and, as a result, may be very computationally intensive for large spaces.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: dgs!(v::DGSVariate, grid::Vector, logf::Function)
-              dgs!(v::DGSVariate, grid::Vector, prob::Vector{Float64})
+.. function:: dgs!(v::DGSVariate, support::Vector, logf::Function)
+              dgs!(v::DGSVariate, support::Vector, probs::Vector{Float64})
 
     Simulate one draw directly from a target probability mass function.  Parameters are assumed to have discrete and finite support.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``grid`` : vector of coordinates in the parameter space from which to simulate values.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at each vector element of ``grid``.
-        * ``probs`` : sampling probabilities for the ``grid`` vector of coordinates.
+        * ``support`` : vector of coordinates in the parameter space from which to simulate values.
+        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at each element in the ``support`` vector.
+        * ``probs`` : sampling probabilities for the ``support`` vector of coordinates.
 
     **Value**
 
@@ -71,8 +71,8 @@ Declaration
 Fields
 ``````
 
-* ``grid::Vector`` : vector of coordinates in the parameter space from which to simulate values.
-* ``prob::Vector{Float64}`` : corresponding sampling probabilities.
+* ``support::Vector`` : vector of coordinates in the parameter space from which to simulate values.
+* ``probs::Vector{Float64}`` : corresponding sampling probabilities.
 
 
 Sampler Constructor
@@ -80,7 +80,7 @@ Sampler Constructor
 
 .. function:: DGS(params::Vector{Symbol})
 
-    Construct a ``Sampler`` object for which sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to have discrete univariate distributions with finite supports.
+    Construct a ``Sampler`` object for which DGS sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to have discrete univariate distributions with finite supports.
 
     **Arguments**
 

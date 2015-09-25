@@ -80,6 +80,7 @@ Declaration
 
 Fields
 ``````
+
 * ``width::Vector{Float64}`` : vector of initial widths defining hyperrectangles from which to simulate values.
 
 

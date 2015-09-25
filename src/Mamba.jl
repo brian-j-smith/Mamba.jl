@@ -240,6 +240,7 @@ module Mamba
     predict,
     quantile,
     rafterydiag,
+    rand,
     relist,
     relist!,
     setinits!,
