@@ -79,14 +79,15 @@ end
 function relist{T<:Real}(m::Model, values::AbstractVector{T},
                          nkeys::Vector{Symbol}, transform::Bool=false)
   x = Dict{Symbol,Any}()
-  j = 0
+  offset = 0
   for key in nkeys
     node = m[key]
     n = node.linklength
-    x[key] = invlink(node, relist(node, values[j+(1:n)]), transform)
-    j += n
+    x[key] = invlink(node, relist(node, values[offset + (1:n)]), transform)
+    offset += n
   end
-  j == length(values) || throw(ErrorException("argument dimensions must match"))
+  offset == length(values) ||
+    throw(ErrorException("argument dimensions must match"))
   x
 end
 
@@ -139,12 +140,12 @@ end
 function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
   N = Int[m[key].linklength for key in nkeys]
   values = Array(Float64, sum(N))
-  i = 0
+  offset = 0
   for k in 1:length(nkeys)
     node = m[nkeys[k]]
     n = N[k]
-    values[i+(1:n)] = unlist(node, link(node, node.value, transform))
-    i += n
+    values[offset + (1:n)] = unlist(node, link(node, node.value, transform))
+    offset += n
   end
   values
 end

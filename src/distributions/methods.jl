@@ -19,7 +19,7 @@ function unlist_sub(D::Array{MultivariateDistribution}, X::Array)
   for sub in CartesianRange(size(D))
     n = length(D[sub])
     inds = 1:n
-    y[inds + offset] = X[sub, inds]
+    y[offset + inds] = X[sub, inds]
     offset += n
   end
   resize!(y, offset)
@@ -36,7 +36,7 @@ function relist_sub(D::Array{MultivariateDistribution}, x::Array)
   for sub in CartesianRange(size(D))
     n = length(D[sub])
     inds = 1:n
-    Y[sub, inds] = x[inds + offset]
+    Y[sub, inds] = x[offset + inds]
     offset += n
   end
   Y

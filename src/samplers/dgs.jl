@@ -33,11 +33,11 @@ function DGS(params::Vector{Symbol})
       for key in keys(model, :block, block)
 
         sim = function(inds, d, logf)
-          x[inds + offset], _ = dgs(d, logf)
+          x[offset + inds], _ = dgs(d, logf)
         end
 
         logf = function(inds, value)
-          x[inds + offset] = value
+          x[offset + inds] = value
           logpdf!(model, x, block)
         end
 
