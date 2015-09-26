@@ -30,11 +30,11 @@ end
 
 function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   values = monitor
-  d.linklength = length(unlist(d, d.value))
-  if d.linklength > 0 && length(monitor) > 0
+  d.listlength = length(unlist(d, d.value))
+  if d.listlength > 0 && length(monitor) > 0
     if monitor[1] == 0
-      values = collect(1:d.linklength)
-    elseif minimum(monitor) < 1 || maximum(monitor) > d.linklength
+      values = collect(1:d.listlength)
+    elseif minimum(monitor) < 1 || maximum(monitor) > d.listlength
       throw(BoundsError())
     end
   end
