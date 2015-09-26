@@ -33,14 +33,14 @@ Constructors
 
 .. function:: Chains(iters::Integer, params::Integer; \
                      start::Integer=1, thin::Integer=1, chains::Integer=1, \
-                     names::Vector{T<:AbstractString}=Array(AbstractString,0))
+                     names::Vector{T<:AbstractString}=AbstractString[])
               Chains(value::Array{T<:Real,3}; \
                      start::Integer=1, thin::Integer=1, \
-                     names::Vector{U<:AbstractString}=Array(AbstractString,0), \
-                     chains::Vector{V<:Integer}=Array(Integer, 0))
+                     names::Vector{U<:AbstractString}=AbstractString[], \
+                     chains::Vector{V<:Integer}=Int[])
               Chains(value::Matrix{T<:Real}; \
                      start::Integer=1, thin::Integer=1, \
-                     names::Vector{U<:AbstractString}=Array(AbstractString,0), chains::Integer=1)
+                     names::Vector{U<:AbstractString}=AbstractString[], chains::Integer=1)
               Chains(value::Vector{T<:Real}; \
                      start::Integer=1, thin::Integer=1, names::AbstractString="Param1", \
                      chains::Integer=1)

@@ -29,7 +29,7 @@ Constructor
 ^^^^^^^^^^^
 
 .. function:: Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1, \
-                    samplers::Vector{Sampler}=Array(Sampler, 0), nodes...)
+                    samplers::Vector{Sampler}=Sampler[], nodes...)
 
     Construct a ``Model`` object that defines a model for MCMC simulation.
 
