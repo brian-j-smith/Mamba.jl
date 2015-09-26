@@ -9,11 +9,13 @@ end
 
 #################### List Fallbacks ####################
 
-unlist_sub(d::Distribution, x) = x
+unlist(d::Distribution, x) = x
+
+unlist_sub(d::Distribution, x) = unlist(d, x)
 
 unlist_sub(D::Array{UnivariateDistribution}, x) = x
 
-function unlist_sub(D::Array{MultivariateDistribution}, X::Array)
+function unlist_sub(D::Array{MultivariateDistribution}, X::DenseArray)
   y = similar(X, length(X))
   offset = 0
   for sub in CartesianRange(size(D))
@@ -26,11 +28,13 @@ function unlist_sub(D::Array{MultivariateDistribution}, X::Array)
 end
 
 
-relist_sub(d::Distribution, x) = x
+relist(d::Distribution, x) = x
+
+relist_sub(d::Distribution, x) = relist(d, x)
 
 relist_sub(D::Array{UnivariateDistribution}, x) = x
 
-function relist_sub(D::Array{MultivariateDistribution}, x::Array)
+function relist_sub(D::Array{MultivariateDistribution}, x::DenseArray)
   Y = similar(x, dims(D))
   offset = 0
   for sub in CartesianRange(size(D))
@@ -45,52 +49,93 @@ end
 
 #################### Link Fallbacks ####################
 
-link_sub(d::Distribution, x, transform::Bool) = x
+link(d::Distribution, x, transform::Bool) = x
 
-function link_sub(D::Array{UnivariateDistribution}, X::Array, transform::Bool)
-  Y = similar(X)
+link_sub(d::Distribution, x, transform::Bool) = link(d, x, transform)
+
+function link_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
+  Y = similar(X, Float64)
+  map!(x -> link_sub(d, x, transform), Y, X)
+end
+
+function link_sub(D::Array{UnivariateDistribution}, X::DenseArray,
+                  transform::Bool)
+  Y = similar(X, Float64)
   map!(i -> link_sub(D[i], X[i], transform), Y, 1:length(D))
 end
 
-link_sub(D::Array{MultivariateDistribution}, X::Array, transform::Bool) = X
+function link_sub(D::Array{MultivariateDistribution}, X::DenseArray,
+                  transform::Bool)
+  Y = similar(X, Float64)
+  for sub in CartesianRange(size(D))
+    d = D[sub]
+    inds = 1:length(d)
+    Y[sub, inds] = link_sub(d, X[sub, inds], transform)
+  end
+  Y
+end
 
 
-invlink_sub(d::Distribution, x, transform::Bool) = x
+invlink(d::Distribution, x, transform::Bool) = x
 
-function invlink_sub(D::Array{UnivariateDistribution}, X::Array,
+invlink_sub(d::Distribution, x, transform::Bool) = invlink(d, x, transform)
+
+function invlink_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
+  Y = similar(X, Float64)
+  map!(x -> invlink_sub(d, x, transform), Y, X)
+end
+
+function invlink_sub(D::Array{UnivariateDistribution}, X::DenseArray,
                      transform::Bool)
-  Y = similar(X)
+  Y = similar(X, Float64)
   map!(i -> invlink_sub(D[i], X[i], transform), Y, 1:length(D))
 end
 
-invlink_sub(D::Array{MultivariateDistribution}, X::Array, transform::Bool) = X
+function invlink_sub(D::Array{MultivariateDistribution}, X::DenseArray,
+                     transform::Bool)
+  Y = similar(X, Float64)
+  for sub in CartesianRange(size(D))
+    d = D[sub]
+    inds = 1:length(d)
+    Y[sub, inds] = invlink_sub(d, X[sub, inds], transform)
+  end
+  Y
+end
 
 
 #################### Logpdf Fallbacks ####################
 
+logpdf(d::Distribution, x, transform::Bool) = logpdf(d, x)
+
 function logpdf_sub(d::Distribution, x, transform::Bool)
-  insupport(d, x) ? logpdf(d, x) : -Inf
+  insupport(d, x) ? logpdf(d, x, transform) : -Inf
 end
 
-function logpdf_sub(d::UnivariateDistribution, X::Array{Float64},
-                    transform::Bool)
-  map(x -> logpdf_sub(d, x, transform), X)
+function logpdf_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
+  lp = 0.0
+  for x in X
+    lp += logpdf_sub(d, x, transform)
+  end
+  lp
 end
 
-function logpdf_sub(D::Array{UnivariateDistribution}, X::Array{Float64},
+function logpdf_sub(D::Array{UnivariateDistribution}, X::DenseArray,
                     transform::Bool)
-  Y = similar(D, Float64)
-  map!(i -> logpdf_sub(D[i], X[i], transform), Y, 1:length(D))
+  lp = 0.0
+  for i in 1:length(D)
+    lp += logpdf_sub(D[i], X[i], transform)
+  end
+  lp
 end
 
-function logpdf_sub(D::Array{MultivariateDistribution}, X::Array{Float64},
+function logpdf_sub(D::Array{MultivariateDistribution}, X::DenseArray,
                     transform::Bool)
-  Y = similar(D, Float64)
+  lp = 0.0
   for sub in CartesianRange(size(D))
     d = D[sub]
-    Y[sub] = logpdf_sub(d, vec(X[sub, 1:length(d)]), transform)
+    lp += logpdf_sub(d, vec(X[sub, 1:length(d)]), transform)
   end
-  Y
+  lp
 end
 
 
@@ -98,15 +143,18 @@ end
 
 rand_sub(d::Distribution) = rand(d)
 
-rand_sub(D::Array{UnivariateDistribution}) = map(rand, D)
+function rand_sub(D::Array{UnivariateDistribution})
+  X = similar(D, Float64)
+  map!(rand, X, D)
+end
 
 function rand_sub(D::Array{MultivariateDistribution})
-  x = fill(NaN, dims(D))
+  X = fill(NaN, dims(D))
   for sub in CartesianRange(size(D))
     d = D[sub]
-    x[sub, 1:length(d)] = rand(d)
+    X[sub, 1:length(d)] = rand(d)
   end
-  x
+  X
 end
 
 
@@ -121,7 +169,7 @@ typealias GridUnivariateDistribution
 
 typealias PDMatDistribution Union{InverseWishart, Wishart}
 
-function unlist_sub(d::PDMatDistribution, X::Matrix)
+function unlist(d::PDMatDistribution, X::DenseMatrix)
   n = dim(d)
   y = similar(X, Int(n * (n + 1) / 2))
   k = 0
@@ -132,7 +180,7 @@ function unlist_sub(d::PDMatDistribution, X::Matrix)
   y
 end
 
-function relist_sub(d::PDMatDistribution, x::Array)
+function relist(d::PDMatDistribution, x::DenseArray)
   n = dim(d)
   Y = similar(x, n, n)
   k = 0
@@ -143,7 +191,8 @@ function relist_sub(d::PDMatDistribution, x::Array)
   Y
 end
 
-function link_sub(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
+function link(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
+  Y = X
   if transform
     n = dim(d)
     Y = zeros(n, n)
@@ -154,13 +203,12 @@ function link_sub(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
     for i in 1:n, j in (i+1):n
       Y[i,j] = U[i,j]
     end
-  else
-    Y = X
   end
   Y
 end
 
-function invlink_sub(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
+function invlink(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
+  Y = X
   if transform
     n = dim(d)
     U = zeros(n, n)
@@ -171,23 +219,21 @@ function invlink_sub(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
       U[i,j] = X[i,j]
     end
     Y = At_mul_B(U, U)
-  else
-    Y = X
   end
   Y
 end
 
-function logpdf_sub(d::PDMatDistribution, X::Matrix{Float64}, transform::Bool)
-  value = logpdf(d, X)
-  if transform && isfinite(value)
+function logpdf(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
+  lp = logpdf(d, X)
+  if transform && isfinite(lp)
     U = chol(X)
     n = dim(d)
     for i in 1:n
-      value += (n - i + 2) * log(U[i,i])
+      lp += (n - i + 2) * log(U[i,i])
     end
-    value += n * log(2)
+    lp += n * log(2)
   end
-  value
+  lp
 end
 
 
@@ -196,56 +242,51 @@ end
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
   Union{T, Truncated{T}}
 
-function link_sub(d::TransformDistribution, x, transform::Bool)
+function link(d::TransformDistribution, x::Real, transform::Bool)
+  y = x
   if transform
     a, b = minimum(d), maximum(d)
     lowerbounded, upperbounded = isfinite(a), isfinite(b)
     if lowerbounded && upperbounded
-      return logit((x - a) / (b - a))
+      y = logit((x - a) / (b - a))
     elseif lowerbounded
-      return log(x - a)
+      y = log(x - a)
     elseif upperbounded
-      return log(b - x)
-    else
-      return x
+      y = log(b - x)
     end
-  else
-     return x
   end
+  y
 end
 
-function invlink_sub(d::TransformDistribution, x, transform::Bool)
+function invlink(d::TransformDistribution, x::Real, transform::Bool)
+  y = x
   if transform
     a, b = minimum(d), maximum(d)
     lowerbounded, upperbounded = isfinite(a), isfinite(b)
     if lowerbounded && upperbounded
-      return (b - a) * invlogit(x) + a
+      y = (b - a) * invlogit(x) + a
     elseif lowerbounded
-      return exp(x) + a
+      y = exp(x) + a
     elseif upperbounded
-      return b - exp(x)
-    else
-      return x
+      y = b - exp(x)
     end
-  else
-    return x
   end
+  y
 end
 
-function logpdf_sub(d::TransformDistribution, x::Float64, transform::Bool)
-  insupport(d, x) || return -Inf
-  value = logpdf(d, x)
+function logpdf(d::TransformDistribution, x::Real, transform::Bool)
+  lp = logpdf(d, x)
   if transform
     a, b = minimum(d), maximum(d)
     lowerbounded, upperbounded = isfinite(a), isfinite(b)
     if lowerbounded && upperbounded
       y = (x - a) / (b - x)
-      value += log((b - a) * y / (y + 1.0)^2)
+      lp += log((b - a) * y / (y + 1.0)^2)
     elseif lowerbounded
-      value += log(x - a)
+      lp += log(x - a)
     elseif upperbounded
-      value += log(b - x)
+      lp += log(b - x)
     end
   end
-  value
+  lp
 end

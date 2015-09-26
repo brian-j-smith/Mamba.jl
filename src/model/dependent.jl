@@ -164,7 +164,7 @@ function invlink(s::AbstractStochastic, x, transform::Bool=true)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)
-  sum(logpdf_sub(s.distr, s.value, transform))
+  logpdf_sub(s.distr, s.value, transform)
 end
 
 rand(s::AbstractStochastic) = rand_sub(s.distr)
