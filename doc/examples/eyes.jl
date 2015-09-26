@@ -34,17 +34,16 @@ model = Model(
   ),
 
   T = Stochastic(1,
-    @modelexpr(p, N,
-      begin
-        P = Float64[p; 1 - p]
-        UnivariateDistribution[Categorical(P) for i in 1:N]
-      end
+    @modelexpr(P, N,
+      UnivariateDistribution[Categorical(P) for i in 1:N]
     ),
     false
   ),
 
-  p = Stochastic(
-    :(Uniform(0, 1))
+  P = Stochastic(1,
+    @modelexpr(alpha,
+      Dirichlet(alpha)
+    )
   ),
 
   lambda = Logical(1,
@@ -72,16 +71,18 @@ model = Model(
 
 ## Initial Values
 inits = [
-  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 535,
-       :theta => 5, :s2 => 10),
-  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 550,
-       :theta => 1, :s2 => 1)
+  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :P => [0.5, 0.5],
+       :lambda0 => 535, :theta => 5, :s2 => 10),
+  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :P => [0.5, 0.5],
+       :lambda0 => 550, :theta => 1, :s2 => 1)
 ]
 
 
 ## Sampling Scheme
 scheme = [DGS([:T]),
-          Slice([:p, :lambda0, :theta, :s2], fill(1.0, 4), :univar, transform=true)]
+          Slice([:lambda0, :theta], [5.0, 1.0]),
+          Slice([:s2], [2.0], transform=true),
+          SliceSimplex([:P], scale=0.75)]
 setsamplers!(model, scheme)
 
 

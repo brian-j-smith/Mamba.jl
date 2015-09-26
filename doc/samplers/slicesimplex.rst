@@ -95,3 +95,7 @@ Sampler Constructor
     **Value**
 
         Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`Eyes <example-Eyes>` example.
