@@ -31,42 +31,43 @@ function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
       offset = 0
       for key in keys(model, :block, block)
 
+        sim = function(inds, logf)
+          v = SliceSimplexVariate(x[offset + inds], tunepar["sampler"])
+          slicesimplex!(v, logf, scale=tunepar["scale"])
+          tunepar["sampler"] = v.tune
+        end
+
         logf = function(inds, value)
-          x[inds + offset] = value
+          x[offset + inds] = value
           logpdf!(model, x, block)
         end
 
-        sim = function(inds, logf)
-          v = SliceSimplexVariate(x[inds + offset])
-          slicesimplex!(v, logf, scale=tunepar["scale"])
-        end
-
         node = model[key]
-        SliceSimplex_sub!(node.distr, logf, sim)
+        SliceSimplex_sub!(node.distr, sim, logf)
         offset += length(node)
       end
       relist(model, x, block)
     end,
-    Dict{AbstractString,Any}("scale" => scale)
+    Dict("scale" => scale, "sampler" => nothing)
   )
 end
 
-function SliceSimplex_sub!(d::MultivariateDistribution, logf::Function,
-                           sim::Function)
+function SliceSimplex_sub!(d::MultivariateDistribution, sim::Function,
+                           logf::Function)
   inds = 1:length(d)
   sim(inds, x -> logf(inds, x))
 end
 
-function SliceSimplex_sub!(D::Array{MultivariateDistribution}, logf::Function,
-                           sim::Function)
-  m = length(D)
-  for i in 1:m
-    inds = range(i, m, length(D[i]))
+function SliceSimplex_sub!(D::Array{MultivariateDistribution}, sim::Function,
+                           logf::Function)
+  inds = 0:0
+  for i in 1:length(D)
+    inds = last(inds) + (1:length(D[i]))
     sim(inds, x -> logf(inds, x))
   end
 end
 
-function SliceSimplex_sub!(d, logf::Function, sim::Function)
+function SliceSimplex_sub!(d, sim::Function, logf::Function)
   throw(ArgumentError("unsupported distribution structure $(typeof(d))"))
 end
 
