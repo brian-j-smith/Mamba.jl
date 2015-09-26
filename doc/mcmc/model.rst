@@ -278,44 +278,6 @@ Parameter Block Operations
 
         The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 
-.. function:: relist(m::Model, values::AbstractVector{T<:Real}, \
-                     block::Integer=0, transform::Bool=false)
-              relist(m::Model, values::AbstractVector{T<:Real}, \
-                     nkeys::Vector{Symbol},transform::Bool=false)
-
-    Convert a vector of values to a set of logical and/or stochastic node values.
-
-    **Arguments**
-
-        * ``m`` : a model with nodes to serve as the template for conversion.
-        * ``values`` : values to convert.
-        * ``block`` : the sampling block of nodes to which to convert ``values``.  Defaults to all blocks.
-        * ``nkeys`` : a vector of symbols identifying the nodes to which to convert ``values``.
-        * ``transform`` : whether to apply an inverse-link transformation in the conversion.
-
-    **Value**
-
-        A dictionary of node symbols and converted values.
-
-.. function:: relist!(m::Model, values::AbstractVector{T<:Real}, \
-                      block::Integer=0, transform::Bool=false)
-              relist!(m::Model, values::AbstractVector{T<:Real}, \
-                      nkeys::Vector{Symbol}, transform::Bool=false)
-
-    Copy a vector of values to a set of logical and/or stochastic nodes.
-
-    **Arguments**
-
-        * ``m`` : a model with nodes to which values will be copied.
-        * ``values`` : values to copy.
-        * ``block`` : the sampling block of nodes to which to copy ``values``.  Defaults to all blocks.
-        * ``nkeys`` : a vector of symbols identifying the nodes to which to copy ``values``.
-        * ``transform`` : whether to apply an inverse-link transformation in the copy.
-
-    **Value**
-
-        Returns the model with copied node values.
-
 .. function:: simulate!(m::Model, block::Integer=0)
 
     Simulate one MCMC draw from a specified model.
@@ -348,19 +310,28 @@ Parameter Block Operations
 
 .. function:: unlist(m::Model, block::Integer=0, transform::Bool=false)
               unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
+              relist(m::Model, values::AbstractVector{T<:Real}, \
+                     block::Integer=0, transform::Bool=false)
+              relist(m::Model, values::AbstractVector{T<:Real}, \
+                     nkeys::Vector{Symbol},transform::Bool=false)
+              relist!(m::Model, values::AbstractVector{T<:Real}, \
+                      block::Integer=0, transform::Bool=false)
+              relist!(m::Model, values::AbstractVector{T<:Real}, \
+                      nkeys::Vector{Symbol}, transform::Bool=false)
 
-    Convert a set of logical and/or stochastic node values to a vector.
+    Convert (unlist) sets of logical and/or stochastic node values to vectors, or reverse (relist) the process.
 
     **Arguments**
 
-        * ``m`` : a model with nodes to be converted.
-        * ``block`` : the sampling block of nodes to be converted.  Defaults to all blocks.
-        * ``nkeys`` : a vector of symbols identifying the nodes to be converted.
+        * ``m`` : a model containing nodes to be unlisted or relisted.
+        * ``values`` : values to re-list.
+        * ``block`` : the sampling block of nodes to be listed.  Defaults to all blocks.
+        * ``nkeys`` : a vector of symbols identifying the nodes to be listed.
         * ``transform`` : whether to apply a link transformation in the conversion.
 
     **Value**
 
-        A vector of concatenated node values.
+        The ``unlist`` methods return vectors of concatenated node values, ``relist`` return dictionaries of symbol keys and values for the specified nodes, and ``relist!`` return their model argument with values copied to the nodes.
 
 .. function:: update!(m::Model, block::Integer=0)
 

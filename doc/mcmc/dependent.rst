@@ -29,33 +29,20 @@ Fields
 Methods
 ^^^^^^^
 
-.. function:: invlink(d::AbstractDependent, x, transform::Bool=true)
-
-    Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``AbstractDependent`` to implement different link transformations.
-
-    **Arguments**
-
-        * ``d`` : a node on which a ``link()`` transformation method is defined.
-        * ``x`` : an object to which to apply the inverse-link transformation.
-        * ``transform`` : whether to transform ``x`` or assume an identity link.
-
-    **Value**
-
-        Returns the inverse-link-transformed version of ``x``.
-
 .. function:: link(d::AbstractDependent, x, transform::Bool=true)
+              invlink(d::AbstractDependent, x, transform::Bool=true)
 
-    Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``AbstractDependent`` to implement different link transformations.
+    Apply a node-specific link or inverse-link transformation, respectively.  In this generic method, the transformations are defined to be the identity functions.  The method function may be redefined for subtypes of ``AbstractDependent`` to implement different transformations.
 
     **Arguments**
 
-        * ``d`` : a node on which a ``link()`` transformation method is defined.
-        * ``x`` : an object to which to apply the link transformation.
+        * ``d`` : a node on which a ``link()`` or ``invlink()`` transformation method is defined.
+        * ``x`` : an object to which to apply the transformation.
         * ``transform`` : whether to transform ``x`` or assume an identity link.
 
     **Value**
 
-        Returns the link-transformed version of ``x``.
+        Returns the link or inverse-link-transformed version of ``x``.
 
 .. function:: logpdf(d::AbstractDependent, transform::Bool=false)
 
@@ -91,6 +78,20 @@ Methods
 .. function:: showall(d::AbstractDependent)
 
     Write a verbose text representation of nodal values and attributes to the current output stream.
+
+.. function:: unlist(d::AbstractDependent, x)
+              relist(d::AbstractDependent, x)
+
+    Extract (unlist) values from a node, or re-assemble (relist) values to be put into a node.  In this generic method, all values are extracted/re-assembled.  The methods are used internally for the extraction of unique stochastic node values to sample, and can be redefined to implement different behaviors for ``AbstractDependent`` subtypes.
+
+    **Arguments**
+
+        * ``d`` : a node to unlist or relist.
+        * ``x`` : values to be listed.
+
+    **Value**
+
+        Returns ``x`` unmodified.
 
 
 .. index:: Logical Types
@@ -260,23 +261,10 @@ Constructors
 Methods
 ^^^^^^^
 
-.. function:: invlink(s::AbstractStochastic, x, transform::Bool=true)
-
-    Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
-
-    **Arguments**
-
-        * ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
-        * ``x`` : an object to which to apply the inverse-link transformation.
-        * ``transform`` : whether to transform ``x`` or assume an identity link.
-
-    **Value**
-
-        Returns the inverse-link-transformed version of ``x``.
-
 .. function:: link(s::AbstractStochastic, x, transform::Bool=true)
+              invlink(s::AbstractStochastic, x, transform::Bool=true)
 
-    Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
+    Apply a link transformation, or its inverse, to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
 
         * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
         * Lower bounded: shifted to zero and log-transformed.
@@ -285,13 +273,13 @@ Methods
 
     **Arguments**
 
-        * ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
-        * ``x`` : an object to which to apply the link transformation.
+        * ``s`` : a stochastic node on which a ``link()`` or ``invlink()`` transformation method is defined.
+        * ``x`` : an object to which to apply the transformation.
         * ``transform`` : whether to transform ``x`` or assume an identity link.
 
     **Value**
 
-        Returns the link-transformed version of ``x``.
+        Returns the transformed version of ``x``.
 
 .. function:: logpdf(s::AbstractStochastic, transform::Bool=false)
 
@@ -331,6 +319,20 @@ Methods
     **Value**
 
         Returns the node with its assigned initial values.
+
+.. function:: unlist(s::AbstractStochastic, x)
+              relist(s::AbstractStochastic, x)
+
+    Extract (unlist) stochastic node values, or re-assemble (relist) values into a format that can be put into a node.  These methods are used internally to extract the unique and sampled values of stochastic nodes.  They are used, for instance, to extract only the unique, upper-triangular portions of (symmetric) covariance matrices and only the sampled values of ``Array{MultivariateDistribution}`` specifications whose distributions may be of different lengths.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node to unlist or relist.
+        * ``x`` : values to be listed.
+
+    **Value**
+
+        Returns the extracted or re-assembled version of ``x``.
 
 .. function:: update!(s::AbstractStochastic, m::Model)
 
