@@ -152,7 +152,9 @@ module Mamba
   include("distributions/mvnormal.jl")
   include("distributions/null.jl")
   include("distributions/constructors.jl")
-  include("distributions/methods.jl")
+  include("distributions/distributionstruct.jl")
+  include("distributions/pdmatdistribution.jl")
+  include("distributions/transformdistribution.jl")
 
   include("model/core.jl")
   include("model/dependent.jl")
