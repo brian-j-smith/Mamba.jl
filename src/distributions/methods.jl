@@ -158,13 +158,6 @@ function rand_sub(D::Array{MultivariateDistribution})
 end
 
 
-#################### Discrete Support Grids ####################
-
-typealias GridUnivariateDistribution
-          Union{Bernoulli, Binomial, Categorical, DiscreteUniform,
-                Hypergeometric, NoncentralHypergeometric}
-
-
 #################### PDMatDistribution ####################
 
 typealias PDMatDistribution Union{InverseWishart, Wishart}

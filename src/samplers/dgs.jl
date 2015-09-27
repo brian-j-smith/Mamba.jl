@@ -2,6 +2,10 @@
 
 #################### Types ####################
 
+typealias DGSUnivariateDistribution
+          Union{Bernoulli, Binomial, Categorical, DiscreteUniform,
+                Hypergeometric, NoncentralHypergeometric}
+
 type DGSTune
   support::Vector
   probs::Vector{Float64}
@@ -103,7 +107,7 @@ function dgs(support::AbstractVector, logf::Function)
   support[rand(Categorical(p))], p
 end
 
-function dgs(d::GridUnivariateDistribution, logf::Function)
+function dgs(d::DGSUnivariateDistribution, logf::Function)
   dgs(support(d), logf)
 end
 
