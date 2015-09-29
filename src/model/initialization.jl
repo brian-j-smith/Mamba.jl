@@ -1,4 +1,4 @@
-#################### Model Initialization Methods ####################
+#################### Model Initialization ####################
 
 function reset!(m::Model)
   m.iter = 0

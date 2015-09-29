@@ -1,4 +1,4 @@
-#################### Variate Methods ####################
+#################### Variate ####################
 
 #################### Conversions ####################
 
@@ -12,7 +12,7 @@ Base.convert{T<:Real,N}(::Union{Type{AbstractArray{T,N}},Type{Array{T,N}}},
 Base.unsafe_convert{T<:Real}(::Type{Ptr{T}}, v::ArrayVariate) = pointer(v.value)
 
 
-#################### Basic Functions ####################
+#################### Base Functions ####################
 
 Base.size(v::AbstractVariate) = size(v.value)
 

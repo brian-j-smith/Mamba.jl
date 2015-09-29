@@ -1,6 +1,5 @@
 #################### MCMC Simulation Engine ####################
 
-
 function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
   burnin = last(mc.range) - mc.model.iter
   thin = step(mc.range)

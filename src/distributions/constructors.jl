@@ -1,5 +1,5 @@
 ######################################################################
-# Univariate Distributions
+# Distributions Package UnivariateDistribution
 ######################################################################
 
 #################### Categorical ####################
@@ -9,21 +9,8 @@ Distributions.Categorical(p::VectorVariate) =
 
 
 ######################################################################
-# Multivariate Distributions
+# Distributions Package MultivariateDistribution
 ######################################################################
-
-#################### BDiagNormal ####################
-
-BDiagNormal(μ::VectorVariate, Σ::Matrix{Float64}) =
-  BDiagNormal(convert(Vector{Float64}, μ), Σ)
-BDiagNormal(μ::Vector{Float64}, Σ::MatrixVariate) =
-  BDiagNormal(μ, convert(Matrix{Float64}, Σ))
-BDiagNormal(μ::VectorVariate, Σ::MatrixVariate) =
-  BDiagNormal(convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
-
-BDiagNormal(μ, Σ::Vector) =
-  BDiagNormal(convert(Vector{Float64}, μ), Matrix{Float64}[Σ...])
-
 
 #################### Dirichlet ####################
 
@@ -138,7 +125,7 @@ Distributions.VonMisesFisher(μ::VectorVariate, κ::Real) =
 
 
 ######################################################################
-# Matrix Distributions
+# Distributions Package MatrixDistribution
 ######################################################################
 
 #################### InverseWishart ####################

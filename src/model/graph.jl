@@ -1,15 +1,6 @@
 #################### Model Graph Methods ####################
 
-function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
-  found = false
-  for v in out_neighbors(v, g)
-    if isa(m[v.key], AbstractStochastic) || any_stochastic(v, g, m)
-      found = true
-      break
-    end
-  end
-  found
-end
+#################### Display ####################
 
 function draw(m::Model; filename::AbstractString="")
   dot = graph2dot(m)
@@ -23,17 +14,6 @@ function draw(m::Model; filename::AbstractString="")
     write(f, dot)
     close(f)
   end
-end
-
-function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
-  values = Symbol[]
-  for v in out_neighbors(v, g)
-    push!(values, v.key)
-    if !isa(m[v.key], AbstractStochastic)
-      values = union(values, gettargets(v, g, m))
-    end
-  end
-  values
 end
 
 function graph(m::Model)
@@ -91,6 +71,31 @@ function graph2dot(m::Model)
   end
   write(io, "}\n")
   bytestring(io)
+end
+
+
+#################### Auxiliary Functions ####################
+
+function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
+  found = false
+  for v in out_neighbors(v, g)
+    if isa(m[v.key], AbstractStochastic) || any_stochastic(v, g, m)
+      found = true
+      break
+    end
+  end
+  found
+end
+
+function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
+  values = Symbol[]
+  for v in out_neighbors(v, g)
+    push!(values, v.key)
+    if !isa(m[v.key], AbstractStochastic)
+      values = union(values, gettargets(v, g, m))
+    end
+  end
+  values
 end
 
 function tsort{T}(g::AbstractGraph{KeyVertex{T}, Edge{KeyVertex{T}}})

@@ -1,4 +1,4 @@
-#################### Model Simulation Methods ####################
+#################### Model Simulation ####################
 
 function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
                     dtype::Symbol=:forward)

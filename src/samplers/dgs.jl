@@ -1,6 +1,6 @@
 #################### Discrete Gibbs Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 typealias DGSUnivariateDistribution
           Union{Bernoulli, Binomial, Categorical, DiscreteUniform,

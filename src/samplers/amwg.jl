@@ -1,6 +1,6 @@
 #################### Adaptive Metropolis within Gibbs ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type AMWGTune
   adapt::Bool

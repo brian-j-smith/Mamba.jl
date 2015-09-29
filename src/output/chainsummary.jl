@@ -1,4 +1,6 @@
-#################### ChainSummary Type ####################
+#################### ChainSummary ####################
+
+#################### Types and Constructors ####################
 
 immutable ChainSummary
   value::Array{Float64,3}
@@ -19,9 +21,6 @@ immutable ChainSummary
   end
 end
 
-
-#################### ChainSummary Constructors ####################
-
 function ChainSummary{T<:AbstractString,U<:AbstractString}(
                      value::Array{Float64,3}, rownames::Vector{T},
                      colnames::Vector{U}, header::AbstractString)
@@ -38,7 +37,7 @@ function ChainSummary{T<:AbstractString,U<:AbstractString}(
 end
 
 
-#################### ChainSummary Base Methods ####################
+#################### Base Methods ####################
 
 function Base.showall(io::IO, s::ChainSummary)
   println(io, s.header)

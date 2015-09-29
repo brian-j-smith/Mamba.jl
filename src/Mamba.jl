@@ -148,11 +148,11 @@ module Mamba
   include("utils.jl")
   include("variate.jl")
 
+  include("distributions/constructors.jl")
+  include("distributions/distributionstruct.jl")
   include("distributions/flat.jl")
   include("distributions/mvnormal.jl")
   include("distributions/null.jl")
-  include("distributions/constructors.jl")
-  include("distributions/distributionstruct.jl")
   include("distributions/pdmatdistribution.jl")
   include("distributions/transformdistribution.jl")
 

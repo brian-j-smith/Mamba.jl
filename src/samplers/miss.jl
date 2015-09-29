@@ -1,6 +1,6 @@
 #################### Missing Values Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type StochasticIndices
   dims::Tuple

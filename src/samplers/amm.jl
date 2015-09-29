@@ -1,6 +1,6 @@
 #################### Adaptive Mixture Metropolis ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type AMMTune
   adapt::Bool

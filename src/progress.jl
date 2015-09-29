@@ -1,4 +1,6 @@
-#################### ChainProgress Types ####################
+#################### ChainProgress Meter ####################
+
+#################### Types and Constructors ####################
 
 type ChainProgressFrame
   verbose::Bool
@@ -25,7 +27,7 @@ type ChainProgress
 end
 
 
-#################### ChainProgress Methods ####################
+#################### Base Methods ####################
 
 function reset!(p::ChainProgress)
   p.counter = 0

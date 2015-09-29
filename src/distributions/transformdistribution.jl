@@ -1,12 +1,7 @@
 #################### TransformDistribution ####################
 
-#################### Types ####################
-
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
   Union{T, Truncated{T}}
-
-
-#################### Methods ####################
 
 function link(d::TransformDistribution, x::Real, transform::Bool)
   y = x

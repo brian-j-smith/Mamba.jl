@@ -1,3 +1,5 @@
+#################### Geweke Diagnostic ####################
+
 function gewekediag{T<:Real}(x::Vector{T}; first::Real=0.1, last::Real=0.5,
                              etype=:imse, args...)
   if !(0.0 < first < 1.0)

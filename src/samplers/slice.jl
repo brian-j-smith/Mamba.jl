@@ -1,6 +1,6 @@
 #################### Slice Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type SliceTune
   width::Vector{Float64}

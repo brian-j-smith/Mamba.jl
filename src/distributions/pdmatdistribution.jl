@@ -1,11 +1,6 @@
 #################### PDMatDistribution ####################
 
-#################### Types ####################
-
 typealias PDMatDistribution Union{InverseWishart, Wishart}
-
-
-#################### Methods ####################
 
 function unlist(d::PDMatDistribution, X::DenseMatrix)
   n = dim(d)

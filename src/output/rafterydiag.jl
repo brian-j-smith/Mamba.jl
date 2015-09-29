@@ -1,3 +1,5 @@
+#################### Raftery and Lewis Diagnostic ####################
+
 function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
                               s::Real=0.95, eps::Real=0.001,
                               range::Range=1:length(x))

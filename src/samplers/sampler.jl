@@ -1,11 +1,13 @@
-#################### Sampler Constructor ####################
+#################### Sampler ####################
+
+#################### Constructors ####################
 
 function Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
   Sampler(params, samplerfx(expr), tune, Symbol[])
 end
 
 
-#################### Sampler Methods ####################
+#################### Base Methods ####################
 
 function Base.show(io::IO, s::Sampler)
   print(io, "An object of type \"$(summary(s))\"\n")
@@ -25,7 +27,7 @@ function Base.showall(io::IO, s::Sampler)
 end
 
 
-#################### Utility Functions ####################
+#################### Auxiliary Functions ####################
 
 function samplerfx(expr::Expr)
   eval(Expr(:function, :(model::Mamba.Model, block::Integer), expr))

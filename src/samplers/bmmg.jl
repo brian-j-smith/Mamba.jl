@@ -1,6 +1,6 @@
 #################### Binary Modified Metropolised Gibbs ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type BMMGTune
   indexset::Vector{Vector{Int}}

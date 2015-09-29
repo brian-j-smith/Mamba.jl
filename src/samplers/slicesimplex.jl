@@ -1,6 +1,6 @@
 #################### Slice Simplex Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type SliceSimplexTune
   scale::Float64

@@ -1,6 +1,6 @@
 #################### No-U-Turn Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type NUTSTune
   adapt::Bool

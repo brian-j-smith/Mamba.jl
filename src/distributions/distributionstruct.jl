@@ -1,4 +1,6 @@
-#################### DistributionStruct Methods ####################
+#################### DistributionStruct ####################
+
+#################### Base Methods ####################
 
 dims(d::DistributionStruct) = size(d)
 

@@ -1,3 +1,5 @@
+#################### Monte Carlo Standard Errors ####################
+
 function mcse{T<:Real}(x::Vector{T}, method::Symbol=:imse; args...)
   method == :bm ? mcse_bm(x; args...) :
   method == :imse ? mcse_imse(x) :

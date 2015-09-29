@@ -1,4 +1,6 @@
-#################### Model Constructor ####################
+#################### Core Model Functionality ####################
+
+#################### Constructors ####################
 
 function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
                samplers::Vector{Sampler}=Sampler[], nodes...)
@@ -26,11 +28,29 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
 end
 
 
-#################### Model Base Methods ####################
+#################### Indexing ####################
 
 function Base.getindex(m::Model, key::Symbol)
   m.nodes[key]
 end
+
+function Base.setindex!(m::Model, values::Dict, nkeys::Vector{Symbol})
+  for key in nkeys
+    m[key][:] = values[key]
+  end
+end
+
+function Base.setindex!(m::Model, value, nkeys::Vector{Symbol})
+  length(nkeys) == 1 || throw(BoundsError())
+  m[nkeys[1]][:] = value
+end
+
+function Base.setindex!(m::Model, value, nkey::Symbol)
+  m[nkey][:] = value
+end
+
+
+#################### Base Methods ####################
 
 function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   values = Symbol[]
@@ -89,42 +109,6 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   values
 end
 
-function names(m::Model, monitoronly::Bool)
-  values = AbstractString[]
-  for key in keys(m, :dependent)
-    node = m[key]
-    lnames = unlist(node, names(node))
-    v = monitoronly ? lnames[node.monitor] : vec(lnames)
-    append!(values, v)
-  end
-  values
-end
-
-function names(m::Model, nkeys::Vector{Symbol})
-  values = AbstractString[]
-  for key in nkeys
-    node = m[key]
-    lnames = unlist(node, names(node))
-    append!(values, vec(lnames))
-  end
-  values
-end
-
-function Base.setindex!(m::Model, values::Dict, nkeys::Vector{Symbol})
-  for key in nkeys
-    m[key][:] = values[key]
-  end
-end
-
-function Base.setindex!(m::Model, value, nkeys::Vector{Symbol})
-  length(nkeys) == 1 || throw(BoundsError())
-  m[nkeys[1]][:] = value
-end
-
-function Base.setindex!(m::Model, value, nkey::Symbol)
-  m[nkey][:] = value
-end
-
 function Base.show(io::IO, m::Model)
   showf(io, m, Base.show)
 end
@@ -152,6 +136,30 @@ function tune(m::Model, block::Integer=0)
     for i in 1:n
       values[i] = m.samplers[i].tune
     end
+  end
+  values
+end
+
+
+#################### Auxiliary Functions ####################
+
+function names(m::Model, monitoronly::Bool)
+  values = AbstractString[]
+  for key in keys(m, :dependent)
+    node = m[key]
+    lnames = unlist(node, names(node))
+    v = monitoronly ? lnames[node.monitor] : vec(lnames)
+    append!(values, v)
+  end
+  values
+end
+
+function names(m::Model, nkeys::Vector{Symbol})
+  values = AbstractString[]
+  for key in nkeys
+    node = m[key]
+    lnames = unlist(node, names(node))
+    append!(values, vec(lnames))
   end
   values
 end

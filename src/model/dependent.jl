@@ -1,4 +1,6 @@
-#################### Dependent Methods ####################
+#################### Dependent ####################
+
+#################### Base Methods ####################
 
 function Base.show(io::IO, d::AbstractDependent)
   msg = string(ifelse(length(d.monitor) > 0, "A ", "An un"),
@@ -43,7 +45,7 @@ function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
 end
 
 
-#################### Dependent Distribution Fallbacks ####################
+#################### Distribution Fallbacks ####################
 
 unlist(d::AbstractDependent, x) = x
 
@@ -56,12 +58,12 @@ invlink(d::AbstractDependent, x, transform::Bool=true) = x
 logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
 
 
-#################### Logical Methods ####################
+#################### Logical ####################
 
 @promote_scalarvariate ScalarLogical
 
 
-#################### Logical Constructors ####################
+#################### Constructors ####################
 
 function Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
@@ -78,7 +80,7 @@ function Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
 end
 
 
-#################### Logical Updating ####################
+#################### Updating ####################
 
 function setinits!(l::AbstractLogical, m::Model, ::Any=nothing)
   l.value = l.eval(m)
@@ -91,7 +93,9 @@ function update!(l::AbstractLogical, m::Model)
 end
 
 
-#################### Stochastic Methods ####################
+#################### Stochastic ####################
+
+#################### Base Methods ####################
 
 @promote_scalarvariate ScalarStochastic
 
@@ -108,7 +112,7 @@ function Base.showall(io::IO, s::AbstractStochastic)
 end
 
 
-#################### Stochastic Constructors ####################
+#################### Constructors ####################
 
 function Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
@@ -126,7 +130,7 @@ function Stochastic(d::Integer, expr::Expr,
 end
 
 
-#################### Stochastic Updating ####################
+#################### Updating ####################
 
 function setinits!(s::ScalarStochastic, m::Model, x)
   s.value = x
@@ -149,7 +153,7 @@ function update!(s::AbstractStochastic, m::Model)
 end
 
 
-#################### Stochastic Distribution Methods ####################
+#################### Distribution Methods ####################
 
 unlist(s::AbstractStochastic, x) = unlist_sub(s.distr, x)
 
