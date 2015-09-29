@@ -5,7 +5,7 @@
 Dyes: Variance Components Model
 -------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Davies :cite:`davies:1967:SMR`, and Box and Tiao :cite:`box:1973:BIS` concerning batch-to-batch variation in yields from six batches and five samples of dyestuff.
+An example from OpenBUGS :cite:`openbugs:2014:ex`, Davies :cite:`davies:1967:SMR`, and Box and Tiao :cite:`box:1973:BIS` concerning batch-to-batch variation in yields from six batches and five samples of dyestuff.
 
 Model
 ^^^^^

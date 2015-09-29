@@ -5,7 +5,7 @@
 Birats: A Bivariate Normal Hierarchical Model
 ---------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and section 6 of Gelfand *et al.* :cite:`gelfand:1990:IBI` concerning 30 rats whose weights were measured at each of five consecutive weeks.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and section 6 of Gelfand *et al.* :cite:`gelfand:1990:IBI` concerning 30 rats whose weights were measured at each of five consecutive weeks.
 
 Model
 ^^^^^

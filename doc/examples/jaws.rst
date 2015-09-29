@@ -5,7 +5,7 @@
 Jaws: Repeated Measures Analysis of Variance
 --------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Elston and Grizzle :cite:`elston:1962:ETR` concerning jaw bone heights measured repeatedly in a cohort of 20 boys at ages 8, 8.5, 9, and 9.5 years.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and Elston and Grizzle :cite:`elston:1962:ETR` concerning jaw bone heights measured repeatedly in a cohort of 20 boys at ages 8, 8.5, 9, and 9.5 years.
 
 Model
 ^^^^^

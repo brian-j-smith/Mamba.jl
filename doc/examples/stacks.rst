@@ -5,7 +5,7 @@
 Stacks: Robust Regression
 -------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Brownlee :cite:`brownlee:1965:STM`, and Birkes and Dodge :cite:`birkes:1993:AMR` concerning 21 daily responses of stack loss, the amount of ammonia escaping, as a function of air flow, temperature, and acid concentration.
+An example from OpenBUGS :cite:`openbugs:2014:ex`, Brownlee :cite:`brownlee:1965:STM`, and Birkes and Dodge :cite:`birkes:1993:AMR` concerning 21 daily responses of stack loss, the amount of ammonia escaping, as a function of air flow, temperature, and acid concentration.
 
 Model
 ^^^^^

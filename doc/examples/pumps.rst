@@ -5,7 +5,7 @@
 Pumps: Gamma-Poisson Hierarchical Model
 ---------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and George *et al.* :cite:`george:1993:CLD` concerning the number of failures of 10 power plant pumps.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and George *et al.* :cite:`george:1993:CLD` concerning the number of failures of 10 power plant pumps.
 
 Model
 ^^^^^

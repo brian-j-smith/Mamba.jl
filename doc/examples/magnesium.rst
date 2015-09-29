@@ -5,7 +5,7 @@
 Magnesium: Meta-Analysis Prior Sensitivity
 ------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`.
+An example from OpenBUGS :cite:`openbugs:2014:ex`.
 
 Model
 ^^^^^

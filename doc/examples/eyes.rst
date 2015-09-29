@@ -5,7 +5,7 @@
 Eyes: Normal Mixture Model
 --------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Bowmaker :cite:`bowmaker:1985:TTT`, and Robert :cite:`robert:1994:MDI` concerning 48 peak sensitivity wavelength measurements taken on a set of monkey's eyes.
+An example from OpenBUGS :cite:`openbugs:2014:ex`, Bowmaker :cite:`bowmaker:1985:TTT`, and Robert :cite:`robert:1994:MDI` concerning 48 peak sensitivity wavelength measurements taken on a set of monkey's eyes.
 
 Model
 ^^^^^

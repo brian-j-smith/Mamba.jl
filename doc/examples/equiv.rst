@@ -5,7 +5,7 @@
 Equiv: Bioequivalence in a Cross-Over Trial
 -------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Gelfand *et al.* :cite:`gelfand:1990:IBI` concerning a two-treatment, cross-over trial with 10 subjects.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and Gelfand *et al.* :cite:`gelfand:1990:IBI` concerning a two-treatment, cross-over trial with 10 subjects.
 
 Model
 ^^^^^

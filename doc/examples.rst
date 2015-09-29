@@ -6,7 +6,7 @@ Examples
 OpenBUGS
 --------
 
-The following examples are taken from OpenBUGS :cite:`openbugs:2014:ex1`, and were used in the development and testing of `Mamba`.  They are provide to illustrate model specification and fitting with the package, and how its syntax compares to other Bayesian modelling software.
+The following examples are taken from OpenBUGS :cite:`openbugs:2014:ex`, and were used in the development and testing of `Mamba`.  They are provide to illustrate model specification and fitting with the package, and how its syntax compares to other Bayesian modelling software.
 
 Volume I
 ^^^^^^^^

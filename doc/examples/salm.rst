@@ -5,7 +5,7 @@
 Salm: Extra-Poisson Variation in a Dose-Response Study
 ------------------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Breslow :cite:`breslow:1984:EPV` concerning mutagenicity assay data on salmonella in three plates exposed to six doses of quinoline.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and Breslow :cite:`breslow:1984:EPV` concerning mutagenicity assay data on salmonella in three plates exposed to six doses of quinoline.
 
 Model
 ^^^^^

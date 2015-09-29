@@ -5,7 +5,7 @@
 Inhalers: Ordered Categorical Data
 ----------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Ezzet and Whitehead :cite:`ezzet:1993:REM` concerning a two-treatment, two-period crossover trial comparing salbutamol inhalation devices in 286 asthma patients.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and Ezzet and Whitehead :cite:`ezzet:1993:REM` concerning a two-treatment, two-period crossover trial comparing salbutamol inhalation devices in 286 asthma patients.
 
 Model
 ^^^^^
