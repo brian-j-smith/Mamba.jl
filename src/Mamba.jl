@@ -15,10 +15,10 @@ module Mamba
          pt, px
   import Distributions: Bernoulli, Categorical, Continuous,
          ContinuousUnivariateDistribution, Dirichlet, Distribution,
-         Distributions, gradlogpdf, insupport, logpdf, logpdf!, minimum,
-         maximum, MatrixDistribution, MultivariateDistribution, PDiagMat, PDMat,
-         quantile, rand, ScalMat, support, Truncated, UnivariateDistribution,
-         ValueSupport
+         Distributions, gradlogpdf, insupport, isprobvec, logpdf, logpdf!,
+         minimum, maximum, MatrixDistribution, MultivariateDistribution,
+         PDiagMat, PDMat, quantile, rand, ScalMat, support, Truncated,
+         UnivariateDistribution, ValueSupport
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,

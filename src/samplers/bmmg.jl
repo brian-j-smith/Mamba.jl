@@ -10,7 +10,11 @@ type BMMGVariate <: VectorVariate
   value::Vector{Float64}
   tune::BMMGTune
 
-  BMMGVariate(x::Vector{Float64}, tune::BMMGTune) = new(x, tune)
+  function BMMGVariate(x::Vector{Float64}, tune::BMMGTune)
+    all(insupport(Bernoulli, x)) ||
+      throw(ArgumentError("must supply a binary vector"))
+    new(x, tune)
+  end
 end
 
 function BMMGVariate(x::Vector{Float64}, tune=nothing)
@@ -48,9 +52,6 @@ end
 #################### Sampling Functions ####################
 
 function bmmg!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
-  all(insupport(Bernoulli, v)) ||
-    throw(ArgumentError("must supply a binary vector"))
-
   x = v[:]
   idx = indexset[rand(1:length(indexset))]
   x[idx] = 1.0 - v[idx]
