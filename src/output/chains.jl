@@ -94,7 +94,80 @@ names2inds{T<:AbstractString}(c::AbstractChains, names::Vector{T}) =
   indexin(names, c.names)
 
 
-#################### Auxilliary Functions ####################
+#################### Concatenation ####################
+
+function Base.cat(dim::Integer, c1::AbstractChains, args::AbstractChains...)
+  dim == 1 ? cat1(c1, args...) :
+  dim == 2 ? cat2(c1, args...) :
+  dim == 3 ? cat3(c1, args...) :
+             throw(ArgumentError("cannot concatenate along dimension $dim"))
+end
+
+function cat1(c1::AbstractChains, args::AbstractChains...)
+  range = c1.range
+  for c in args
+    last(range) + step(range) == first(c.range) ||
+      throw(ArgumentError("noncontiguous chain iterations"))
+    step(range) == step(c.range) ||
+      throw(ArgumentError("unequal chain thinning"))
+    range = first(range):step(range):last(c.range)
+  end
+
+  names = c1.names
+  all(c -> c.names == names, args) ||
+    throw(ArgumentError("unequal chain names"))
+
+  chains = c1.chains
+  all(c -> c.chains == chains, args) ||
+    throw(ArgumentError("unequal sets of chain"))
+
+  value = cat(1, c1.value, map(c -> c.value, args)...)
+  Chains(value, start=first(range), thin=step(range), names=names,
+         chains=chains)
+end
+
+function cat2(c1::AbstractChains, args::AbstractChains...)
+  range = c1.range
+  all(c -> c.range == range, args) ||
+    throw(ArgumentError("unequal chain ranges"))
+
+  names = c1.names
+  n = length(names)
+  for c in args
+    names = union(names, c.names)
+    n += length(c.names)
+    n == length(names) ||
+      throw(ArgumentError("non-unique chain names"))
+  end
+
+  chains = c1.chains
+  all(c -> c.chains == chains, args) ||
+    throw(ArgumentError("unequal sets of chain"))
+
+  value = cat(2, c1.value, map(c -> c.value, args)...)
+  Chains(value, start=first(range), thin=step(range), names=names,
+         chains=chains)
+end
+
+function cat3(c1::AbstractChains, args::AbstractChains...)
+  range = c1.range
+  all(c -> c.range == range, args) ||
+    throw(ArgumentError("unequal chain ranges"))
+
+  names = c1.names
+  all(c -> c.names == names, args) ||
+    throw(ArgumentError("unequal chain names"))
+
+  value = cat(3, c1.value, map(c -> c.value, args)...)
+  Chains(value, start=first(range), thin=step(range), names=names)
+end
+
+Base.hcat(c1::AbstractChains, args::AbstractChains...) = cat(2, c1, args...)
+
+Base.vcat(c1::AbstractChains, args::AbstractChains...) = cat(1, c1, args...)
+
+
+#################### Base Methods ####################
 
 function Base.keys(c::AbstractChains)
   c.names
@@ -114,6 +187,9 @@ end
 function Base.size(c::AbstractChains, ind)
   size(c)[ind]
 end
+
+
+#################### Auxilliary Functions ####################
 
 function combine(c::AbstractChains)
   n, p, m = size(c.value)

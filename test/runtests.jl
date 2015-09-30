@@ -13,6 +13,10 @@ test_samplers = [
   "slicesimplex"
 ]
 
+test_mcmc = [
+  "readcoda"
+]
+
 test_extensions = [
   "newunivardist",
   "newmultivardist"
@@ -28,6 +32,10 @@ end
 for t in test_samplers
   @everywhere srand(123)
   @runtest "../doc/samplers/" t
+end
+
+for t in test_mcmc
+  @runtest "../doc/mcmc/" t
 end
 
 for t in test_extensions
