@@ -165,6 +165,7 @@ module Mamba
 
   include("output/chains.jl")
   include("output/chainsummary.jl")
+  include("output/fileio.jl")
   include("output/gelmandiag.jl")
   include("output/gewekediag.jl")
   include("output/heideldiag.jl")
@@ -243,6 +244,7 @@ module Mamba
     quantile,
     rafterydiag,
     rand,
+    readcoda,
     relist,
     relist!,
     setinits!,

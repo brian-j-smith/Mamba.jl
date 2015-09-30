@@ -67,8 +67,27 @@ Constructors
 
         See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
 
-Indexing
-^^^^^^^^
+Indexing and Concatenation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: cat(dim::Integer, chains::AbstractChains...)
+              vcat(chains::AbstractChains...)
+              hcat(chains::AbstractChains...)
+
+    Concatenate input MCMC chains along a specified dimension.  For dimensions other than the specified one, all input chains must have the same sizes, which will also be the sizes of the output chain.  The size of the output chain along the specified dimension will be the sum of the sizes of the input chains in that dimension.  ``vcat`` concatenates vertically along dimension 1, and has the alternative syntax ``[chain1; chain2; ...]``.  ``hcat`` concatenates horizontally along dimension 2, and has the alternative syntax ``[chain1 chain2 ...]``.
+
+    **Arguments**
+
+        * ``dim`` : dimension (1, 2, or 3) along which to concatenate the input chains.
+        * ``chains`` : chains to concatenate.
+
+    **Value**
+
+        A ``Chains`` object containing the concatenated input.
+
+    **Example**
+
+        See the :func:`readcoda` example.
 
 .. function:: getindex(c::Chains, window, names, chains)
               getindex(mc::ModelChains, window, names, chains)
@@ -86,7 +105,7 @@ Indexing
 
     **Value**
 
-        Returns subsetted sampler output stored in the same type of object as that supplied in the call.
+        Subsetted sampler output stored in the same type of object as that supplied in the call.
 
     **Example**
 
@@ -108,11 +127,35 @@ Indexing
 
     **Value**
 
-        Returns an object of the same type as ``c`` with the sampler output stored in the specified indices.
+        An object of the same type as ``c`` with the sampler output stored in the specified indices.
 
     **Example**
 
         See the :ref:`AMM <example-amm>`, :ref:`AMWG <example-amwg>`, :ref:`NUTS <example-nuts>`, and :ref:`Slice <example-slice>` examples.
+
+File I/O
+^^^^^^^^
+
+.. function:: readcoda(output::AbstractString, index::AbstractString)
+
+    Read MCMC sampler output generated in the CODA format by OpenBUGS :cite:`spiegelhalter:2014:OUM`.  The function only retains those sampler iterations at which all model parameters were monitored.
+
+    **Arguments**
+
+        * ``output`` : Name of a text file containing the iteration numbers and sampled values for the model parameters.
+        * ``index`` : Name of a text file containing the names of the parameters, followed by the first and last rows in which their output can be found in the ``output`` file.
+
+    **Value**
+
+        A ``Chains`` object containing the read sampler output.
+
+    **Example**
+
+        The following example reads sampler output contained in the CODA files :download:`line1.out`, :download:`line1.ind`, :download:`line2.out`, and :download:`line2.ind`.
+
+        .. literalinclude:: readcoda.jl
+            :language: julia
+
 
 .. index:: Convergence Diagnostics
 
@@ -444,7 +487,7 @@ Model-Based Inference
 
     **Value**
 
-        A ``Chain`` object of simulated draws.  For observed data node :math:`y`, simulation is from the posterior predictive distribution
+        A ``Chains`` object of simulated draws.  For observed data node :math:`y`, simulation is from the posterior predictive distribution
 
         .. math::
 
