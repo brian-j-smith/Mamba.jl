@@ -46,11 +46,12 @@ end
 function Base.print(io::IO, p::ChainProgress)
   elapsed = time() - p.t0
   remaining = elapsed * (p.iters / p.counter - 1.0)
-  str = @sprintf("Chain %u: %3u%% [%s of %s remaining]",
+  str = @sprintf("Chain %u: %3u%% [%s of %s remaining]%s",
                  p.chain,
                  100.0 * p.counter / p.iters,
                  strfsec(remaining),
-                 strfsec(elapsed + remaining))
+                 strfsec(elapsed + remaining),
+                 "\n"^(p.counter == p.iters))
   println(io, str)
 end
 
