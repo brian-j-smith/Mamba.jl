@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; No-U-Turn Sampler
 
+.. _section-NUTS:
+
 No-U-Turn Sampler (NUTS)
 ------------------------
 

@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Shrinkage Slice
 
+.. _section-Slice:
+
 Shrinkage Slice (Slice)
 -----------------------
 

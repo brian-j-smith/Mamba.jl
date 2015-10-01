@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Binary Modified Metropolised Gibbs
 
+.. _section-BMMG:
+
 Binary Modified Metropolised Gibbs (BMMG)
 -----------------------------------------
 

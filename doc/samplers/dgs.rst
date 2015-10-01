@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Discrete Gibbs Sampler
 
+.. _section-DGS:
+
 Discrete Gibbs Sampler (DGS)
 ----------------------------
 

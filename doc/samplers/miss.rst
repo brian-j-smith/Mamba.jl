@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Missing Values Sampler
 
+.. _section-MISS:
+
 Missing Values Sampler (MISS)
 -----------------------------
 

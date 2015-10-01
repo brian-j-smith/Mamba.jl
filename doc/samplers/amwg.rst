@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Adaptive Metropolis within Gibbs
 
+.. _section-AMWG:
+
 Adaptive Metropolis within Gibbs (AMWG)
 ---------------------------------------
 

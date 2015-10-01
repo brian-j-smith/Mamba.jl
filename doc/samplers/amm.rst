@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Adaptive Mixture Metropolis
 
+.. _section-AMM:
+
 Adaptive Mixture Metropolis (AMM)
 ---------------------------------
 
