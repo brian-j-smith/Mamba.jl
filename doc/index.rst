@@ -62,7 +62,7 @@ Contents
     mcmc.rst
     samplers.rst
     examples.rst
-    conclusion.rst
+    discussion.rst
     supplement.rst
     xrefs.rst
 
