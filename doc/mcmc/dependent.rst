@@ -45,13 +45,15 @@ Methods
         Returns the link or inverse-link-transformed version of ``x``.
 
 .. function:: logpdf(d::AbstractDependent, transform::Bool=false)
+              logpdf(d::AbstractDependent, x, transform::Bool=false)
 
     Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``AbstractDependent`` that have distributional specifications.
 
     **Arguments**
 
-        * ``d`` : a node containing values at which to compute the log-density.
-        * ``transform`` : whether to evaluate the log-density on the link-transformed scale.
+        * ``d`` : a node for which to evaluate the log-density.
+        * ``x`` : value, of the same type and shape as the node value, at which to perform the evaluation.  If not specified, the node value is used.
+        * ``transform`` : whether the evaluation is on the link-transformed scale.
 
     **Value**
 
@@ -282,13 +284,15 @@ Methods
         Returns the transformed version of ``x``.
 
 .. function:: logpdf(s::AbstractStochastic, transform::Bool=false)
+              logpdf(s::AbstractStochastic, x, transform::Bool=false)
 
     Evaluate the log-density function for a stochastic node.
 
     **Arguments**
 
-        * ``s`` : a stochastic node containing values at which to compute the log-density.
-        * ``transform`` : whether to evaluate the log-density on the link-transformed scale.
+        * ``s`` : a stochastic node for which to evaluate the log-density.
+        * ``x`` : value, of the same type and shape as the node value, at which to perform the evaluation.  If not specified, the node value is used.
+        * ``transform`` : whether the evaluation is on the link-transformed scale.
 
     **Value**
 

@@ -55,8 +55,11 @@ link(d::AbstractDependent, x, transform::Bool=true) = x
 
 invlink(d::AbstractDependent, x, transform::Bool=true) = x
 
-logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
+function logpdf(d::AbstractDependent, transform::Bool=false)
+  logpdf(d, d.value, transform)
+end
 
+logpdf(d::AbstractDependent, x, transform::Bool=false) = 0.0
 
 #################### Logical ####################
 
@@ -168,7 +171,11 @@ function invlink(s::AbstractStochastic, x, transform::Bool=true)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)
-  logpdf_sub(s.distr, s.value, transform)
+  logpdf(s, s.value, transform)
+end
+
+function logpdf(s::AbstractStochastic, x, transform::Bool=false)
+  logpdf_sub(s.distr, x, transform)
 end
 
 rand(s::AbstractStochastic) = rand_sub(s.distr)
