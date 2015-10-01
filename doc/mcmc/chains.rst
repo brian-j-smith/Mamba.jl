@@ -170,24 +170,26 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
 
 .. table:: Comparative summary of features for the supplied MCMC convergence diagnostics.
 
-    +---------------------------+-----------+--------------+--------+---------------------------+
-    |                           |           |              |        | Convergence Assessments   |
-    +---------------------------+-----------+--------------+--------+--------------+------------+
-    | Diagnostic                | Statistic | Parameters   | Chains | Stationarity | Estimation |
-    +===========================+===========+==============+========+==============+============+
-    | Gelman, Rubin, and Brooks | Mean      | Univariate   | 2+     | Yes          | No         |
-    +---------------------------+-----------+--------------+--------+--------------+------------+
-    |                           |           | Multivariate | 2+     | Yes          | No         |
-    +---------------------------+-----------+--------------+--------+--------------+------------+
-    | Geweke                    | Mean      | Univariate   | 1      | Yes          | No         |
-    +---------------------------+-----------+--------------+--------+--------------+------------+
-    | Heidelberger and Welch    | Mean      | Univariate   | 1      | Yes          | Yes        |
-    +---------------------------+-----------+--------------+--------+--------------+------------+
-    | Raftery and Lewis         | Quantile  | Univariate   | 1      | Yes          | Yes        |
-    +---------------------------+-----------+--------------+--------+--------------+------------+
+    +-------------------------------------------------------+-----------+--------------+--------+---------------------------+
+    |                                                       |           |              |        | Convergence Assessments   |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
+    | Diagnostic                                            | Statistic | Parameters   | Chains | Stationarity | Estimation |
+    +=======================================================+===========+==============+========+==============+============+
+    | :ref:`Gelman, Rubin, and Brooks <section-GelmanDiag>` | Mean      | Univariate   | 2+     | Yes          | No         |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
+    |                                                       |           | Multivariate | 2+     | Yes          | No         |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
+    | :ref:`Geweke <section-GewekeDiag>`                    | Mean      | Univariate   | 1      | Yes          | No         |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
+    | :ref:`Heidelberger and Welch <section-HeidelDiag>`    | Mean      | Univariate   | 1      | Yes          | Yes        |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
+    | :ref:`Raftery and Lewis <section-RafteryDiag>`        | Quantile  | Univariate   | 1      | Yes          | Yes        |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
 
 
 .. index:: Convergence Diagnostics; Gelman-Rubin-Brooks
+
+.. _section-GelmanDiag:
 
 Gelman, Rubin, and Brooks Diagnostics
 `````````````````````````````````````
@@ -227,6 +229,8 @@ Gelman, Rubin, and Brooks Diagnostics
 
 .. index:: Convergence Diagnostics; Geweke
 
+.. _section-GewekeDiag:
+
 Geweke Diagnostic
 `````````````````
 
@@ -253,6 +257,8 @@ Geweke Diagnostic
 
 .. index:: Convergence Diagnostics; Heidelberger-Welch
 
+.. _section-HeidelDiag:
+
 Heidelberger and Welch Diagnostic
 `````````````````````````````````
 
@@ -278,6 +284,8 @@ Heidelberger and Welch Diagnostic
         See the :ref:`section-Line-Diagnostics` section of the tutorial.
 
 .. index:: Convergence Diagnostics; Raftery-Lewis
+
+.. _section-RafteryDiag:
 
 Raftery and Lewis Diagnostic
 ````````````````````````````
