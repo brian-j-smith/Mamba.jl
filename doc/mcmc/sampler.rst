@@ -47,7 +47,7 @@ Constructor
 
         See the :ref:`section-Line-Specification` section of the tutorial.
 
-Methods
+Display
 ^^^^^^^
 
 .. function:: show(s::Sampler)

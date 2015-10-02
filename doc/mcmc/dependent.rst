@@ -26,8 +26,36 @@ Fields
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
-Methods
+Display
 ^^^^^^^
+
+.. function:: show(d::AbstractDependent)
+
+    Write a text representation of nodal values and attributes to the current output stream.
+
+.. function:: showall(d::AbstractDependent)
+
+    Write a verbose text representation of nodal values and attributes to the current output stream.
+
+Initialization
+^^^^^^^^^^^^^^
+
+.. function:: setmonitor!(d::AbstractDependent, monitor::Bool)
+              setmonitor!(d::AbstractDependent, monitor::Vector{Int})
+
+    Specify node elements to be included in monitored MCMC sampler output.
+
+    **Arguments**
+
+        * ``d`` : a node whose elements contain sampled MCMC values.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+
+    **Value**
+
+        Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
+
+Node Operations
+^^^^^^^^^^^^^^^
 
 .. function:: link(d::AbstractDependent, x, transform::Bool=true)
               invlink(d::AbstractDependent, x, transform::Bool=true)
@@ -58,28 +86,6 @@ Methods
     **Value**
 
         The resulting numeric value of the log-density.
-
-.. function:: setmonitor!(d::AbstractDependent, monitor::Bool)
-              setmonitor!(d::AbstractDependent, monitor::Vector{Int})
-
-    Specify node elements to be included in monitored MCMC sampler output.
-
-    **Arguments**
-
-        * ``d`` : a node whose elements contain sampled MCMC values.
-        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-
-    **Value**
-
-        Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
-
-.. function:: show(d::AbstractDependent)
-
-    Write a text representation of nodal values and attributes to the current output stream.
-
-.. function:: showall(d::AbstractDependent)
-
-    Write a verbose text representation of nodal values and attributes to the current output stream.
 
 .. function:: unlist(d::AbstractDependent, x)
               relist(d::AbstractDependent, x)
@@ -157,8 +163,8 @@ Constructors
 
         See the :ref:`section-Line-Specification` section of the tutorial.
 
-Methods
-^^^^^^^
+Initialization
+^^^^^^^^^^^^^^
 
 .. function:: setinits!(l::AbstractLogical, m::Model, ::Any=nothing)
 
@@ -172,6 +178,9 @@ Methods
     **Value**
 
         Returns the result of a call to ``update!(l, m)``.
+
+Node Operations
+^^^^^^^^^^^^^^^
 
 .. function:: update!(l::AbstractLogical, m::Model)
 
@@ -227,10 +236,10 @@ Fields
 * ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``distr`` : a distributional specification of type ``UnivariateDistribution`` for ``ScalarStochastic`` nodes and ``DistributionStruct`` for ``ArrayStochastic`` nodes.
 
-Aliases
-^^^^^^^
+Distribution Structures
+^^^^^^^^^^^^^^^^^^^^^^^
 
-``DistributionStruct`` defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution``, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
+The ``DistributionStruct`` alias defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution``, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
 
 .. code-block:: julia
 
@@ -260,8 +269,25 @@ Constructors
 
         See the :ref:`section-Line-Specification` section of the tutorial.
 
-Methods
-^^^^^^^
+Initialization
+^^^^^^^^^^^^^^
+
+.. function:: setinits!(s::Stochastic, m::Model, x=nothing)
+
+    Set initial values for a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node to which to assign initial values.
+        * ``m`` : a model that contains the node.
+        * ``x`` : values to assign to the node.
+
+    **Value**
+
+        Returns the node with its assigned initial values.
+
+Node Operations
+^^^^^^^^^^^^^^^
 
 .. function:: link(s::AbstractStochastic, x, transform::Bool=true)
               invlink(s::AbstractStochastic, x, transform::Bool=true)
@@ -309,20 +335,6 @@ Methods
     **Value**
 
         Returns the sampled value(s).
-
-.. function:: setinits!(s::Stochastic, m::Model, x=nothing)
-
-    Set initial values for a stochastic node.
-
-    **Arguments**
-
-        * ``s`` : a stochastic node to which to assign initial values.
-        * ``m`` : a model that contains the node.
-        * ``x`` : values to assign to the node.
-
-    **Value**
-
-        Returns the node with its assigned initial values.
 
 .. function:: unlist(s::AbstractStochastic, x)
               relist(s::AbstractStochastic, x)
