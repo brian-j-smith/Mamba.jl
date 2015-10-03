@@ -55,11 +55,10 @@ link(d::AbstractDependent, x, transform::Bool=true) = x
 
 invlink(d::AbstractDependent, x, transform::Bool=true) = x
 
-function logpdf(d::AbstractDependent, transform::Bool=false)
-  logpdf(d, d.value, transform)
-end
+logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
 
 logpdf(d::AbstractDependent, x, transform::Bool=false) = 0.0
+
 
 #################### Logical ####################
 
