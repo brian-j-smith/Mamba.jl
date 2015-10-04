@@ -229,17 +229,13 @@ function indiscretesupport(c::AbstractChains, bounds::Tuple{Real,Real}=(0,Inf))
   result
 end
 
-function link(c::AbstractChains, transform::Bool=true)
-  if transform
-    cc = copy(c.value)
-    for j in 1:length(c.names)
-      x = cc[:,j,:]
-      if minimum(x) > 0.0
-        cc[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
-      end
+function link(c::AbstractChains)
+  cc = copy(c.value)
+  for j in 1:length(c.names)
+    x = cc[:,j,:]
+    if minimum(x) > 0.0
+      cc[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
     end
-  else
-    cc = c.value
   end
   cc
 end

@@ -8,7 +8,7 @@ function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
   value
 end
 
-function gradlogpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
+function gradlogpdf{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                              transform::Bool=false; dtype::Symbol=:forward)
   x0 = unlist(m, block)
   value = gradlogpdf!(m, x, block, transform, dtype=dtype)
@@ -16,7 +16,7 @@ function gradlogpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
   value
 end
 
-function gradlogpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
+function gradlogpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                               transform::Bool=false; dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
   gradient(f, x, dtype)
@@ -39,7 +39,7 @@ function logpdf(m::Model, block::Integer=0, transform::Bool=false)
   value
 end
 
-function logpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
+function logpdf{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                          transform::Bool=false)
   x0 = unlist(m, block)
   value = logpdf!(m, x, block, transform)
@@ -47,7 +47,7 @@ function logpdf{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
   value
 end
 
-function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
+function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                           transform::Bool=false)
   value = 0.0
   if block > 0
@@ -71,19 +71,19 @@ function logpdf!{T<:Real}(m::Model, x::Vector{T}, block::Integer=0,
   value
 end
 
-function relist{T<:Real}(m::Model, values::AbstractVector{T}, block::Integer=0,
+function relist{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
                          transform::Bool=false)
   relist(m, values, keys(m, :block, block), transform)
 end
 
-function relist{T<:Real}(m::Model, values::AbstractVector{T},
+function relist{T<:Real}(m::Model, values::AbstractArray{T},
                          nkeys::Vector{Symbol}, transform::Bool=false)
   x = Dict{Symbol,Any}()
   offset = 0
   for key in nkeys
     node = m[key]
     n = node.listlength
-    x[key] = invlink(node, relist(node, values[offset + (1:n)]), transform)
+    x[key] = relist(node, values[offset + (1:n)], transform)
     offset += n
   end
   offset == length(values) ||
@@ -91,14 +91,14 @@ function relist{T<:Real}(m::Model, values::AbstractVector{T},
   x
 end
 
-function relist!{T<:Real}(m::Model, values::AbstractVector{T}, block::Integer=0,
+function relist!{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
                           transform::Bool=false)
   nkeys = keys(m, :block, block)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m, block)
 end
 
-function relist!{T<:Real}(m::Model, values::AbstractVector{T},
+function relist!{T<:Real}(m::Model, values::AbstractArray{T},
                           nkeys::Vector{Symbol}, transform::Bool=false)
   m[nkeys] = relist(m, values, nkeys, transform)
   update!(m)
@@ -130,8 +130,8 @@ function unlist(m::Model, monitoronly::Bool)
   values = Float64[]
   for key in keys(m, :dependent)
     node = m[key]
-    lvalue = [unlist(node, node.value);]
-    v = monitoronly ? lvalue[node.monitor] : vec(lvalue)
+    lvalue = unlist(node)
+    v = monitoronly ? lvalue[node.monitor] : lvalue
     append!(values, v)
   end
   values
@@ -144,7 +144,7 @@ function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
   for k in 1:length(nkeys)
     node = m[nkeys[k]]
     n = N[k]
-    values[offset + (1:n)] = unlist(node, link(node, node.value, transform))
+    values[offset + (1:n)] = unlist(node, transform)
     offset += n
   end
   values

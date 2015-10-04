@@ -211,9 +211,9 @@ Parameter Block Operations
 
 .. function:: gradlogpdf(m::Model, block::Integer=0, transform::Bool=false; \
                          dtype::Symbol=:forward)
-              gradlogpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+              gradlogpdf(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
                          transform::Bool=false; dtype::Symbol=:forward)
-              gradlogpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+              gradlogpdf!(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
                           transform::Bool=false; dtype::Symbol=:forward)
 
     Compute the gradient of log-densities for stochastic nodes.
@@ -260,9 +260,9 @@ Parameter Block Operations
         A vector of node symbols.
 
 .. function:: logpdf(m::Model, block::Integer=0, transform::Bool=false)
-              logpdf(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+              logpdf(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
                      transform::Bool=false)
-              logpdf!(m::Model, x::Vector{T<:Real}, block::Integer=0, \
+              logpdf!(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
                       transform::Bool=false)
 
     Compute the sum of log-densities for stochastic nodes.
@@ -310,13 +310,13 @@ Parameter Block Operations
 
 .. function:: unlist(m::Model, block::Integer=0, transform::Bool=false)
               unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
-              relist(m::Model, values::AbstractVector{T<:Real}, \
+              relist(m::Model, values::AbstractArray{T<:Real}, \
                      block::Integer=0, transform::Bool=false)
-              relist(m::Model, values::AbstractVector{T<:Real}, \
+              relist(m::Model, values::AbstractArray{T<:Real}, \
                      nkeys::Vector{Symbol},transform::Bool=false)
-              relist!(m::Model, values::AbstractVector{T<:Real}, \
+              relist!(m::Model, values::AbstractArray{T<:Real}, \
                       block::Integer=0, transform::Bool=false)
-              relist!(m::Model, values::AbstractVector{T<:Real}, \
+              relist!(m::Model, values::AbstractArray{T<:Real}, \
                       nkeys::Vector{Symbol}, transform::Bool=false)
 
     Convert (unlist) sets of logical and/or stochastic node values to vectors, or reverse (relist) the process.

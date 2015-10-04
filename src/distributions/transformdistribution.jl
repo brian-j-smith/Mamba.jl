@@ -3,36 +3,32 @@
 typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
   Union{T, Truncated{T}}
 
-function link(d::TransformDistribution, x::Real, transform::Bool)
-  y = x
-  if transform
-    a, b = minimum(d), maximum(d)
-    lowerbounded, upperbounded = isfinite(a), isfinite(b)
-    if lowerbounded && upperbounded
-      y = logit((x - a) / (b - a))
-    elseif lowerbounded
-      y = log(x - a)
-    elseif upperbounded
-      y = log(b - x)
-    end
+function link(d::TransformDistribution, x::Real)
+  a, b = minimum(d), maximum(d)
+  lowerbounded, upperbounded = isfinite(a), isfinite(b)
+  if lowerbounded && upperbounded
+    logit((x - a) / (b - a))
+  elseif lowerbounded
+    log(x - a)
+  elseif upperbounded
+    log(b - x)
+  else
+    x
   end
-  y
 end
 
-function invlink(d::TransformDistribution, x::Real, transform::Bool)
-  y = x
-  if transform
-    a, b = minimum(d), maximum(d)
-    lowerbounded, upperbounded = isfinite(a), isfinite(b)
-    if lowerbounded && upperbounded
-      y = (b - a) * invlogit(x) + a
-    elseif lowerbounded
-      y = exp(x) + a
-    elseif upperbounded
-      y = b - exp(x)
-    end
+function invlink(d::TransformDistribution, x::Real)
+  a, b = minimum(d), maximum(d)
+  lowerbounded, upperbounded = isfinite(a), isfinite(b)
+  if lowerbounded && upperbounded
+    (b - a) * invlogit(x) + a
+  elseif lowerbounded
+    exp(x) + a
+  elseif upperbounded
+    b - exp(x)
+  else
+    x
   end
-  y
 end
 
 function logpdf(d::TransformDistribution, x::Real, transform::Bool)

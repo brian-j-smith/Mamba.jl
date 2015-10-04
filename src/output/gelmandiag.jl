@@ -5,7 +5,7 @@ function gelmandiag(c::AbstractChains; alpha::Real=0.05, mpsrf::Bool=false,
   n, p, m = size(c.value)
   m >= 2 || error("2 or more chains needed to run gelman diagnostic")
 
-  psi = link(c, transform)
+  psi = transform ? link(c) : c.value
 
   S2 = mapslices(cov, psi, [1,2])
   W = squeeze(mapslices(mean, S2, 3), 3)

@@ -57,21 +57,6 @@ Initialization
 Node Operations
 ^^^^^^^^^^^^^^^
 
-.. function:: link(d::AbstractDependent, x, transform::Bool=true)
-              invlink(d::AbstractDependent, x, transform::Bool=true)
-
-    Apply a node-specific link or inverse-link transformation, respectively.  In this generic method, the transformations are defined to be the identity functions.  The method function may be redefined for subtypes of ``AbstractDependent`` to implement different transformations.
-
-    **Arguments**
-
-        * ``d`` : a node on which a ``link()`` or ``invlink()`` transformation method is defined.
-        * ``x`` : an object to which to apply the transformation.
-        * ``transform`` : whether to transform ``x`` or assume an identity link.
-
-    **Value**
-
-        Returns the link or inverse-link-transformed version of ``x``.
-
 .. function:: logpdf(d::AbstractDependent, transform::Bool=false)
               logpdf(d::AbstractDependent, x, transform::Bool=false)
 
@@ -87,19 +72,22 @@ Node Operations
 
         The resulting numeric value of the log-density.
 
-.. function:: unlist(d::AbstractDependent, x)
-              relist(d::AbstractDependent, x)
+.. function:: unlist(d::AbstractDependent, transform::Bool=false)
+              unlist(d::AbstractDependent, x::Real, transform::Bool=false)
+              unlist(d::AbstractDependent, x::AbstractArray, transform::Bool=false)
+              relist(d::AbstractDependent, x::AbstractArray, transform::Bool=false)
 
-    Extract (unlist) values from a node, or re-assemble (relist) values to be put into a node.  In this generic method, all values are extracted/re-assembled.  The methods are used internally for the extraction of unique stochastic node values to sample, and can be redefined to implement different behaviors for ``AbstractDependent`` subtypes.
+    Extract (unlist) node values to a vector, or re-assemble (relist) values to be put into a node.  In this generic method, all values are listed.  The methods are used internally for the extraction of unique stochastic node values to sample, and can be redefined to implement different behaviors for ``AbstractDependent`` subtypes.
 
     **Arguments**
 
-        * ``d`` : a node to unlist or relist.
-        * ``x`` : values to be listed.
+        * ``d`` : a node for which to unlist or relist values.
+        * ``x`` : values to be listed.  If not specified, the node values are used.
+        * ``transform`` : whether to apply a link or inverse-link transformation to the values.  In this generic method, transformations are defined to be the identity function.
 
     **Value**
 
-        Returns ``x`` unmodified.
+        Returns an object of unmodified ``x`` values.
 
 
 .. index:: Logical Types
@@ -289,26 +277,6 @@ Initialization
 Node Operations
 ^^^^^^^^^^^^^^^
 
-.. function:: link(s::AbstractStochastic, x, transform::Bool=true)
-              invlink(s::AbstractStochastic, x, transform::Bool=true)
-
-    Apply a link transformation, or its inverse, to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
-
-        * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
-        * Lower bounded: shifted to zero and log-transformed.
-        * Upper bounded: scaled by -1, shifted to zero, and log-transformed.
-        * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return it with the diagonal elements log-transformed.
-
-    **Arguments**
-
-        * ``s`` : a stochastic node on which a ``link()`` or ``invlink()`` transformation method is defined.
-        * ``x`` : an object to which to apply the transformation.
-        * ``transform`` : whether to transform ``x`` or assume an identity link.
-
-    **Value**
-
-        Returns the transformed version of ``x``.
-
 .. function:: logpdf(s::AbstractStochastic, transform::Bool=false)
               logpdf(s::AbstractStochastic, x, transform::Bool=false)
 
@@ -336,19 +304,27 @@ Node Operations
 
         Returns the sampled value(s).
 
-.. function:: unlist(s::AbstractStochastic, x)
-              relist(s::AbstractStochastic, x)
+.. function:: unlist(s::AbstractStochastic, transform::Bool=false)
+              unlist(s::AbstractStochastic, x::Real, transform::Bool=false)
+              unlist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
+              relist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
 
-    Extract (unlist) stochastic node values, or re-assemble (relist) values into a format that can be put into a node.  These methods are used internally to extract the unique and sampled values of stochastic nodes.  They are used, for instance, to extract only the unique, upper-triangular portions of (symmetric) covariance matrices and only the sampled values of ``Array{MultivariateDistribution}`` specifications whose distributions may be of different lengths.
+    Extract (unlist) stochastic node values to a vector, or re-assemble (relist) values into a format that can be put into a node.  These methods are used internally to extract the unique and sampled values of stochastic nodes.  They are used, for instance, to extract only the unique, upper-triangular portions of (symmetric) covariance matrices and only the sampled values of ``Array{MultivariateDistribution}`` specifications whose distributions may be of different lengths.
 
     **Arguments**
 
-        * ``s`` : a stochastic node to unlist or relist.
-        * ``x`` : values to be listed.
+        * ``s`` : a stochastic node for which to unlist or relist values.
+        * ``x`` : values to be listed.  If not specified, the node values are used.
+        * ``transform`` : whether to apply a link transformation, or its inverse, to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
+
+            * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
+            * Lower bounded: shifted to zero and log-transformed.
+            * Upper bounded: scaled by -1, shifted to zero, and log-transformed.
+            * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return it with the diagonal elements log-transformed.
 
     **Value**
 
-        Returns the extracted or re-assembled version of ``x``.
+        Returns a vector of extracted ``x`` values or an object of re-assembled values that can be put into the specified node.
 
 .. function:: update!(s::AbstractStochastic, m::Model)
 

@@ -13,47 +13,40 @@ function unlist(d::PDMatDistribution, X::DenseMatrix)
   y
 end
 
-function relist(d::PDMatDistribution, x::DenseArray)
+function relist(d::PDMatDistribution, X::AbstractArray)
   n = dim(d)
-  Y = similar(x, n, n)
+  Y = similar(X, n, n)
   k = 0
   for i in 1:n, j in i:n
     k += 1
-    Y[i,j] = Y[j,i] = x[k]
+    Y[i,j] = Y[j,i] = X[k]
   end
   Y
 end
 
-function link(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
-  Y = X
-  if transform
-    n = dim(d)
-    Y = zeros(n, n)
-    U = chol(X)
-    for i in 1:n
-      Y[i,i] = log(U[i,i])
-    end
-    for i in 1:n, j in (i+1):n
-      Y[i,j] = U[i,j]
-    end
+function link(d::PDMatDistribution, X::DenseMatrix)
+  n = dim(d)
+  Y = zeros(n, n)
+  U = chol(X)
+  for i in 1:n
+    Y[i,i] = log(U[i,i])
+  end
+  for i in 1:n, j in (i+1):n
+    Y[i,j] = U[i,j]
   end
   Y
 end
 
-function invlink(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
-  Y = X
-  if transform
-    n = dim(d)
-    U = zeros(n, n)
-    for i in 1:n
-      U[i,i] = exp(X[i,i])
-    end
-    for i in 1:n, j in (i+1):n
-      U[i,j] = X[i,j]
-    end
-    Y = At_mul_B(U, U)
+function invlink(d::PDMatDistribution, X::DenseMatrix)
+  n = dim(d)
+  U = zeros(n, n)
+  for i in 1:n
+    U[i,i] = exp(X[i,i])
   end
-  Y
+  for i in 1:n, j in (i+1):n
+    U[i,j] = X[i,j]
+  end
+  At_mul_B(U, U)
 end
 
 function logpdf(d::PDMatDistribution, X::DenseMatrix, transform::Bool)

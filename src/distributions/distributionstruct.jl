@@ -11,13 +11,15 @@ end
 
 #################### List Fallbacks ####################
 
-unlist(d::Distribution, x) = x
+unlist(d::Distribution, x::AbstractArray) = vec(x)
 
-unlist_sub(d::Distribution, x) = unlist(d, x)
+unlist_sub(d::Distribution, x::AbstractArray) = unlist(d, x)
 
-unlist_sub(D::Array{UnivariateDistribution}, x) = x
+unlist_sub(d::UnivariateDistribution, X::AbstractArray) = vec(X)
 
-function unlist_sub(D::Array{MultivariateDistribution}, X::DenseArray)
+unlist_sub(D::Array{UnivariateDistribution}, X::AbstractArray) = vec(X)
+
+function unlist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   y = similar(X, length(X))
   offset = 0
   for sub in CartesianRange(size(D))
@@ -30,19 +32,21 @@ function unlist_sub(D::Array{MultivariateDistribution}, X::DenseArray)
 end
 
 
-relist(d::Distribution, x) = x
+relist(d::Distribution, x::AbstractArray) = x
 
-relist_sub(d::Distribution, x) = relist(d, x)
+relist_sub(d::Distribution, x::AbstractArray) = relist(d, x)
 
-relist_sub(D::Array{UnivariateDistribution}, x) = x
+relist_sub(d::UnivariateDistribution, X::AbstractArray) = X
 
-function relist_sub(D::Array{MultivariateDistribution}, x::DenseArray)
-  Y = similar(x, dims(D))
+relist_sub(D::Array{UnivariateDistribution}, X::AbstractArray) = X
+
+function relist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
+  Y = similar(X, dims(D))
   offset = 0
   for sub in CartesianRange(size(D))
     n = length(D[sub])
     inds = 1:n
-    Y[sub, inds] = x[offset + inds]
+    Y[sub, inds] = X[offset + inds]
     offset += n
   end
   Y
@@ -51,55 +55,51 @@ end
 
 #################### Link Fallbacks ####################
 
-link(d::Distribution, x, transform::Bool) = x
+link(d::Distribution, x) = x
 
-link_sub(d::Distribution, x, transform::Bool) = link(d, x, transform)
+link_sub(d::Distribution, x) = link(d, x)
 
-function link_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
+function link_sub(d::UnivariateDistribution, X::AbstractArray)
   Y = similar(X, Float64)
-  map!(x -> link_sub(d, x, transform), Y, X)
+  map!(x -> link_sub(d, x), Y, X)
 end
 
-function link_sub(D::Array{UnivariateDistribution}, X::DenseArray,
-                  transform::Bool)
+function link_sub(D::Array{UnivariateDistribution}, X::AbstractArray)
   Y = similar(X, Float64)
-  map!(i -> link_sub(D[i], X[i], transform), Y, 1:length(D))
+  map!(i -> link_sub(D[i], X[i]), Y, 1:length(D))
 end
 
-function link_sub(D::Array{MultivariateDistribution}, X::DenseArray,
-                  transform::Bool)
+function link_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   Y = similar(X, Float64)
   for sub in CartesianRange(size(D))
     d = D[sub]
     inds = 1:length(d)
-    Y[sub, inds] = link_sub(d, X[sub, inds], transform)
+    Y[sub, inds] = link_sub(d, X[sub, inds])
   end
   Y
 end
 
 
-invlink(d::Distribution, x, transform::Bool) = x
+invlink(d::Distribution, x) = x
 
-invlink_sub(d::Distribution, x, transform::Bool) = invlink(d, x, transform)
+invlink_sub(d::Distribution, x) = invlink(d, x)
 
-function invlink_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
+function invlink_sub(d::UnivariateDistribution, X::AbstractArray)
   Y = similar(X, Float64)
-  map!(x -> invlink_sub(d, x, transform), Y, X)
+  map!(x -> invlink_sub(d, x), Y, X)
 end
 
-function invlink_sub(D::Array{UnivariateDistribution}, X::DenseArray,
-                     transform::Bool)
+function invlink_sub(D::Array{UnivariateDistribution}, X::AbstractArray)
   Y = similar(X, Float64)
-  map!(i -> invlink_sub(D[i], X[i], transform), Y, 1:length(D))
+  map!(i -> invlink_sub(D[i], X[i]), Y, 1:length(D))
 end
 
-function invlink_sub(D::Array{MultivariateDistribution}, X::DenseArray,
-                     transform::Bool)
+function invlink_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   Y = similar(X, Float64)
   for sub in CartesianRange(size(D))
     d = D[sub]
     inds = 1:length(d)
-    Y[sub, inds] = invlink_sub(d, X[sub, inds], transform)
+    Y[sub, inds] = invlink_sub(d, X[sub, inds])
   end
   Y
 end
@@ -113,7 +113,8 @@ function logpdf_sub(d::Distribution, x, transform::Bool)
   insupport(d, x) ? logpdf(d, x, transform) : -Inf
 end
 
-function logpdf_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
+function logpdf_sub(d::UnivariateDistribution, X::AbstractArray,
+                    transform::Bool)
   lp = 0.0
   for x in X
     lp += logpdf_sub(d, x, transform)
@@ -121,7 +122,7 @@ function logpdf_sub(d::UnivariateDistribution, X::DenseArray, transform::Bool)
   lp
 end
 
-function logpdf_sub(D::Array{UnivariateDistribution}, X::DenseArray,
+function logpdf_sub(D::Array{UnivariateDistribution}, X::AbstractArray,
                     transform::Bool)
   lp = 0.0
   for i in 1:length(D)
@@ -130,7 +131,7 @@ function logpdf_sub(D::Array{UnivariateDistribution}, X::DenseArray,
   lp
 end
 
-function logpdf_sub(D::Array{MultivariateDistribution}, X::DenseArray,
+function logpdf_sub(D::Array{MultivariateDistribution}, X::AbstractArray,
                     transform::Bool)
   lp = 0.0
   for sub in CartesianRange(size(D))

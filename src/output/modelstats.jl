@@ -30,7 +30,7 @@ function logpdf(mc::ModelChains, nkeys::Vector{Symbol})
   for k in 1:chains
     meter = ChainProgress(frame, k, iters)
     for i in 1:iters
-      relist!(m, vec(mc.value[i,idx,k]))
+      relist!(m, mc.value[i,idx,k])
       values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
       next!(meter)
     end
@@ -60,7 +60,7 @@ function predict(mc::ModelChains, key::Symbol)
   value = Array(Float64, iters, length(nodenames), chains)
   for k in 1:chains
     for i in 1:iters
-      relist!(m, vec(mc.value[i,idx,k]), sources)
+      relist!(m, mc.value[i,idx,k], sources)
       value[i,:,k] = unlist(node, rand(node))
     end
   end

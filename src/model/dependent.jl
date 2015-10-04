@@ -32,7 +32,7 @@ end
 
 function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   values = monitor
-  d.listlength = length(unlist(d, d.value))
+  d.listlength = length(unlist(d))
   if d.listlength > 0 && length(monitor) > 0
     if monitor[1] == 0
       values = collect(1:d.listlength)
@@ -47,13 +47,14 @@ end
 
 #################### Distribution Fallbacks ####################
 
-unlist(d::AbstractDependent, x) = x
+unlist(d::AbstractDependent, transform::Bool=false) =
+  unlist(d, d.value, transform)
 
-relist(d::AbstractDependent, x) = x
+unlist(d::AbstractDependent, x::Real, transform::Bool=false) = [x]
 
-link(d::AbstractDependent, x, transform::Bool=true) = x
+unlist(d::AbstractDependent, x::AbstractArray, transform::Bool=false) = vec(x)
 
-invlink(d::AbstractDependent, x, transform::Bool=true) = x
+relist(d::AbstractDependent, x::AbstractArray, transform::Bool=false) = x
 
 logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
 
@@ -157,16 +158,22 @@ end
 
 #################### Distribution Methods ####################
 
-unlist(s::AbstractStochastic, x) = unlist_sub(s.distr, x)
-
-relist(s::AbstractStochastic, x) = relist_sub(s.distr, x)
-
-function link(s::AbstractStochastic, x, transform::Bool=true)
-  link_sub(s.distr, x, transform)
+function unlist(s::AbstractStochastic, transform::Bool=false)
+  unlist(s, s.value, transform)
 end
 
-function invlink(s::AbstractStochastic, x, transform::Bool=true)
-  invlink_sub(s.distr, x, transform)
+function unlist(s::AbstractStochastic, x::Real, transform::Bool=false)
+  unlist(s, [x], transform)
+end
+
+function unlist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
+  transform ? unlist_sub(s.distr, link_sub(s.distr, x)) :
+              unlist_sub(s.distr, x)
+end
+
+function relist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
+  transform ? invlink_sub(s.distr, relist_sub(s.distr, x)) :
+              relist_sub(s.distr, x)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)
