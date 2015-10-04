@@ -2,6 +2,15 @@
 
 ## Version Updates
 
+### 0.6.3
+* Added support for model specification of stochastic nodes with ``Array{MultivariateDistribution}`` structures containing distributions of different lengths.
+* Added a Slice Simplex (SliceSimplex) sampler for parameters, like probability vectors, defined on simplexes.
+* Added ``AbstractDependent`` ``logpdf()`` methods for evaluating log-densities at specified values.
+* Renamed ``AbstractDependent`` methods ``link()/invlink()`` to ``unlist()/relist()``.
+* Implemented an ``AbstractStochastic`` ``rand()`` method for random sampling of node values.
+* Implemented ``Chains`` concatenation methods.
+* Implemented a ``Chains`` ``readcoda()`` method for importing CODA files.
+
 ### 0.6.2
 * Added support for ``Array{MultivariateDistribution}`` to the missing values (MISS) sampler.
 * Added a Binary Modified Metropolised Gibbs (BMMG) sampler for binary model parameters.
