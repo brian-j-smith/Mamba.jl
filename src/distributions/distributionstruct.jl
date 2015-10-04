@@ -143,18 +143,17 @@ end
 
 #################### Rand Fallbacks ####################
 
-rand_sub(d::Distribution) = rand(d)
+rand_sub(d::Distribution, x) = rand(d)
 
-function rand_sub(D::Array{UnivariateDistribution})
-  X = similar(D, Float64)
-  map!(rand, X, D)
-end
+rand_sub(d::UnivariateDistribution, X::AbstractArray) = rand(d, size(X))
 
-function rand_sub(D::Array{MultivariateDistribution})
-  X = fill(NaN, dims(D))
+rand_sub(D::Array{UnivariateDistribution}, X::AbstractArray) = map(rand, D)
+
+function rand_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
+  Y = fill(NaN, size(X))
   for sub in CartesianRange(size(D))
     d = D[sub]
-    X[sub, 1:length(d)] = rand(d)
+    Y[sub, 1:length(d)] = rand(d)
   end
-  X
+  Y
 end

@@ -177,7 +177,7 @@ function logpdf(s::AbstractStochastic, x, transform::Bool=false)
   logpdf_sub(s.distr, x, transform)
 end
 
-rand(s::AbstractStochastic) = rand_sub(s.distr)
+rand(s::AbstractStochastic) = rand_sub(s.distr, s.value)
 
 
 #################### Auxiliary Functions ####################
