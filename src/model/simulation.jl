@@ -82,7 +82,7 @@ function relist{T<:Real}(m::Model, values::AbstractArray{T},
   offset = 0
   for key in nkeys
     node = m[key]
-    n = node.listlength
+    n = node.linklength
     x[key] = relist(node, values[offset + (1:n)], transform)
     offset += n
   end
@@ -138,7 +138,7 @@ function unlist(m::Model, monitoronly::Bool)
 end
 
 function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
-  N = Int[m[key].listlength for key in nkeys]
+  N = Int[m[key].linklength for key in nkeys]
   values = Array(Float64, sum(N))
   offset = 0
   for k in 1:length(nkeys)
