@@ -32,16 +32,42 @@ function unlist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
 end
 
 
-relist(d::Distribution, x::AbstractArray) = x
+function relistlength(d::UnivariateDistribution, x::AbstractArray)
+  (x[1], 1)
+end
 
-relist_sub(d::Distribution, x::AbstractArray) = relist(d, x)
+function relistlength(d::MultivariateDistribution, x::AbstractArray)
+  n = length(d)
+  value = x[1:n]
+  (value, n)
+end
 
-relist_sub(d::UnivariateDistribution, X::AbstractArray) = X
+function relistlength(d::MatrixDistribution, x::AbstractArray)
+  n = length(d)
+  value = reshape(x[1:n], size(d))
+  (value, n)
+end
 
-relist_sub(D::Array{UnivariateDistribution}, X::AbstractArray) = X
+relistlength_sub(d::Distribution, s::AbstractStochastic, x::AbstractArray) =
+  relistlength(d, x)
 
-function relist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
-  Y = similar(X, dims(D))
+function relistlength_sub(d::UnivariateDistribution, s::ArrayStochastic,
+                          X::AbstractArray)
+  n = length(s)
+  value = reshape(X[1:n], size(s))
+  (value, n)
+end
+
+function relistlength_sub(D::Array{UnivariateDistribution}, s::ArrayStochastic,
+                          X::AbstractArray)
+  n = length(s)
+  value = reshape(X[1:n], size(s))
+  (value, n)
+end
+
+function relistlength_sub(D::Array{MultivariateDistribution},
+                          s::ArrayStochastic, X::AbstractArray)
+  Y = similar(X, size(s))
   offset = 0
   for sub in CartesianRange(size(D))
     n = length(D[sub])
@@ -49,7 +75,7 @@ function relist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
     Y[sub, inds] = X[offset + inds]
     offset += n
   end
-  Y
+  (Y, offset)
 end
 
 

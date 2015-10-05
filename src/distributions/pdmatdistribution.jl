@@ -13,7 +13,7 @@ function unlist(d::PDMatDistribution, X::DenseMatrix)
   y
 end
 
-function relist(d::PDMatDistribution, X::AbstractArray)
+function relistlength(d::PDMatDistribution, X::AbstractArray)
   n = dim(d)
   Y = similar(X, n, n)
   k = 0
@@ -21,7 +21,7 @@ function relist(d::PDMatDistribution, X::AbstractArray)
     k += 1
     Y[i,j] = Y[j,i] = X[k]
   end
-  Y
+  (Y, k)
 end
 
 function link(d::PDMatDistribution, X::DenseMatrix)

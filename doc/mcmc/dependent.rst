@@ -87,7 +87,7 @@ Node Operations
 
     **Value**
 
-        Returns an object of unmodified ``x`` values.
+        Returns unmodified ``x`` values as a vector (unlist) or in the same shape as the specified node (relist).
 
 
 .. index:: Logical Types
@@ -324,7 +324,7 @@ Node Operations
 
     **Value**
 
-        Returns a vector of extracted ``x`` values or an object of re-assembled values that can be put into the specified node.
+        Returns the extracted ``x`` values as a vector or the re-assembled values in the same shape as the specified node.
 
 .. function:: update!(s::AbstractStochastic, m::Model)
 

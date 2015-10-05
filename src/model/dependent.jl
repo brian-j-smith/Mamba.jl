@@ -54,7 +54,8 @@ unlist(d::AbstractDependent, x::Real, transform::Bool=false) = [x]
 
 unlist(d::AbstractDependent, x::AbstractArray, transform::Bool=false) = vec(x)
 
-relist(d::AbstractDependent, x::AbstractArray, transform::Bool=false) = x
+relist(d::AbstractDependent, x::AbstractArray, transform::Bool=false) =
+  relistlength(d, x, transform)[1]
 
 logpdf(d::AbstractDependent, transform::Bool=false) = 0.0
 
@@ -93,6 +94,18 @@ end
 function update!(l::AbstractLogical, m::Model)
   l[:] = l.eval(m)
   l
+end
+
+
+#################### Distribution Methods ####################
+
+relistlength(d::ScalarLogical, x::AbstractArray, transform::Bool=false) =
+  (x[1], 1)
+
+function relistlength(d::ArrayLogical, x::AbstractArray, transform::Bool=false)
+  n = length(d)
+  value = reshape(x[1:n], size(d))
+  (value, n)
 end
 
 
@@ -172,8 +185,13 @@ function unlist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
 end
 
 function relist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
-  transform ? invlink_sub(s.distr, relist_sub(s.distr, x)) :
-              relist_sub(s.distr, x)
+  relistlength(s, x, transform)[1]
+end
+
+function relistlength(s::AbstractStochastic, x::AbstractArray,
+                      transform::Bool=false)
+  value, n = relistlength_sub(s.distr, s, x)
+  (transform ? invlink_sub(s.distr, value) : value, n)
 end
 
 function logpdf(s::AbstractStochastic, transform::Bool=false)

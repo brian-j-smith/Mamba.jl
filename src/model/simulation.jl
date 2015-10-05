@@ -79,11 +79,11 @@ end
 function relist{T<:Real}(m::Model, values::AbstractArray{T},
                          nkeys::Vector{Symbol}, transform::Bool=false)
   x = Dict{Symbol,Any}()
+  N = length(values)
   offset = 0
   for key in nkeys
-    node = m[key]
-    n = node.linklength
-    x[key] = relist(node, values[offset + (1:n)], transform)
+    value, n = relistlength(m[key], sub(values, (offset + 1):N), transform)
+    x[key] = value
     offset += n
   end
   offset == length(values) ||
@@ -93,14 +93,30 @@ end
 
 function relist!{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
                           transform::Bool=false)
+  relist!(m, convert(Array{Float64}, values), block, transform)
+end
+
+function relist!(m::Model, values::AbstractArray{Float64}, block::Integer=0,
+                 transform::Bool=false)
   nkeys = keys(m, :block, block)
-  m[nkeys] = relist(m, values, nkeys, transform)
+  x = relist(m, values, nkeys, transform)
+  for key in nkeys
+    m[key].value = x[key]
+  end
   update!(m, block)
 end
 
 function relist!{T<:Real}(m::Model, values::AbstractArray{T},
                           nkeys::Vector{Symbol}, transform::Bool=false)
-  m[nkeys] = relist(m, values, nkeys, transform)
+  relist!(m, convert(Array{Float64}, values), nkeys, transform)
+end
+
+function relist!(m::Model, values::AbstractArray{Float64},
+                 nkeys::Vector{Symbol}, transform::Bool=false)
+  x = relist(m, values, nkeys, transform)
+  for key in nkeys
+    m[key].value = x[key]
+  end
   update!(m)
 end
 
