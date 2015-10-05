@@ -1,34 +1,66 @@
 graph MCMC {
-	fontname = "Helvetica"
-	fontsize = 11
-	overlap = scalexy
-	sep = "+0,26"
+    fontname = "Helvetica"
+    fontsize = 11
+    splines = true
+    overlap = false
 
-	node [fontname = "Helvetica", fontsize = 11, shape = record]
+    node [fontname = "Helvetica", fontsize = 11, shape = record]
 
-	edge [fontname = "Helvetica", fontsize = 11, dir = both, arrowtail = none, arrowhead = none]
+    edge [fontname = "Helvetica", fontsize = 11, dir = both, arrowtail = none, arrowhead = none]
 
-	Variate [label = "{Variate\{T\}|+ value : T\l}"]
+    Real [label = "{Real}", pos="315,610"]
 
-	Dependent [label = "{Dependent\{T\}|+ symbol : Symbol\l+ nlink::Integer\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}"]
-	
-	Logical [label = "{Logical\{T\}}"]
-	
-	Stochastic [label = "{Stochastic\{T\}|+ distr : DistributionStruct\l}"]
+    DenseArray [label = "{DenseArray}", pos="324,570"]
 
-	Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}"]
-	
-	Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{VariateType\}\}\l+ iter : Integer\l+ burnin : Integer\l+ chain : Integer\l+ hasinputs : Bool\l+ hasinits : Bool\l}"]
-	
-	Chains [label = "{Chains|+ value : Array\{VariateType, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Integer\}\l+ model : Model\l}"]
+    AbstractDependent [label = "{AbstractDependent|+ value\l+ symbol : Symbol\l+ linklength::Int\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}", pos="275,425"]
 
-	Dependent -- Variate[len = 0.9, arrowhead = empty]
-	Logical -- Dependent[arrowhead = empty]
-	Stochastic -- Dependent[arrowhead = empty]
-	Sampler -- Stochastic[len = 1.2, taillabel = "1", headlabel = "1..*"]
-	Model -- Sampler[arrowtail = odiamond, headlabel = "0..*"]
-	Model -- Logical[arrowtail = odiamond, headlabel = "0..*"]
-	Model -- Stochastic[arrowtail = odiamond, headlabel = "0..*"]
-	Chains -- Model[len = 1.2, arrowtail = odiamond, headlabel = "1"]
+    AbstractLogical [label = "{AbstractLogical}", pos="75,425"]
+
+    AbstractStochastic [label = "{AbstractStochastic|+ distr\l}", pos="495,425"]
+
+    AbstractVariate [label = "{AbstractVariate|+ value\l}", pos="230,590"]
+
+    ArrayLogical [label = "{ArrayLogical\{N\}}", pos="125,515"]
+
+    ArrayStochastic [label = "{ArrayStochastic\{N\}|+ distr : DistributionStruct\l}", pos="425,515"]
+
+    ArrayVariate [label = "{ArrayVariate\{N\}|+ value : Array\{Float64,N\}\l}", pos="275,515"]
+
+    ScalarLogical [label = "{ScalarLogical}", pos="25,515"]
+
+    ScalarStochastic [label = "{ScalarStochastic|+ distr : UnivariateDistribution\l}", pos="575,515"]
+
+    ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}", pos="275,665"]
+
+    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ chain : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275,290"]
+
+    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495,290"]
+
+    AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75,330"]
+
+    ModelChains [label = "{ModelChains|+ model : Model\l}", pos="75,250"]
+
+    Real -- ScalarVariate [arrowtail = empty]
+    DenseArray -- ArrayVariate [arrowtail = empty]
+
+    AbstractChains -- ModelChains [arrowtail = empty]
+    AbstractDependent -- AbstractLogical [arrowtail = empty]
+    AbstractDependent -- AbstractStochastic [arrowtail = empty]
+    AbstractLogical -- ArrayLogical [arrowtail = empty]
+    AbstractLogical -- ScalarLogical [arrowtail = empty]
+    AbstractStochastic -- ArrayStochastic [arrowtail = empty]
+    AbstractStochastic -- ScalarStochastic [arrowtail = empty]
+    AbstractVariate -- ArrayVariate [arrowtail = empty]
+    AbstractVariate -- ScalarVariate [arrowtail = empty]
+    ArrayVariate -- ArrayLogical [arrowtail = empty]
+    ArrayVariate -- ArrayStochastic [arrowtail = empty]
+    ScalarVariate -- ScalarLogical [arrowtail = empty]
+    ScalarVariate -- ScalarStochastic [arrowtail = empty]
+
+    Sampler -- AbstractStochastic [taillabel = "1", headlabel = "1..*"]
+    Model -- Sampler [arrowtail = odiamond, headlabel = "0..*"]
+    Model -- AbstractLogical [arrowtail = odiamond, headlabel = "0..*"]
+    Model -- AbstractStochastic [arrowtail = odiamond, headlabel = "0..*", labeldistance = 2.2, labelangle = -15]
+    ModelChains -- Model [arrowtail = odiamond, headlabel = "1"]
 
 }

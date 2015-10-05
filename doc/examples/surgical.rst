@@ -5,7 +5,7 @@
 Surgical: Institutional Ranking
 -------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` concerning mortality rates in 12 hospitals performing cardiac surgery in infants.
+An example from OpenBUGS :cite:`openbugs:2014:ex` concerning mortality rates in 12 hospitals performing cardiac surgery in infants.
 
 Model
 ^^^^^

@@ -3,13 +3,8 @@ using Distributions
 module Mamba
 
   using Distributions
+  using Gadfly
 
-
-  #################### User Add-on Packages and Functions ####################
-
-  if isfile(joinpath(dirname(dirname(@__FILE__)),"usr","addons.jl"))
-    include("../usr/addons.jl")
-  end
 
   #################### Imports ####################
 
@@ -18,18 +13,19 @@ module Mamba
   import Calculus: gradient
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
          pt, px
-  import Distributions: Continuous, ContinuousUnivariateDistribution,
-         Distribution, Distributions, gradlogpdf, insupport, logpdf, logpdf!,
+  import Distributions: Bernoulli, Categorical, Continuous,
+         ContinuousUnivariateDistribution, Dirichlet, Distribution,
+         Distributions, gradlogpdf, insupport, isprobvec, logpdf, logpdf!,
          minimum, maximum, MatrixDistribution, MultivariateDistribution,
-         PDiagMat, PDMat, quantile, rand, ScalMat, Truncated,
+         PDiagMat, PDMat, quantile, rand, ScalMat, support, Truncated,
          UnivariateDistribution, ValueSupport
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
   import Showoff: showoff
-  import StatsBase: autocor, autocov, counts, describe, predict, quantile, sem,
-         StatsBase, summarystats
+  import StatsBase: autocor, autocov, countmap, counts, describe, predict,
+         quantile, sem, StatsBase, summarystats
 
   include("distributions/pdmats2.jl")
   importall .PDMats2
@@ -37,39 +33,58 @@ module Mamba
 
   #################### Variate Types ####################
 
-  typealias VariateType Float64
+  abstract ScalarVariate <: Real
+  abstract ArrayVariate{N} <: DenseArray{Float64,N}
 
-  abstract Variate{T<:Union(VariateType, Array{VariateType})}
-
-  typealias UniVariate Variate{VariateType}
-  typealias MultiVariate{N} Variate{Array{VariateType,N}}
-  typealias VectorVariate MultiVariate{1}
-  typealias MatrixVariate MultiVariate{2}
+  typealias AbstractVariate Union{ScalarVariate, ArrayVariate}
+  typealias VectorVariate ArrayVariate{1}
+  typealias MatrixVariate ArrayVariate{2}
 
 
   #################### Distribution Types ####################
 
-  typealias DistributionStruct Union(Distribution, Array{Distribution})
+  typealias DistributionStruct Union{Distribution,
+                                     Array{UnivariateDistribution},
+                                     Array{MultivariateDistribution}}
 
 
   #################### Dependent Types ####################
 
-  abstract Dependent{T} <: Variate{T}
-
-  type Logical{T} <: Dependent{T}
-    value::T
+  type ScalarLogical <: ScalarVariate
+    value::Float64
     symbol::Symbol
-    nlink::Integer
+    linklength::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
     targets::Vector{Symbol}
   end
 
-  type Stochastic{T} <: Dependent{T}
-    value::T
+  type ArrayLogical{N} <: ArrayVariate{N}
+    value::Array{Float64,N}
     symbol::Symbol
-    nlink::Integer
+    linklength::Int
+    monitor::Vector{Int}
+    eval::Function
+    sources::Vector{Symbol}
+    targets::Vector{Symbol}
+  end
+
+  type ScalarStochastic <: ScalarVariate
+    value::Float64
+    symbol::Symbol
+    linklength::Int
+    monitor::Vector{Int}
+    eval::Function
+    sources::Vector{Symbol}
+    targets::Vector{Symbol}
+    distr::UnivariateDistribution
+  end
+
+  type ArrayStochastic{N} <: ArrayVariate{N}
+    value::Array{Float64,N}
+    symbol::Symbol
+    linklength::Int
     monitor::Vector{Int}
     eval::Function
     sources::Vector{Symbol}
@@ -77,13 +92,17 @@ module Mamba
     distr::DistributionStruct
   end
 
+  typealias AbstractLogical Union{ScalarLogical, ArrayLogical}
+  typealias AbstractStochastic Union{ScalarStochastic, ArrayStochastic}
+  typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}
+
 
   #################### Sampler Type ####################
 
   type Sampler
     params::Vector{Symbol}
     eval::Function
-    tune::Dict{String,Any}
+    tune::Dict{AbstractString,Any}
     targets::Vector{Symbol}
   end
 
@@ -94,10 +113,10 @@ module Mamba
     nodes::Dict{Symbol,Any}
     dependents::Vector{Symbol}
     samplers::Vector{Sampler}
-    states::Vector{Vector{VariateType}}
-    iter::Integer
-    burnin::Integer
-    chain::Integer
+    states::Vector{Vector{Float64}}
+    iter::Int
+    burnin::Int
+    chain::Int
     hasinputs::Bool
     hasinits::Bool
   end
@@ -105,22 +124,37 @@ module Mamba
 
   #################### Chains Type ####################
 
-  immutable Chains
-    value::Array{VariateType,3}
+  abstract AbstractChains
+
+  immutable Chains <: AbstractChains
+    value::Array{Float64,3}
     range::Range{Int}
-    names::Vector{String}
-    chains::Vector{Integer}
+    names::Vector{AbstractString}
+    chains::Vector{Int}
+  end
+
+  immutable ModelChains <: AbstractChains
+    value::Array{Float64,3}
+    range::Range{Int}
+    names::Vector{AbstractString}
+    chains::Vector{Int}
     model::Model
   end
 
 
   #################### Includes ####################
 
+  include("progress.jl")
+  include("utils.jl")
+  include("variate.jl")
+
+  include("distributions/constructors.jl")
+  include("distributions/distributionstruct.jl")
   include("distributions/flat.jl")
   include("distributions/mvnormal.jl")
   include("distributions/null.jl")
-  include("distributions/constructors.jl")
-  include("distributions/methods.jl")
+  include("distributions/pdmatdistribution.jl")
+  include("distributions/transformdistribution.jl")
 
   include("model/core.jl")
   include("model/dependent.jl")
@@ -131,46 +165,50 @@ module Mamba
 
   include("output/chains.jl")
   include("output/chainsummary.jl")
+  include("output/fileio.jl")
   include("output/gelmandiag.jl")
   include("output/gewekediag.jl")
   include("output/heideldiag.jl")
   include("output/mcse.jl")
-  include("output/predict.jl")
+  include("output/modelchains.jl")
+  include("output/modelstats.jl")
   include("output/rafterydiag.jl")
   include("output/stats.jl")
   include("output/plot.jl")
 
   include("samplers/amm.jl")
   include("samplers/amwg.jl")
+  include("samplers/bmmg.jl")
   include("samplers/dgs.jl")
   include("samplers/miss.jl")
   include("samplers/nuts.jl")
   include("samplers/sampler.jl")
   include("samplers/slice.jl")
-
-  include("variate/core.jl")
-  include("variate/numeric.jl")
-
-  include("progress.jl")
-  include("utils.jl")
+  include("samplers/slicesimplex.jl")
 
 
   #################### Exports ####################
 
   export
-    MatrixVariate,
-    MultiVariate,
-    UniVariate,
-    Variate,
-    VariateType,
-    VectorVariate
-
-  export
+    AbstractChains,
+    AbstractDependent,
+    AbstractLogical,
+    AbstractStochastic,
+    AbstractVariate,
+    ArrayLogical,
+    ArrayStochastic,
+    ArrayVariate,
     Chains,
     Logical,
+    MatrixVariate,
     Model,
+    ModelChains,
     Sampler,
-    Stochastic
+    ScalarLogical,
+    ScalarStochastic,
+    ScalarVariate,
+    Stochastic,
+    VectorVariate
 
   export
     BDiagNormal,
@@ -205,6 +243,8 @@ module Mamba
     predict,
     quantile,
     rafterydiag,
+    rand,
+    readcoda,
     relist,
     relist!,
     setinits!,
@@ -224,7 +264,12 @@ module Mamba
     amwg!,
     AMWG,
     AMWGVariate,
+    bmmg!,
+    BMMG,
+    BMMGVariate,
+    dgs!,
     DGS,
+    DGSVariate,
     MISS,
     nuts!,
     nutsepsilon,
@@ -232,7 +277,10 @@ module Mamba
     NUTSVariate,
     slice!,
     Slice,
-    SliceVariate
+    SliceVariate,
+    slicesimplex!,
+    SliceSimplex,
+    SliceSimplexVariate
 
   export
     cm,

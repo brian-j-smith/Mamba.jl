@@ -2,6 +2,52 @@
 
 ## Version Updates
 
+### 0.6.3
+* Added support for model specification of stochastic nodes with ``Array{MultivariateDistribution}`` structures containing distributions of different lengths.
+* Added a Slice Simplex (SliceSimplex) sampler for parameters, like probability vectors, defined on simplexes.
+* Added ``AbstractDependent`` ``logpdf()`` methods for evaluating log-densities at specified values.
+* Renamed ``AbstractDependent`` methods ``link()/invlink()`` to ``unlist()/relist()``.
+* Implemented an ``AbstractStochastic`` ``rand()`` method for random sampling of node values.
+* Implemented ``Chains`` concatenation methods.
+* Implemented a ``Chains`` ``readcoda()`` method for importing CODA files.
+
+### 0.6.2
+* Added support for ``Array{MultivariateDistribution}`` to the missing values (MISS) sampler.
+* Added a Binary Modified Metropolised Gibbs (BMMG) sampler for binary model parameters.
+* Added bar plots for the summary of ``AbstractChains`` that contain values simulated for discrete model parameters.
+* Compatibility updates for julia 0.4 release candidate 2.
+
+### 0.6.1
+* Compatibility updates for julia 0.4 prerelease.
+
+### 0.6.0
+* Stable release for julia 0.4.
+* Added support for the specification of ``MultivariateDistribution`` arrays in stochastic nodes.
+* Arrays in stochastic nodes must now be declared as a ``UnivariateDistribution[]`` or as a ``MultivariateDistribution[]``.  In previous package versions, arrays could be declared as a generic ``Distribution[]`` array.  This is no longer allowable due to the need to distinguish between arrays of univariate and multivariate distributions.
+* The following changes were made to internal data structures and generally do not affect the user interface (i.e., model specification, sampling function calls, and sampler output diagnostics and summaries):
+    * The ``VariateType``, which aliases ``Float64``, is deprecated and will be removed in a future version.
+    * The abstract ``Variate`` type was separated into ``ScalarVariate`` and ``ArrayVariate`` types which are subtypes of ``Real`` and ``DenseArray``, respectively.
+    * ``AbstractVariate`` was defined as the ``Union(ScalarVariate,ArrayVariate)``.
+    * The ``Logical`` type was separated into ``ScalarLogical`` and ``ArrayLogical`` types which are subtypes of ``ScalarVariate`` and ``ArrayVariate``, respectively.
+    * ``AbstractLogical`` was defined as the ``Union(ScalarLogical,ArrayLogical)``.
+    * The ``Stochastic`` type was separated into ``ScalarStochastic`` and ``ArrayStochastic`` types which are subtypes of ``ScalarVariate`` and ``ArrayVariate``, respectively.
+    * ``AbstractStochastic`` was defined as the ``Union(ScalarStochastic,ArrayStochastic)``.
+    * ``AbstractDependent`` was defined as the ``Union(AbstractLogical,AbstractStochastic)``.
+    * The ``nlink`` field of logical and stochastic types was renamed to ``linklength``.
+    * An abstract ``AbstractChains`` type was implemented, the ``model`` field removed from the ``Chains`` type, and a new ``ModelChains`` type created to provide the ``model`` field.
+* Added an example of sampling different parameter blocks with different stand-alone samplers (``amwg!`` and ``slice!``).
+* Removed the ``insupport`` method for stochastic types.
+
+### 0.5.2
+* Applied *Mamba* changes through 0.4.12.
+
+### 0.5.1
+* Applied *Mamba* changes through 0.4.7 and updated compatibility with julia 0.4.0-dev.
+
+### 0.5.0
+* Branched off of *Mamba* 0.4.4.
+* Initial release for the under-development version of julia 0.4.  *Mamba* 0.5.x releases exist to incorporate changes being made in the nightly builds of julia, and should be considered unstable.  They may contain compatibility issues or serious bugs.  Most users are advised to use *Mamba* 0.4.x releases for julia 0.3 or to wait for stable *Mamba* 0.6.x releases for julia 0.4.
+
 ### 0.4.12
 * Updated documentation for user-defined distributions.
 

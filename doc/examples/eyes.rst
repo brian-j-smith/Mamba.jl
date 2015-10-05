@@ -5,7 +5,7 @@
 Eyes: Normal Mixture Model
 --------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Bowmaker :cite:`bowmaker:1985:TTT`, and Robert :cite:`robert:1994:MDI` concerning 48 peak sensitivity wavelength measurements taken on a set of monkey's eyes.
+An example from OpenBUGS :cite:`openbugs:2014:ex`, Bowmaker :cite:`bowmaker:1985:TTT`, and Robert :cite:`robert:1994:MDI` concerning 48 peak sensitivity wavelength measurements taken on a set of monkey's eyes.
 
 Model
 ^^^^^
@@ -15,12 +15,12 @@ Measurements are modelled as the mixture distribution
 .. math::
 
     y_i &\sim \text{Normal}(\lambda_{T_i}, \sigma) \quad\quad i=1,\ldots,48 \\
-    T_i &\sim \text{Categorical}(p, 1 - p) \\
+    T_i &\sim \text{Categorical}(P) \\
     \lambda_1 &\sim \text{Normal}(0, 1000) \\
     \lambda_2 &= \lambda_1 + \theta \\
     \theta &\sim \text{Uniform}(0, 1000) \\
     \sigma^2 &\sim \text{InverseGamma}(0.001, 0.001) \\
-    p &= \text{Uniform}(0, 1)
+    P &= \text{Dirichlet}(1, 1)
 
 where :math:`y_i` is the measurement on monkey :math:`i`.
 
@@ -42,15 +42,17 @@ Results
     Samples per chain = 3750
 
     Empirical Posterior Estimates:
-                 Mean       SD      Naive SE      MCSE       ESS
-    lambda[1] 536.81290 0.9883483 0.011412463 0.052323509 356.8012
-    lambda[2] 548.75963 1.4660892 0.016928940 0.061653235 565.4693
-            p   0.59646 0.0909798 0.001050544 0.003005307 916.4579
-           s2  15.37891 7.1915331 0.083040671 0.406764080 312.5775
+                  Mean         SD       Naive SE       MCSE         ESS
+           s2  14.45234459 4.96689604 0.0573527753 0.1853970211  717.73584
+         P[1]   0.60357102 0.08379221 0.0009675491 0.0013077559 3750.00000
+         P[2]   0.39642898 0.08379221 0.0009675491 0.0013077559 3750.00000
+    lambda[1] 536.75250337 0.88484533 0.0102173137 0.0304232594  845.90821
+    lambda[2] 548.98693469 1.18938418 0.0137338256 0.0625489045  361.58042
 
     Quantiles:
-                2.5%    25.0%     50.0%     75.0%     97.5%
-    lambda[1] 535.086 536.17470 536.75185 537.36318 538.9397
-    lambda[2] 545.199 548.07943 548.86953 549.63026 551.1739
-            p   0.413   0.54206   0.60080   0.65619   0.7602
-           s2   8.637  11.40687  13.68101  16.78394  39.0676
+                  2.5%         25.0%        50.0%        75.0%        97.5%
+           s2   8.55745263  11.37700782  13.39622105  16.26405571  27.08863166
+         P[1]   0.43576584   0.54842468   0.60395494   0.66066383   0.76552882
+         P[2]   0.23447118   0.33933617   0.39604506   0.45157532   0.56423416
+    lambda[1] 535.08951002 536.16891895 536.73114152 537.30710397 538.61179506
+    lambda[2] 546.57859195 548.24188698 548.97732892 549.74377421 551.38780148

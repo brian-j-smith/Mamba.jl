@@ -1,10 +1,10 @@
-julia 0.3.4 0.4-
-Cairo 0.2.14
-Calculus 0.1.3
-Compose 0.3.5
-Distributions 0.7.4
-Gadfly 0.3.11
-Graphs 0.4.2
-PDMats 0.3
-Showoff 0.0.4
-StatsBase 0.5.0
+julia 0.4-
+Cairo 0.2.31
+Calculus 0.1.13
+Compose 0.3.16
+Distributions 0.8.7
+Gadfly 0.3.17
+Graphs 0.5.6
+PDMats 0.3.6
+Showoff 0.0.6
+StatsBase 0.7.3

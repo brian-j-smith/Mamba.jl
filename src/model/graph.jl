@@ -1,17 +1,8 @@
 #################### Model Graph Methods ####################
 
-function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
-  found = false
-  for v in out_neighbors(v, g)
-    if isa(m[v.key], Stochastic) || any_stochastic(v, g, m)
-      found = true
-      break
-    end
-  end
-  found
-end
+#################### Display ####################
 
-function draw(m::Model; filename::String="")
+function draw(m::Model; filename::AbstractString="")
   dot = graph2dot(m)
   if length(filename) == 0
     print(dot)
@@ -25,20 +16,9 @@ function draw(m::Model; filename::String="")
   end
 end
 
-function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
-  values = Symbol[]
-  for v in out_neighbors(v, g)
-    push!(values, v.key)
-    if !isa(m[v.key], Stochastic)
-      values = union(values, gettargets(v, g, m))
-    end
-  end
-  values
-end
-
 function graph(m::Model)
   g = graph(KeyVertex{Symbol}[], Edge{KeyVertex{Symbol}}[])
-  lookup = (Symbol => Integer)[]
+  lookup = Dict{Symbol,Int}()
   for key in keys(m, :all)
     lookup[key] = length(lookup) + 1
     add_vertex!(g, KeyVertex(lookup[key], key))
@@ -58,12 +38,12 @@ function graph2dot(m::Model)
   write(io, "digraph MambaModel {\n")
   deps = keys(m, :dependent)
   for v in vertices(g)
-    attr = (String => String)[]
+    attr = Dict{AbstractString,AbstractString}()
     if in(v.key, deps)
       node = m[v.key]
-      if isa(node, Logical)
+      if isa(node, AbstractLogical)
         attr["shape"] = "diamond"
-      elseif isa(node, Stochastic)
+      elseif isa(node, AbstractStochastic)
         attr["shape"] = "ellipse"
       end
       if length(node.monitor) == 0
@@ -91,6 +71,31 @@ function graph2dot(m::Model)
   end
   write(io, "}\n")
   bytestring(io)
+end
+
+
+#################### Auxiliary Functions ####################
+
+function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
+  found = false
+  for v in out_neighbors(v, g)
+    if isa(m[v.key], AbstractStochastic) || any_stochastic(v, g, m)
+      found = true
+      break
+    end
+  end
+  found
+end
+
+function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
+  values = Symbol[]
+  for v in out_neighbors(v, g)
+    push!(values, v.key)
+    if !isa(m[v.key], AbstractStochastic)
+      values = union(values, gettargets(v, g, m))
+    end
+  end
+  values
 end
 
 function tsort{T}(g::AbstractGraph{KeyVertex{T}, Edge{KeyVertex{T}}})

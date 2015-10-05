@@ -7,8 +7,19 @@ test_tutorials = [
 test_samplers = [
   "amm",
   "amwg",
+  "bmmg",
   "nuts",
-  "slice"
+  "slice",
+  "slicesimplex"
+]
+
+test_mcmc = [
+  "readcoda"
+]
+
+test_extensions = [
+  "newunivardist",
+  "newmultivardist"
 ]
 
 test_extensions = [
@@ -26,6 +37,10 @@ end
 for t in test_samplers
   @everywhere srand(123)
   @runtest "../doc/samplers/" t
+end
+
+for t in test_mcmc
+  @runtest "../doc/mcmc/" t
 end
 
 for t in test_extensions

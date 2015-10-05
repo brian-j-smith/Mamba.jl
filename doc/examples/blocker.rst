@@ -5,7 +5,7 @@
 Blocker: Random Effects Meta-Analysis of Clinical Trials
 --------------------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Carlin :cite:`carlin:1992:ME2` concerning a meta-analysis of 22 clinical trials to prevent mortality after myocardial infarction.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and Carlin :cite:`carlin:1992:ME2` concerning a meta-analysis of 22 clinical trials to prevent mortality after myocardial infarction.
 
 Model
 ^^^^^

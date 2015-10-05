@@ -5,7 +5,7 @@
 Mice: Weibull Regression
 ------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Grieve :cite:`grieve:1987:ABS`, and Dellaportas and Smith :cite:`dellaportas:1993:BIG` concerning time to death or censoring among four groups of 20 mice each. 
+An example from OpenBUGS :cite:`openbugs:2014:ex`, Grieve :cite:`grieve:1987:ABS`, and Dellaportas and Smith :cite:`dellaportas:1993:BIG` concerning time to death or censoring among four groups of 20 mice each.
 
 Model
 ^^^^^

@@ -5,7 +5,7 @@
 Pumps: Gamma-Poisson Hierarchical Model
 ---------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and George *et al.* :cite:`george:1993:CLD` concerning the number of failures of 10 power plant pumps.
+An example from OpenBUGS :cite:`openbugs:2014:ex` and George *et al.* :cite:`george:1993:CLD` concerning the number of failures of 10 power plant pumps.
 
 Model
 ^^^^^
@@ -34,7 +34,7 @@ Results
 .. code-block:: julia
 
     ## MCMC Simulations
-    
+
     Iterations = 2502:10000
     Thinning interval = 2
     Chains = 1,2
@@ -69,9 +69,9 @@ Results
     theta[10] 1.2345761 1.6807668 1.9568796 2.2550151 2.907759
         alpha 0.2785980 0.4856731 0.6407352 0.8256277 1.324442
          beta 0.1770170 0.5026369 0.7839917 1.1795453 2.199956
-     
+
     ## Posterior Predictive Distribution
-     
+
     Iterations = 2502:10000
     Thinning interval = 2
     Chains = 1,2

@@ -15,10 +15,10 @@ Let :math:`\mathcal{L}` denote the logarithm of a density of interest up to a no
 
 .. math::
 
-	\mathcal{L}(\bm{\beta}, \theta | \bm{y}) &= \log(p(\bm{y} | \bm{\beta}, \theta) p(\bm{\beta}) p(\theta)) \\
-	  &= (-n/2 -\alpha_\pi) \theta - \frac{1}{\exp\{\theta\}} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right) \\
-	  &\quad - \frac{1}{2} (\bm{\beta} - \bm{\mu}_\pi)^\top \bm{\Sigma}_\pi^{-1} (\bm{\beta} - \bm{\mu}_\pi) \\
-	\nabla \mathcal{L}(\bm{\beta}, \theta | \bm{y}) &= \begin{bmatrix}
-	  \frac{1}{\exp\{\theta\}} \bm{X}^\top (\bm{y} - \bm{X} \bm{\beta}) - \bm{\Sigma}_\pi^{-1} (\bm{\beta} - \bm{\mu}_\pi) \\
-	  -n/2 -\alpha_\pi + \frac{1}{\exp\{\theta\}} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right)
-	\end{bmatrix}
+    \mathcal{L}(\bm{\beta}, \theta | \bm{y}) &= \log(p(\bm{y} | \bm{\beta}, \theta) p(\bm{\beta}) p(\theta)) \\
+      &= (-n/2 -\alpha_\pi) \theta - \frac{1}{\exp\{\theta\}} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right) \\
+      &\quad - \frac{1}{2} (\bm{\beta} - \bm{\mu}_\pi)^\top \bm{\Sigma}_\pi^{-1} (\bm{\beta} - \bm{\mu}_\pi) \\
+    \nabla \mathcal{L}(\bm{\beta}, \theta | \bm{y}) &= \begin{bmatrix}
+      \frac{1}{\exp\{\theta\}} \bm{X}^\top (\bm{y} - \bm{X} \bm{\beta}) - \bm{\Sigma}_\pi^{-1} (\bm{\beta} - \bm{\mu}_\pi) \\
+      -n/2 -\alpha_\pi + \frac{1}{\exp\{\theta\}} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right)
+    \end{bmatrix}

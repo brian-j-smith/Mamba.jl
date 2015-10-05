@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-oxford = (Symbol=> Any)[
+oxford = Dict{Symbol,Any}(
   :r1 =>
     [3, 5, 2, 7, 7, 2, 5, 3, 5, 11, 6, 6, 11, 4, 4, 2, 8, 8, 6, 5, 15, 4, 9, 9,
      4, 12, 8, 8, 6, 8, 12, 4, 7, 16, 12, 9, 4, 7, 8, 11, 5, 12, 8, 17, 9, 3, 2,
@@ -39,7 +39,7 @@ oxford = (Symbol=> Any)[
      2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6,
      6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 10],
   :K => 120
-]
+)
 oxford[:K] = length(oxford[:r1])
 
 
@@ -51,7 +51,7 @@ model = Model(
     @modelexpr(mu, n0, K,
       begin
         p = invlogit(mu)
-        Distribution[Binomial(n0[i], p[i]) for i in 1:K]
+        UnivariateDistribution[Binomial(n0[i], p[i]) for i in 1:K]
       end
     ),
     false
@@ -59,7 +59,7 @@ model = Model(
 
   r1 = Stochastic(1,
     @modelexpr(mu, alpha, beta1, beta2, year, b, n1, K,
-      Distribution[
+      UnivariateDistribution[
         begin
           p = invlogit(mu[i] + alpha + beta1 * year[i] +
                        beta2 * (year[i]^2 - 22.0) + b[i])
@@ -104,10 +104,12 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:r0 => oxford[:r0], :r1 => oxford[:r1], :alpha => 0, :beta1 => 0,
-   :beta2 => 0, :s2 => 1, :b => zeros(oxford[:K]), :mu => zeros(oxford[:K])],
-  [:r0 => oxford[:r0], :r1 => oxford[:r1], :alpha => 1, :beta1 => 1,
-   :beta2 => 1, :s2 => 10, :b => zeros(oxford[:K]), :mu => zeros(oxford[:K])]
+  Dict(:r0 => oxford[:r0], :r1 => oxford[:r1], :alpha => 0, :beta1 => 0,
+       :beta2 => 0, :s2 => 1, :b => zeros(oxford[:K]),
+       :mu => zeros(oxford[:K])),
+  Dict(:r0 => oxford[:r0], :r1 => oxford[:r1], :alpha => 1, :beta1 => 1,
+       :beta2 => 1, :s2 => 10, :b => zeros(oxford[:K]),
+       :mu => zeros(oxford[:K]))
 ]
 
 

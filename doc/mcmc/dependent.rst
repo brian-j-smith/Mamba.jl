@@ -1,123 +1,129 @@
-.. index:: Dependent
+.. index:: Dependent Types
+.. index:: Dependent Types; AbstractDependent
 
 .. _section-Dependent:
 
 Dependent
 ---------
 
-``Dependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` type with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Variate`` type objects.
+``AbstractDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` types with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Float64`` or ``Array{Float64,N}`` type objects.
 
-Since parameter values in the ``Dependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``Dependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``Dependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
+Since parameter values in the ``AbstractDependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``AbstractDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``AbstractDependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
 
 Declaration
 ^^^^^^^^^^^
 
-``abstract Dependent{T} <: Variate{T}``
+``typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}``
 
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
+* ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.  Generally, this will be the number of unique elements in the node.  In most cases, ``nlink`` will be equal to ``length(value)``.  However, for some structures, like stochastic covariance matrices, ``nlink`` may be smaller.
+* ``linklength::Int`` : number of elements returned by the ``link`` method defined on the type.  Generally, this will be the number of unique elements in the node.  In most cases, ``linklength`` will be equal to ``length(value)``.  However, for some structures, like stochastic covariance matrices, ``linklength`` may be smaller.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the state of the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
-Methods
+Display
 ^^^^^^^
 
-.. function:: invlink(d::Dependent, x, transform::Bool=true)
+.. function:: show(d::AbstractDependent)
 
-	Apply a node-specific inverse-link transformation.  In this method, the link transformation is defined to be the identity function.  This method may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
-	
-	**Arguments**
-	
-		* ``d`` : a node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the inverse-link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the inverse-link-transformed version of ``x``.
+    Write a text representation of nodal values and attributes to the current output stream.
 
-.. function:: link(d::Dependent, x, transform::Bool=true)
+.. function:: showall(d::AbstractDependent)
 
-	Apply a node-specific link transformation.  In this method, the link transformation is defined to be the identity function.  This method function may be redefined for subtypes of ``Dependent`` to implement different link transformations. 
-	
-	**Arguments**
-	
-		* ``d`` : a node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the link-transformed version of ``x``.
+    Write a verbose text representation of nodal values and attributes to the current output stream.
 
-.. function:: logpdf(d::Dependent, transform::Bool=false)
+Initialization
+^^^^^^^^^^^^^^
 
-	Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``Dependent`` that have distributional specifications.
-	
-	**Arguments**
-	
-		* ``d`` : a node containing values at which to compute the log-density.
-		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
-		
-	**Value**
-	
-		The resulting numeric value of the log-density.
+.. function:: setmonitor!(d::AbstractDependent, monitor::Bool)
+              setmonitor!(d::AbstractDependent, monitor::Vector{Int})
 
-.. function:: setmonitor!(d::Dependent, monitor::Bool)
-              setmonitor!(d::Dependent, monitor::Vector{Int})
+    Specify node elements to be included in monitored MCMC sampler output.
 
-	Specify node elements to be included in monitored MCMC sampler output.
-	
-	**Arguments**
-	
-		* ``d`` : a node whose elements contain sampled MCMC values.
-		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-		
-	**Value**
-	
-		Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
+    **Arguments**
 
-.. function:: show(d::Dependent)
+        * ``d`` : a node whose elements contain sampled MCMC values.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
-	Write a text representation of nodal values and attributes to the current output stream.  
+    **Value**
 
-.. function:: showall(d::Dependent)
+        Returns ``d`` with its ``monitor`` field updated to reflect the specified monitoring.
 
-	Write a verbose text representation of nodal values and attributes to the current output stream.  
+Node Operations
+^^^^^^^^^^^^^^^
+
+.. function:: logpdf(d::AbstractDependent, transform::Bool=false)
+              logpdf(d::AbstractDependent, x, transform::Bool=false)
+
+    Evaluate the log-density function for a node.  In this method, no density function is assumed for the node, and a constant value of 0 is returned.  This method function may be redefined for subtypes of ``AbstractDependent`` that have distributional specifications.
+
+    **Arguments**
+
+        * ``d`` : a node for which to evaluate the log-density.
+        * ``x`` : value, of the same type and shape as the node value, at which to perform the evaluation.  If not specified, the node value is used.
+        * ``transform`` : whether the evaluation is on the link-transformed scale.
+
+    **Value**
+
+        The resulting numeric value of the log-density.
+
+.. function:: unlist(d::AbstractDependent, transform::Bool=false)
+              unlist(d::AbstractDependent, x::Real, transform::Bool=false)
+              unlist(d::AbstractDependent, x::AbstractArray, transform::Bool=false)
+              relist(d::AbstractDependent, x::AbstractArray, transform::Bool=false)
+
+    Extract (unlist) node values to a vector, or re-assemble (relist) values to be put into a node.  In this generic method, all values are listed.  The methods are used internally for the extraction of unique stochastic node values to sample, and can be redefined to implement different behaviors for ``AbstractDependent`` subtypes.
+
+    **Arguments**
+
+        * ``d`` : a node for which to unlist or relist values.
+        * ``x`` : values to be listed.  If not specified, the node values are used.
+        * ``transform`` : whether to apply a link or inverse-link transformation to the values.  In this generic method, transformations are defined to be the identity function.
+
+    **Value**
+
+        Returns an object of unmodified ``x`` values.
 
 
-.. index:: Logical
+.. index:: Logical Types
+.. index:: Logical Types; AbstractLogical
+.. index:: Logical Types; ScalarLogical
+.. index:: Logical Types; ArrayLogical
 
 .. _section-Logical:
 
 Logical
 -------
 
-Type ``Logical`` inherits the fields and method functions from the ``Dependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
+The ``Logical`` types inherit fields and method functions from the ``AbstractDependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
-	function(model::Mamba.Model)
+    function(model::Mamba.Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
 
-Declaration
-^^^^^^^^^^^
+Declarations
+^^^^^^^^^^^^
 
-``type Logical{T} <: Dependent{T}``
+.. code-block:: julia
+
+    type ScalarLogical <: ScalarVariate
+    type ArrayLogical{N} <: ArrayVariate{N}
+    typealias AbstractLogical Union{ScalarLogical, ArrayLogical}
+
 
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
+* ``value`` : values of type ``Float64`` for ``ScalarLogical`` nodes and ``Array{Float64}`` for ``ArrayLogical`` nodes that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.
+* ``linklength::Int`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating values stored in ``value``.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
@@ -126,200 +132,209 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Logical(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-              Logical(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+.. function:: Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+              Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
 
-	Construct a ``Logical`` object that defines a logical model node.
-	
-	**Arguments**
-	
-		* ``d`` : number of dimensions for array nodes.
-		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
-		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-		
-	**Value**
-	
-		Returns a ``Logical{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Logical{VariateType}`` if not.
-		
-	**Example**
-	
-		See the :ref:`section-Line-Specification` section of the tutorial.
+    Construct a ``Logical`` object that defines a logical model node.
 
-Methods
-^^^^^^^
+    **Arguments**
 
-.. function:: setinits!(l::Logical, m::Model, ::Any=nothing)
+        * ``d`` : number of dimensions for array nodes.
+        * ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
-	Set initial values for a logical node.
-	
-	**Arguments**
-	
-		* ``l`` : a logical node to which to assign initial values.
-		* ``m`` : a model that contains the node.
-		
-	**Value**
-	
-		Returns the result of a call to ``update!(l, m)``.
+    **Value**
 
-.. function:: update!(l::Logical, m::Model)
+        Returns an ``ArrayLogical`` if the dimension argument ``d`` is specified, and a ``ScalarLogical`` if not.
 
-	Update the values of a logical node according to its relationship with others in a model.
-	
-	**Arguments**
-	
-		* ``l`` : a logical node to update.
-		* ``m`` : a model that contains the node.
-		
-	**Value**
-	
-		Returns the node with its values updated.
+    **Example**
+
+        See the :ref:`section-Line-Specification` section of the tutorial.
+
+Initialization
+^^^^^^^^^^^^^^
+
+.. function:: setinits!(l::AbstractLogical, m::Model, ::Any=nothing)
+
+    Set initial values for a logical node.
+
+    **Arguments**
+
+        * ``l`` : a logical node to which to assign initial values.
+        * ``m`` : a model that contains the node.
+
+    **Value**
+
+        Returns the result of a call to ``update!(l, m)``.
+
+Node Operations
+^^^^^^^^^^^^^^^
+
+.. function:: update!(l::AbstractLogical, m::Model)
+
+    Update the values of a logical node according to its relationship with others in a model.
+
+    **Arguments**
+
+        * ``l`` : a logical node to update.
+        * ``m`` : a model that contains the node.
+
+    **Value**
+
+        Returns the node with its values updated.
 
 
-.. index:: Stochastic
+.. index:: StochasticTypes
+.. index:: StochasticTypes; AbstractStochastic
+.. index:: StochasticTypes; ScalarStochastic
+.. index:: StochasticTypes; ArrayStochastic
 
 .. _section-Stochastic:
 
 Stochastic
 ----------
 
-Type ``Stochastic`` inherits the fields and method functions from the ``Dependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
+The ``Stochastic`` types inherit fields and method functions from the ``AbstractDependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
 
 .. code-block:: julia
 
-	function(model::Mamba.Model)
+    function(model::Mamba.Model)
 
 where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single :ref:`section-Distributions` object for all node elements or a structure of the same type as the node with element-specific :ref:`section-Distributions` objects.
 
-Declaration
-^^^^^^^^^^^
+Declarations
+^^^^^^^^^^^^
 
-``type Stochastic{T} <: Dependent{T}``
+.. code-block:: julia
+
+    type ScalarStochastic <: ScalarVariate
+    type ArrayStochastic{N} <: ArrayVariate{N}
+    typealias AbstractStochastic Union{ScalarStochastic, ArrayStochastic}
+
 
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar or array of ``VariateType`` values that represent samples from a target distribution.
+* ``value`` : values of type ``Float64`` for ``ScalarStochastic`` nodes and ``Array{Float64}`` for ``ArrayStochastic`` nodes that represent samples from a target distribution.
 * ``symbol::Symbol`` : an identifying symbol for the node.
-* ``nlink::Integer`` : number of elements returned by the ``link`` method defined on the type.
+* ``linklength::Int`` : number of elements returned by the ``link`` method defined on the type.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
 * ``eval::Function`` : a function for updating the ``distr`` field for the node.
 * ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
 * ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
-* ``distr::DistributionStruct`` : the distributional specification for the node.
+* ``distr`` : a distributional specification of type ``UnivariateDistribution`` for ``ScalarStochastic`` nodes and ``DistributionStruct`` for ``ArrayStochastic`` nodes.
 
-Aliases
-^^^^^^^
+Distribution Structures
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``DistributionStruct`` alias defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution``, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
 
 .. code-block:: julia
 
-	typealias DistributionStruct Union(Distribution, Array{Distribution})
+    typealias DistributionStruct Union{Distribution,
+                                       Array{UnivariateDistribution},
+                                       Array{MultivariateDistribution}}
 
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Stochastic(expr::Expr, monitor::Union(Bool,Vector{Int})=true)
-              Stochastic(d::Integer, expr::Expr, monitor::Union(Bool,Vector{Int})=true)
+.. function:: Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+              Stochastic(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
 
-	Construct a ``Stochastic`` object that defines a stochastic model node.
-	
-	**Arguments**
-	
-		* ``d`` : number of dimensions for array nodes.
-		* ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
-		* ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
-		
-	**Value**
-	
-		Returns a ``Stochastic{Array{VariateType,d}}`` if the dimension argument ``d`` is specified, and a ``Stochastic{VariateType}`` if not.
+    Construct a ``Stochastic`` object that defines a stochastic model node.
 
-	**Example**
-	
-		See the :ref:`section-Line-Specification` section of the tutorial.
+    **Arguments**
 
-Methods
-^^^^^^^
+        * ``d`` : number of dimensions for array nodes.
+        * ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
+        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
-.. function:: insupport(s::Stochastic)
+    **Value**
 
-	Check whether stochastic node values are within the support of its distribution.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node on which to perform the check.
-		
-	**Value**
-	
-		Returns ``true`` if all values are within the support, and ``false`` otherwise.
+        Returns an ``ArrayStochastic`` if the dimension argument ``d`` is specified, and a ``ScalarStochastic`` if not.
 
-.. function:: invlink(s::Stochastic, x, transform::Bool=true)
+    **Example**
 
-	Apply an inverse-link transformation to map transformed values back to the original distributional scale of a stochastic node.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the inverse-link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the inverse-link-transformed version of ``x``.
+        See the :ref:`section-Line-Specification` section of the tutorial.
 
-.. function:: link(s::Stochastic, x, transform::Bool=true)
-
-	Apply a link transformation to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
-	
-		* Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
-		* Lower bounded: shifted to zero and log-transformed.
-		* Upper bounded: scaled by -1, shifted to zero, and log-transformed.
-		* Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return its log-transformed diagonal elements prepended to the remaining upper-triangular part as a vector of length :math:`n (n + 1) / 2`, where :math:`n` is the matrix dimension.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node on which a ``link()`` transformation method is defined.
-		* ``x`` : an object to which to apply the link transformation.
-		* ``transform`` : whether to transform ``x`` or assume an identity link.
-	
-	**Value**
-	
-		Returns the link-transformed version of ``x``.
-
-.. function:: logpdf(s::MCMStochastic, transform::Bool=false)
-
-	Evaluate the log-density function for a stochastic node.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node containing values at which to compute the log-density.
-		* ``transform`` : whether to evaluate the log-density on the link-transformed scale.
-		
-	**Value**
-	
-		The resulting numeric value of the log-density.
+Initialization
+^^^^^^^^^^^^^^
 
 .. function:: setinits!(s::Stochastic, m::Model, x=nothing)
 
-	Set initial values for a stochastic node.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node to which to assign initial values.
-		* ``m`` : a model that contains the node.
-		* ``x`` : values to assign to the node.
-		
-	**Value**
-	
-		Returns the node with its assigned initial values.
+    Set initial values for a stochastic node.
 
-.. function:: update!(s::Stochastic, m::Model)
+    **Arguments**
 
-	Update the values of a stochastic node according to its relationship with others in a model.
-	
-	**Arguments**
-	
-		* ``s`` : a stochastic node to update.
-		* ``m`` : a model that contains the node.
-		
-	**Value**
-	
-		Returns the node with its values updated.
+        * ``s`` : a stochastic node to which to assign initial values.
+        * ``m`` : a model that contains the node.
+        * ``x`` : values to assign to the node.
+
+    **Value**
+
+        Returns the node with its assigned initial values.
+
+Node Operations
+^^^^^^^^^^^^^^^
+
+.. function:: logpdf(s::AbstractStochastic, transform::Bool=false)
+              logpdf(s::AbstractStochastic, x, transform::Bool=false)
+
+    Evaluate the log-density function for a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node for which to evaluate the log-density.
+        * ``x`` : value, of the same type and shape as the node value, at which to perform the evaluation.  If not specified, the node value is used.
+        * ``transform`` : whether the evaluation is on the link-transformed scale.
+
+    **Value**
+
+        The resulting numeric value of the log-density.
+
+.. function:: rand(s::AbstractStochastic)
+
+    Draw a sample from the distributional specification on a stochastic node.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node from which to generate a random sample.
+
+    **Value**
+
+        Returns the sampled value(s).
+
+.. function:: unlist(s::AbstractStochastic, transform::Bool=false)
+              unlist(s::AbstractStochastic, x::Real, transform::Bool=false)
+              unlist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
+              relist(s::AbstractStochastic, x::AbstractArray, transform::Bool=false)
+
+    Extract (unlist) stochastic node values to a vector, or re-assemble (relist) values into a format that can be put into a node.  These methods are used internally to extract the unique and sampled values of stochastic nodes.  They are used, for instance, to extract only the unique, upper-triangular portions of (symmetric) covariance matrices and only the sampled values of ``Array{MultivariateDistribution}`` specifications whose distributions may be of different lengths.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node for which to unlist or relist values.
+        * ``x`` : values to be listed.  If not specified, the node values are used.
+        * ``transform`` : whether to apply a link transformation, or its inverse, to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
+
+            * Lower and upper bounded: scaled and shifted to the unit interval and logit-transformed.
+            * Lower bounded: shifted to zero and log-transformed.
+            * Upper bounded: scaled by -1, shifted to zero, and log-transformed.
+            * Positive-definite matrix: compute the (upper-triangular) Cholesky decomposition, and return it with the diagonal elements log-transformed.
+
+    **Value**
+
+        Returns a vector of extracted ``x`` values or an object of re-assembled values that can be put into the specified node.
+
+.. function:: update!(s::AbstractStochastic, m::Model)
+
+    Update the values of a stochastic node according to its relationship with others in a model.
+
+    **Arguments**
+
+        * ``s`` : a stochastic node to update.
+        * ``m`` : a model that contains the node.
+
+    **Value**
+
+        Returns the node with its values updated.

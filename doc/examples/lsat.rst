@@ -5,7 +5,7 @@
 LSAT: Item Response
 -------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and Boch and Lieberman :cite:`boch:1970:FRM` concerning a 5-item multiple choice test (32 possible response patters) given to 1000 students. 
+An example from OpenBUGS :cite:`openbugs:2014:ex` and Boch and Lieberman :cite:`boch:1970:FRM` concerning a 5-item multiple choice test (32 possible response patters) given to 1000 students.
 
 Model
 ^^^^^

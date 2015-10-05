@@ -5,7 +5,7 @@
 Epilepsy: Repeated Measures on Poisson Counts
 ---------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1`, Thall and Vail :cite:`thall:1990:SCM` Breslow and Clayton :cite:`breslow:1993:AIG` concerning the effects of treatment, baseline seizure counts, and age on follow-up seizure counts at four visits in 59 patients.
+An example from OpenBUGS :cite:`openbugs:2014:ex`, Thall and Vail :cite:`thall:1990:SCM` Breslow and Clayton :cite:`breslow:1993:AIG` concerning the effects of treatment, baseline seizure counts, and age on follow-up seizure counts at four visits in 59 patients.
 
 Model
 ^^^^^

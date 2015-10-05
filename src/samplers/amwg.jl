@@ -1,27 +1,27 @@
 #################### Adaptive Metropolis within Gibbs ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type AMWGTune
   adapt::Bool
-  accept::Vector{Integer}
-  batchsize::Integer
-  m::Integer
+  accept::Vector{Int}
+  batchsize::Int
+  m::Int
   sigma::Vector{Float64}
   target::Real
 end
 
 type AMWGVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::AMWGTune
 
-  AMWGVariate(x::Vector{VariateType}, tune::AMWGTune) = new(x, tune)
+  AMWGVariate(x::Vector{Float64}, tune::AMWGTune) = new(x, tune)
 end
 
-function AMWGVariate(x::Vector{VariateType}, tune=nothing)
+function AMWGVariate(x::Vector{Float64}, tune=nothing)
   tune = AMWGTune(
     false,
-    zeros(Integer, length(x)),
+    zeros(Int, length(x)),
     50,
     0,
     Array(Float64, 0),
@@ -34,25 +34,26 @@ end
 #################### Sampler Constructor ####################
 
 function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
-           adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
+                       adapt::Symbol=:all, batchsize::Integer=50,
+                       target::Real=0.44)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = AMWGVariate(x, tunepar["sampler"])
+      f = x -> logpdf!(model, x, block, true)
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      f = x -> logpdf!(model, x, block, true)
       amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
-    ["sigma" => Float64[sigma...], "adapt" => adapt, "batchsize" => batchsize,
-     "target" => target, "sampler" => nothing]
+    Dict("sigma" => Float64[sigma...], "adapt" => adapt,
+         "batchsize" => batchsize, "target" => target, "sampler" => nothing)
   )
 end
 
@@ -60,7 +61,7 @@ end
 #################### Sampling Functions ####################
 
 function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
-           adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
+               adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
   tune = v.tune
 
   if adapt

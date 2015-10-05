@@ -1,5 +1,7 @@
 .. index:: Sampling Functions; Adaptive Mixture Metropolis
 
+.. _section-AMM:
+
 Adaptive Mixture Metropolis (AMM)
 ---------------------------------
 
@@ -9,31 +11,31 @@ Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
 .. function:: amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function; \
-                adapt::Bool=true)
+                   adapt::Bool=true)
 
-	Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.  Parameters are assumed to be continuous and unconstrained.
-	
-	**Arguments**
-	
-		* ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
-		* ``SigmaF`` : Cholesky factorization of the covariance matrix for the non-adaptive multivariate normal proposal distribution.
-		* ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
-		* ``adapt`` : whether to adaptively update the proposal distribution.
-		
-	**Value**
-	
-		Returns ``v`` updated with simulated values and associated tuning parameters.
-		
-	.. _example-amm:
-	
-	**Example**
-	
-		The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
-		
-		.. literalinclude:: amm.jl
-			:language: julia
-					
-.. index:: AMMVariate
+    Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.  Parameters are assumed to be continuous and unconstrained.
+
+    **Arguments**
+
+        * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
+        * ``SigmaF`` : Cholesky factorization of the covariance matrix for the non-adaptive multivariate normal proposal distribution.
+        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``adapt`` : whether to adaptively update the proposal distribution.
+
+    **Value**
+
+        Returns ``v`` updated with simulated values and associated tuning parameters.
+
+    .. _example-amm:
+
+    **Example**
+
+        The following example samples parameters in a simple linear regression model.  Details of the model specification and posterior distribution can be found in the :ref:`section-Supplement`.
+
+        .. literalinclude:: amm.jl
+            :language: julia
+
+.. index:: Sampler Types; AMMVariate
 
 AMMVariate Type
 ^^^^^^^^^^^^^^^
@@ -46,28 +48,28 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{VariateType}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : vector of sampled values.
 * ``tune::AMMTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: AMMVariate(x::Vector{VariateType}, tune::AMMTune)
-              AMMVariate(x::Vector{VariateType}, tune=nothing)
+.. function:: AMMVariate(x::Vector{Float64}, tune::AMMTune)
+              AMMVariate(x::Vector{Float64}, tune=nothing)
 
-	Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
-	
-	**Arguments**
-	
-		* ``x`` : vector of sampled values.
-		* ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
-		
-	**Value**
-	
-		Returns a ``AMMVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
-		
+    Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
 
-.. index:: AMMTune
+    **Arguments**
+
+        * ``x`` : vector of sampled values.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+
+    **Value**
+
+        Returns a ``AMMVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+
+
+.. index:: Sampler Types; AMMTune
 
 AMMTune Type
 ^^^^^^^^^^^^
@@ -79,9 +81,10 @@ Declaration
 
 Fields
 ``````
-* ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned. 
+
+* ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
 * ``beta::Real`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaF``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.  Fixed at ``beta = 0.05``.
-* ``m::Integer`` : number of adaptive update iterations that have been performed.
+* ``m::Int`` : number of adaptive update iterations that have been performed.
 * ``Mv::Vector{Float64}`` : running mean of draws ``v`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
 * ``Mvv::Vector{Float64}`` : running mean of ``v * v'`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
 * ``scale::Real`` : fixed value ``2.38^2`` in the factor (``scale / length(v)``) by which the adaptively updated covariance matrix is scaled---adopted from Gelman, Roberts, and Gilks :cite:`gelman:1996:EMJ`.
@@ -92,23 +95,23 @@ Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
-				adapt::Symbol=:all)
+                  adapt::Symbol=:all)
 
-	Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-	
-	**Arguments**
-	
-		* ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
-		* ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
-		* ``adapt`` : type of adaptation phase.  Options are
-			* ``:all`` : adapt proposal during all iterations.
-			* ``:burnin`` : adapt proposal during burn-in iterations.
-			* ``:none`` : no adaptation (multivariate Metropolis sampling with fixed proposal).
+    Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
-	**Value**
-	
-		Returns a ``Sampler`` type object.
+    **Arguments**
 
-	**Example**
-	
-		See the :ref:`section-Examples` section.
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
+        * ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``adapt`` : type of adaptation phase.  Options are
+            * ``:all`` : adapt proposal during all iterations.
+            * ``:burnin`` : adapt proposal during burn-in iterations.
+            * ``:none`` : no adaptation (multivariate Metropolis sampling with fixed proposal).
+
+    **Value**
+
+        Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`section-Examples` section.

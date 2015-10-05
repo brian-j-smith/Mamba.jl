@@ -1,9 +1,11 @@
-#################### ChainProgress Types ####################
+#################### ChainProgress Meter ####################
+
+#################### Types and Constructors ####################
 
 type ChainProgressFrame
   verbose::Bool
 
-  function ChainProgressFrame(title::String, verbose::Bool)
+  function ChainProgressFrame(title::AbstractString, verbose::Bool)
     verbose && print(title * "...\n\n")
     new(verbose)
   end
@@ -11,20 +13,28 @@ end
 
 type ChainProgress
   frame::ChainProgressFrame
-  chain::Integer
-  iters::Integer
-  counter::Integer
-  runin::Integer
+  chain::Int
+  iters::Int
+  counter::Int
+  runin::Int
   threshold::Float64
   t0::Float64
 
   function ChainProgress(frame::ChainProgressFrame, chain::Integer, iters::Integer)
-    new(frame, chain, iters, 0, max(1, min(10, iround(0.01 * iters))), 0.0, time())
+    new(frame, chain, iters, 0, max(1, min(10, round(Int, 0.01 * iters))),
+        0.0, time())
   end
 end
 
 
-#################### ChainProgress Methods ####################
+#################### Base Methods ####################
+
+function reset!(p::ChainProgress)
+  p.counter = 0
+  p.threshold = 0.0
+  p.t0 = time()
+  p
+end
 
 function reset!(p::ChainProgress)
   p.counter = 0
@@ -45,11 +55,12 @@ end
 function Base.print(io::IO, p::ChainProgress)
   elapsed = time() - p.t0
   remaining = elapsed * (p.iters / p.counter - 1.0)
-  str = @sprintf("Chain %u: %3u%% [%s of %s remaining]",
+  str = @sprintf("Chain %u: %3u%% [%s of %s remaining]%s",
                  p.chain,
                  100.0 * p.counter / p.iters,
                  strfsec(remaining),
-                 strfsec(elapsed + remaining))
+                 strfsec(elapsed + remaining),
+                 "\n"^(p.counter == p.iters))
   println(io, str)
 end
 

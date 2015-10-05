@@ -8,10 +8,10 @@
 using Mamba
 
 ## Data
-data = [
+data = Dict(
   :x => [1, 2, 3, 4, 5],
   :y => [1, 3, 3, 3, 5]
-]
+)
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant and Gradient Vector
 fx = function(x)
@@ -39,7 +39,7 @@ epsilon = nutsepsilon(theta, fx)
 for i in 1:n
   nuts!(theta, epsilon, fx, adapt = (i <= burnin))
   if i > burnin
-    sim[i,:,1] = [theta[1:2], exp(theta[3])]
+    sim[i,:,1] = [theta[1:2]; exp(theta[3])]
   end
 end
 describe(sim)

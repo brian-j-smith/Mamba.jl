@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-stacks = (Symbol => Any)[
+stacks = Dict{Symbol,Any}(
   :y => [42, 37, 37, 28, 18, 18, 19, 20, 15, 14, 14, 13, 11, 12, 8, 7, 8, 8, 9,
          15, 15],
   :x =>
@@ -26,7 +26,7 @@ stacks = (Symbol => Any)[
      50 20 80
      56 20 82
      70 20 91]
-]
+)
 stacks[:N] = size(stacks[:x], 1)
 stacks[:p] = size(stacks[:x], 2)
 
@@ -45,7 +45,7 @@ model = Model(
   y = Stochastic(1,
     @modelexpr(mu, s2, N,
       begin
-        Distribution[Laplace(mu[i], s2) for i in 1:N]
+        UnivariateDistribution[Laplace(mu[i], s2) for i in 1:N]
       end
     ),
     false
@@ -103,8 +103,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => stacks[:y], :beta0 => 10, :beta => [0, 0, 0], :s2 => 10],
-  [:y => stacks[:y], :beta0 => 1, :beta => [1, 1, 1], :s2 => 1]
+  Dict(:y => stacks[:y], :beta0 => 10, :beta => [0, 0, 0], :s2 => 10),
+  Dict(:y => stacks[:y], :beta0 => 1, :beta => [1, 1, 1], :s2 => 1)
 ]
 
 

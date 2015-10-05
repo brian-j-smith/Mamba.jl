@@ -1,10 +1,10 @@
 using Mamba
 
 ## Data
-surgical = (Symbol => Any)[
+surgical = Dict{Symbol,Any}(
   :r => [0, 18, 8, 46, 8, 13, 9, 31, 14, 8, 29, 24],
   :n => [47, 148, 119, 810, 211, 196, 148, 215, 207, 97, 256, 360]
-]
+)
 surgical[:N] = length(surgical[:r])
 
 
@@ -14,7 +14,7 @@ model = Model(
 
   r = Stochastic(1,
     @modelexpr(n, p, N,
-      Distribution[Binomial(n[i], p[i]) for i in 1:N]
+      UnivariateDistribution[Binomial(n[i], p[i]) for i in 1:N]
     ),
     false
   ),
@@ -50,8 +50,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:r => surgical[:r], :b => fill(0.1, surgical[:N]), :s2 => 1, :mu => 0],
-  [:r => surgical[:r], :b => fill(0.5, surgical[:N]), :s2 => 10, :mu => 1]
+  Dict(:r => surgical[:r], :b => fill(0.1, surgical[:N]), :s2 => 1, :mu => 0),
+  Dict(:r => surgical[:r], :b => fill(0.5, surgical[:N]), :s2 => 10, :mu => 1)
 ]
 
 

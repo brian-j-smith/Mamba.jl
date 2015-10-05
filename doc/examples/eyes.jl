@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-eyes = [
+eyes = Dict(
   :y =>
     [529.0, 530.0, 532.0, 533.1, 533.4, 533.6, 533.7, 534.1, 534.8, 535.3,
      535.4, 535.9, 536.1, 536.3, 536.4, 536.6, 537.0, 537.4, 537.5, 538.3,
@@ -10,7 +10,7 @@ eyes = [
      550.6, 551.2, 551.4, 551.5, 551.6, 552.8, 552.9, 553.2],
   :N => 48,
   :alpha => [1, 1]
-]
+)
 
 
 ## Model Specification
@@ -21,9 +21,9 @@ model = Model(
     @modelexpr(lambda, T, s2, N,
       begin
         sigma = sqrt(s2)
-        Distribution[
+        UnivariateDistribution[
           begin
-            mu = lambda[T[i]]
+            mu = lambda[Int(T[i])]
             Normal(mu, sigma)
           end
           for i in 1:N
@@ -34,22 +34,21 @@ model = Model(
   ),
 
   T = Stochastic(1,
-    @modelexpr(p, N,
-      begin
-        P = Float64[p, 1 - p]
-        Distribution[Categorical(P) for i in 1:N]
-      end
+    @modelexpr(P, N,
+      UnivariateDistribution[Categorical(P) for i in 1:N]
     ),
     false
   ),
 
-  p = Stochastic(
-    :(Uniform(0, 1))
+  P = Stochastic(1,
+    @modelexpr(alpha,
+      Dirichlet(alpha)
+    )
   ),
 
   lambda = Logical(1,
     @modelexpr(lambda0, theta,
-      Float64[lambda0, lambda0 + theta]
+      Float64[lambda0; lambda0 + theta]
     )
   ),
 
@@ -72,16 +71,18 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 535,
-   :theta => 5, :s2 => 10],
-  [:y => eyes[:y], :T => fill(1, eyes[:N]), :p => 0.5, :lambda0 => 550,
-   :theta => 1, :s2 => 1]
+  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :P => [0.5, 0.5],
+       :lambda0 => 535, :theta => 5, :s2 => 10),
+  Dict(:y => eyes[:y], :T => fill(1, eyes[:N]), :P => [0.5, 0.5],
+       :lambda0 => 550, :theta => 1, :s2 => 1)
 ]
 
 
 ## Sampling Scheme
 scheme = [DGS([:T]),
-          Slice([:p, :lambda0, :theta, :s2], fill(1.0, 4), :univar, transform=true)]
+          Slice([:lambda0, :theta], [5.0, 1.0]),
+          Slice([:s2], [2.0], transform=true),
+          SliceSimplex([:P], scale=0.75)]
 setsamplers!(model, scheme)
 
 

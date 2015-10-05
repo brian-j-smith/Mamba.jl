@@ -8,10 +8,10 @@
 using Mamba
 
 ## Data
-data = [
+data = Dict(
   :x => [1, 2, 3, 4, 5],
   :y => [1, 3, 3, 3, 5]
-]
+)
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant
 logf = function(x)
@@ -32,6 +32,6 @@ theta = AMWGVariate([0.0, 0.0, 0.0])
 sigma = ones(3)
 for i in 1:n
   amwg!(theta, sigma, logf, adapt = (i <= burnin))
-  sim[i,:,1] = [theta[1:2], exp(theta[3])]
+  sim[i,:,1] = [theta[1:2]; exp(theta[3])]
 end
 describe(sim)

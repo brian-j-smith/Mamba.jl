@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-kidney = (Symbol => Any)[
+kidney = Dict{Symbol,Any}(
   :t => reshape(
     [8, 16, 23, NaN, 22, 28, 447, 318, 30, 12, 24, 245, 7, 9, 511, 30, 53, 196,
      15, 154, 7, 333, 141, NaN, 96, 38, NaN, NaN, 536, NaN, 17, NaN, 185, 177,
@@ -27,7 +27,7 @@ kidney = (Symbol => Any)[
                1, 3, 3, 3, 3, 2, 3, 2, 2, 3, 3, 4, 2, 1, 1, 4, 4],
   :N => 38,
   :M => 2
-]
+)
 
 kidney[:Dx] = Int[
   kidney[:disease][i] == j ? 1 : 0
@@ -44,7 +44,7 @@ model = Model(
                tcensor, N, M,
       begin
         beta_dis = Dx * beta_Dx
-        Distribution[
+        UnivariateDistribution[
           begin
             mu = alpha + beta_age * age[i,j] + beta_sex * sex[i] + beta_dis[i] +
                  b[i]
@@ -96,10 +96,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:t => kidney[:t], :alpha => 0, :beta_age => 0, :beta_sex => 0,
-   :beta_Dx => zeros(3), :s2 => 3, :r => 1.0, :b => zeros(kidney[:N])],
-  [:t => kidney[:t], :alpha => 1, :beta_age => -1, :beta_sex => 1,
-   :beta_Dx => ones(3), :s2 => 1, :r => 1.5, :b => zeros(kidney[:N])]
+  Dict(:t => kidney[:t], :alpha => 0, :beta_age => 0, :beta_sex => 0,
+       :beta_Dx => zeros(3), :s2 => 3, :r => 1.0, :b => zeros(kidney[:N])),
+  Dict(:t => kidney[:t], :alpha => 1, :beta_age => -1, :beta_sex => 1,
+       :beta_Dx => ones(3), :s2 => 1, :r => 1.5, :b => zeros(kidney[:N]))
 ]
 
 

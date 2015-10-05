@@ -1,3 +1,5 @@
+.. include:: <isonum.txt>
+
 Introduction
 ============
 
@@ -6,7 +8,7 @@ MCMC Software
 
 Markov chain Monte Carlo (MCMC) methods are a class of algorithms for simulating autocorrelated draws from probability distributions :cite:`brooks:2011:HMC,gamerman:1997:MCM,gilks:1996:MCP,robert:2004:MCS`.  They are widely used to obtain empirical estimates for and make inference on multidimensional distributions that often arise in Bayesian statistical modelling, computational physics, and computational biology.  Because MCMC provides estimates of *distributions* of interest, and is not limited to *point* estimates and asymptotic standard errors, it facilitates wide ranges of inferences and provides for more realistic prediction errors.  An MCMC algorithm can be devised for any probability model.  Implementations of algorithms are computational in nature, with the resources needed to execute algorithms directly related to the dimensionality of their associated problems.  Rapid increases in computing power and emergence of MCMC software have enabled models of increasing complexity to be fit.  For all its advantages, MCMC is regarded as one of the most important developments and powerful tools in modern statistical computing.
 
-Several software programs provide Bayesian modelling via MCMC.  Programs range from those designed for general model fitting to those for specific models.  *WinBUGS*, its open-source incarnation *OpenBUGS*, and the 'BUGS' clone Just Another Gibbs Sampler (*JAGS*) are among the most widely used programs for general model fitting :cite:`lunn:2009:BUGS,plummer:2003:JAGS`.  These three provide similar programming syntaxes with which users can specify statistical models by simply stating relationships between data, parameters, and statistical distributions.  Once a model is specified, the programs automatically formulate an MCMC sampling scheme to simulate parameter values from their posterior distribution.  All aforementioned tasks can be accomplished with minimal programming and without specific knowledge of MCMC methodology.  Users who are adept at both and so inclined can write software modules to add new distributions and samplers to *OpenBUGS* and *JAGS* :cite:`thomas:2014:ODM,wabersich:2013:EJT`.  *Stan* is a newer and similar-in-scope program worth noting for its accessible syntax and automatically tuned Hamiltonian Monte Carlo sampling scheme :cite:`stan-software:2014`.  *PyMC* is a Python-based program that allows all modelling tasks to be accomplished in its native language, and gives users more hands-on access to model and sampling scheme specifications :cite:`patil:2010:BSM`.  Programs like *GRIMS* :cite:`neal:2012:grims` and *LaplacesDemon* :cite:`statisticat:2014:LD` represent another class of programs that fit general models.  In their approaches, users work with the functional forms of (unnormalized) probability densities directly, rather a domain specific modelling language (DSL), for model specification.  Examples of programs for specific models can be found in the **R** catalogue of packages.  For instance, the *arm* package provides Bayesian inference for generalized linear, ordered logistic or probit, and mixed-effects regression models :cite:`gelman:2014:arm`, *MCMCpack* fits a wide range of models commonly encountered in the social and behavioral sciences :cite:`martin:2013:MCP`, and many others that are more focused on specific classes of models can be found in the "Bayesian Inference" task view on the Comprehensive **R** Archive Network :cite:`park:2014:cran`.
+Several software programs provide Bayesian modelling via MCMC.  Programs range from those designed for general model fitting to those for specific models.  *WinBUGS*, its open-source incarnation *OpenBUGS*, and the 'BUGS' clone Just Another Gibbs Sampler (*JAGS*) are among the most widely used programs for general model fitting :cite:`lunn:2009:BUGS,plummer:2003:JAGS`.  These three provide similar programming syntaxes with which users can specify statistical models by simply stating relationships between data, parameters, and statistical distributions.  Once a model is specified, the programs automatically formulate an MCMC sampling scheme to simulate parameter values from their posterior distribution.  All aforementioned tasks can be accomplished with minimal programming and without specific knowledge of MCMC methodology.  Users who are adept at both and so inclined can write software modules to add new distributions and samplers to *OpenBUGS* and *JAGS* :cite:`thomas:2014:ODM,wabersich:2013:EJT`.  General model fitting is also available with the MCMC procedure found in the SAS/STAT |reg| software :cite:`sas:2015:MCMC`.  *Stan* is a newer and similar-in-scope program worth noting for its accessible syntax and automatically tuned Hamiltonian Monte Carlo sampling scheme :cite:`stan-software:2014`.  *PyMC* is a Python-based program that allows all modelling tasks to be accomplished in its native language, and gives users more hands-on access to model and sampling scheme specifications :cite:`patil:2010:BSM`.  Programs like *GRIMS* :cite:`neal:2012:grims` and *LaplacesDemon* :cite:`statisticat:2014:LD` represent another class of programs that fit general models.  In their approaches, users work with the functional forms of (unnormalized) probability densities directly, rather a domain specific modelling language (DSL), for model specification.  Examples of programs for specific models can be found in the **R** catalogue of packages.  For instance, the *arm* package provides Bayesian inference for generalized linear, ordered logistic or probit, and mixed-effects regression models :cite:`gelman:2014:arm`, *MCMCpack* fits a wide range of models commonly encountered in the social and behavioral sciences :cite:`martin:2013:MCP`, and many others that are more focused on specific classes of models can be found in the "Bayesian Inference" task view on the Comprehensive **R** Archive Network :cite:`park:2014:cran`.
 
 The Mamba Package
 -----------------
@@ -18,24 +20,24 @@ The Mamba Package
 .. _figure-Gibbs:
 
 .. figure:: images/gibbs.png
-	:align: center
+    :align: center
 
-	*Mamba* Gibbs sampling scheme
-	
+    *Mamba* Gibbs sampling scheme
+
 A summary of the steps involved in using the package to perform MCMC simulation for a Bayesian model is given below.
 
-	#. Decide on names to use for **julia** objects that will represent the model data structures and parameters (:math:`\theta_1, \ldots, \theta_p`).  For instance, the :ref:`section-Line` section describes a linear regression example in which predictor :math:`\bm{x}` and response :math:`\bm{y}` are represented by objects ``x`` and ``y``, and regression parameters :math:`\beta_0`, :math:`\beta_1`, and :math:`\sigma^2` by objects ``b0``, ``b1``, and ``s2``.
+    #. Decide on names to use for **julia** objects that will represent the model data structures and parameters (:math:`\theta_1, \ldots, \theta_p`).  For instance, the :ref:`section-Line` section describes a linear regression example in which predictor :math:`\bm{x}` and response :math:`\bm{y}` are represented by objects ``x`` and ``y``, and regression parameters :math:`\beta_0`, :math:`\beta_1`, and :math:`\sigma^2` by objects ``b0``, ``b1``, and ``s2``.
 
-	#. Create a dictionary to store all structures considered to be fixed in the simulation; e.g., the ``line`` dictionary in the regression example.
+    #. Create a dictionary to store all structures considered to be fixed in the simulation; e.g., the ``line`` dictionary in the regression example.
 
-	#. Specify the model using the constructors described in the :ref:`section-MCMC-Types` section, to create the following:
- 
-		a. A ``Stochastic`` object for each model term that has a distributional specification.  This includes parameters and data, such as the regression parameters ``b0``, ``b1``, and ``s2`` that have prior distributions and ``y`` that has a likelihood specification.
+    #. Specify the model using the constructors described in the :ref:`section-MCMC-Types` section, to create the following:
 
-		b. A vector of ``Sampler`` objects containing supplied, user-defined, or external functions :math:`\{f_j\}_{j=1}^{B}` for sampling each parameter block :math:`\Theta_j`.
+        a. A ``Stochastic`` object for each model term that has a distributional specification.  This includes parameters and data, such as the regression parameters ``b0``, ``b1``, and ``s2`` that have prior distributions and ``y`` that has a likelihood specification.
 
-		c. A ``Model`` object from the resulting stochastic nodes and sampler vector.
+        b. A vector of ``Sampler`` objects containing supplied, user-defined, or external functions :math:`\{f_j\}_{j=1}^{B}` for sampling each parameter block :math:`\Theta_j`.
 
-	#. Simulate parameter values with the :func:`mcmc` function.
-	
-	#. Use the MCMC output to check convergence and perform posterior inference.
+        c. A ``Model`` object from the resulting stochastic nodes and sampler vector.
+
+    #. Simulate parameter values with the :func:`mcmc` function.
+
+    #. Use the MCMC output to check convergence and perform posterior inference.

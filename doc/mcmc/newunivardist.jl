@@ -50,7 +50,9 @@ model = Model(
     @modelexpr(mu, s2,
       begin
         sigma = sqrt(s2)
-        Distribution[NewUnivarDist(mu[i], sigma) for i in 1:length(mu)]
+        UnivariateDistribution[
+          NewUnivarDist(mu[i], sigma) for i in 1:length(mu)
+        ]
       end
     ),
     false
@@ -81,18 +83,21 @@ scheme = [NUTS([:beta]),
 setsamplers!(model, scheme)
 
 ## Data
-line = (Symbol => Any)[
+line = Dict{Symbol,Any}(
   :x => [1, 2, 3, 4, 5],
   :y => [1, 3, 3, 3, 5]
-]
+)
 line[:xmat] = [ones(5) line[:x]]
 
 ## Initial Values
-inits = Dict{Symbol,Any}[
-  [:y => line[:y],
-   :beta => rand(Normal(0, 1), 2),
-   :s2 => rand(Gamma(1, 1))]
-  for i in 1:3]
+inits = [
+  Dict{Symbol,Any}(
+    :y => line[:y],
+    :beta => rand(Normal(0, 1), 2),
+    :s2 => rand(Gamma(1, 1))
+  )
+  for i in 1:3
+]
 
 ## MCMC Simulation
 sim = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)

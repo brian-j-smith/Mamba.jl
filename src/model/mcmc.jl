@@ -1,88 +1,75 @@
 #################### MCMC Simulation Engine ####################
 
-
-function mcmc(c::Chains, iters::Integer; verbose::Bool=true)
-
-  ismodelbased(c) || error("mcmc restart requires Chains from a Model fit")
-
-  burnin = last(c.range) - c.model.iter
-  thin = step(c.range)
-  burnin + thin > 0 ||
+function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
+  last(mc.range) > mc.model.iter - step(mc.range) ||
     error("Chains have been subsetted to exclude the last iteration")
 
-  mm = deepcopy(c.model)
-  c2 = mcmc_master!(mm, mm.states[c.chains], iters, burnin, thin, size(c, 3),
-                    verbose)
-  c2.model.iter += c.model.iter
-  if c2.names != c.names
-    c2 = c2[:,c.names,:]
+  mm = deepcopy(mc.model)
+  mc2 = mcmc_master!(mm, mm.states[mc.chains], mm.iter + (1:iters),
+                     last(mc.range), step(mc.range), size(mc, 3), verbose)
+  mc2.model.iter += mc.model.iter
+  if mc2.names != mc.names
+    mc2 = mc2[:,mc.names,:]
   end
 
-  Chains(cat(1, c.value, c2.value), start=first(c.range), thin=thin,
-         names=c.names, model=c2.model)
+  ModelChains(vcat(mc, mc2), mc2.model)
 end
 
 
 function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
               iters::Integer; burnin::Integer=0, thin::Integer=1,
               chains::Integer=1, verbose::Bool=true)
-
   iters > burnin || error("iters <= burnin")
   length(inits) >= chains || error("fewer initial values than chains")
 
   mm = deepcopy(m)
   setinputs!(mm, inputs)
-  mm.states = Array(Vector{VariateType}, chains)
+  mm.states = Array(Vector{Float64}, chains)
   mm.burnin = burnin
 
-  mcmc_master!(mm, inits, iters, burnin, thin, chains, verbose)
+  mcmc_master!(mm, inits, 1:iters, burnin, thin, chains, verbose)
 end
 
 
-function mcmc_master!(m::Model, inits, iters::Integer, burnin::Integer,
+function mcmc_master!(m::Model, inits, window::UnitRange{Int}, burnin::Integer,
                       thin::Integer, chains::Integer, verbose::Bool)
-
+  n = length(window)
   frame = ChainProgressFrame(
-    "MCMC Simulation of $iters Iterations x $chains Chain" * "s"^(chains > 1),
+    "MCMC Simulation of $n Iterations x $chains Chain" * "s"^(chains > 1),
     verbose
   )
-
   lsts = [
-    Any[m, inits[k], iters, burnin, thin, k, ChainProgress(frame, k, iters)]
+    Any[m, inits[k], window, burnin, thin, k, ChainProgress(frame, k, n)]
     for k in 1:chains
   ]
   sims = pmap(mcmc_worker!, lsts)
+  model = sims[1].model
+  model.states = map(k -> sims[k].model.states[k], 1:chains)
 
-  m = sims[1].model
-  m.states = map(k -> sims[k].model.states[k], 1:chains)
-  Chains(cat(3, map(k -> sims[k].value, 1:chains)...),
-         start=burnin+thin, thin=thin, names=sims[1].names, model=m)
+  ModelChains(cat(3, sims...), model)
 end
 
 
 function mcmc_worker!(args::Vector)
-
-  model, inits, iters, burnin, thin, chain, meter = args
+  model, inits, window, burnin, thin, chain, meter = args
 
   setinits!(model, inits)
+  model.iter = first(window) - 1
   model.chain = chain
 
   pnames = names(model, true)
-  sim = Chains(iters, length(pnames), start=burnin+thin, thin=thin,
-               names=pnames, model=model)
+  sim = ModelChains(Chains(last(window), length(pnames), start=burnin+thin,
+                           thin=thin, names=pnames), model)
 
-  i = 1
   reset!(meter)
-  for t in 1:iters
+  for i in window
     simulate!(model)
-    if t > burnin && (t - burnin) % thin == 0
-      sim.value[i,:,1] = unlist(model, true)
-      i += 1
+    if i > burnin && (i - burnin) % thin == 0
+      sim[i,:,1] = unlist(model, true)
     end
     next!(meter)
   end
   model.states[chain] = unlist(model)
-  println()
 
   sim
 end

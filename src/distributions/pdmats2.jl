@@ -1,3 +1,5 @@
+#################### PBDiagMat Block-Diagonal Matrices ####################
+
 module PDMats2
 
   import Base: +, *, /, \
@@ -9,7 +11,7 @@ module PDMats2
   export PBDiagMat
 
 
-  #################### PBDiagMat ####################
+  #################### Types and Constructors ####################
 
   type PBDiagMat <: AbstractPDMat
     dim::Int
@@ -29,7 +31,7 @@ module PDMats2
   end
 
 
-  #################### PBDiagMat: Core Methods ####################
+  #################### Base Methods ####################
 
   +(a::PBDiagMat, b::Matrix{Float64}) = a.mat + b
   +(a::Matrix{Float64}, b::PBDiagMat) = b + a
@@ -54,7 +56,7 @@ module PDMats2
   logdet(a::PBDiagMat) = a.scale * mapreduce(logdet, +, a.chol)
 
 
-  #################### PBDiagMat: whiten and unwhiten ####################
+  #################### Whiten and Unwhiten ####################
 
   function whiten(a::PBDiagMat, x::DenseVecOrMat{Float64})
     au_inv = map(ac -> inv(ac[:U]), a.chol)
@@ -75,7 +77,7 @@ module PDMats2
   end
 
 
-  #################### PBDiagMat: Quadratic Forms ####################
+  #################### Quadratic Forms ####################
 
   function quad!(r::Array{Float64}, a::PBDiagMat, x::Matrix{Float64})
     n = size(x, 2)
@@ -102,15 +104,14 @@ module PDMats2
   invquad(a::PBDiagMat, x::Vector{Float64}) = sumabs2(whiten(a, x))
 
 
-  #################### PBDiagMat: Utility Functions ####################
+  #################### Auxiliary Functions ####################
 
   mapchol(f::Function, a::PBDiagMat) = PBDiagMat(map(f, a.chol), a.scale)
 
-  function spbdiagm{T<:Real}(v::Union(
-                               Vector{Matrix{T}},
-                               Vector{Triangular{T, Matrix{T}, :U, false}}),
+  function spbdiagm{T<:Real}(v::Union{Vector{Matrix{T}},
+                                      Vector{UpperTriangular{T, Matrix{T}}}},
                              n::Integer=1)
-    vn = [fill(v, n)...]
+    vn = [fill(v, n)...;]
 
     len = mapreduce(splength, +, vn)
     I = Array(Int, len)
@@ -139,10 +140,10 @@ module PDMats2
   splength(x::Matrix) = length(x)
   isnonzero(x::Matrix, i::Integer, j::Integer) = true
 
-  function splength{T}(x::Triangular{T, Matrix{T}})
+  function splength{T}(x::UpperTriangular{T, Matrix{T}})
     m, n = minmax(size(x)...)
-    int(m * (m + 1) / 2) + (n - m) * m
+    Int(m * (m + 1) / 2) + (n - m) * m
   end
-  isnonzero{T}(x::Triangular{T, Matrix{T}, :U}, i::Integer, j::Integer) = j >= i
+  isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) = j >= i
 
 end

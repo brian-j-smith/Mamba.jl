@@ -1,14 +1,14 @@
 using Mamba
 
 ## Data
-seeds = (Symbol => Any)[
+seeds = Dict{Symbol,Any}(
   :r => [10, 23, 23, 26, 17, 5, 53, 55, 32, 46, 10, 8, 10, 8, 23, 0, 3, 22, 15,
          32, 3],
   :n => [39, 62, 81, 51, 39, 6, 74, 72, 51, 79, 13, 16, 30, 28, 45, 4, 12, 41,
          30, 51, 7],
   :x1 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   :x2 => [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
-]
+)
 seeds[:N] = length(seeds[:r])
 
 
@@ -18,7 +18,7 @@ model = Model(
 
   r = Stochastic(1,
     @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,
-      Distribution[
+      UnivariateDistribution[
         begin
           p = invlogit(alpha0 + alpha1 * x1[i] + alpha2 * x2[i] +
                        alpha12 * x1[i] * x2[i] + b[i])
@@ -62,10 +62,10 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:r => seeds[:r], :alpha0 => 0, :alpha1 => 0, :alpha2 => 0,
-   :alpha12 => 0, :s2 => 0.01, :b => zeros(seeds[:N])],
-  [:r => seeds[:r], :alpha0 => 0, :alpha1 => 0, :alpha2 => 0,
-   :alpha12 => 0, :s2 => 1, :b => zeros(seeds[:N])]
+  Dict(:r => seeds[:r], :alpha0 => 0, :alpha1 => 0, :alpha2 => 0,
+       :alpha12 => 0, :s2 => 0.01, :b => zeros(seeds[:N])),
+  Dict(:r => seeds[:r], :alpha0 => 0, :alpha1 => 0, :alpha2 => 0,
+       :alpha12 => 0, :s2 => 1, :b => zeros(seeds[:N]))
 ]
 
 

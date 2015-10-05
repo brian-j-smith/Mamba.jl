@@ -1,12 +1,12 @@
 using Mamba
 
 ## Data
-magnesium = (Symbol => Any)[
+magnesium = Dict{Symbol,Any}(
   :rt => [1, 9, 2, 1, 10, 1, 1, 90],
   :nt => [40, 135, 200, 48, 150, 59, 25, 1159],
   :rc => [2, 23, 7, 1, 8, 9, 3, 118],
   :nc => [36, 135, 200, 46, 148, 56, 23, 1157]
-]
+)
 
 magnesium[:rtx] = hcat([magnesium[:rt] for i in 1:6]...)'
 magnesium[:rcx] = hcat([magnesium[:rc] for i in 1:6]...)'
@@ -23,7 +23,7 @@ model = Model(
 
   rcx = Stochastic(2,
     @modelexpr(nc, pc,
-      Distribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8]
+      UnivariateDistribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8]
     ),
     false
   ),
@@ -35,7 +35,7 @@ model = Model(
 
   rtx = Stochastic(2,
     @modelexpr(nt, pc, theta,
-      Distribution[
+      UnivariateDistribution[
         begin
           phi = logit(pc[i,j])
           pt = invlogit(theta[i,j] + phi)
@@ -49,7 +49,7 @@ model = Model(
 
   theta = Stochastic(2,
     @modelexpr(mu, tau,
-      Distribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8]
+      UnivariateDistribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8]
     ),
     false
   ),
@@ -67,7 +67,8 @@ model = Model(
 
   tau = Logical(1,
     @modelexpr(priors, s2_0,
-      [ sqrt(priors[1]),
+      Float64[
+        sqrt(priors[1]),
         sqrt(priors[2]),
         priors[3],
         sqrt(s2_0 * (1 / priors[4] - 1)),
@@ -78,7 +79,7 @@ model = Model(
 
   priors = Stochastic(1,
     @modelexpr(s2_0,
-      Distribution[
+      UnivariateDistribution[
         InverseGamma(0.001, 0.001),
         Uniform(0, 50),
         Uniform(0, 50),
@@ -95,12 +96,12 @@ model = Model(
 
 ## Initial Values
 inits = [
-  [:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
-   :theta => zeros(6, 8), :mu => fill(-0.5, 6),
-   :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1]],
-  [:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
-   :theta => zeros(6, 8), :mu => fill(0.5, 6),
-   :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1]]
+  Dict(:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
+       :theta => zeros(6, 8), :mu => fill(-0.5, 6),
+       :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1]),
+  Dict(:rcx => magnesium[:rcx], :rtx => magnesium[:rtx],
+       :theta => zeros(6, 8), :mu => fill(0.5, 6),
+       :pc => fill(0.5, 6, 8), :priors => [1, 1, 1, 0.5, 0.5, 1])
 ]
 
 

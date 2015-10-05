@@ -1,11 +1,11 @@
 #################### Adaptive Mixture Metropolis ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type AMMTune
   adapt::Bool
   beta::Real
-  m::Integer
+  m::Int
   Mv::Vector{Float64}
   Mvv::Matrix{Float64}
   scale::Real
@@ -14,13 +14,13 @@ type AMMTune
 end
 
 type AMMVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::AMMTune
 
-  AMMVariate(x::Vector{VariateType}, tune::AMMTune) = new(x, tune)
+  AMMVariate(x::Vector{Float64}, tune::AMMTune) = new(x, tune)
 end
 
-function AMMVariate(x::Vector{VariateType}, tune=nothing)
+function AMMVariate(x::Vector{Float64}, tune=nothing)
   tune = AMMTune(
     false,
     0.05,
@@ -28,7 +28,7 @@ function AMMVariate(x::Vector{VariateType}, tune=nothing)
     Array(Float64, 0),
     Array(Float64, 0, 0),
     2.38^2,
-    Cholesky(Array(Float64, 0, 0), 'U'),
+    Cholesky(Array(Float64, 0, 0), :U),
     Array(Float64, 0, 0)
   )
   AMMVariate(x, tune)
@@ -38,23 +38,23 @@ end
 #################### Sampler Constructor ####################
 
 function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
-           adapt::Symbol=:all)
+                      adapt::Symbol=:all)
   in(adapt, [:all, :burnin, :none]) ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = AMMVariate(x, tunepar["sampler"])
+      f = x -> logpdf!(model, x, block, true)
       adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
               tunepar["adapt"] == :all ? true : false
-      f = x -> logpdf!(model, x, block, true)
       amm!(v, tunepar["SigmaF"], f, adapt=adapt)
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
-    ["SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing]
+    Dict("SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing)
   )
 end
 
@@ -62,7 +62,7 @@ end
 #################### Sampling Functions ####################
 
 function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
-           adapt::Bool=true)
+              adapt::Bool=true)
   tune = v.tune
 
   d = length(v)
@@ -88,7 +88,7 @@ function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
     tune.Mv = p * tune.Mv + (1.0 - p) * v
     tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
     Sigma = (sd / p) * (tune.Mvv - tune.Mv * tune.Mv')
-    F = cholfact(Sigma, pivot=true)
+    F = cholfact(Sigma, :U, Val{true})
     if rank(F) == d
       tune.SigmaLm = F[:P] * F[:L]
     end

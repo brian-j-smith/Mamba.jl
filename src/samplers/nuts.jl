@@ -1,6 +1,6 @@
 #################### No-U-Turn Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
 type NUTSTune
   adapt::Bool
@@ -10,21 +10,21 @@ type NUTSTune
   gamma::Float64
   Hbar::Float64
   kappa::Float64
-  m::Integer
+  m::Int
   mu::Float64
-  nalpha::Integer
+  nalpha::Int
   t0::Float64
   target::Float64
 end
 
 type NUTSVariate <: VectorVariate
-  value::Vector{VariateType}
+  value::Vector{Float64}
   tune::NUTSTune
 
-  NUTSVariate(x::Vector{VariateType}, tune::NUTSTune) = new(x, tune)
+  NUTSVariate(x::Vector{Float64}, tune::NUTSTune) = new(x, tune)
 end
 
-function NUTSVariate(x::Vector{VariateType}, tune=nothing)
+function NUTSVariate(x::Vector{Float64}, tune=nothing)
   tune = NUTSTune(
     false,
     0.0,
@@ -48,8 +48,8 @@ end
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   Sampler(params,
     quote
-      x = unlist(model, block, true)
       tunepar = tune(model, block)
+      x = unlist(model, block, true)
       v = NUTSVariate(x, tunepar["sampler"])
       if model.iter <= 1
         f = x -> nutsfx(model, x, block, tunepar["dtype"])
@@ -59,10 +59,10 @@ function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
       nuts!(v, tunepar["epsilon"], f, adapt=model.iter <= model.burnin,
             target=tunepar["target"])
       tunepar["sampler"] = v.tune
-      relist(model, v.value, block, true)
+      relist(model, v, block, true)
     end,
-    ["epsilon" => 1.0, "target" => target, "dtype" => dtype,
-     "sampler" => nothing]
+    Dict("epsilon" => 1.0, "target" => target, "dtype" => dtype,
+         "sampler" => nothing)
   )
 end
 
@@ -102,17 +102,8 @@ function nutsepsilon(v::NUTSVariate, fx::Function)
   epsilon
 end
 
-function leapfrog{T<:Real,U<:Real,V<:Real}(x::Vector{T}, r::Vector{U},
-           grad::Vector{V}, epsilon::Real, fx::Function)
-  r += (0.5 * epsilon) * grad
-  x += epsilon * r
-  logf, grad = fx(x)
-  r += (0.5 * epsilon) * grad
-  x, r, grad, logf
-end
-
 function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
-           target::Real=0.6)
+               target::Real=0.6)
   tune = v.tune
 
   if adapt
@@ -171,12 +162,21 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   v
 end
 
+function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
+                  epsilon::Real, fx::Function)
+  r += (0.5 * epsilon) * grad
+  x += epsilon * r
+  logf, grad = fx(x)
+  r += (0.5 * epsilon) * grad
+  x, r, grad, logf
+end
+
 function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
-           epsilon::Real, fx::Function, logp0::Real, logu0::Real)
+                   epsilon::Real, fx::Function, logp0::Real, logu0::Real)
   if j == 0
     xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, d * epsilon, fx)
     logpprime = logfprime - 0.5 * dot(rprime)
-    nprime = int(logu0 < logpprime)
+    nprime = Int(logu0 < logpprime)
     sprime = logu0 < logpprime + 1000.0
     xminus = xplus = xprime
     rminus = rplus = rprime

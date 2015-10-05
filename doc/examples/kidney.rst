@@ -5,7 +5,7 @@
 Kidney: Weibull Regression with Random Effects
 ----------------------------------------------
 
-An example from OpenBUGS :cite:`openbugs:2014:ex1` and McGilchrist and Aisbett :cite:`mcgilchrist:1991:RFS` concerning time to first and second infection recurrence in 38 kidney patients on dialysis. 
+An example from OpenBUGS :cite:`openbugs:2014:ex` and McGilchrist and Aisbett :cite:`mcgilchrist:1991:RFS` concerning time to first and second infection recurrence in 38 kidney patients on dialysis.
 
 Model
 ^^^^^
