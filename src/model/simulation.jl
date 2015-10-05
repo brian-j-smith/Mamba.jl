@@ -127,27 +127,16 @@ function unlist(m::Model, block::Integer=0, transform::Bool=false)
 end
 
 function unlist(m::Model, monitoronly::Bool)
-  values = Float64[]
-  for key in keys(m, :dependent)
+  f = function(key)
     node = m[key]
     lvalue = unlist(node)
-    v = monitoronly ? lvalue[node.monitor] : lvalue
-    append!(values, v)
+    monitoronly ? lvalue[node.monitor] : lvalue
   end
-  values
+  vcat(map(f, keys(m, :dependent))...)
 end
 
 function unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
-  N = Int[m[key].linklength for key in nkeys]
-  values = Array(Float64, sum(N))
-  offset = 0
-  for k in 1:length(nkeys)
-    node = m[nkeys[k]]
-    n = N[k]
-    values[offset + (1:n)] = unlist(node, transform)
-    offset += n
-  end
-  values
+  vcat(map(key -> unlist(m[key], transform), nkeys)...)
 end
 
 function update!(m::Model, block::Integer=0)
