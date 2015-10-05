@@ -32,11 +32,11 @@ end
 
 function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   values = monitor
-  d.linklength = length(unlist(d))
-  if d.linklength > 0 && length(monitor) > 0
+  n = length(unlist(d))
+  if n > 0 && length(monitor) > 0
     if monitor[1] == 0
-      values = collect(1:d.linklength)
-    elseif minimum(monitor) < 1 || maximum(monitor) > d.linklength
+      values = collect(1:n)
+    elseif minimum(monitor) < 1 || maximum(monitor) > n
       throw(BoundsError())
     end
   end
@@ -71,15 +71,13 @@ logpdf(d::AbstractDependent, x, transform::Bool=false) = 0.0
 
 function Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
-  l = ScalarLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
-                    Symbol[])
+  l = ScalarLogical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
   setmonitor!(l, monitor)
 end
 
 function Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
-  l = ArrayLogical(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
-                   Symbol[])
+  l = ArrayLogical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
   setmonitor!(l, monitor)
 end
 
@@ -132,7 +130,7 @@ end
 
 function Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   value = Float64(NaN)
-  s = ScalarStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
+  s = ScalarStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
                        Symbol[], NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
@@ -140,7 +138,7 @@ end
 function Stochastic(d::Integer, expr::Expr,
                     monitor::Union{Bool,Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
-  s = ArrayStochastic(value, :nothing, 0, Int[], depfx(expr), depsrc(expr),
+  s = ArrayStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
                       Symbol[], NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
