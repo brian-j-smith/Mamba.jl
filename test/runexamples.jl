@@ -3,8 +3,8 @@ using Mamba
 include("utils.jl")
 
 test_openbugs = [
-  "blocker",
   "birats",
+  "blocker",
   "bones",
   "dogs",
   "dyes",

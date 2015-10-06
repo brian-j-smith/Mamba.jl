@@ -399,10 +399,10 @@ Checks of MCMC output should be performed to assess convergence of simulated dra
 
     Gelman, Rubin, and Brooks Diagnostic:
                   PSRF 97.5%
-              s2 1.005 1.010
-         beta[1] 1.006 1.006
-         beta[2] 1.006 1.006
-    Multivariate 1.004   NaN
+              s2 1.008 1.016
+         beta[1] 1.009 1.010
+         beta[2] 1.009 1.010
+    Multivariate 1.006   NaN
 
 The diagnostic of Geweke :cite:`geweke:1992:EAS` tests for non-convergence of posterior mean estimates.  It provides chain-specific test p-values.  Convergence is rejected for significant p-values, like those obtained for ``s2``.
 
@@ -415,19 +415,19 @@ The diagnostic of Geweke :cite:`geweke:1992:EAS` tests for non-convergence of po
     Second Window Fraction = 0.5
 
             Z-score p-value
-         s2  -2.321  0.0203
-    beta[1]   0.381  0.7035
-    beta[2]  -0.273  0.7851
+         s2   1.710  0.0872
+    beta[1]   1.237  0.2162
+    beta[2]  -1.568  0.1168
 
             Z-score p-value
-         s2   0.079  0.9370
-    beta[1]   0.700  0.4839
-    beta[2]  -0.651  0.5150
+         s2  -1.428  0.1534
+    beta[1]  -1.457  0.1452
+    beta[2]   1.752  0.0797
 
             Z-score p-value
-         s2  -2.101  0.0356
-    beta[1]   0.932  0.3515
-    beta[2]  -0.685  0.4934
+         s2   0.583  0.5596
+    beta[1]   0.550  0.5824
+    beta[2]  -0.440  0.6597
 
 The diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` tests for non-convergence (non-stationarity) and whether ratios of estimation interval halfwidths to means are within a target ratio.  Stationarity is rejected (0) for significant test p-values.  Halfwidth tests are rejected (0) if observed ratios are greater than the target, as is the case for ``s2`` and ``beta[1]``.
 
@@ -440,19 +440,19 @@ The diagnostic of Heidelberger and Welch :cite:`heidelberger:1983:SRL` tests for
     Alpha = 0.05
 
             Burn-in Stationarity p-value    Mean     Halfwidth  Test
-         s2     251            1  0.2407 1.54572606 0.559718246    0
-    beta[1]     251            1  0.5330 0.53489109 0.065861054    0
-    beta[2]     251            1  0.5058 0.81767861 0.018822591    1
+         s2     738            1  0.0700 1.00825202 0.094300432    1
+    beta[1]     251            1  0.0680 0.57366275 0.053311283    1
+    beta[2]     738            1  0.0677 0.81285744 0.015404173    1
 
             Burn-in Stationarity p-value    Mean     Halfwidth  Test
-         s2     251            1  0.8672 1.26092566  0.27625544    0
-    beta[1]     251            1  0.8806 0.55820771  0.07672180    0
-    beta[2]     251            1  0.9330 0.81398205  0.02254785    1
+         s2     251            1  0.4435  1.4635400 0.588158612    0
+    beta[1]     251            1  0.1356  0.6293320 0.065092099    0
+    beta[2]     251            1  0.0711  0.7934633 0.019215278    1
 
             Burn-in Stationarity p-value    Mean     Halfwidth  Test
-         s2     251            1  0.8145 1.12827403 0.196179015    0
-    beta[1]     251            1  0.4017 0.55923590 0.056504387    0
-    beta[2]     251            1  0.4216 0.81202489 0.016274601    1
+         s2     251            1  0.6664  0.9942853 0.127959523    0
+    beta[1]     251            1  0.0515  0.5883602 0.058928034    0
+    beta[2]    1225            1  0.1479  0.8086080 0.018478999    1
 
 The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is used to determine the number of iterations required to estimate a specified quantile within a desired degree of accuracy.  For example, below are required total numbers of iterations, numbers to discard as burn-in sequences, and thinning intervals for estimating 0.025 quantiles so that their estimated cumulative probabilities are within 0.025±0.005 with probability 0.95.
 
@@ -466,19 +466,19 @@ The diagnostic of Raftery and Lewis :cite:`raftery:1992:OLR,raftery:1992:HMI` is
     Probability (s) = 0.95
 
             Thinning Burn-in    Total   Nmin Dependence Factor
-         s2        2     255 8.1370x103 3746         2.1721837
-    beta[1]        4     283 3.7515x104 3746        10.0146823
-    beta[2]        2     267 1.8257x104 3746         4.8737320
+         s2        2     257       8689 3746         2.3195408
+    beta[1]        2     267      17897 3746         4.7776295
+    beta[2]        2     267      17897 3746         4.7776295
 
             Thinning Burn-in    Total   Nmin Dependence Factor
-         s2        2     257 8.2730x103 3746          2.208489
-    beta[1]        4     279 3.0899x104 3746          8.248532
-    beta[2]        2     267 1.7209x104 3746          4.593967
+         s2        2     257 8.3450x103 3746         2.2277096
+    beta[1]        4     271 2.1759x104 3746         5.8085958
+    beta[2]        4     275 2.8795x104 3746         7.6868660
 
             Thinning Burn-in    Total   Nmin Dependence Factor
-         s2        2     253 7.7470x103 3746         2.0680726
-    beta[1]        2     273 2.4635x104 3746         6.5763481
-    beta[2]        4     271 2.4375x104 3746         6.5069407
+         s2        2     255 7.8770x103 3746         2.1027763
+    beta[1]        2     269 2.0647x104 3746         5.5117459
+    beta[2]        2     263 1.4523x104 3746         3.8769354
 
 More information on the diagnostic functions can be found in the :ref:`section-Convergence-Diagnostics` section.
 
@@ -501,66 +501,66 @@ Once convergence has been assessed, sample statistics may be computed on the MCM
     Samples per chain = 4875
 
     Empirical Posterior Estimates:
-               Mean        SD       Naive SE      MCSE        ESS
-         s2 1.31164192 2.11700926 0.017505512 0.084760964  623.81203
-    beta[1] 0.55077823 1.22684809 0.010144785 0.021035908 3401.41041
-    beta[2] 0.81456185 0.36999413 0.003059475 0.005983602 3823.52816
+               Mean       SD       Naive SE       MCSE       ESS
+         s2 1.2203777 2.00876760 0.0166104638 0.101798287  389.3843
+    beta[1] 0.5971183 1.14894446 0.0095006014 0.016925598 4607.9743
+    beta[2] 0.8017036 0.34632566 0.0028637608 0.004793345 4875.0000
 
     Quantiles:
-               2.5%       25.0%       50.0%       75.0%     97.5%
-         s2  0.1689205  0.37858233 0.642708783 1.29554584 6.971778
-    beta[1] -2.0786622 -0.00365545 0.598234075 1.15533747 2.927107
-    beta[2]  0.0958658  0.63363928 0.805067956 0.98038846 1.607176
+                2.5%       25.0%       50.0%     75.0%     97.5%
+         s2  0.17091385 0.383671702 0.65371989 1.2206381 6.0313970
+    beta[1] -1.74343373 0.026573102 0.59122696 1.1878720 2.8308472
+    beta[2]  0.12168742 0.628297573 0.80357822 0.9719441 1.5051573
 
     ## Highest Posterior Density Intervals
     >>> hpd(sim1)
 
-             95% Lower 95% Upper
-         s2  0.0746761 4.6285413
-    beta[1] -1.9919011 3.0059020
-    beta[2]  0.1162965 1.6180369
+             95% Lower  95% Upper
+         s2  0.08338409 3.8706865
+    beta[1] -1.75436235 2.8109571
+    beta[2]  0.09721501 1.4733163
 
     ## Cross-Correlations
     >>> cor(sim1)
 
-                s2       beta[1]    beta[2]
-         s2  1.0000000 -0.1035043  0.0970532
-    beta[1] -0.1035043  1.0000000 -0.9120741
-    beta[2]  0.0970532 -0.9120741  1.0000000
+                 s2         beta[1]      beta[2]
+         s2  1.000000000  0.027467317 -0.024489462
+    beta[1]  0.027467317  1.000000000 -0.905245029
+    beta[2] -0.024489462 -0.905245029  1.000000000
 
     ## Lag-Autocorrelations
     >>> autocor(sim1)
 
-               Lag 2     Lag 10      Lag 20      Lag 100
-         s2  0.9305324  0.7147161  0.50020397 -0.0425768760
-    beta[1]  0.2841654  0.0144642  0.01890702  0.0169609340
-    beta[2]  0.2419890  0.0556535  0.03274191  0.0147079793
+               Lag 2       Lag 10        Lag 20       Lag 100
+         s2 0.85931351   0.568056917  0.3248136852   0.024157524
+    beta[1] 0.24521566  -0.021411797 -0.0077424153  -0.044989417
+    beta[2] 0.20402485  -0.019107846  0.0033980453  -0.053869216
 
-               Lag 2     Lag 10      Lag 20      Lag 100
-         s2  0.8328732 0.46783691  0.20728343  -0.015633535
-    beta[1]  0.3692985 0.04823331 -0.00047505  -0.027301651
-    beta[2]  0.3336704 0.01756540  0.02817078  -0.029797132
+               Lag 2       Lag 10        Lag 20       Lag 100
+         s2 0.92905843   0.761339226    0.58455868  0.0050215824
+    beta[1] 0.28180489  -0.031007672    0.03930888  0.0394895028
+    beta[2] 0.25905976  -0.017946010    0.03613043  0.0227758214
 
-               Lag 2     Lag 10      Lag 20      Lag 100
-         s2 0.79994494  0.3954458  0.17855388    0.03735549
-    beta[1] 0.29036852  0.0151255  0.01251444   -0.00971026
-    beta[2] 0.23588485  0.0097962  0.01725959   -0.01162341
+               Lag 2       Lag 10        Lag 20       Lag 100
+         s2 0.68812720  0.2420402859   0.080495078 -0.0290205896
+    beta[1] 0.38634357 -0.0029361782  -0.032310111  0.0028806786
+    beta[2] 0.32822879 -0.0056670786  -0.020100663 -0.0062622517
 
     ## State Space Change Rate (per Iteration)
     >>> changerate(sim1)
 
                  Change Rate
               s2       1.000
-         beta[1]       0.782
-         beta[2]       0.782
+         beta[1]       0.844
+         beta[2]       0.844
     Multivariate       1.000
 
     ## Deviance Information Criterion
     >>> dic(sim1)
 
           DIC    Effective Parameters
-    pD 13.811678             1.022158
-    pV 24.423410             6.328024
+    pD 13.828540            1.1661193
+    pV 22.624104            5.5639015
 
 
 .. _section-Line-Subsetting:
@@ -583,13 +583,13 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
 
     Empirical Posterior Estimates:
                Mean        SD      Naive SE      MCSE       ESS
-    beta[1] 0.54294803 1.2535281 0.016178934 0.028153921 1982.3958
-    beta[2] 0.81654896 0.3761126 0.004854379 0.007729269 2367.8756
+    beta[1] 0.62445845 1.0285709 0.013275474 0.023818436 1864.8416
+    beta[2] 0.79392648 0.3096614 0.003996712 0.006516677 2001.0000
 
     Quantiles:
-               2.5%      25.0%      50.0%      75.0%     97.5%
-    beta[1] -2.078668 -0.0116601 0.59713701 1.13635020 2.9206261
-    beta[2]  0.082051  0.6346812 0.80236351 0.98308268 1.6087557
+                2.5%       25.0%       50.0%     75.0%     97.5%
+    beta[1] -1.53050898 0.076745702 0.61120944 1.2174641 2.6906753
+    beta[2]  0.18846617 0.618849048 0.79323126 0.9619767 1.4502109
 
 
 Restarting the Sampler
@@ -609,16 +609,16 @@ Convergence diagnostics or posterior summaries may indicate that additional draw
     Samples per chain = 7375
 
     Empirical Posterior Estimates:
-               Mean        SD      Naive SE      MCSE       ESS
-         s2 1.29104854 2.0429169 0.0137343798 0.06552817  971.9531
-    beta[1] 0.56604188 1.2026624 0.0080854110 0.01584611 5760.2600
-    beta[2] 0.80989285 0.3628646 0.0024395117 0.00454669 6369.4100
+               Mean        SD       Naive SE       MCSE         ESS
+         s2 1.54417645 3.19035983 0.0214485545 0.1773311713  323.67501
+    beta[1] 0.60581307 1.31061630 0.0088111770 0.0143881097 7375.00000
+    beta[2] 0.79957632 0.39219517 0.0026366993 0.0040369705 7375.00000
 
     Quantiles:
-               2.5%       25.0%      50.0%       75.0%     97.5%
-         s2  0.1696926 0.38320727 0.649505944 1.29165161 6.8578108
-    beta[1] -1.9796920 0.00363272 0.603057680 1.17107396 2.8925465
-    beta[2]  0.1070020 0.62822379 0.801115311 0.97744272 1.5792629
+                2.5%        25.0%      50.0%     75.0%     97.5%
+         s2  0.172611705 0.39021458 0.67594404 1.3187773 9.954807
+    beta[1] -2.018556279 0.02204479 0.60063685 1.2151938 3.124831
+    beta[2]  0.052432005 0.61767052 0.79997247 0.9755366 1.579400
 
 
 .. _section-Line-Plotting:
