@@ -13,19 +13,36 @@ module Mamba
   import Calculus: gradient
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
          pt, px
-  import Distributions: Bernoulli, Categorical, Continuous,
-         ContinuousUnivariateDistribution, Dirichlet, Distribution,
-         Distributions, gradlogpdf, insupport, isprobvec, logpdf, logpdf!,
-         minimum, maximum, MatrixDistribution, MultivariateDistribution,
-         PDiagMat, PDMat, quantile, rand, ScalMat, support, Truncated,
-         UnivariateDistribution, ValueSupport
+  import Distributions:
+         ## Generic Types
+         Continuous, ContinuousUnivariateDistribution, Distribution,
+         MatrixDistribution, MultivariateDistribution, PDiagMat, PDMat, ScalMat,
+         Truncated, UnivariateDistribution, ValueSupport,
+         ## ContinuousUnivariateDistribution Types
+         Arcsine, Beta, BetaPrime, Biweight, Cauchy, Chi, Chisq, Cosine,
+         Epanechnikov, Erlang, Exponential, FDist, Frechet, Gamma, Gumbel,
+         InverseGamma, InverseGaussian, Kolmogorov, KSDist, KSOneSided, Laplace,
+         Levy, Logistic, LogNormal, NoncentralBeta, NoncentralChisq,
+         NoncentralF, NoncentralT, Normal, NormalCanon, Pareto, Rayleigh,
+         SymTriangularDist, TDist, TriangularDist, Triweight, Uniform, VonMises,
+         Weibull,
+         ## DiscreteUnivariateDistribution Types
+         Bernoulli, Binomial, Categorical, DiscreteUniform, Geometric,
+         Hypergeometric, NegativeBinomial, Pareto, PoissonBinomial, Skellam,
+         ## MultivariateDistribution Types
+         Dirichlet, Multinomial, MvNormal, MvNormalCanon, MvTDist, VonMisesFisher,
+         ## MatrixDistribution Types
+         InverseWishart, Wishart,
+         ## Methods
+         gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum, minimum,
+         quantile, rand, support
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
   import Showoff: showoff
   import StatsBase: autocor, autocov, countmap, counts, describe, predict,
-         quantile, sem, StatsBase, summarystats
+         quantile, sem, summarystats
 
   include("distributions/pdmats2.jl")
   importall .PDMats2

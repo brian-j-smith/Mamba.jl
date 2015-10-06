@@ -103,8 +103,7 @@ The following `multivariate types <http://distributionsjl.readthedocs.org/en/lat
 
 .. code-block:: julia
 
-    Dirichlet    Multinomial     MvNormal          MvNormalCannon
-    MvTDist      VonMisesFisher
+    Dirichlet   MvNormal   MvTDist   Multinomial   MvNormalCanon   VonMisesFisher
 
 
 .. index:: Distributions; Block-Diagonal Normal
