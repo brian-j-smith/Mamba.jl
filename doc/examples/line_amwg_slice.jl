@@ -14,7 +14,7 @@ data = Dict{Symbol,Any}(
 )
 
 ## Log-transformed unnormalized joint posterior for b0, b1, and log(s2)
-logf = function(x)
+logf = function(x::DenseVector)
    b0 = x[1]
    b1 = x[2]
    logs2 = x[3]

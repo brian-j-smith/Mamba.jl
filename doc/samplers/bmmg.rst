@@ -19,7 +19,7 @@ Stand-Alone Function
 
         * ``v`` : current state of parameters to be simulated.
         * ``indexset`` : candidate set of indices of the parameters whose states are to be changed simultaneously.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
 

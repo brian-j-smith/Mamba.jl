@@ -14,7 +14,7 @@ data = Dict(
 )
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant and Gradient Vector
-fx = function(x)
+fx = function(x::DenseVector)
   b0 = x[1]
   b1 = x[2]
   logs2 = x[3]

@@ -18,7 +18,7 @@ Stand-Alone Function
 
         * ``v`` : current state of parameters to be simulated.
         * ``width`` : vector of the same length as ``v``, defining initial widths of a hyperrectangle from which to simulate values.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
         * ``stype`` : sampler type. Options are
             * ``:multivar`` : Joint multivariate sampling of parameters.
             * ``:univar`` : Sequential univariate sampling.

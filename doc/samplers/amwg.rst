@@ -19,7 +19,7 @@ Stand-Alone Function
 
         * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
         * ``sigma`` : initial standard deviations for the univariate normal proposal distributions.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
         * ``adapt`` : whether to adaptively update the proposal distribution.
         * ``batchsize`` : number of samples that must be newly accumulated before applying an adaptive update to the proposal distributions.
         * ``target`` : a target acceptance rate for the adaptive algorithm.

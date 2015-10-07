@@ -17,7 +17,7 @@ Stand-Alone Functions
     **Arguments**
 
         * ``v`` : the current state of parameters to be simulated.
-        * ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
+        * ``fx`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 
@@ -32,7 +32,7 @@ Stand-Alone Functions
 
         * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
         * ``epsilon`` : the NUTS algorithm step size parameter.
-        * ``fx`` : function to compute the log-transformed density (up to a normalizing constant) and gradient vector at ``v.value``, and to return the respective results as a tuple.
+        * ``fx`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
         * ``adapt`` : whether to adaptively update the ``epsilon`` step size parameter.
         * ``target`` : a target acceptance rate for the algorithm.
 

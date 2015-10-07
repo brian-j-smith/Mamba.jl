@@ -12,7 +12,7 @@ rho0 = rand(Dirichlet(ones(k)))
 y = rand(Multinomial(n, rho0))
 
 ## Log-transformed Posterior(rho) + Constant
-logf = function(rho)
+logf = function(rho::DenseVector)
   logpdf(Multinomial(n, rho), y)
 end
 

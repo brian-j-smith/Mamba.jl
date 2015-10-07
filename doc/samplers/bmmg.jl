@@ -14,7 +14,7 @@ gamma0 = rand(0:1, p)
 y = X * (beta0 .* gamma0) + randn(n)
 
 ## Log-transformed Posterior(gamma) + Constant
-logf = function(gamma)
+logf = function(gamma::DenseVector)
   logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
 end
 

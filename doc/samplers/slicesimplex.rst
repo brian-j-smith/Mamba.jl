@@ -19,7 +19,7 @@ Stand-Alone Function
 
         * ``v`` : current state of parameters to be simulated.
         * ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
 
