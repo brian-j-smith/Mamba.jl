@@ -7,10 +7,11 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
               nrow::Integer=3, ncol::Integer=2, byrow::Bool=true,
               ask::Bool=true)
 
-  in(fmt, [:pdf, :png, :ps, :svg]) ||
+  in(fmt, [:pdf, :pgf, :png, :ps, :svg]) ||
     error("$(fmt) is not a supported draw format")
 
   f(args...) = fmt == :pdf ? PDF(args...) :
+               fmt == :pgf ? PGF(args...) :
                fmt == :png ? PNG(args...) :
                fmt == :ps  ? PS(args...)  : SVG(args...)
 

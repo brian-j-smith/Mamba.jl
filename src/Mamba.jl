@@ -36,7 +36,7 @@ module Mamba
          ## Methods
          gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum, minimum,
          quantile, rand, support
-  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, Plot, plot, PNG, PS,
+  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices

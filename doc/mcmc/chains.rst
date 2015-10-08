@@ -554,6 +554,7 @@ Plotting
         * ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
         * ``fmt`` : output format. Options are
             * ``:pdf`` : Portable Document Format (.pdf).
+            * ``:pgf`` : Portable Graphics Format (.pgf).
             * ``:png`` : Portable Network Graphics (.png).
             * ``:ps``  : Postscript (.ps).
             * ``:svg`` : Scalable Vector Graphics (.svg).
