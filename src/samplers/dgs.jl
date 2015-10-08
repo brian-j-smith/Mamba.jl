@@ -7,7 +7,7 @@ typealias DGSUnivariateDistribution
                 Hypergeometric, NoncentralHypergeometric}
 
 type DGSTune
-  support::Vector
+  support::Matrix{Real}
   probs::Vector{Float64}
 end
 
@@ -20,7 +20,7 @@ end
 
 function DGSVariate(x::Vector{Float64}, tune=nothing)
   tune = DGSTune(
-    Array(Any, 0),
+    Array(Float64, 0, 0),
     Array(Float64, 0)
   )
   DGSVariate(x, tune)
@@ -32,12 +32,16 @@ end
 function DGS(params::Vector{Symbol})
   Sampler(params,
     quote
+      tunepar = tune(model, block)
       x = unlist(model, block)
       offset = 0
       for key in keys(model, :block, block)
 
         sim = function(inds, d, logf)
-          x[offset + inds], _ = dgs(d, logf)
+          v = DGSVariate(x[offset + inds], tunepar["sampler"])
+          dgs!(v, d, logf)
+          x[offset + inds] = v
+          tunepar["sampler"] = v.tune
         end
 
         logf = function(inds, value)
@@ -56,13 +60,15 @@ function DGS(params::Vector{Symbol})
 end
 
 function DGS_sub!(d::UnivariateDistribution, sim::Function, logf::Function)
-  sim(1, d, x -> logf(1, x))
+  inds = [1]
+  sim(inds, d, x -> logf(inds, x))
 end
 
 function DGS_sub!(D::Array{UnivariateDistribution}, sim::Function,
                   logf::Function)
   for i in 1:length(D)
-    sim(i, D[i], x -> logf(i, x))
+    inds = [i]
+    sim(inds, D[i], x -> logf(inds, x))
   end
 end
 
@@ -73,44 +79,43 @@ end
 
 #################### Sampling Functions ####################
 
-function dgs!(v::DGSVariate, support::Vector, logf::Function)
-  v[:], probs = dgs(support, logf)
-  v.tune.support = support
-  v.tune.probs = probs
-  v
-end
-
-function dgs!(v::DGSVariate, support::Vector, probs::Vector{Float64})
-  length(support) == length(probs) ||
-    throw(ArgumentError("lengths of support and probs differ"))
-
-  v[:] = support[rand(Categorical(probs))]
-  v.tune.support = support
-  v.tune.probs = probs
-  v
-end
-
-function dgs(support::AbstractVector, logf::Function)
-  n = length(support)
-  p = Array(Float64, n)
+function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T}, logf::Function)
+  n = size(support, 1)
+  probs = Array(Float64, n)
   psum = 0.0
   for i in 1:n
-    value = exp(logf(support[i]))
-    p[i] = value
+    x = vec(support[i,:])
+    value = exp(logf(x))
+    probs[i] = value
     psum += value
   end
   if psum > 0
-    p /= psum
+    probs /= psum
   else
-    p[:] = 1 / n
+    probs[:] = 1 / n
   end
-  support[rand(Categorical(p))], p
+  v[:] = support[rand(Categorical(probs)), :]
+  v.tune.support = support
+  v.tune.probs = probs
+  v
 end
 
-function dgs(d::DGSUnivariateDistribution, logf::Function)
-  dgs(support(d), logf)
+function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T},
+                       probs::Vector{Float64})
+  size(support, 1) == length(probs) ||
+    throw(ArgumentError("number of support rows and probs length differ"))
+
+  v[:] = support[rand(Categorical(probs)), :]
+  v.tune.support = support
+  v.tune.probs = probs
+  v
 end
 
-function dgs(d::Distribution, logf::Function)
+function dgs!(v::DGSVariate, d::DGSUnivariateDistribution, logf::Function)
+  S = support(d)
+  dgs!(v, reshape(S, length(S), 1), logf)
+end
+
+function dgs!(v::DGSVariate, d::Distribution, logf::Function)
   throw(ArgumentError("unsupported distribution $(typeof(d))"))
 end

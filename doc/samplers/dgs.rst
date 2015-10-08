@@ -10,17 +10,17 @@ Implementation of a sampler for the simulation of discrete or discretized model 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: dgs!(v::DGSVariate, support::Vector, logf::Function)
-              dgs!(v::DGSVariate, support::Vector, probs::Vector{Float64})
+.. function:: dgs!(v::DGSVariate, support::Matrix{T<:Real}, logf::Function)
+              dgs!(v::DGSVariate, support::Matrix{T<:Real}, probs::Vector{Float64})
 
     Simulate one draw directly from a target probability mass function.  Parameters are assumed to have discrete and finite support.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``support`` : vector of coordinates in the parameter space from which to simulate values.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at each element in the ``support`` vector.
-        * ``probs`` : sampling probabilities for the ``support`` vector of coordinates.
+        * ``support`` : matrix whose rows contain the vector coordinates in the parameter space from which to simulate values.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``probs`` : sampling probabilities for the rows of ``support``.
 
     **Value**
 
@@ -73,8 +73,8 @@ Declaration
 Fields
 ``````
 
-* ``support::Vector`` : vector of coordinates in the parameter space from which to simulate values.
-* ``probs::Vector{Float64}`` : corresponding sampling probabilities.
+* ``support::Matrix{Real}`` : matrix whose rows contain the vector coordinates in the parameter space from which to simulate values.
+* ``probs::Vector{Float64}`` : sampling probabilities for the rows of ``support``.
 
 
 Sampler Constructor
