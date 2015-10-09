@@ -24,9 +24,11 @@ end
 
 dot(x) = dot(x, x)
 
-invlogit(x) = 1.0 ./ (exp(-x) + 1.0)
+invlogit(x::Real) = 1.0 / (exp(-x) + 1.0)
+invlogit(x::AbstractArray) = map(invlogit, x)
 
-logit(x) = log(x ./ (1.0 - x))
+logit(x::Real) = log(x / (1.0 - x))
+logit(x::AbstractArray) = map(logit, x)
 
 ## Csorgo S and Faraway JJ. The exact and asymptotic distributions of the
 ## Cramer-von Mises statistic. Journal of the Royal Statistical Society,
