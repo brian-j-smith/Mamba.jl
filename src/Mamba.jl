@@ -8,7 +8,7 @@ module Mamba
 
   #################### Imports ####################
 
-  import Base: Base, cor, dot
+  import Base: cor, dot
   import Base.LinAlg: Cholesky
   import Calculus: gradient
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
