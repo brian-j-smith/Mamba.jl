@@ -132,13 +132,16 @@ Constructors
 
 .. function:: Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
               Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+              Logical(f::Function, monitor::Union{Bool,Vector{Int}}=true)
+              Logical(d::Integer, f::Function, monitor::Union{Bool,Vector{Int}}=true)
 
     Construct a ``Logical`` object that defines a logical model node.
 
     **Arguments**
 
         * ``d`` : number of dimensions for array nodes.
-        * ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
+        * ``expr`` : a quoted expression or code-block defining the function body of the ``eval`` field.
+        * ``f`` : a function whose arguments are the other model nodes upon which this one depends, and that will be evaluated by the ``eval`` field function.
         * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
     **Value**
@@ -237,13 +240,16 @@ Constructors
 
 .. function:: Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
               Stochastic(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+              Stochastic(f::Function, monitor::Union{Bool,Vector{Int}}=true)
+              Stochastic(d::Integer, f::Function, monitor::Union{Bool,Vector{Int}}=true)
 
     Construct a ``Stochastic`` object that defines a stochastic model node.
 
     **Arguments**
 
         * ``d`` : number of dimensions for array nodes.
-        * ``expr`` : a quoted expression or code-block defining the body of the function stored in the ``eval`` field.
+        * ``expr`` : a quoted expression or code-block defining the function body of the ``eval`` field.
+        * ``f`` : a function whose arguments are the other model nodes upon which this one depends, and that will be evaluated by the ``eval`` field function.
         * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
     **Value**

@@ -67,7 +67,7 @@ In the `Mamba` package, terms that appear in the Bayesian model specification ar
 
 Note that the :math:`\bm{y}` node has both a distributional specification and is a fixed quantity.  It is designated a stochastic node in `Mamba` because of its distributional specification.  This allows for the possibility of model terms with distributional specifications that are a mix of observed and unobserved elements, as in the case of missing values in response vectors.
 
-For model implementation, all nodes are stored in and accessible from a **julia** dictionary structure called ``model`` with the names (keys) of nodes being symbols.  The regression nodes will be named ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` to correspond to the stochastic, logical, and input nodes mentioned above.  Implementation begins by instantiating the stochastic and logical nodes using the `Mamba`--supplied constructors ``Stochastic`` and ``Logical``.  Stochastic and logical nodes for a model are defined with a call to the ``Model`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``Logical`` and ``Stochastic`` nodes are passed.
+Model implementation begins by instantiating stochastic and logical nodes using the `Mamba`--supplied constructors ``Stochastic`` and ``Logical``.  Stochastic and logical nodes for a model are defined with a call to the ``Model`` constructor.  The model constructor formally defines and assigns names to the nodes.  User-specified names are given on the left-hand sides of the arguments to which ``Logical`` and ``Stochastic`` nodes are passed.
 
 .. code-block:: julia
 
@@ -78,53 +78,49 @@ For model implementation, all nodes are stored in and accessible from a **julia*
     model = Model(
 
       y = Stochastic(1,
-        quote
-          mu = model[:mu]
-          s2 = model[:s2]
-          MvNormal(mu, sqrt(s2))
-        end,
+        (mu, s2) ->  MvNormal(mu, sqrt(s2)),
         false
       ),
 
       mu = Logical(1,
-        :(model[:xmat] * model[:beta]),
+        (xmat, beta) -> xmat * beta,
         false
       ),
 
       beta = Stochastic(1,
-        :(MvNormal(2, sqrt(1000)))
+        () -> MvNormal(2, sqrt(1000))
       ),
 
       s2 = Stochastic(
-        :(InverseGamma(0.001, 0.001))
+        () -> InverseGamma(0.001, 0.001)
       )
 
     )
 
-A single integer value for the first ``Stochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a quoted `expression <http://docs.julialang.org/en/latest/manual/metaprogramming/>`_ that can contain any valid **julia** code.  Expressions for stochastic nodes must return a distribution object or array of objects from or compatible with the `Distributions` package :cite:`bates:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the expression can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
+A single integer value for the first ``Stochastic`` constructor argument indicates that the node is an array of the specified dimension.  Absence of an integer value implies a scalar node.  The next argument is a `function <http://docs.julialang.org/en/latest/manual/functions/>`_ that may contain any valid **julia** code.  Functions should be defined to take, as their arguments, the inputs upon which their nodes depend and, for stochastic nodes, return distribution objects or arrays of objects compatible with the `Distributions` package :cite:`bates:2014:DP`.  Such objects represent the nodes' distributional specifications.  An optional boolean argument after the function can be specified to indicate whether values of the node should be monitored (saved) during MCMC simulations (default: ``true``).
 
-Stochastic expressions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distribution specifications for the ``beta`` node are shown below.
+Stochastic functions must return a single distribution object that can accommodate the dimensionality of the node, or return an array of (univariate or multivariate) distribution objects of the same dimension as the node.  Examples of alternative, but equivalent, prior distributional specifications for the ``beta`` node are shown below.
 
 .. code-block:: julia
 
     # Case 1: Multivariate Normal with independence covariance matrix
     beta = Stochastic(1,
-      :(MvNormal(2, sqrt(1000)))
+      () -> MvNormal(2, sqrt(1000))
     )
 
     # Case 2: One common univariate Normal
     beta = Stochastic(1,
-      :(Normal(0, sqrt(1000)))
+      () -> Normal(0, sqrt(1000))
     )
 
     # Case 3: Array of univariate Normals
     beta = Stochastic(1,
-      :(UnivariateDistribution[Normal(0, sqrt(1000)), Normal(0, sqrt(1000))])
+      () -> UnivariateDistribution[Normal(0, sqrt(1000)), Normal(0, sqrt(1000))]
     )
 
     # Case 4: Array of univariate Normals
     beta = Stochastic(1,
-      :(UnivariateDistribution[Normal(0, sqrt(1000)) for i in 1:2])
+      () -> UnivariateDistribution[Normal(0, sqrt(1000)) for i in 1:2]
     )
 
 Case 1 is one of the `multivariate normal distributions <http://distributionsjl.readthedocs.org/en/latest/multivariate.html#multivariate-normal-distribution>`_ available in the `Distributions` package, and the specification used in the example model implementation.  In Case 2, a single `univariate normal distribution <http://distributionsjl.readthedocs.org/en/latest/univariate.html#normal>`_ is specified to imply independent priors of the same type for all elements of ``beta``.  Cases 3 and 4 explicitly specify a univariate prior for each element of ``beta`` and allow for the possibility of differences among the priors.  Both return `arrays <http://docs.julialang.org/en/latest/manual/arrays/>`_ of Distribution objects, with the last case automating the specification of array elements.
@@ -167,6 +163,75 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
     ## User-Defined Samplers
 
     Gibbs_beta = Sampler([:beta],
+      (beta, s2, xmat, y) ->
+        begin
+          beta_mean = mean(beta.distr)
+          beta_invcov = invcov(beta.distr)
+          Sigma = inv(xmat' * xmat / s2 + beta_invcov)
+          mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
+          rand(MvNormal(mu, Sigma))
+        end
+    )
+
+    Gibbs_s2 = Sampler([:s2],
+      (mu, s2, y) ->
+        begin
+          a = length(y) / 2.0 + shape(s2.distr)
+          b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
+          rand(InverseGamma(a, b))
+        end
+    )
+
+    ## User-Defined Sampling Scheme
+    scheme3 = [Gibbs_beta, Gibbs_s2]
+
+In these samplers, the respective ``MvNormal(2, sqrt(1000))`` and ``InverseGamma(0.001, 0.001)`` priors on stochastic nodes ``beta`` and ``s2`` are accessed directly through the ``distr`` :ref:`fields <section-Stochastic>`.  Features of the `Distributions` objects returned by ``beta.distr`` and ``s2.distr`` can, in turn, be extracted with method functions defined in that package or through their own fields.  For instance, ``mean(beta.distr)`` and ``invcov(beta.distr)`` apply method functions to extract the mean vector and inverse-covariance matrix of the ``beta`` prior.  Whereas, ``shape(s2.distr)`` and ``scale(s2.distr)`` extract the shape and scale parameters from fields of the inverse-gamma prior.  `Distributions` method functions can be found in that package's `documentation <http://distributionsjl.readthedocs.org>`_; whereas, fields are found in the `source code <https://github.com/JuliaStats/Distributions.jl>`_.
+
+When possible to do so, direct sampling from full conditions is often preferred in practice because it tends to be more efficient than general-purpose algorithms.  Schemes that mix the two approaches can be used if full conditionals are available for some model parameters but not for others.  Once a sampling scheme is formulated in `Mamba`, it can be assigned to an existing model with a call to the ``setsamplers!`` function.
+
+.. code-block:: julia
+
+    ## Sampling Scheme Assignment
+    setsamplers!(model, scheme1)
+
+Alternatively, a predefined scheme can be passed in to the ``Model`` constructor at the time of model implementation as the value to its ``samplers`` argument.
+
+.. _section-Model-Expression:
+
+Model Expression Syntax
+^^^^^^^^^^^^^^^^^^^^^^^
+
+All nodes in an implemented model are stored in a `Mamba` ``Model`` structure, from which they can be accessed with the symbol representations of their names (keys).  For instance, in the regression example, ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` are the symbol representations of the stochastic, logical, and input nodes described previously.  The ``Model`` structure can be referenced directly by the name ``model`` if expression syntax, instead of the previously presented function syntax, is used for the specification of nodes, as shown below.  Model expression syntax is a legacy feature of the package that is being phased out in favor of the recommended function syntax.
+
+.. code-block:: julia
+
+    model = Model(
+
+      y = Stochastic(1,
+        quote
+          mu = model[:mu]
+          s2 = model[:s2]
+          MvNormal(mu, sqrt(s2))
+        end,
+        false
+      ),
+
+      mu = Logical(1,
+        :(model[:xmat] * model[:beta]),
+        false
+      ),
+
+      beta = Stochastic(1,
+        :(MvNormal(2, sqrt(1000)))
+      ),
+
+      s2 = Stochastic(
+        :(InverseGamma(0.001, 0.001))
+      )
+
+    )
+
+    Gibbs_beta = Sampler([:beta],
       quote
         beta = model[:beta]
         s2 = model[:s2]
@@ -191,22 +256,7 @@ whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\b
       end
     )
 
-    ## User-Defined Sampling Scheme
-    scheme3 = [Gibbs_beta, Gibbs_s2]
-
-In these samplers, the respective ``MvNormal(2, sqrt(1000))`` and ``InverseGamma(0.001, 0.001)`` priors on stochastic nodes ``beta`` and ``s2`` are accessed directly through the ``distr`` :ref:`fields <section-Stochastic>`.  Features of the `Distributions` objects returned by ``beta.distr`` and ``s2.distr`` can, in turn, be extracted with method functions defined in that package or through their own fields.  For instance, ``mean(beta.distr)`` and ``invcov(beta.distr)`` apply method functions to extract the mean vector and inverse-covariance matrix of the ``beta`` prior.  Whereas, ``shape(s2.distr)`` and ``scale(s2.distr)`` extract the shape and scale parameters from fields of the inverse-gamma prior.  `Distributions` method functions can be found in that package's `documentation <http://distributionsjl.readthedocs.org>`_; whereas, fields are found in the `source code <https://github.com/JuliaStats/Distributions.jl>`_.
-
-When possible to do so, direct sampling from full conditions is often preferred in practice because it tends to be more efficient than general-purpose algorithms.  Schemes that mix the two approaches can be used if full conditionals are available for some model parameters but not for others.  Once a sampling scheme is formulated in `Mamba`, it can be assigned to an existing model with a call to the ``setsamplers!`` function.
-
-.. code-block:: julia
-
-    ## Sampling Scheme Assignment
-    setsamplers!(model, scheme1)
-
-Alternatively, a predefined scheme can be passed in to the ``Model`` constructor at the time of model implementation as the value to its ``samplers`` argument.
-
-The Model Expression Macro
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+An auxiliary macro is provided to simplify the syntax for expression-based node specification.
 
 .. function:: @modelexpr(args...)
 
@@ -360,11 +410,10 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 
 Initial values for ``y`` are those in the observed response vector.  Likewise, the node is not updated in the sampling schemes defined earlier and thus retains its initial values throughout MCMC simulations.  Initial values are generated for ``beta`` from a normal distribution and for ``s2`` from a gamma distribution.
 
-
 MCMC Engine
 ^^^^^^^^^^^
 
-MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are a ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  The simulation of multiple chains will be executed in parallel automatically if **julia** is running in multiprocessor mode on a multiprocessor system.  Multiprocessor mode can be started with the command line argument ``julia -p n``, where ``n`` is the number of available processors.  See the **julia** documentation on `parallel computing <http://julia.readthedocs.org/en/latest/manual/parallel-computing/>`_ for details.
+MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are a ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  Results are retuned as ``Chains`` objects on which methods for posterior inference are defined.
 
 .. code-block:: julia
 
@@ -379,7 +428,13 @@ MCMC simulation of draws from the posterior distribution of a declared set of mo
     setsamplers!(model, scheme3)
     sim3 = mcmc(model, line, inits, 10000, burnin=250, thin=2, chains=3)
 
-Results are retuned as ``Chains`` objects on which methods for posterior inference are defined.
+.. index:: Parallel Computing
+
+Parallel Computing
+^^^^^^^^^^^^^^^^^^
+
+The simulation of multiple chains will be executed in parallel automatically if **julia** is running in multiprocessor mode on a multiprocessor system.  Multiprocessor mode can be started with the command line argument ``julia -p n``, where ``n`` is the number of available processors.  See the **julia** documentation on `parallel computing <http://julia.readthedocs.org/en/latest/manual/parallel-computing/>`_ for details.
+
 
 .. _section-Line-Inference:
 

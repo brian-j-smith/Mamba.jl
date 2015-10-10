@@ -5,6 +5,7 @@
   ## Load needed packages and import methods to be extended
   using Distributions
   import Distributions: minimum, maximum, logpdf
+  export NewUnivarDist
 
   ## Type declaration
   type NewUnivarDist <: ContinuousUnivariateDistribution
@@ -39,7 +40,7 @@ Testing.maximum(d)
 Testing.insupport(d, 2.0)
 Testing.logpdf(d, 2.0)
 
-## Add the extensions to Mamba
+## Add the extensions
 using Mamba
 @everywhere eval(Mamba, extensions)
 
@@ -47,30 +48,28 @@ using Mamba
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(mu, s2,
+    (mu, s2) ->
       begin
         sigma = sqrt(s2)
         UnivariateDistribution[
           NewUnivarDist(mu[i], sigma) for i in 1:length(mu)
         ]
-      end
-    ),
+      end,
     false
   ),
 
   mu = Logical(1,
-    @modelexpr(xmat, beta,
-      xmat * beta
-    ),
+    (xmat, beta) ->
+      xmat * beta,
     false
   ),
 
   beta = Stochastic(1,
-    :(MvNormal(2, sqrt(1000)))
+    () -> MvNormal(2, sqrt(1000))
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

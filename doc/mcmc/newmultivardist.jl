@@ -5,6 +5,7 @@
   ## Load needed packages and import methods to be extended
   using Distributions
   import Distributions: length, insupport, _logpdf
+  export NewMultivarDist
 
   ## Type declaration
   type NewMultivarDist <: ContinuousMultivariateDistribution
@@ -49,25 +50,21 @@ using Mamba
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(mu, s2,
-      NewMultivarDist(mu, sqrt(s2))
-    ),
+    (mu, s2) -> NewMultivarDist(mu, sqrt(s2)),
     false
   ),
 
   mu = Logical(1,
-    @modelexpr(xmat, beta,
-      xmat * beta
-    ),
+    (xmat, beta) -> xmat * beta,
     false
   ),
 
   beta = Stochastic(1,
-    :(MvNormal(2, sqrt(1000)))
+    () -> MvNormal(2, sqrt(1000))
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )
