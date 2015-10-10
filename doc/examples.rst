@@ -43,6 +43,14 @@ Volume II
     examples/jaws.rst
     examples/eyes.rst
 
+The BUGS Book
+^^^^^^^^^^^^^
+
+.. toctree::
+    :maxdepth: 1
+
+    examples/asthma.rst
+
 
 Contributed
 -----------

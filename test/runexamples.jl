@@ -3,6 +3,7 @@ using Mamba
 include("utils.jl")
 
 test_openbugs = [
+  "asthma",
   "birats",
   "blocker",
   "bones",

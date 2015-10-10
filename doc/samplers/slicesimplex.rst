@@ -100,4 +100,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`Eyes <example-Eyes>` example.
+        See the :ref:`Asthma <example-Asthma>` and :ref:`Eyes <example-Eyes>` examples.
