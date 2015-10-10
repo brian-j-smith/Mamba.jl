@@ -81,6 +81,14 @@ function Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
   setmonitor!(l, monitor)
 end
 
+function Logical(f::Function, monitor::Union{Bool,Vector{Int}}=true)
+  Logical(modelexpr(f), monitor)
+end
+
+function Logical(d::Integer, f::Function, monitor::Union{Bool,Vector{Int}}=true)
+  Logical(d, modelexpr(f), monitor)
+end
+
 
 #################### Updating ####################
 
@@ -141,6 +149,15 @@ function Stochastic(d::Integer, expr::Expr,
   s = ArrayStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
                       Symbol[], NullUnivariateDistribution())
   setmonitor!(s, monitor)
+end
+
+function Stochastic(f::Function, monitor::Union{Bool,Vector{Int}}=true)
+  Stochastic(modelexpr(f), monitor)
+end
+
+function Stochastic(d::Integer, f::Function,
+                    monitor::Union{Bool,Vector{Int}}=true)
+  Stochastic(d, modelexpr(f), monitor)
 end
 
 

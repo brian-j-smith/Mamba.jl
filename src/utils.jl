@@ -1,4 +1,16 @@
-#################### Utility Macros ####################
+#################### Model Expression Operators ####################
+
+function modelexpr(f::Function)
+  ast = ccall(:jl_uncompress_ast, Any, (Any, Any), f.code, f.code.ast)
+
+  types = Symbol[args.args[2] for args in ast.args[1]]
+  all(T -> T == :Any, types) ||
+    throw(ArgumentError("node function arguments must all be of type Any"))
+
+  src = Symbol[args.args[1] for args in ast.args[1]]
+  modelargs = [Expr(:ref, :model, QuoteNode(s)) for s in src]
+  Expr(:block, Expr(:(=), :f, f), Expr(:call, :f, modelargs...))
+end
 
 macro modelexpr(args...)
   quote
@@ -20,7 +32,7 @@ macro promote_scalarvariate(V)
 end
 
 
-#################### Utility Functions ####################
+#################### Mathematical Operators ####################
 
 dot(x) = dot(x, x)
 

@@ -6,6 +6,10 @@ function Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
   Sampler(params, samplerfx(expr), tune, Symbol[])
 end
 
+function Sampler(params::Vector{Symbol}, f::Function, tune::Dict=Dict())
+  Sampler(params, modelexpr(f), tune)
+end
+
 
 #################### Base Methods ####################
 
