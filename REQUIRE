@@ -1,7 +1,7 @@
-julia 0.4-
+julia 0.4
 Cairo 0.2.31
 Calculus 0.1.13
-Compose 0.3.16
+Compose 0.3.17
 Distributions 0.8.7
 Gadfly 0.3.17
 Graphs 0.5.6

@@ -2,5 +2,6 @@ doc/_build/
 doc/make.bat
 test/*
 !test/*.jl
+!test/REQUIRE
 tmp/
 usr/

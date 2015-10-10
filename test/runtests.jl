@@ -22,11 +22,6 @@ test_extensions = [
   "newmultivardist"
 ]
 
-test_extensions = [
-  "newunivardist",
-  "newmultivardist"
-]
-
 println("Running tests:")
 
 for t in test_tutorials
