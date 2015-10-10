@@ -46,60 +46,52 @@ rats[:Xm] = rats[:X] - rats[:xbar]
 
 
 ## Model Specification
-
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(alpha, beta, rat, Xm, s2_c,
+    (alpha, beta, rat, Xm, s2_c) ->
       begin
         mu = alpha[rat] + beta[rat] .* Xm
         MvNormal(mu, sqrt(s2_c))
-      end
-    ),
+      end,
     false
   ),
 
   alpha = Stochastic(1,
-    @modelexpr(mu_alpha, s2_alpha,
-      Normal(mu_alpha, sqrt(s2_alpha))
-    ),
+    (mu_alpha, s2_alpha) -> Normal(mu_alpha, sqrt(s2_alpha)),
     false
   ),
 
   alpha0 = Logical(
-    @modelexpr(mu_alpha, xbar, mu_beta,
-      mu_alpha - xbar * mu_beta
-    )
+    (mu_alpha, xbar, mu_beta) -> mu_alpha - xbar * mu_beta
   ),
 
   mu_alpha = Stochastic(
-    :(Normal(0.0, 1000)),
+    () -> Normal(0.0, 1000),
     false
   ),
 
   s2_alpha = Stochastic(
-    :(InverseGamma(0.001, 0.001)),
+    () -> InverseGamma(0.001, 0.001),
     false
   ),
 
   beta = Stochastic(1,
-    @modelexpr(mu_beta, s2_beta,
-      Normal(mu_beta, sqrt(s2_beta))
-    ),
+    (mu_beta, s2_beta) -> Normal(mu_beta, sqrt(s2_beta)),
     false
   ),
 
   mu_beta = Stochastic(
-    :(Normal(0.0, 1000))
+    () -> Normal(0.0, 1000)
   ),
 
   s2_beta = Stochastic(
-    :(InverseGamma(0.001, 0.001)),
+    () -> InverseGamma(0.001, 0.001),
     false
   ),
 
   s2_c = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

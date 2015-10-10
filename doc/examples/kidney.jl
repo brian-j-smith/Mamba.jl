@@ -36,12 +36,11 @@ kidney[:Dx] = Int[
 
 
 ## Model Specification
-
 model = Model(
 
   t = Stochastic(2,
-    @modelexpr(alpha, beta_age, age, beta_sex, sex, Dx, beta_Dx, b, r,
-               tcensor, N, M,
+    (alpha, beta_age, age, beta_sex, sex, Dx, beta_Dx, b, r,
+     tcensor, N, M) ->
       begin
         beta_dis = Dx * beta_Dx
         UnivariateDistribution[
@@ -55,40 +54,37 @@ model = Model(
           end
           for i in 1:N, j in 1:M
         ]
-      end
-    ),
+      end,
     false
   ),
 
   b = Stochastic(1,
-    @modelexpr(s2,
-      Normal(0, sqrt(s2))
-    ),
+    s2 -> Normal(0, sqrt(s2)),
     false
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   ),
 
   alpha = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   beta_age = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   beta_sex = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   beta_Dx = Stochastic(1,
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   r = Stochastic(
-    :(Gamma(1, 1000))
+    () -> Gamma(1, 1000)
   )
 
 )

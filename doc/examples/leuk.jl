@@ -32,54 +32,42 @@ leuk[:r] = 0.1
 
 
 ## Model Specification
-
 model = Model(
 
   dN = Stochastic(2,
-    @modelexpr(Y, beta, Z, dL0, N, T,
+    (Y, beta, Z, dL0, N, T) ->
       UnivariateDistribution[
         Y[i,j] > 0 ? Poisson(exp(beta * Z[i]) * dL0[j]) : Flat()
         for i in 1:N, j in 1:T
-      ]
-    ),
+      ],
     false
   ),
 
   mu = Logical(1,
-    @modelexpr(c, r, t,
-      c * r * (t[2:end] - t[1:end-1])
-    ),
+    (c, r, t) -> c * r * (t[2:end] - t[1:end-1]),
     false
   ),
 
   dL0 = Stochastic(1,
-    @modelexpr(mu, c, T,
-      UnivariateDistribution[Gamma(mu[j], 1 / c) for j in 1:T]
-    ),
+    (mu, c, T) -> UnivariateDistribution[Gamma(mu[j], 1 / c) for j in 1:T],
     false
   ),
 
   beta = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   S0 = Logical(1,
-    @modelexpr(dL0,
-      exp(-cumsum(dL0))
-    ),
+    dL0 -> exp(-cumsum(dL0)),
     false
   ),
 
   S_treat = Logical(1,
-    @modelexpr(S0, beta,
-      S0.^exp(-0.5 * beta)
-    )
+    (S0, beta) -> S0.^exp(-0.5 * beta)
   ),
 
   S_placebo = Logical(1,
-    @modelexpr(S0, beta,
-      S0.^exp(0.5 * beta)
-    )
+    (S0, beta) -> S0.^exp(0.5 * beta)
   )
 
 )

@@ -14,11 +14,10 @@ eyes = Dict(
 
 
 ## Model Specification
-
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(lambda, T, s2, N,
+    (lambda, T, s2, N) ->
       begin
         sigma = sqrt(s2)
         UnivariateDistribution[
@@ -28,42 +27,35 @@ model = Model(
           end
           for i in 1:N
         ]
-      end
-    ),
+      end,
     false
   ),
 
   T = Stochastic(1,
-    @modelexpr(P, N,
-      UnivariateDistribution[Categorical(P) for i in 1:N]
-    ),
+    (P, N) -> UnivariateDistribution[Categorical(P) for i in 1:N],
     false
   ),
 
   P = Stochastic(1,
-    @modelexpr(alpha,
-      Dirichlet(alpha)
-    )
+    alpha -> Dirichlet(alpha)
   ),
 
   lambda = Logical(1,
-    @modelexpr(lambda0, theta,
-      Float64[lambda0; lambda0 + theta]
-    )
+    (lambda0, theta) -> Float64[lambda0; lambda0 + theta]
   ),
 
   lambda0 = Stochastic(
-    :(Normal(0.0, 1000.0)),
+    () -> Normal(0.0, 1000.0),
     false
   ),
 
   theta = Stochastic(
-    :(Uniform(0.0, 1000.0)),
+    () -> Uniform(0.0, 1000.0),
     false
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

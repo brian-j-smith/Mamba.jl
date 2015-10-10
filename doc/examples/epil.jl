@@ -89,13 +89,12 @@ map(key -> epil[symbol(string(key, "bar"))] = mean(epil[key]),
 
 
 ## Model Specification
-
 model = Model(
 
   y = Stochastic(2,
-    @modelexpr(a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,
-               alpha_BT, BT, BTbar, alpha_Age, logAge, logAgebar, alpha_V4, V4,
-               V4bar, b1, b, N, T,
+    (a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,
+     alpha_BT, BT, BTbar, alpha_Age, logAge, logAgebar, alpha_V4, V4,
+     V4bar, b1, b, N, T) ->
       UnivariateDistribution[
         begin
           mu = exp(a0 + alpha_Base * (logBase4[i] - logBase4bar) +
@@ -106,64 +105,58 @@ model = Model(
           Poisson(mu)
         end
         for i in 1:N, j in 1:T
-      ]
-    ),
+      ],
     false
   ),
 
   b1 = Stochastic(1,
-    @modelexpr(s2_b1,
-      Normal(0, sqrt(s2_b1))
-    ),
+    s2_b1 -> Normal(0, sqrt(s2_b1)),
     false
   ),
 
   b = Stochastic(2,
-    @modelexpr(s2_b,
-      Normal(0, sqrt(s2_b))
-    ),
+    s2_b -> Normal(0, sqrt(s2_b)),
     false
   ),
 
   a0 = Stochastic(
-    :(Normal(0, 100)),
+    () -> Normal(0, 100),
     false
   ),
 
   alpha_Base = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   alpha_Trt = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   alpha_BT = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   alpha_Age = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   alpha_V4 = Stochastic(
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   ),
 
   alpha0 = Logical(
-    @modelexpr(a0, alpha_Base, logBase4bar, alpha_Trt, Trtbar, alpha_BT, BTbar,
-               alpha_Age, logAgebar, alpha_V4, V4bar,
+    (a0, alpha_Base, logBase4bar, alpha_Trt, Trtbar, alpha_BT, BTbar,
+     alpha_Age, logAgebar, alpha_V4, V4bar) ->
       a0 - alpha_Base * logBase4bar - alpha_Trt * Trtbar - alpha_BT * BTbar -
         alpha_Age * logAgebar - alpha_V4 * V4bar
-    )
   ),
 
   s2_b1 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   ),
 
   s2_b = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

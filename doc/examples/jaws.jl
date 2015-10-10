@@ -35,24 +35,20 @@ jaws[:x] = kron(ones(jaws[:N]), jaws[:age])
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(beta0, beta1, x, Sigma,
-      BDiagNormal(beta0 + beta1 * x, Sigma)
-    ),
+    (beta0, beta1, x, Sigma) -> BDiagNormal(beta0 + beta1 * x, Sigma),
     false
   ),
 
   beta0 = Stochastic(
-    :(Normal(0, sqrt(1000)))
+    () -> Normal(0, sqrt(1000))
   ),
 
   beta1 = Stochastic(
-    :(Normal(0, sqrt(1000)))
+    () -> Normal(0, sqrt(1000))
   ),
 
   Sigma = Stochastic(2,
-    @modelexpr(M,
-      InverseWishart(4.0, eye(M))
-    )
+    M -> InverseWishart(4.0, eye(M))
   )
 
 )

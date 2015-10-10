@@ -12,43 +12,39 @@ salm = Dict{Symbol,Any}(
 
 
 ## Model Specification
-
 model = Model(
 
   y = Stochastic(2,
-    @modelexpr(alpha, beta, gamma, x, lambda,
+    (alpha, beta, gamma, x, lambda) ->
       UnivariateDistribution[
         begin
           mu = exp(alpha + beta * log(x[j] + 10) + gamma * x[j] + lambda[i,j])
           Poisson(mu)
         end
         for i in 1:3, j in 1:6
-      ]
-    ),
+      ],
     false
   ),
 
   alpha = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   beta = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   gamma = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   lambda = Stochastic(2,
-    @modelexpr(s2,
-      Normal(0, sqrt(s2))
-    ),
+    s2 -> Normal(0, sqrt(s2)),
     false
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

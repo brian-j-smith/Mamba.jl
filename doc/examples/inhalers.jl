@@ -40,11 +40,10 @@ end
 
 
 ## Model Specification
-
 model = Model(
 
   response = Stochastic(2,
-    @modelexpr(a1, a2, a3, mu, group, b, N, T,
+    (a1, a2, a3, mu, group, b, N, T) ->
       begin
         a = Float64[a1, a2, a3]
         UnivariateDistribution[
@@ -60,56 +59,48 @@ model = Model(
           end
           for i in 1:N, t in 1:T
         ]
-      end
-    ),
+      end,
     false
   ),
 
   mu = Logical(2,
-    @modelexpr(beta, treat, pi, period, kappa, carry, G, T,
+    (beta, treat, pi, period, kappa, carry, G, T) ->
       [ beta * treat[g,t] / 2 + pi * period[g,t] / 2 + kappa * carry[g,t]
-        for g in 1:G, t in 1:T ]
-    ),
+        for g in 1:G, t in 1:T ],
     false
   ),
 
   b = Stochastic(1,
-    @modelexpr(s2,
-      Normal(0, sqrt(s2))
-    ),
+    s2 -> Normal(0, sqrt(s2)),
     false
   ),
 
   a1 = Stochastic(
-    @modelexpr(a2,
-      Truncated(Flat(), -1000, a2)
-    )
+    a2 -> Truncated(Flat(), -1000, a2)
   ),
 
   a2 = Stochastic(
-    @modelexpr(a3,
-      Truncated(Flat(), -1000, a3)
-    )
+    a3 -> Truncated(Flat(), -1000, a3)
   ),
 
   a3 = Stochastic(
-    :(Truncated(Flat(), -1000, 1000))
+    () -> Truncated(Flat(), -1000, 1000)
   ),
 
   beta = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   pi = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   kappa = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

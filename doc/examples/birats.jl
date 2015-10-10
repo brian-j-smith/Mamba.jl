@@ -46,47 +46,39 @@ birats = Dict{Symbol,Any}(
 model = Model(
 
   Y = Stochastic(2,
-    @modelexpr(beta, x, sigmaC, N, T,
+    (beta, x, sigmaC, N, T) ->
       UnivariateDistribution[
         Normal(beta[i,1] + beta[i,2] * x[j], sigmaC)
         for i in 1:N, j in 1:T
-      ]
-    ),
+      ],
     false
   ),
 
   beta = Stochastic(2,
-    @modelexpr(mu_beta, Sigma, N,
+    (mu_beta, Sigma, N) ->
       MultivariateDistribution[
         MvNormal(mu_beta, Sigma)
         for i in 1:N
-      ]
-    ),
+      ],
     false
   ),
 
   mu_beta = Stochastic(1,
-    @modelexpr(mean, var,
-      MvNormal(mean, var)
-    )
+    (mean, var) -> MvNormal(mean, var)
   ),
 
   Sigma = Stochastic(2,
-    @modelexpr(Omega,
-      InverseWishart(2, Omega)
-    ),
+    Omega -> InverseWishart(2, Omega),
     false
   ),
 
   sigma2C = Stochastic(
-    :(InverseGamma(0.001, 0.001)),
+    () -> InverseGamma(0.001, 0.001),
     false
   ),
 
   sigmaC = Logical(
-    @modelexpr(sigma2C,
-      sqrt(sigma2C)
-    )
+    sigma2C -> sqrt(sigma2C)
   )
 
 )

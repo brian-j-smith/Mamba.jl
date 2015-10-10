@@ -44,21 +44,19 @@ oxford[:K] = length(oxford[:r1])
 
 
 ## Model Specification
-
 model = Model(
 
   r0 = Stochastic(1,
-    @modelexpr(mu, n0, K,
+    (mu, n0, K) ->
       begin
         p = invlogit(mu)
         UnivariateDistribution[Binomial(n0[i], p[i]) for i in 1:K]
-      end
-    ),
+      end,
     false
   ),
 
   r1 = Stochastic(1,
-    @modelexpr(mu, alpha, beta1, beta2, year, b, n1, K,
+    (mu, alpha, beta1, beta2, year, b, n1, K) ->
       UnivariateDistribution[
         begin
           p = invlogit(mu[i] + alpha + beta1 * year[i] +
@@ -66,37 +64,34 @@ model = Model(
           Binomial(n1[i], p)
         end
         for i in 1:K
-      ]
-    ),
+      ],
     false
   ),
 
   b = Stochastic(1,
-    @modelexpr(s2,
-      Normal(0, sqrt(s2))
-    ),
+    s2 -> Normal(0, sqrt(s2)),
     false
   ),
 
   mu = Stochastic(1,
-    :(Normal(0, 1000)),
+    () -> Normal(0, 1000),
     false
   ),
 
   alpha = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   beta1 = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   beta2 = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

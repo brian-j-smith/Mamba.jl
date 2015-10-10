@@ -22,11 +22,10 @@ equiv[:T] = [equiv[:group] 3 - equiv[:group]]
 
 
 ## Model Specification
-
 model = Model(
 
   y = Stochastic(2,
-    @modelexpr(delta, mu, phi, pi, s2_1, T,
+    (delta, mu, phi, pi, s2_1, T) ->
       begin
         sigma = sqrt(s2_1)
         UnivariateDistribution[
@@ -37,48 +36,41 @@ model = Model(
           end
           for i in 1:10, j in 1:2
         ]
-      end
-    ),
+      end,
     false
   ),
 
   delta = Stochastic(2,
-    @modelexpr(s2_2,
-      Normal(0, sqrt(s2_2))
-    ),
+    s2_2 -> Normal(0, sqrt(s2_2)),
     false
   ),
 
   mu = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   phi = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   theta = Logical(
-    @modelexpr(phi,
-      exp(phi)
-    )
+    phi -> exp(phi)
   ),
 
   pi = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   s2_1 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   ),
 
   s2_2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   ),
 
   equiv = Logical(
-    @modelexpr(theta,
-      Int(0.8 < theta < 1.2)
-    )
+    theta -> Int(0.8 < theta < 1.2)
   )
 
 )

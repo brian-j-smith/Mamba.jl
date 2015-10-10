@@ -9,35 +9,31 @@ pumps[:N] = length(pumps[:y])
 
 
 ## Model Specification
-
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(theta, t, N,
+    (theta, t, N) ->
       UnivariateDistribution[
         begin
           lambda = theta[i] * t[i]
           Poisson(lambda)
         end
         for i in 1:N
-      ]
-    ),
+      ],
     false
   ),
 
   theta = Stochastic(1,
-    @modelexpr(alpha, beta,
-      Gamma(alpha, 1 / beta)
-    ),
+    (alpha, beta) -> Gamma(alpha, 1 / beta),
     true
   ),
 
   alpha = Stochastic(
-    :(Exponential(1.0))
+    () -> Exponential(1.0)
   ),
 
   beta = Stochastic(
-    :(Gamma(0.1, 1.0))
+    () -> Gamma(0.1, 1.0)
   )
 
 )

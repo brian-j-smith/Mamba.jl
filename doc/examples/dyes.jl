@@ -22,29 +22,25 @@ dyes[:sample] = vcat(fill(collect(1:dyes[:samples]), dyes[:batches])...)
 model = Model(
 
   y = Stochastic(1,
-    @modelexpr(mu, batch, s2_within,
-      MvNormal(mu[batch], sqrt(s2_within))
-    ),
+    (mu, batch, s2_within) -> MvNormal(mu[batch], sqrt(s2_within)),
     false
   ),
 
   mu = Stochastic(1,
-    @modelexpr(theta, batches, s2_between,
-      Normal(theta, sqrt(s2_between))
-    ),
+    (theta, batches, s2_between) -> Normal(theta, sqrt(s2_between)),
     false
   ),
 
   theta = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   s2_within = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   ),
 
   s2_between = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

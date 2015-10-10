@@ -51,11 +51,10 @@ bones = Dict{Symbol,Any}(
 
 
 ## Model Specification
-
 model = Model(
 
   grade = Stochastic(2,
-    @modelexpr(ncat, delta, theta, gamma, nChild, nInd,
+    (ncat, delta, theta, gamma, nChild, nInd) ->
       begin
         p = Array(Float64, 5)
         UnivariateDistribution[
@@ -71,13 +70,12 @@ model = Model(
           end
           for i in 1:nChild, j in 1:nInd
         ]
-      end
-    ),
+      end,
     false
   ),
 
   theta = Stochastic(1,
-    :(Normal(0, 100))
+    () -> Normal(0, 100)
   )
 
 )

@@ -19,53 +19,46 @@ blocker[:N] = length(blocker[:rt])
 
 
 ## Model Specification
-
 model = Model(
 
   rc = Stochastic(1,
-    @modelexpr(mu, nc, N,
+    (mu, nc, N) ->
       begin
         pc = invlogit(mu)
         UnivariateDistribution[Binomial(nc[i], pc[i]) for i in 1:N]
-      end
-    ),
+      end,
     false
   ),
 
   rt = Stochastic(1,
-    @modelexpr(mu, delta, nt, N,
+    (mu, delta, nt, N) ->
       begin
         pt = invlogit(mu + delta)
         UnivariateDistribution[Binomial(nt[i], pt[i]) for i in 1:N]
-      end
-    ),
+      end,
     false
   ),
 
   mu = Stochastic(1,
-    :(Normal(0, 1000)),
+    () -> Normal(0, 1000),
     false
   ),
 
   delta = Stochastic(1,
-    @modelexpr(d, s2,
-      Normal(d, sqrt(s2))
-    ),
+    (d, s2) -> Normal(d, sqrt(s2)),
     false
   ),
 
   delta_new = Stochastic(
-    @modelexpr(d, s2,
-      Normal(d, sqrt(s2))
-    )
+    (d, s2) -> Normal(d, sqrt(s2))
   ),
 
   d = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

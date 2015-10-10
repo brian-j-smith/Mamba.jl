@@ -9,41 +9,33 @@ surgical[:N] = length(surgical[:r])
 
 
 ## Model Specification
-
 model = Model(
 
   r = Stochastic(1,
-    @modelexpr(n, p, N,
-      UnivariateDistribution[Binomial(n[i], p[i]) for i in 1:N]
-    ),
+    (n, p, N) ->
+      UnivariateDistribution[Binomial(n[i], p[i]) for i in 1:N],
     false
   ),
 
   p = Logical(1,
-    @modelexpr(b,
-      invlogit(b)
-    )
+    b -> invlogit(b)
   ),
 
   b = Stochastic(1,
-    @modelexpr(mu, s2,
-      Normal(mu, sqrt(s2))
-    ),
+    (mu, s2) -> Normal(mu, sqrt(s2)),
     false
   ),
 
   mu = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   pop_mean = Logical(
-    @modelexpr(mu,
-      invlogit(mu)
-    )
+    mu -> invlogit(mu)
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

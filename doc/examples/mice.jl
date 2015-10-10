@@ -18,11 +18,10 @@ mice[:N] = size(mice[:t], 2)
 
 
 ## Model Specification
-
 model = Model(
 
   t = Stochastic(2,
-    @modelexpr(r, beta, tcensor, M, N,
+    (r, beta, tcensor, M, N) ->
       UnivariateDistribution[
         begin
           lambda = exp(-beta[i] / r)
@@ -31,42 +30,33 @@ model = Model(
             Uniform(0, Inf)
         end
         for i in 1:M, j in 1:N
-      ]
-    ),
+      ],
     false
   ),
 
   r = Stochastic(
-    :(Exponential(1000))
+    () -> Exponential(1000)
   ),
 
   beta = Stochastic(1,
-    :(Normal(0, 10)),
+    () -> Normal(0, 10),
     false
   ),
 
   median = Logical(1,
-    @modelexpr(beta, r,
-      exp(-beta / r) * log(2)^(1/r)
-    )
+    (beta, r) -> exp(-beta / r) * log(2)^(1/r)
   ),
 
   veh_control = Logical(
-    @modelexpr(beta,
-      beta[2] - beta[1]
-    )
+    beta -> beta[2] - beta[1]
   ),
 
   test_sub = Logical(
-    @modelexpr(beta,
-      beta[3] - beta[1]
-    )
+    beta -> beta[3] - beta[1]
   ),
 
   pos_control = Logical(
-    @modelexpr(beta,
-      beta[4] - beta[1]
-    )
+    beta -> beta[4] - beta[1]
   )
 
 )

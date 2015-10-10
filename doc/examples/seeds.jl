@@ -13,11 +13,10 @@ seeds[:N] = length(seeds[:r])
 
 
 ## Model Specification
-
 model = Model(
 
   r = Stochastic(1,
-    @modelexpr(alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N,
+    (alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N) ->
       UnivariateDistribution[
         begin
           p = invlogit(alpha0 + alpha1 * x1[i] + alpha2 * x2[i] +
@@ -25,36 +24,33 @@ model = Model(
           Binomial(n[i], p)
         end
         for i in 1:N
-      ]
-    ),
+      ],
     false
   ),
 
   b = Stochastic(1,
-    @modelexpr(s2,
-      Normal(0, sqrt(s2))
-    ),
+    s2 -> Normal(0, sqrt(s2)),
     false
   ),
 
   alpha0 = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   alpha1 = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   alpha2 = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   alpha12 = Stochastic(
-    :(Normal(0, 1000))
+    () -> Normal(0, 1000)
   ),
 
   s2 = Stochastic(
-    :(InverseGamma(0.001, 0.001))
+    () -> InverseGamma(0.001, 0.001)
   )
 
 )

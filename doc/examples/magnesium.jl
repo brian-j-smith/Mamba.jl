@@ -18,23 +18,21 @@ magnesium[:s2_0] = 1 / mean(1 ./ magnesium[:s2])
 
 
 ## Model Specification
-
 model = Model(
 
   rcx = Stochastic(2,
-    @modelexpr(nc, pc,
-      UnivariateDistribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8]
-    ),
+    (nc, pc) ->
+      UnivariateDistribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8],
     false
   ),
 
   pc = Stochastic(2,
-    :(Uniform(0, 1)),
+    () -> Uniform(0, 1),
     false
   ),
 
   rtx = Stochastic(2,
-    @modelexpr(nt, pc, theta,
+    (nt, pc, theta) ->
       UnivariateDistribution[
         begin
           phi = logit(pc[i,j])
@@ -42,31 +40,27 @@ model = Model(
           Binomial(nt[j], pt)
         end
         for i in 1:6, j in 1:8
-      ]
-    ),
+      ],
     false
   ),
 
   theta = Stochastic(2,
-    @modelexpr(mu, tau,
-      UnivariateDistribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8]
-    ),
+    (mu, tau) ->
+      UnivariateDistribution[Normal(mu[i], tau[i]) for i in 1:6, j in 1:8],
     false
   ),
 
   mu = Stochastic(1,
-    :(Uniform(-10, 10)),
+    () -> Uniform(-10, 10),
     false
   ),
 
   OR = Logical(1,
-    @modelexpr(mu,
-      exp(mu)
-    )
+    mu -> exp(mu)
   ),
 
   tau = Logical(1,
-    @modelexpr(priors, s2_0,
+    (priors, s2_0) ->
       Float64[
         sqrt(priors[1]),
         sqrt(priors[2]),
@@ -74,11 +68,10 @@ model = Model(
         sqrt(s2_0 * (1 / priors[4] - 1)),
         sqrt(s2_0) * (1 / priors[5] - 1),
         sqrt(priors[6]) ]
-    )
   ),
 
   priors = Stochastic(1,
-    @modelexpr(s2_0,
+    s2_0 ->
       UnivariateDistribution[
         InverseGamma(0.001, 0.001),
         Uniform(0, 50),
@@ -86,8 +79,7 @@ model = Model(
         Uniform(0, 1),
         Uniform(0, 1),
         Truncated(Normal(0, sqrt(s2_0 / erf(0.75))), 0, Inf)
-      ]
-    ),
+      ],
     false
   )
 

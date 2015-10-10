@@ -53,36 +53,33 @@ lsat[:r] = lsat[:response][idx,:]
 model = Model(
 
   r = Stochastic(2,
-    @modelexpr(beta, theta, alpha, N, T,
+    (beta, theta, alpha, N, T) ->
       UnivariateDistribution[
         begin
           p = invlogit(beta * theta[i] - alpha[j])
           Bernoulli(p)
         end
         for i in 1:N, j in 1:T
-      ]
-    ),
+      ],
     false
   ),
 
   theta = Stochastic(1,
-    :(Normal(0, 1)),
+    () -> Normal(0, 1),
     false
   ),
 
   alpha = Stochastic(1,
-    :(Normal(0, 100)),
+    () -> Normal(0, 100),
     false
   ),
 
   a = Logical(1,
-    @modelexpr(alpha,
-      alpha - mean(alpha)
-    )
+    alpha -> alpha - mean(alpha)
   ),
 
   beta = Stochastic(
-    :(Truncated(Flat(), 0, Inf))
+    () -> Truncated(Flat(), 0, Inf)
   )
 
 )
