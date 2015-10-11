@@ -2,6 +2,12 @@
 
 ## Version Updates
 
+### 0.7.0
+* Implemented function syntax for specification of nodes and user-defined ``Sampler`` constructors.
+* Changed DSG sampler support field and arguments from Vector to Matrix.
+* Added PGF graphics format to ``Chains`` draw function.
+* Removed ``AbstractDependent`` linklength field.
+
 ### 0.6.3
 * Added support for model specification of stochastic nodes with ``Array{MultivariateDistribution}`` structures containing distributions of different lengths.
 * Added a Slice Simplex (SliceSimplex) sampler for parameters, like probability vectors, defined on simplexes.
