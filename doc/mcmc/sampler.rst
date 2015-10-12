@@ -30,13 +30,15 @@ Constructor
 ^^^^^^^^^^^
 
 .. function:: Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
+              Sampler(params::Vector{Symbol}, f::Function, tune::Dict=Dict())
 
     Construct a ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
 
     **Arguments**
 
         * ``params`` : symbols of nodes that are being block-updated by the sampler.
-        * ``expr`` : a quoted expression that makes up the body of the sampling function whose definition is described above.
+        * ``expr`` : a quoted expression or code-block defining the function body of the ``eval`` field.
+        * ``f`` : a function whose arguments are the other model nodes upon which the sampler depends, and that will be evaluated by the ``eval`` field function.
         * ``tune`` : tuning parameters needed by the sampling function.
 
     **Value**
@@ -45,7 +47,7 @@ Constructor
 
     **Example**
 
-        See the :ref:`section-Line-Specification` section of the tutorial.
+        See the :ref:`section-Line-Schemes` section of the tutorial.
 
 Display
 ^^^^^^^

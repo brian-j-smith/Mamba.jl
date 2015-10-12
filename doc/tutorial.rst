@@ -128,6 +128,8 @@ Case 1 is one of the `multivariate normal distributions <http://distributionsjl.
 In summary, ``y`` and ``beta`` are stochastic vectors, ``s2`` is a stochastic scalar, and ``mu`` is a logical vector.  We note that the model could have been implemented without ``mu``.  It is included here primarily to illustrate use of a logical node.  Finally, note that nodes ``y`` and ``mu`` are not being monitored.
 
 
+.. _section-Line-Schemes:
+
 Sampling Schemes
 ^^^^^^^^^^^^^^^^
 
