@@ -13,7 +13,7 @@
     sigma::Float64
 
     ## Constructor
-    function NewMultivarDist(mu, sigma)
+    function NewMultivarDist(mu::AbstractVector, sigma::Real)
       new(convert(Vector{Float64}, mu), convert(Float64, sigma))
     end
   end
@@ -23,7 +23,7 @@
   ## Dimension of the distribution
   length(d::NewMultivarDist) = length(d.mu)
 
-  ## Logicals indicating whether elements of x are in the support
+  ## Logical indicating whether x is in the support
   function insupport{T<:Real}(d::NewMultivarDist, x::Vector{T})
     length(d) == length(x) && all(isfinite(x))
   end
@@ -42,7 +42,7 @@ d = Testing.NewMultivarDist([0.0, 0.0], 1.0)
 Testing.insupport(d, [2.0, 3.0])
 Testing.logpdf(d, [2.0, 3.0])
 
-## Add the extensions to Mamba
+## Add the extensions
 using Mamba
 @everywhere eval(Mamba, extensions)
 

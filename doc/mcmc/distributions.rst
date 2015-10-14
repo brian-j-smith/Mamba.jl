@@ -62,7 +62,7 @@ New known, unknown, or unnormalized univariate distributions can be created and 
 
     #. Export the name of the new distribution being created.
 
-    #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
+    #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments and explicitly converts them in the constructor body to concrete types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
     #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
 
@@ -153,7 +153,7 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
     #. Export the name of the new distribution being created.
 
-    #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed arguments and explicitly converts them in the constructor body to the proper types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
+    #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments and explicitly converts them in the constructor body to concrete types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
     #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
 

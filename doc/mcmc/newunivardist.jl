@@ -13,7 +13,7 @@
     sigma::Float64
 
     ## Constructor
-    function NewUnivarDist(mu, sigma)
+    function NewUnivarDist(mu::Real, sigma::Real)
       new(convert(Float64, mu), convert(Float64, sigma))
     end
   end
