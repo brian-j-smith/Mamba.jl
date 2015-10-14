@@ -61,3 +61,4 @@ Additional examples are provided below to further illustrate features of the pac
     :maxdepth: 1
 
     examples/line_amwg_slice.rst
+    examples/pollution.rst
