@@ -3,6 +3,7 @@ using Mamba
 include("utils.jl")
 
 test_openbugs = [
+  "abc",
   "asthma",
   "birats",
   "blocker",
@@ -28,7 +29,8 @@ test_openbugs = [
 ]
 
 test_contributed = [
-  "line_amwg_slice"
+  "line_amwg_slice",
+  "abc"
 ]
 
 println("Running examples:")

@@ -189,6 +189,7 @@ module Mamba
   include("output/stats.jl")
   include("output/plot.jl")
 
+  include("samplers/abc.jl")
   include("samplers/amm.jl")
   include("samplers/amwg.jl")
   include("samplers/bmmg.jl")
@@ -271,6 +272,7 @@ module Mamba
     update!
 
   export
+    ABC,
     amm!,
     AMM,
     AMMVariate,
