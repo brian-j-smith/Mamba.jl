@@ -169,11 +169,11 @@ module Mamba
   include("distributions/pdmatdistribution.jl")
   include("distributions/transformdistribution.jl")
 
-  include("model/core.jl")
   include("model/dependent.jl")
   include("model/graph.jl")
   include("model/initialization.jl")
   include("model/mcmc.jl")
+  include("model/model.jl")
   include("model/simulation.jl")
 
   include("output/chains.jl")
