@@ -70,11 +70,11 @@ end
 rand(s::AbstractStochastic, inds::StochasticIndices) = rand_sub(s.distr, inds)
 
 function rand_sub(d::Distribution, inds::StochasticIndices)
-  if length(inds.value) > 0
+  if isempty(inds.value)
+    Float64[]
+  else
     x = rand(d)
     Float64[x[i] for i in inds.value]
-  else
-    Float64[]
   end
 end
 

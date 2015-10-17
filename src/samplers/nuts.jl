@@ -70,7 +70,7 @@ function nutsfx{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
   logf = logpdf(m, x, block, true)
   grad = isfinite(logf) ?
            gradlogpdf(m, x, block, true, dtype=dtype) :
-           zeros(length(x))
+           zeros(x)
   logf, grad
 end
 
@@ -78,7 +78,7 @@ function nutsfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
   logf = logpdf!(m, x, block, true)
   grad = isfinite(logf) ?
            gradlogpdf!(m, x, block, true, dtype=dtype) :
-           zeros(length(x))
+           zeros(x)
   logf, grad
 end
 

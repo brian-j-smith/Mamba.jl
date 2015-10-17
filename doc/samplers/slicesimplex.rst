@@ -5,7 +5,7 @@
 Slice Simplex (SliceSimplex)
 ----------------------------
 
-Implementation of the slice simplex sampler as described by Cowles et al. :cite:`cowles:2009:RAMPS` for simulating autocorrelated draws of parameters on the simplex :math:`\{\theta_1, \ldots, \theta_n : \theta_i \ge 0, \sum_{i=1}^n \theta_i = 1\}` and from a distribution that can be specified up to a constant of proportionality.
+Implementation of the slice simplex sampler as described by Cowles et al. :cite:`cowles:2009:RAMPS` for simulating autocorrelated draws of parameters on the simplex :math:`\{\theta_1, \ldots, \theta_d : \theta_i \ge 0, \sum_{i=1}^d \theta_i = 1\}` and from a distribution that can be specified up to a constant of proportionality.
 
 
 Stand-Alone Function
@@ -100,4 +100,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`Asthma <example-Asthma>` and :ref:`Eyes <example-Eyes>` examples.
+        See the :ref:`Asthma <example-Asthma>`, :ref:`Eyes <example-Eyes>`, and other :ref:`section-Examples`.

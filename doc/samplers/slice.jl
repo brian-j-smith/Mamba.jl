@@ -24,24 +24,19 @@ logf = function(x::DenseVector)
      0.5 * b0^2 / 1000 - 0.5 * b1^2 / 1000
 end
 
-## MCMC Simulation with Multivariate Slice Sampling
+## MCMC Simulation with Slice Sampling
+## With multivariate (1) and univariate (2) updating
 n = 5000
 sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
-theta = SliceVariate([0.0, 0.0, 0.0])
+sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
+theta1 = SliceVariate([0.0, 0.0, 0.0])
+theta2 = SliceVariate([0.0, 0.0, 0.0])
 width = [1.0, 1.0, 2.0]
 for i in 1:n
-  slice!(theta, width, logf, :multivar)
-  sim1[i,:,1] = [theta[1:2]; exp(theta[3])]
+  slice!(theta1, width, logf, :multivar)
+  slice!(theta2, width, logf, :univar)
+  sim1[i,:,1] = [theta1[1:2]; exp(theta1[3])]
+  sim2[i,:,1] = [theta2[1:2]; exp(theta2[3])]
 end
 describe(sim1)
-
-## MCMC Simulation with Univariate Slice Sampling
-n = 5000
-sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
-theta = SliceVariate([0.0, 0.0, 0.0])
-width = [1.0, 1.0, 2.0]
-for i in 1:n
-  slice!(theta, width, logf, :univar)
-  sim2[i,:,1] = [theta[1:2]; exp(theta[3])]
-end
 describe(sim2)

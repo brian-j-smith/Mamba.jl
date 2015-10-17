@@ -24,4 +24,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`Bones <example-Bones>` and :ref:`Mice <example-Mice>` examples.
+        See the :ref:`Bones <example-Bones>` and other :ref:`section-Examples`.

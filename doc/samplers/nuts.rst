@@ -119,7 +119,7 @@ Sampler Constructor
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``dtype`` : type of differentiation for gradient calculations.  Options are
             * ``:central`` : central differencing.
             * ``:forward`` : forward differencing.
@@ -131,4 +131,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`section-Examples` section.
+        See the :ref:`Dyes <example-Dyes>`, :ref:`Equiv <example-Equiv>`, and other :ref:`section-Examples`.

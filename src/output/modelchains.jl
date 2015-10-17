@@ -29,7 +29,7 @@ function link(c::ModelChains)
   for key in intersect(keys(c.model, :monitor), keys(c.model, :stochastic))
     node = c.model[key]
     inds = findin(c.names, names(node))
-    if length(inds) > 0
+    if !isempty(inds)
       f(x) = unlist(node, relist(node, x), true)
       cc[:,inds,:] = mapslices(f, cc[:,inds,:], 2)
       inds_queue = setdiff(inds_queue, inds)

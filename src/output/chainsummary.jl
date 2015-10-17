@@ -44,22 +44,27 @@ function Base.showall(io::IO, s::ChainSummary)
   show(io, s)
 end
 
-# write n ' ' characters to io
+## write n ' ' characters to io
 wrtsp(io::IO, n) = while (n -= 1) >= 0 write(io, ' ') end
 
 function Base.show(io::IO, s::ChainSummary)
-  rnwid = map(length,s.rownames)   # rowname widths
+  ## rowname widths
+  rnwid = map(length, s.rownames)
   mxrnwid = maximum(rnwid)
-  cnwid = map(length,s.colnames)   # column name widths
-  charv = mapslices(showoff, s.value, 1) # s.value as right alignable strings
-  colwid = 1 + max(cnwid,vec(maximum(map(length,charv),[1,3])))
-  m,n,f = size(charv)
+  ## column name widths
+  cnwid = map(length, s.colnames)
+  ## s.value as right alignable strings
+  charv = mapslices(showoff, s.value, 1)
+  colwid = 1 + max(cnwid, vec(maximum(map(length, charv), [1, 3])))
+  m, n, f = size(charv)
   for k in 1:f
     ## write the column headers centered on the column widths
     wrtsp(io, mxrnwid)
     for j in 1:n
-      nspace = colwid[j] - cnwid[j] - 1 # don't count the leading space
-      nright = nspace >> 1              # divide by 2 rounding down
+      ## do not count the leading space
+      nspace = colwid[j] - cnwid[j] - 1
+      ## divide by 2 rounding down
+      nright = nspace >> 1
       wrtsp(io, 1 + nspace - nright)
       print(io, s.colnames[j])
       wrtsp(io, nright)

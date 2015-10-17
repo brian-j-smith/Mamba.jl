@@ -17,7 +17,7 @@ Listed below are the sampling methods for which functions are provided to simula
     samplers/slice.rst
     samplers/slicesimplex.rst
 
-The following table summarizes the (*n*-dimensional) sample spaces over which each method simulates draws, whether draws are generated univariately or multivariately, and whether transformations are applied to map parameters to the sample spaces.
+The following table summarizes the (*d*-dimensional) sample spaces over which each method simulates draws, whether draws are generated univariately or multivariately, and whether transformations are applied to map parameters to the sample spaces.
 
 .. table:: Summary of sampling methods and their characteristics.
 
@@ -26,19 +26,19 @@ The following table summarizes the (*n*-dimensional) sample spaces over which ea
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
     | Method                                     | Sample Space                          | Univariate | Multivariate | Univariate | Multivariate | Transformations |
     +============================================+=======================================+============+==============+============+==============+=================+
-    | :ref:`AMM <section-AMM>`                   | :math:`\mathbb{R}^n`                  | No         | Yes          | No         | Yes          | Yes             |
+    | :ref:`AMM <section-AMM>`                   | :math:`\mathbb{R}^d`                  | No         | Yes          | No         | Yes          | Yes             |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`AMWG <section-AMWG>`                 | :math:`\mathbb{R}^n`                  | Yes        | No           | Yes        | No           | Yes             |
+    | :ref:`AMWG <section-AMWG>`                 | :math:`\mathbb{R}^d`                  | Yes        | No           | Yes        | No           | Yes             |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`BMMG <section-BMMG>`                 | :math:`\{0, 1\}^n`                    | Yes        | Yes          | Yes        | Yes          | No              |
+    | :ref:`BMMG <section-BMMG>`                 | :math:`\{0, 1\}^d`                    | Yes        | Yes          | Yes        | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`DGS <section-DGS>`                   | Finite :math:`S \subset \mathbb{Z}^n` | No         | Yes          | Yes        | No           | No              |
+    | :ref:`DGS <section-DGS>`                   | Finite :math:`S \subset \mathbb{Z}^d` | No         | Yes          | Yes        | No           | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
     | :ref:`MISS <section-MISS>`                 | Parameter-defined                     | No         | No           | Yes        | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`NUTS <section-NUTS>`                 | :math:`\mathbb{R}^n`                  | No         | Yes          | No         | Yes          | Yes             |
+    | :ref:`NUTS <section-NUTS>`                 | :math:`\mathbb{R}^d`                  | No         | Yes          | No         | Yes          | Yes             |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`Slice <section-Slice>`               | :math:`S \subseteq \mathbb{R}^n`      | Yes        | Yes          | Yes        | Yes          | Optional        |
+    | :ref:`Slice <section-Slice>`               | :math:`S \subseteq \mathbb{R}^d`      | Yes        | Yes          | Yes        | Yes          | Optional        |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`SliceSimplex <section-SliceSimplex>` | *n*-simplex                           | No         | Yes          | No         | Yes          | No              |
+    | :ref:`SliceSimplex <section-SliceSimplex>` | *d*-simplex                           | No         | Yes          | No         | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+

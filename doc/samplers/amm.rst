@@ -101,7 +101,7 @@ Sampler Constructor
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function.
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
         * ``adapt`` : type of adaptation phase.  Options are
             * ``:all`` : adapt proposal during all iterations.
@@ -114,4 +114,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`section-Examples` section.
+        See the :ref:`Seeds <example-Seeds>` and other :ref:`section-Examples`.

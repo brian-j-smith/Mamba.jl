@@ -7,7 +7,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
               nrow::Integer=3, ncol::Integer=2, byrow::Bool=true,
               ask::Bool=true)
 
-  in(fmt, [:pdf, :pgf, :png, :ps, :svg]) ||
+  fmt in [:pdf, :pgf, :png, :ps, :svg] ||
     error("$(fmt) is not a supported draw format")
 
   f(args...) = fmt == :pdf ? PDF(args...) :
@@ -112,12 +112,12 @@ function barplot(c::AbstractChains; legend::Bool=false,
     for j in 1:nchains
       m = countmap(c.value[:,i,j])
       for k in 1:n
-        if in(S[k], keys(m))
+        if S[k] in keys(m)
           y[k,j] = m[S[k]] / nrows
         end
       end
     end
-    ymax = maximum(position == :stack ? mapslices(sum, y, [2]) : y)
+    ymax = maximum(position == :stack ? mapslices(sum, y, 2) : y)
     plots[i] = plot(x=vec(x), y=vec(y), Geom.bar(position=position),
                     color=repeat(c.chains, inner=[n]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
@@ -154,7 +154,7 @@ function meanplot(c::AbstractChains; legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
   plots = Array(Plot, nvars)
   pos = legend ? :right : :none
-  val = mapslices(cummean, c.value, [1])
+  val = cummean(c.value)
   for i in 1:nvars
     plots[i] = plot(y=vec(val[:,i,:]),
                     x=repeat(collect(c.range), outer=[nchains]),
@@ -192,17 +192,4 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
                     Guide.title(c.names[i]), Theme(key_position=pos))
   end
   return plots
-end
-
-
-#################### Auxiliary Functions ####################
-
-function cummean{T<:Real}(x::Array{T})
-  y = similar(x, Float64)
-  xs = 0.0
-  for i in 1:length(x)
-    xs += x[i]
-    y[i] = xs / i
-  end
-  y
 end

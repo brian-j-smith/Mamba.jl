@@ -39,7 +39,7 @@ end
 
 function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
                       adapt::Symbol=:all)
-  in(adapt, [:all, :burnin, :none]) ||
+  adapt in [:all, :burnin, :none] ||
     error("adapt argument must be one of :all, :burnin, or :none")
 
   Sampler(params,

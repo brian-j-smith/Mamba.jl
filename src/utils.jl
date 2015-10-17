@@ -34,6 +34,18 @@ end
 
 #################### Mathematical Operators ####################
 
+cummean(x::AbstractArray) = mapslices(cummean, x, 1)
+
+function cummean{T<:Real}(x::AbstractVector{T})
+  y = similar(x, Float64)
+  xs = 0.0
+  for i in 1:length(x)
+    xs += x[i]
+    y[i] = xs / i
+  end
+  y
+end
+
 dot(x) = dot(x, x)
 
 invlogit(x::Real) = 1.0 / (exp(-x) + 1.0)

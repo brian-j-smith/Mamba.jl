@@ -484,14 +484,14 @@ Model-Based Inference
 
 .. index:: Posterior Predictive Distribution
 
-.. function:: predict(c::ModelChains, key::Symbol)
+.. function:: predict(c::ModelChains, nodekey::Symbol)
 
     Generate MCMC draws from a posterior predictive distribution.
 
     **Arguments**
 
         * ``c``: sampler output from a model fit with the :func:`mcmc` function.
-        * ``key``: name of an observed Stochastic model node for which to generate draws from its predictive distribution.
+        * ``nodekey``: an observed Stochastic model node for which to generate draws from its predictive distribution.
 
     **Value**
 
@@ -512,7 +512,8 @@ Plotting
 
 .. index:: Posterior Summaries; Plotting
 
-.. function:: plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :density]; legend::Bool=false, args...)
+.. function:: plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :density]; \
+                   legend::Bool=false, args...)
               plot(c::AbstractChains, ptype::Symbol; legend::Bool=false, args...)
 
     Various plots to summarize sampler output stored in ``AbstractChains`` subtypes.  Separate plots are produced for each sampled parameter.
@@ -528,7 +529,7 @@ Plotting
             * ``:mixeddensity`` : bar plots (``:bar``) for parameters with integer values within bounds defined by optional argument ``barbounds::Tuple{Real,Real}=(0,Inf)``, and density plots (``:density``) otherwise.
             * ``:trace`` : trace plots.
         * ``legend`` : whether to include legends in the plots to identify chain-specific results.
-        * ``args...`` : additional arguments to be passed to the ``ptype`` method, as described above.
+        * ``args...`` : additional keyword arguments to be passed to the ``ptype`` options, as described above.
 
     **Value**
 

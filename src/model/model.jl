@@ -14,15 +14,11 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
   m = Model(nodedict, Symbol[], Sampler[], Vector{Float64}[], iter, burnin,
             chain, false, false)
   g = graph(m)
-  V = vertices(g)
-  lookup = Dict{Symbol,Int}()
-  for v in V
-    setindex!(lookup, v.index, v.key)
-  end
   m.dependents = intersect(tsort(g), keys(m, :dependent))
-  for key in m.dependents
-    targets = gettargets(V[lookup[key]], g, m)
-    m[key].targets = intersect(m.dependents, targets)
+  for v in vertices(g)
+    if v.key in m.dependents
+      m[v.key].targets = intersect(m.dependents, gettargets(v, g, m))
+    end
   end
   setsamplers!(m, samplers)
 end
@@ -34,19 +30,19 @@ function Base.getindex(m::Model, key::Symbol)
   m.nodes[key]
 end
 
-function Base.setindex!(m::Model, values::Dict, nkeys::Vector{Symbol})
-  for key in nkeys
+function Base.setindex!(m::Model, values::Dict, nodekeys::Vector{Symbol})
+  for key in nodekeys
     m[key][:] = values[key]
   end
 end
 
-function Base.setindex!(m::Model, value, nkeys::Vector{Symbol})
-  length(nkeys) == 1 || throw(BoundsError())
-  m[nkeys[1]][:] = value
+function Base.setindex!(m::Model, value, nodekeys::Vector{Symbol})
+  length(nodekeys) == 1 || throw(BoundsError())
+  m[nodekeys[1]][:] = value
 end
 
-function Base.setindex!(m::Model, value, nkey::Symbol)
-  m[nkey][:] = value
+function Base.setindex!(m::Model, value, nodekey::Symbol)
+  m[nodekey][:] = value
 end
 
 
@@ -86,7 +82,7 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   elseif ntype == :monitor
     for key in keys(m.nodes)
       node = m[key]
-      if isa(node, AbstractDependent) && length(node.monitor) > 0
+      if isa(node, AbstractDependent) && !isempty(node.monitor)
         push!(values, key)
       end
     end
@@ -109,6 +105,9 @@ function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
   values
 end
 
+
+#################### Display ####################
+
 function Base.show(io::IO, m::Model)
   showf(io, m, Base.show)
 end
@@ -127,39 +126,28 @@ function showf(io::IO, m::Model, f::Function)
   end
 end
 
-function tune(m::Model, block::Integer=0)
-  if block > 0
-    values = m.samplers[block].tune
-  else
-    n = length(m.samplers)
-    values = Array(Any, n)
-    for i in 1:n
-      values[i] = m.samplers[i].tune
-    end
-  end
-  values
-end
-
 
 #################### Auxiliary Functions ####################
 
 function names(m::Model, monitoronly::Bool)
   values = AbstractString[]
   for key in keys(m, :dependent)
-    node = m[key]
-    lnames = unlist(node, names(node))
-    v = monitoronly ? lnames[node.monitor] : vec(lnames)
+    nodenames = names(m, key)
+    v = monitoronly ? nodenames[m[key].monitor] : nodenames
     append!(values, v)
   end
   values
 end
 
-function names(m::Model, nkeys::Vector{Symbol})
+function names(m::Model, nodekey::Symbol)
+  node = m[nodekey]
+  unlist(node, names(node))
+end
+
+function names(m::Model, nodekeys::Vector{Symbol})
   values = AbstractString[]
-  for key in nkeys
-    node = m[key]
-    lnames = unlist(node, names(node))
-    append!(values, vec(lnames))
+  for key in nodekeys
+    append!(values, names(m, key))
   end
   values
 end

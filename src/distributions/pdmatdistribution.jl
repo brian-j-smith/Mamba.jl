@@ -2,7 +2,7 @@
 
 typealias PDMatDistribution Union{InverseWishart, Wishart}
 
-function unlist(d::PDMatDistribution, X::DenseMatrix)
+function unlist(d::PDMatDistribution, X::AbstractArray)
   n = dim(d)
   y = similar(X, Int(n * (n + 1) / 2))
   k = 0

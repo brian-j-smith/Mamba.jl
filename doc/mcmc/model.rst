@@ -222,7 +222,7 @@ Parameter Block Operations
 
         * ``m`` : a model containing the stochastic nodes for which to compute the gradient.
         * ``x`` : a value (possibly different than the current one) at which to compute the gradient.
-        * ``block`` : the sampling block of stochastic nodes for which to compute the gradient, if specified; otherwise, all sampling blocks are included.
+        * ``block`` : the sampling block of stochastic nodes for which to compute the gradient (default: all stochastic nodes).
         * ``transform`` : whether to compute the gradient of block parameters on the link–transformed scale.
         * ``dtype`` : type of differentiation for gradient calculations.  Options are
             * ``:central`` : central differencing.
@@ -271,7 +271,7 @@ Parameter Block Operations
 
         * ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
         * ``x`` : a value (possibly different than the current one) at which to evaluate densities.
-        * ``block`` : the sampling block of stochastic nodes over which to sum densities, if specified; otherwise, all stochastic nodes are included.
+        * ``block`` : the sampling block of stochastic nodes over which to sum densities (default: all stochastic nodes).
         * ``transform`` : whether to evaluate evaluate log-densities of block parameters on the link–transformed scale.
 
     **Value**
@@ -285,7 +285,7 @@ Parameter Block Operations
     **Argument:**
 
         * ``m`` : a model specification.
-        * ``block`` : the block for which to simulate an MCMC draw, if specified; otherwise, simulate draws for all blocks (default).
+        * ``block`` : the block for which to simulate an MCMC draw (default: all blocks).
 
     **Value**
 
@@ -302,22 +302,22 @@ Parameter Block Operations
     **Arguments**
 
         * ``m`` : a model with block-samplers.
-        * ``block`` : the block for which to return the tuning parameters, if specified; otherwise, the tuning parameters for all blocks.
+        * ``block`` : the block for which to return the tuning parameters (default: all blocks).
 
     **Value**
 
         If ``block = 0``, a vector of dictionaries containing block-specific tuning parameters; otherwise, one block-specific dictionary.
 
 .. function:: unlist(m::Model, block::Integer=0, transform::Bool=false)
-              unlist(m::Model, nkeys::Vector{Symbol}, transform::Bool=false)
+              unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
               relist(m::Model, values::AbstractArray{T<:Real}, \
                      block::Integer=0, transform::Bool=false)
               relist(m::Model, values::AbstractArray{T<:Real}, \
-                     nkeys::Vector{Symbol},transform::Bool=false)
+                     nodekeys::Vector{Symbol},transform::Bool=false)
               relist!(m::Model, values::AbstractArray{T<:Real}, \
                       block::Integer=0, transform::Bool=false)
               relist!(m::Model, values::AbstractArray{T<:Real}, \
-                      nkeys::Vector{Symbol}, transform::Bool=false)
+                      nodekeys::Vector{Symbol}, transform::Bool=false)
 
     Convert (unlist) sets of logical and/or stochastic node values to vectors, or reverse (relist) the process.
 
@@ -325,8 +325,8 @@ Parameter Block Operations
 
         * ``m`` : a model containing nodes to be unlisted or relisted.
         * ``values`` : values to re-list.
-        * ``block`` : the sampling block of nodes to be listed.  Defaults to all blocks.
-        * ``nkeys`` : a vector of symbols identifying the nodes to be listed.
+        * ``block`` : the sampling block of nodes to be listed (default: all blocks).
+        * ``nodekeys`` : a vector of symbols identifying the nodes to be listed.
         * ``transform`` : whether to apply a link transformation in the conversion.
 
     **Value**
@@ -340,7 +340,7 @@ Parameter Block Operations
     **Arguments**
 
         * ``m`` : a mode with nodes to be updated.
-        * ``block`` : the sampling block of nodes to be updated.  Defaults to all blocks.
+        * ``block`` : the sampling block of nodes to be updated (default: all blocks).
 
     **Value**
 

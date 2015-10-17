@@ -101,7 +101,7 @@ Sampler Constructor
         * ``stype`` : sampler type. Options are
             * ``:multivar`` : Joint multivariate sampling of parameters.
             * ``:univar`` : Sequential univariate sampling.
-        * ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``link()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
+        * ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
 
     **Value**
 
@@ -109,4 +109,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`section-Examples` section.
+        See the :ref:`Birats <example-Birats>`, :ref:`Rats <example-Rats>`, and other :ref:`section-Examples`.

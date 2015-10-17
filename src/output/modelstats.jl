@@ -2,24 +2,24 @@
 
 function dic(mc::ModelChains)
   m = mc.model
-  nkeys = keys(m, :output)
+  nodekeys = keys(m, :output)
   idx = indexin(names(m, keys(m, :block)), mc.names)
-  in(0, idx) && error("dic requires all sampled nodes to be monitored")
+  0 in idx && error("dic requires all sampled nodes to be monitored")
 
   xbar = map(i -> mean(mc.value[:,i,:]), idx)
   relist!(m, xbar)
-  Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, nkeys)
-  D = -2.0 * logpdf(mc, nkeys)
+  Dhat = -2.0 * mapreduce(key -> logpdf(m[key]), +, nodekeys)
+  D = -2.0 * logpdf(mc, nodekeys)
   p = [mean(D) - Dhat, 0.5 * var(D)]
 
   ChainSummary([Dhat + 2.0 * p  p], ["pD", "pV"],
                ["DIC", "Effective Parameters"], header(mc))
 end
 
-function logpdf(mc::ModelChains, nkeys::Vector{Symbol})
+function logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
   m = mc.model
   idx = indexin(names(m, keys(m, :block)), mc.names)
-  in(0, idx) && error("logpdf requires all sampled nodes to be monitored")
+  0 in idx && error("logpdf requires all sampled nodes to be monitored")
 
   iters, p, chains = size(mc.value)
   values = Array(Float64, iters, 1, chains)
@@ -31,7 +31,7 @@ function logpdf(mc::ModelChains, nkeys::Vector{Symbol})
     meter = ChainProgress(frame, k, iters)
     for i in 1:iters
       relist!(m, mc.value[i,idx,k])
-      values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nkeys)
+      values[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nodekeys)
       next!(meter)
     end
     println()
@@ -40,20 +40,20 @@ function logpdf(mc::ModelChains, nkeys::Vector{Symbol})
   values
 end
 
-function predict(mc::ModelChains, key::Symbol)
+function predict(mc::ModelChains, nodekey::Symbol)
   m = mc.model
-  node = m[key]
+  node = m[nodekey]
 
   outputs = keys(m, :output)
-  in(key, outputs) ||
+  nodekey in outputs ||
     error("predict is only defined for observed Stochastic nodes: ",
           join(map(string, outputs), ", "))
 
-  nodenames = names(m, [key])
+  nodenames = names(m, [nodekey])
 
   sources = intersect(node.sources, keys(m, :stochastic))
   idx = indexin(names(m, sources), mc.names)
-  in(0, idx) && error("predict requires monitoring of nodes: ",
+  0 in idx && error("predict requires monitoring of nodes: ",
                       join(map(string, sources), ", "))
 
   iters, _, chains = size(mc.value)

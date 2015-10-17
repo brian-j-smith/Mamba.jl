@@ -15,13 +15,13 @@ function Chains{T<:Real,U<:AbstractString,V<:Integer}(value::Array{T,3};
                names::Vector{U}=AbstractString[], chains::Vector{V}=Int[])
   n, p, m = size(value)
 
-  if length(names) == 0
+  if isempty(names)
     names = map(i -> "Param$i", 1:p)
   elseif length(names) != p
     error("size(value, 2) and names dimensions must match")
   end
 
-  if length(chains) == 0
+  if isempty(chains)
     chains = collect(1:m)
   elseif length(chains) != m
     error("size(value, 3) and chains dimensions must match")

@@ -1,4 +1,4 @@
-#################### Model Graph Methods ####################
+#################### Model Graph ####################
 
 #################### Display ####################
 
@@ -39,14 +39,14 @@ function graph2dot(m::Model)
   deps = keys(m, :dependent)
   for v in vertices(g)
     attr = Dict{AbstractString,AbstractString}()
-    if in(v.key, deps)
+    if v.key in deps
       node = m[v.key]
       if isa(node, AbstractLogical)
         attr["shape"] = "diamond"
       elseif isa(node, AbstractStochastic)
         attr["shape"] = "ellipse"
       end
-      if length(node.monitor) == 0
+      if isempty(node.monitor)
         attr["style"] = "filled"
         attr["fillcolor"] = "gray85"
       end

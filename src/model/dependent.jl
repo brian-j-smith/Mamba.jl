@@ -3,7 +3,7 @@
 #################### Base Methods ####################
 
 function Base.show(io::IO, d::AbstractDependent)
-  msg = string(ifelse(length(d.monitor) > 0, "A ", "An un"),
+  msg = string(ifelse(isempty(d.monitor), "An un", "A "),
                "monitored node of type \"", summary(d), "\"\n")
   print(io, msg)
   show(io, d.value)
@@ -33,7 +33,7 @@ end
 function setmonitor!(d::AbstractDependent, monitor::Vector{Int})
   values = monitor
   n = length(unlist(d))
-  if n > 0 && length(monitor) > 0
+  if n > 0 && !isempty(monitor)
     if monitor[1] == 0
       values = collect(1:n)
     elseif minimum(monitor) < 1 || maximum(monitor) > n
