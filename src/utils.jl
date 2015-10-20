@@ -5,7 +5,7 @@ function modelexpr(f::Function)
 
   types = Symbol[args.args[2] for args in ast.args[1]]
   all(T -> T == :Any, types) ||
-    throw(ArgumentError("node function arguments must all be of type Any"))
+    throw(ArgumentError("node function arguments are not all of type Any"))
 
   src = Symbol[args.args[1] for args in ast.args[1]]
   modelargs = [Expr(:ref, :model, QuoteNode(s)) for s in src]

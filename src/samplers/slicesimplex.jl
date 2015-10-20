@@ -11,7 +11,7 @@ type SliceSimplexVariate <: VectorVariate
   tune::SliceSimplexTune
 
   function SliceSimplexVariate(x::Vector{Float64}, tune::SliceSimplexTune)
-    isprobvec(x) || throw(ArgumentError("must supply a probability vector"))
+    isprobvec(x) || throw(ArgumentError("x is not a probability vector"))
     new(x, tune)
   end
 end
@@ -78,7 +78,7 @@ end
 #################### Sampling Functions ####################
 
 function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
-  0 < scale <= 1 || throw(ArgumentError("scale must be > 0 and <= 1"))
+  0 < scale <= 1 || throw(ArgumentError("scale is not in (0, 1]"))
 
   p0 = logf(v.value) + log(rand())
   d = Dirichlet(ones(v))

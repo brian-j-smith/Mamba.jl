@@ -47,7 +47,7 @@ function slice!(v::SliceVariate, width::Vector{Float64}, logf::Function,
                 stype::Symbol=:multivar)
   stype == :multivar ? slice_multi!(v, width, logf) :
   stype == :univar   ? slice_uni!(v, width, logf) :
-    error("unsupported slice sampler type $stype")
+    throw(ArgumentError("unsupported slice sampler type $stype"))
 end
 
 function slice_multi!(v::SliceVariate, width::Vector{Float64}, logf::Function)

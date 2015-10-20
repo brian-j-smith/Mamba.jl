@@ -3,7 +3,8 @@
 function gelmandiag(c::AbstractChains; alpha::Real=0.05, mpsrf::Bool=false,
                     transform::Bool=false)
   n, p, m = size(c.value)
-  m >= 2 || error("2 or more chains needed to run gelman diagnostic")
+  m >= 2 ||
+    throw(ArgumentError("less than 2 chains supplied to gelman diagnostic"))
 
   psi = transform ? link(c) : c.value
 

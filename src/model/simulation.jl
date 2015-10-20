@@ -87,7 +87,7 @@ function relist{T<:Real}(m::Model, values::AbstractArray{T},
     offset += n
   end
   offset == length(values) ||
-    throw(ErrorException("argument dimensions must match"))
+    throw(ArgumentError("incompatible number of values to put in nodes"))
   x
 end
 

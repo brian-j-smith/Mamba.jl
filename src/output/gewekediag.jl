@@ -3,11 +3,11 @@
 function gewekediag{T<:Real}(x::Vector{T}; first::Real=0.1, last::Real=0.5,
                              etype=:imse, args...)
   if !(0.0 < first < 1.0)
-    error("first must be in (0, 1)")
+    throw(ArgumentError("first is not in (0, 1)"))
   elseif !(0.0 < last < 1.0)
-    error("last must be in (0, 1)")
+    throw(ArgumentError("last is not in (0, 1)"))
   elseif first + last > 1.0
-    error("first and last sequences are overlapping")
+    throw(ArgumentError("first and last proportions overlap"))
   end
   n = length(x)
   x1 = x[1:round(Int, first * n)]

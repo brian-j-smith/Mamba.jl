@@ -18,13 +18,13 @@ function Chains{T<:Real,U<:AbstractString,V<:Integer}(value::Array{T,3};
   if isempty(names)
     names = map(i -> "Param$i", 1:p)
   elseif length(names) != p
-    error("size(value, 2) and names dimensions must match")
+    throw(DimensionMismatch("size(value,2) and names length differ"))
   end
 
   if isempty(chains)
     chains = collect(1:m)
   elseif length(chains) != m
-    error("size(value, 3) and chains dimensions must match")
+    throw(DimensionMismatch("size(value,3) and chains length differ"))
   end
 
   v = convert(Array{Float64, 3}, value)
@@ -68,7 +68,7 @@ macro mapiters(iters, c)
 end
 
 window2inds(c::AbstractChains, window) =
-  error("indexing Chains iterations with $(typeof(window)) is not supported")
+  throw(ArgumentError("$(typeof(window)) iteration indexing is unsupported"))
 window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c,1))
 window2inds(c::AbstractChains, window::Range) = begin
   range = @mapiters(window, c)
@@ -100,7 +100,7 @@ function Base.cat(dim::Integer, c1::AbstractChains, args::AbstractChains...)
   dim == 1 ? cat1(c1, args...) :
   dim == 2 ? cat2(c1, args...) :
   dim == 3 ? cat3(c1, args...) :
-             throw(ArgumentError("cannot concatenate along dimension $dim"))
+    throw(ArgumentError("cannot concatenate along dimension $dim"))
 end
 
 function cat1(c1::AbstractChains, args::AbstractChains...)
@@ -109,17 +109,17 @@ function cat1(c1::AbstractChains, args::AbstractChains...)
     last(range) + step(range) == first(c.range) ||
       throw(ArgumentError("noncontiguous chain iterations"))
     step(range) == step(c.range) ||
-      throw(ArgumentError("unequal chain thinning"))
+      throw(ArgumentError("chain thinning differs"))
     range = first(range):step(range):last(c.range)
   end
 
   names = c1.names
   all(c -> c.names == names, args) ||
-    throw(ArgumentError("unequal chain names"))
+    throw(ArgumentError("chain names differ"))
 
   chains = c1.chains
   all(c -> c.chains == chains, args) ||
-    throw(ArgumentError("unequal sets of chain"))
+    throw(ArgumentError("sets of chains differ"))
 
   value = cat(1, c1.value, map(c -> c.value, args)...)
   Chains(value, start=first(range), thin=step(range), names=names,
@@ -129,7 +129,7 @@ end
 function cat2(c1::AbstractChains, args::AbstractChains...)
   range = c1.range
   all(c -> c.range == range, args) ||
-    throw(ArgumentError("unequal chain ranges"))
+    throw(ArgumentError("chain ranges differ"))
 
   names = c1.names
   n = length(names)
@@ -142,7 +142,7 @@ function cat2(c1::AbstractChains, args::AbstractChains...)
 
   chains = c1.chains
   all(c -> c.chains == chains, args) ||
-    throw(ArgumentError("unequal sets of chain"))
+    throw(ArgumentError("sets of chains differ"))
 
   value = cat(2, c1.value, map(c -> c.value, args)...)
   Chains(value, start=first(range), thin=step(range), names=names,
@@ -152,11 +152,11 @@ end
 function cat3(c1::AbstractChains, args::AbstractChains...)
   range = c1.range
   all(c -> c.range == range, args) ||
-    throw(ArgumentError("unequal chain ranges"))
+    throw(ArgumentError("chain ranges differ"))
 
   names = c1.names
   all(c -> c.names == names, args) ||
-    throw(ArgumentError("unequal chain names"))
+    throw(ArgumentError("chain names differ"))
 
   value = cat(3, c1.value, map(c -> c.value, args)...)
   Chains(value, start=first(range), thin=step(range), names=names)

@@ -103,7 +103,7 @@ end
 function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T},
                        probs::Vector{Float64})
   size(support, 1) == length(probs) ||
-    throw(ArgumentError("number of support rows and probs length differ"))
+    throw(ArgumentError("numbers of support rows and probs differ"))
 
   v[:] = support[rand(Categorical(probs)), :]
   v.tune.support = support

@@ -4,7 +4,8 @@ function dic(mc::ModelChains)
   m = mc.model
   nodekeys = keys(m, :output)
   idx = indexin(names(m, keys(m, :block)), mc.names)
-  0 in idx && error("dic requires all sampled nodes to be monitored")
+  0 in idx &&
+    throw(ArgumentError("chain does not contain all sampled nodes"))
 
   xbar = map(i -> mean(mc.value[:,i,:]), idx)
   relist!(m, xbar)
@@ -19,7 +20,8 @@ end
 function logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
   m = mc.model
   idx = indexin(names(m, keys(m, :block)), mc.names)
-  0 in idx && error("logpdf requires all sampled nodes to be monitored")
+  0 in idx &&
+    throw(ArgumentError("chain does not contain all sampled nodes"))
 
   iters, p, chains = size(mc.value)
   values = Array(Float64, iters, 1, chains)
@@ -46,15 +48,20 @@ function predict(mc::ModelChains, nodekey::Symbol)
 
   outputs = keys(m, :output)
   nodekey in outputs ||
-    error("predict is only defined for observed Stochastic nodes: ",
-          join(map(string, outputs), ", "))
+    throw(ArgumentError(string(
+      "$nodekey is not one of the observed Stochastic nodes : ",
+      join(map(string, outputs), ", ")
+    )))
 
   nodenames = names(m, [nodekey])
 
   sources = intersect(node.sources, keys(m, :stochastic))
   idx = indexin(names(m, sources), mc.names)
-  0 in idx && error("predict requires monitoring of nodes: ",
-                      join(map(string, sources), ", "))
+  0 in idx &&
+    throw(ArgumentError(string(
+      "chain does not contain all of the nodes : ",
+      join(map(string, sources), ", ")
+    )))
 
   iters, _, chains = size(mc.value)
   value = Array(Float64, iters, length(nodenames), chains)

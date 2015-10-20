@@ -2,7 +2,7 @@
 
 function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
   last(mc.range) > mc.model.iter - step(mc.range) ||
-    error("Chains have been subsetted to exclude the last iteration")
+    throw(ArgumentError("chain is missing its last iteration"))
 
   mm = deepcopy(mc.model)
   mc2 = mcmc_master!(mm, mm.states[mc.chains], mm.iter + (1:iters),
@@ -21,8 +21,10 @@ function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
               chains::Integer=1, verbose::Bool=true)
   @everywhere using Mamba
 
-  iters > burnin || error("iters <= burnin")
-  length(inits) >= chains || error("fewer initial values than chains")
+  iters > burnin ||
+    throw(ArgumentError("burnin is greater than or equal to iters"))
+  length(inits) >= chains ||
+    throw(ArgumentError("fewer initial values than chains"))
 
   mm = deepcopy(m)
   setinputs!(mm, inputs)

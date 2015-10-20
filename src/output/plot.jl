@@ -8,7 +8,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
               ask::Bool=true)
 
   fmt in [:pdf, :pgf, :png, :ps, :svg] ||
-    error("$(fmt) is not a supported draw format")
+    throw(ArgumentError("unsupported draw format $fmt"))
 
   f(args...) = fmt == :pdf ? PDF(args...) :
                fmt == :pgf ? PGF(args...) :
@@ -72,7 +72,7 @@ function plot(c::AbstractChains, ptype::Symbol; legend::Bool=false, args...)
   ptype == :mean         ? meanplot(c; legend=legend, args...) :
   ptype == :mixeddensity ? mixeddensityplot(c; legend=legend, args...) :
   ptype == :trace        ? traceplot(c; legend=legend, args...) :
-                           error("unsupported plot type $ptype")
+    throw(ArgumentError("unsupported plot type $ptype"))
 end
 
 

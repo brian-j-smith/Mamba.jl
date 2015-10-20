@@ -12,7 +12,7 @@ type BMMGVariate <: VectorVariate
 
   function BMMGVariate(x::Vector{Float64}, tune::BMMGTune)
     all(insupport(Bernoulli, x)) ||
-      throw(ArgumentError("must supply a binary vector"))
+      throw(ArgumentError("x is not a binary vector"))
     new(x, tune)
   end
 end
@@ -28,7 +28,7 @@ end
 #################### Sampler Constructor ####################
 
 function BMMG(params::Vector{Symbol}, d::Integer, k::Integer=1)
-  d >= k > 0 || throw(ArgumentError("values must be d >= k > 0"))
+  d >= k > 0 || throw(ArgumentError("values do not satisfy d >= k > 0"))
   indexset = collect(combinations(1:d, k))
   BMMG(params, indexset)
 end

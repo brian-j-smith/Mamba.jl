@@ -163,19 +163,23 @@ end
 
 #################### Updating ####################
 
-function setinits!(s::ScalarStochastic, m::Model, x)
-  s.value = x
+function setinits!(s::ScalarStochastic, m::Model, x::Real)
+  s.value = convert(Float64, x)
   s.distr = s.eval(m)
   setmonitor!(s, s.monitor)
 end
 
-function setinits!(s::ArrayStochastic, m::Model, x)
-  s.value = oftype(s.value, copy(x))
+function setinits!(s::ArrayStochastic, m::Model, x::DenseArray)
+  s.value = convert(typeof(s.value), copy(x))
   s.distr = s.eval(m)
   if !isa(s.distr, UnivariateDistribution) && dims(s) != dims(s.distr)
-    error("incompatible stochastic node and distribution structure dimensions")
+    throw(DimensionMismatch("incompatible distribution for stochastic node"))
   end
   setmonitor!(s, s.monitor)
+end
+
+function setinits!(s::AbstractStochastic, m::Model, x)
+  throw(ArgumentError("incompatible initial value for node : $(s.symbol)"))
 end
 
 function update!(s::AbstractStochastic, m::Model)

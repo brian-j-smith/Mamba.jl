@@ -4,14 +4,16 @@ function mcse{T<:Real}(x::Vector{T}, method::Symbol=:imse; args...)
   method == :bm ? mcse_bm(x; args...) :
   method == :imse ? mcse_imse(x) :
   method == :ipse ? mcse_ipse(x) :
-    error("unsupported mcse method $method")
+    throw(ArgumentError("unsupported mcse method $method"))
 end
 
 function mcse_bm{T<:Real}(x::Vector{T}; size::Integer=100)
   n = length(x)
   m = div(n, size)
-  m >= 2 || error("batch means mcse needs $(2 * size)+ iterations or ",
-                  "batch size <= $(div(n, 2))")
+  m >= 2 ||
+    throw(ArgumentError(
+      "iterations are < $(2 * size) and batch size is > $(div(n, 2))"
+    ))
   mbar = [mean(x[i * size + (1:size)]) for i in 0:m-1]
   sem(mbar)
 end

@@ -29,7 +29,7 @@ Base.getindex(v::ScalarVariate, ::Colon) = v[[1]]
 Base.getindex(v::ArrayVariate, inds::Int...) = getindex(v.value, inds...)
 
 function Base.setindex!(v::ScalarVariate, x, inds)
-  length(x) == 1 || throw(ArgumentError("value to store must be of length 1"))
+  length(x) == 1 || throw(ArgumentError("value to set is not of length 1"))
   for i in inds
     i == 1 || throw(BoundsError())
     v.value = x[i]

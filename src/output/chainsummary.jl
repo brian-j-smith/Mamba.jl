@@ -14,9 +14,9 @@ immutable ChainSummary
                         header::AbstractString)
     dim = size(value)
     length(rownames) == dim[1] ||
-      error("length of rownames not equal to number of rows")
+      throw(DimensionMismatch("numbers of rownames and rows differ"))
     length(colnames) == dim[2] ||
-      error("length of colnames not equal to number of columns")
+      throw(DimensionMismatch("numbers of colnames and columns differ"))
     new(value, rownames, colnames, header)
   end
 end

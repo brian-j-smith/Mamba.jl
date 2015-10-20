@@ -81,7 +81,7 @@ module PDMats2
 
   function quad!(r::Array{Float64}, a::PBDiagMat, x::Matrix{Float64})
     n = size(x, 2)
-    length(r) == n || error("inconsistent argument dimensions")
+    length(r) == n || throw(ArgumentError("incompatible array length"))
     ax = a * x
     for j = 1:n
       r[j] = dot(a[:,j], ax[:,j])
@@ -93,7 +93,7 @@ module PDMats2
 
   function invquad!(r::Array{Float64}, a::PBDiagMat, x::Matrix{Float64})
     n = size(x, 2)
-    length(r) == n || error("inconsistent argument dimensions")
+    length(r) == n || throw(ArgumentError("incompatible array length"))
     wx = whiten(a, x)
     for j = 1:n
       r[j] = sumabs2(wx[:,j])
@@ -122,7 +122,7 @@ module PDMats2
     offset = 0
     for x in vn
       m = size(x, 1)
-      size(x, 2) == m || throw(ArgumentError("blocks must be square matrices"))
+      size(x, 2) == m || throw(ArgumentError("blocks are not square matrices"))
       for i in 1:m, j in 1:m
         if isnonzero(x, i, j)
           I[k] = offset + i
