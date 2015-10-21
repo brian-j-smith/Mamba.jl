@@ -124,7 +124,6 @@ module Mamba
 
   type Model
     nodes::Dict{Symbol,Any}
-    dependents::Vector{Symbol}
     samplers::Vector{Sampler}
     states::Vector{Vector{Float64}}
     iter::Int

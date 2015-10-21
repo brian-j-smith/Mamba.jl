@@ -32,9 +32,9 @@ graph MCMC {
 
     ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}", pos="275,665"]
 
-    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ dependents: Vector\{Symbol\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ chain : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275,290"]
+    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ chain : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275,295"]
 
-    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495,290"]
+    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495,295"]
 
     AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75,330"]
 

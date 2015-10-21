@@ -12,13 +12,13 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.symbol = key
     nodedict[key] = node
   end
-  m = Model(nodedict, Symbol[], Sampler[], Vector{Float64}[], iter, burnin,
-            chain, false, false)
+  m = Model(nodedict, Sampler[], Vector{Float64}[], iter, burnin, chain, false,
+            false)
   g = graph(m)
-  m.dependents = keys(m, :dependent)
+  dependents = keys(m, :dependent)
   for v in vertices(g)
-    if v.key in m.dependents
-      m[v.key].targets = intersect(m.dependents, gettargets(v, g, m))
+    if v.key in dependents
+      m[v.key].targets = intersect(dependents, gettargets(v, g, m))
     end
   end
   setsamplers!(m, samplers)

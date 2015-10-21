@@ -10,7 +10,7 @@ end
 
 function setinits!(m::Model, inits::Dict{Symbol,Any})
   reset!(m)
-  for key in m.dependents
+  for key in keys(m, :dependent)
     node = m[key]
     if isa(node, AbstractStochastic)
       haskey(inits, key) ||

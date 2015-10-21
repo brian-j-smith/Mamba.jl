@@ -16,7 +16,6 @@ Fields
 ^^^^^^
 
 * ``nodes::Dict{Symbol,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
-* ``dependents::Vector{Symbol}`` : symbols of all ``Dependent`` nodes in topologically sorted order so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 * ``samplers::Vector{Sampler}`` : sampling functions for updating blocks of stochastic nodes.
 * ``states::Vector{Vector{Float64}}`` : states of chains at the end of a possible series of MCMC runs.
 * ``iter::Int`` : current MCMC draw from the target distribution.

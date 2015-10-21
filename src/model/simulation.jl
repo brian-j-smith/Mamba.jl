@@ -169,7 +169,7 @@ function unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
 end
 
 function update!(m::Model, block::Integer=0)
-  nodekeys = block != 0 ? m.samplers[block].targets : m.dependents
+  nodekeys = block != 0 ? m.samplers[block].targets : keys(m, :dependent)
   for key in nodekeys
     update!(m[key], m)
   end
