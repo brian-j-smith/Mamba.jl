@@ -28,7 +28,8 @@ test_openbugs = [
 ]
 
 test_contributed = [
-  "line_amwg_slice"
+  "line_amwg_slice",
+  "pollution"
 ]
 
 println("Running examples:")
