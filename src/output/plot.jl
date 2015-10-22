@@ -194,6 +194,46 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
   return plots
 end
 
+function contourplot(c::AbstractChains; bins::Int=100)
+  params = vcat([c.model.samplers[i].params for i in 1:length(c.model.samplers)]...)
+  nrows, nvars, nchains = size(c)
+  combs = collect(combinations(1:nvars, 2))
+  p = Array(Plot, length(combs))
+  
+  for i in 1:length(combs)
+    D = vcat([c.value[:,combs[i],j] for j in 1:nchains]...)
+    loglik = vcat([logpdf(c, params)[:,:,j] for j in 1:nchains]...)
+    lik = exp(loglik)
+    qx = unique(quantile(D[:,1], collect(0:bins)/bins))
+    qy = unique(quantile(D[:,2], collect(0:bins)/bins))
+    binsx = length(qx)-1
+    binsy = length(qy)-1
+    x = zeros(Float64, size(D,1))
+    y = zeros(Float64, size(D,1))
+    tot = zeros(Int, binsx, binsy)
+    avg = zeros(Float64, binsx, binsy)
+    mx = map(j-> mean([qx[j], qx[j+1]]), 1:binsx)
+    my = map(j-> mean([qy[j], qy[j+1]]), 1:binsy)
+    for j in 1:size(D,1)
+      idx1 = find(x-> qx[x] <= D[j,1] <= qx[x+1], collect(1:binsx))[1]
+      idx2 = find(x-> qy[x] <= D[j,2] <= qy[x+1], collect(1:binsy))[1]
+      tot[idx1, idx2] += 1
+      avg[idx1, idx2] += lik[j]
+      x[j] = mx[idx1]
+      y[j] = my[idx2]
+    end
+    idx3 = find(tot)
+    avg[idx3] = avg[idx3] ./ tot[idx3]
+    p[i] = plot(x=mx, y=my, z=avg,
+                Geom.contour, 
+                Guide.xlabel(c.names[combs[i][1]], orientation=:horizontal),
+                Guide.ylabel(c.names[combs[i][2]], orientation=:vertical),
+                Guide.title("Contour of $(c.names[combs[i][1]]) vs $(c.names[combs[i][2]])")
+                )
+  end
+  return p
+end
+
 
 #################### Auxiliary Functions ####################
 
