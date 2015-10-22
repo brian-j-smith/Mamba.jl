@@ -24,9 +24,12 @@ function graph(m::Model)
     add_vertex!(g, KeyVertex(lookup[key], key))
   end
   V = vertices(g)
-  for dep in keys(m, :dependent)
-    for src in m[dep].sources
-      add_edge!(g, V[lookup[src]], V[lookup[dep]])
+  for key in keys(m)
+    node = m[key]
+    if isa(node, AbstractDependent)
+      for src in node.sources
+        add_edge!(g, V[lookup[src]], V[lookup[key]])
+      end
     end
   end
   g

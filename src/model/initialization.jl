@@ -20,12 +20,15 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
       setinits!(node, m)
     end
   end
+  m.hasinits = true
   m
 end
 
 function setinits!{T<:Real}(m::Model, inits::Vector{T})
   reset!(m)
   relist!(m, inits)
+  m.hasinits = true
+  m
 end
 
 function setinputs!(m::Model, inputs::Dict{Symbol,Any})
@@ -42,10 +45,8 @@ end
 
 function setsamplers!(m::Model, samplers::Vector{Sampler})
   m.samplers = deepcopy(samplers)
-  for i in 1:length(m.samplers)
-    sampler = m.samplers[i]
-    targets = mapreduce(key -> m[key].targets, vcat, sampler.params)
-    sampler.targets = intersect(m.dependents, targets)
+  for sampler in m.samplers
+    sampler.targets = keys(m, :target, sampler.params)
   end
   m
 end

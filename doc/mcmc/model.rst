@@ -96,6 +96,32 @@ Indexing
 
         The specified node.
 
+.. function:: keys(m::Model)
+              keys(m::Model, ntype::Symbol, at...)
+
+    Extract the symbols (keys) for all existing nodes or for nodes of a specified type.
+
+    **Arguments**
+
+        * ``m`` : a model containing the nodes of interest.
+        * ``ntype`` : the type of nodes to return.  Options are
+            * ``:all`` : all input, logical, and stochastic model nodes.
+            * ``:assigned`` : nodes that have been assigned values.
+            * ``:block`` : stochastic nodes being updated by the sampling block(s) ``at::Integer=0`` (default: all blocks).
+            * ``:dependent`` : logical and stochastic (dependent) nodes in topologically sorted order.
+            * ``:independent`` or ``:input`` : input (independent) nodes.
+            * ``:logical`` : logical nodes.
+            * ``:monitor`` : stochastic nodes being monitored in MCMC sampler output.
+            * ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
+            * ``:source`` : nodes upon which the node ``at::Symbol`` or vector of nodes ``at::Vector{Symbol}`` depends.
+            * ``:stochastic`` : stochastic nodes.
+            * ``:target`` : topollogically sorted nodes that depend on the node ``at::Symbol`` or vector of nodes ``at::Vector{Symbol}``.
+        * ``at...`` : additional positional arguments to be passed to the ``ntype`` options, as described above.
+
+    **Value**
+
+        A vector of node symbols.
+
 Display
 ^^^^^^^
 
@@ -235,29 +261,6 @@ Parameter Block Operations
     **Note**
 
         Numerical approximation of derivatives by central and forward differencing is performed with the `Calculus` package :cite:`white:2014:CP`.
-
-.. function:: keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
-
-    Return the symbols of nodes of a specified type.
-
-    **Arguments**
-
-        * ``m`` : a model containing the nodes of interest.
-        * ``ntype`` : the type of nodes to return.  Options are
-            * ``:all`` : all input, logical, and stochastic model nodes.
-            * ``:assigned`` : nodes that have been assigned values.
-            * ``:block`` : stochastic nodes being block-sampled.
-            * ``:dependent`` : logical or stochastic (dependent) nodes.
-            * ``:independent`` or ``:input`` : input (independent) nodes.
-            * ``:logical`` : logical nodes.
-            * ``:monitor`` : stochastic nodes being monitored in MCMC sampler output.
-            * ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
-            * ``:stochastic`` : stochastic nodes.
-        * ``block`` : the block for which to return nodes if ``ntype = :block``, or all blocks if ``block = 0`` (default).
-
-    **Value**
-
-        A vector of node symbols.
 
 .. function:: logpdf(m::Model, block::Integer=0, transform::Bool=false)
               logpdf(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \

@@ -15,7 +15,7 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
   m = Model(nodedict, Symbol[], Sampler[], Vector{Float64}[], iter, burnin,
             chain, false, false)
   g = graph(m)
-  m.dependents = intersect(tsort(g), keys(m, :dependent))
+  m.dependents = keys(m, :dependent)
   for v in vertices(g)
     if v.key in m.dependents
       m[v.key].targets = intersect(m.dependents, gettargets(v, g, m))
@@ -47,63 +47,142 @@ function Base.setindex!(m::Model, value, nodekey::Symbol)
 end
 
 
-#################### Base Methods ####################
+Base.keys(m::Model) = collect(keys(m.nodes))
 
-function Base.keys(m::Model, ntype::Symbol=:assigned, block::Integer=0)
+function Base.keys(m::Model, ntype::Symbol, at...)
+  ntype == :block       ? keys_block(m, at...) :
+  ntype == :all         ? keys_all(m) :
+  ntype == :assigned    ? keys_assigned(m) :
+  ntype == :dependent   ? keys_dependent(m) :
+  ntype == :independent ? keys_independent(m) :
+  ntype == :input       ? keys_independent(m) :
+  ntype == :logical     ? keys_logical(m) :
+  ntype == :monitor     ? keys_monitor(m) :
+  ntype == :output      ? keys_output(m) :
+  ntype == :source      ? keys_source(m, at...) :
+  ntype == :stochastic  ? keys_stochastic(m) :
+  ntype == :target      ? keys_target(m, at...) :
+    throw(ArgumentError("unsupported node type $ntype"))
+end
+
+function keys_all(m::Model)
   values = Symbol[]
-  if ntype == :all
-    for key in keys(m.nodes)
-      if isa(m[key], AbstractDependent)
-        values = [values; key; m[key].sources]
-      end
+  for key in keys(m)
+    node = m[key]
+    if isa(node, AbstractDependent)
+      push!(values, key)
+      append!(values, node.sources)
     end
-    values = unique(values)
-  elseif ntype == :assigned
-    values = collect(keys(m.nodes))
-  elseif ntype == :block
-    blocks = block > 0 ? block : 1:length(m.samplers)
-    for b in blocks
-      append!(values, m.samplers[b].params)
-    end
-    values = unique(values)
-  elseif ntype == :dependent
-    for key in keys(m.nodes)
-      if isa(m[key], AbstractDependent)
-        push!(values, key)
-      end
-    end
-  elseif ntype == :independent || ntype == :input
-    values = setdiff(keys(m, :all), keys(m, :dependent))
-  elseif ntype == :logical
-    for key in keys(m.nodes)
-      if isa(m[key], AbstractLogical)
-        push!(values, key)
-      end
-    end
-  elseif ntype == :monitor
-    for key in keys(m.nodes)
-      node = m[key]
-      if isa(node, AbstractDependent) && !isempty(node.monitor)
-        push!(values, key)
-      end
-    end
-  elseif ntype == :output
-    g = graph(m)
-    for v in vertices(g)
-      if isa(m[v.key], AbstractStochastic) && !any_stochastic(v, g, m)
-        push!(values, v.key)
-      end
-    end
-  elseif ntype == :stochastic
-    for key in keys(m.nodes)
-      if isa(m[key], AbstractStochastic)
-        push!(values, key)
-      end
-    end
+  end
+  unique(values)
+end
+
+function keys_assigned(m::Model)
+  if m.hasinits
+    values = keys(m)
   else
-    error("unsupported node type $ntype")
+    values = Symbol[]
+    for key in keys(m)
+      if !isa(m[key], AbstractDependent)
+        push!(values, key)
+      end
+    end
   end
   values
+end
+
+function keys_block(m::Model, block::Integer=0)
+  block != 0 ? m.samplers[block].params : keys_block0(m)
+end
+
+function keys_block0(m::Model)
+  values = Symbol[]
+  for sampler in m.samplers
+    append!(values, sampler.params)
+  end
+  unique(values)
+end
+
+function keys_dependent(m::Model)
+  values = Symbol[]
+  for key in keys(m)
+    if isa(m[key], AbstractDependent)
+      push!(values, key)
+    end
+  end
+  intersect(tsort(graph(m)), values)
+end
+
+function keys_independent(m::Model)
+  deps = Symbol[]
+  for key in keys(m)
+    if isa(m[key], AbstractDependent)
+      push!(deps, key)
+    end
+  end
+  setdiff(keys(m, :all), deps)
+end
+
+function keys_logical(m::Model)
+  values = Symbol[]
+  for key in keys(m)
+    if isa(m[key], AbstractLogical)
+      push!(values, key)
+    end
+  end
+  values
+end
+
+function keys_monitor(m::Model)
+  values = Symbol[]
+  for key in keys(m)
+    node = m[key]
+    if isa(node, AbstractDependent) && !isempty(node.monitor)
+      push!(values, key)
+    end
+  end
+  values
+end
+
+function keys_output(m::Model)
+  values = Symbol[]
+  g = graph(m)
+  for v in vertices(g)
+    if isa(m[v.key], AbstractStochastic) && !any_stochastic(v, g, m)
+      push!(values, v.key)
+    end
+  end
+  values
+end
+
+keys_source(m::Model, nodekey::Symbol) = m[nodekey].sources
+
+function keys_source(m::Model, nodekeys::Vector{Symbol})
+  values = Symbol[]
+  for key in nodekeys
+    append!(values, m[key].sources)
+  end
+  unique(values)
+end
+
+function keys_stochastic(m::Model)
+  values = Symbol[]
+  for key in keys(m)
+    if isa(m[key], AbstractStochastic)
+      push!(values, key)
+    end
+  end
+  values
+end
+
+keys_target(m::Model, nodekey::Symbol) = m[nodekey].targets
+
+function keys_target(m::Model, nodekeys::Vector{Symbol})
+  values = Symbol[]
+  for key in nodekeys
+    append!(values, m[key].targets)
+  end
+  intersect(keys(m, :dependent), values)
 end
 
 
