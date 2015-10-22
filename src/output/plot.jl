@@ -88,7 +88,7 @@ function autocorplot(c::AbstractChains;
   ac = autocor(c, lags=collect(lags))
   for i in 1:nvars
     plots[i] = plot(y=vec(ac.value[i,:,:]),
-                    x=repeat(collect(lags * step(c.range)), outer=[nchains]),
+                    x=repeat(collect(lags * step(c)), outer=[nchains]),
                     Geom.line,
                     color=repeat(c.chains, inner=[length(lags)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),

@@ -89,6 +89,20 @@ Indexing and Concatenation
 
         See the :func:`readcoda` example.
 
+.. function:: first(c::AbstractChains)
+              step(c::AbstractChains)
+              last(c::AbstractChains)
+
+    Get the first iteration, step-size (thinning), or last iteration of MCMC sampler output.
+
+    **Arguments**
+
+        * ``c`` : sampler output for which to return results.
+
+    **Value**
+
+        Integer value of the requested iteration type.
+
 .. function:: getindex(c::Chains, window, names, chains)
               getindex(mc::ModelChains, window, names, chains)
 

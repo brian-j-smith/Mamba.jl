@@ -1,12 +1,12 @@
 #################### MCMC Simulation Engine ####################
 
 function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
-  last(mc.range) > mc.model.iter - step(mc.range) ||
+  last(mc) > mc.model.iter - step(mc) ||
     throw(ArgumentError("chain is missing its last iteration"))
 
   mm = deepcopy(mc.model)
-  mc2 = mcmc_master!(mm, mm.states[mc.chains], mm.iter + (1:iters),
-                     last(mc.range), step(mc.range), size(mc, 3), verbose)
+  mc2 = mcmc_master!(mm, mm.states[mc.chains], mm.iter + (1:iters), last(mc),
+                     step(mc), size(mc, 3), verbose)
   mc2.model.iter += mc.model.iter
   if mc2.names != mc.names
     mc2 = mc2[:,mc.names,:]

@@ -34,8 +34,8 @@ function logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
   relistkeys = union(relistkeys, intersect(nodekeys, keys(m, :block)))
   inds = names2inds(mc, relistkeys)
 
-  c = Chains(size(mc, 1), 1, chains=size(mc, 3), start=first(mc.range),
-             thin=step(mc.range), names=["logpdf"])
+  c = Chains(size(mc, 1), 1, chains=size(mc, 3), start=first(mc), thin=step(mc),
+             names=["logpdf"])
 
   iters, _, chains = size(c.value)
   frame = ChainProgressFrame(
@@ -74,7 +74,7 @@ function predict(mc::ModelChains, nodekeys::Vector{Symbol})
   inds = names2inds(mc, relistkeys)
 
   c = Chains(size(mc, 1), length(nodenames), chains=size(mc, 3),
-             start=first(mc.range), thin=step(mc.range), names=nodenames)
+             start=first(mc), thin=step(mc), names=nodenames)
 
   iters, _, chains = size(c.value)
   for k in 1:chains

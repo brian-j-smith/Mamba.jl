@@ -52,8 +52,8 @@ function Base.getindex(c::Chains, window, names, chains)
   inds1 = window2inds(c, window)
   inds2 = names2inds(c, names)
   Chains(c.value[inds1, inds2, chains],
-         start = first(c.range) + (first(inds1) - 1) * step(c.range),
-         thin = step(inds1) * step(c.range), names = c.names[inds2],
+         start = first(c) + (first(inds1) - 1) * step(c),
+         thin = step(inds1) * step(c), names = c.names[inds2],
          chains = c.chains[chains])
 end
 
@@ -63,7 +63,7 @@ end
 
 macro mapiters(iters, c)
   quote
-    ($iters - first(($c).range)) / step(($c).range) + 1.0
+    ($iters - first($c)) / step($c) + 1.0
   end
 end
 
@@ -106,11 +106,11 @@ end
 function cat1(c1::AbstractChains, args::AbstractChains...)
   range = c1.range
   for c in args
-    last(range) + step(range) == first(c.range) ||
+    last(range) + step(range) == first(c) ||
       throw(ArgumentError("noncontiguous chain iterations"))
-    step(range) == step(c.range) ||
+    step(range) == step(c) ||
       throw(ArgumentError("chain thinning differs"))
-    range = first(range):step(range):last(c.range)
+    range = first(range):step(range):last(c)
   end
 
   names = c1.names
@@ -181,12 +181,16 @@ end
 
 function Base.size(c::AbstractChains)
   dim = size(c.value)
-  last(c.range), dim[2], dim[3]
+  last(c), dim[2], dim[3]
 end
 
 function Base.size(c::AbstractChains, ind)
   size(c)[ind]
 end
+
+Base.first(c::AbstractChains) = first(c.range)
+Base.step(c::AbstractChains) = step(c.range)
+Base.last(c::AbstractChains) = last(c.range)
 
 
 #################### Auxilliary Functions ####################
@@ -206,8 +210,8 @@ end
 
 function header(c::AbstractChains)
   string(
-    "Iterations = $(first(c.range)):$(last(c.range))\n",
-    "Thinning interval = $(step(c.range))\n",
+    "Iterations = $(first(c)):$(last(c))\n",
+    "Thinning interval = $(step(c))\n",
     "Chains = $(join(map(string, c.chains), ","))\n",
     "Samples per chain = $(length(c.range))\n"
   )

@@ -3,8 +3,8 @@
 function autocor(c::AbstractChains; lags::Vector=[1,5,10,50],
                  relative::Bool=true)
   if relative
-    lags *= step(c.range)
-  elseif any(lags .% step(c.range) .!= 0)
+    lags *= step(c)
+  elseif any(lags .% step(c) .!= 0)
     throw(ArgumentError("lags do not correspond to thinning interval"))
   end
   labels = map(x -> "Lag " * string(x), lags)
