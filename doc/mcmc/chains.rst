@@ -98,7 +98,7 @@ Indexing and Concatenation
 
         * ``c`` : sampler output to subset.
         * ``window`` : Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.
-        * ``names`` : Indices for subsetting of parameters that can be specified as strings, integers, or booleans identifying parameters to be kept.
+        * ``names`` : Indices for subsetting of parameters that can be specified as strings, integers, or booleans identifying parameters to be kept.  ``ModelChains`` may additionally be indexed by model node symbols.
         * ``chains`` : Indices for chains can be integers or booleans.
 
     A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.

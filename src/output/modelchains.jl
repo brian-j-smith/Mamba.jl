@@ -16,9 +16,11 @@ Base.convert(::Type{Chains}, mc::ModelChains) =
 #################### Indexing ####################
 
 function Base.getindex(mc::ModelChains, window, names, chains)
-  c = getindex(convert(Chains, mc), window, names, chains)
+  c = getindex(convert(Chains, mc), window, names2inds(mc, names), chains)
   ModelChains(c, mc.model)
 end
+
+names2inds(mc::ModelChains, nodekey::Symbol) = names2inds(mc, [nodekey])
 
 function names2inds(mc::ModelChains, nodekeys::Vector{Symbol})
   inds = Int[]
@@ -35,6 +37,7 @@ function names2inds(mc::ModelChains, nodekeys::Vector{Symbol})
   end
   inds
 end
+
 
 function Base.keys(mc::ModelChains, ntype::Symbol, at...)
   values = Symbol[]
