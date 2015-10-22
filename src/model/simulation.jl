@@ -170,6 +170,10 @@ end
 
 function update!(m::Model, block::Integer=0)
   nodekeys = block != 0 ? m.samplers[block].targets : keys(m, :dependent)
+  update!(m, nodekeys)
+end
+
+function update!(m::Model, nodekeys::Vector{Symbol})
   for key in nodekeys
     update!(m[key], m)
   end

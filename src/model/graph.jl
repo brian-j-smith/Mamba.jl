@@ -90,12 +90,13 @@ function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   found
 end
 
-function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
+function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model,
+                    terminal::Vector{Symbol}=keys(m, :stochastic))
   values = Symbol[]
   for v in out_neighbors(v, g)
     push!(values, v.key)
-    if !isa(m[v.key], AbstractStochastic)
-      values = union(values, gettargets(v, g, m))
+    if !(v.key in terminal)
+      values = union(values, gettargets(v, g, m, terminal))
     end
   end
   values

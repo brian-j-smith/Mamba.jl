@@ -20,6 +20,34 @@ function Base.getindex(mc::ModelChains, window, names, chains)
   ModelChains(c, mc.model)
 end
 
+function names2inds(mc::ModelChains, nodekeys::Vector{Symbol})
+  inds = Int[]
+  missing = Symbol[]
+  for key in nodekeys
+    keyinds = indexin(names(mc.model, key), mc.names)
+    0 in keyinds ? push!(missing, key) : append!(inds, keyinds)
+  end
+  if !isempty(missing)
+    throw(ArgumentError(string(
+      "chain values are missing for nodes : ",
+      join(map(string, missing), ", ")
+    )))
+  end
+  inds
+end
+
+function Base.keys(mc::ModelChains, ntype::Symbol, at...)
+  values = Symbol[]
+  m = mc.model
+  nodekeys = ntype == :dependent ?
+    keys(m, :dependent) :
+    intersect(keys(m, ntype, at...), keys(m, :dependent))
+  for key in nodekeys
+    all(name -> name in mc.names, names(m, key)) && push!(values, key)
+  end
+  values
+end
+
 
 #################### Auxilliary Functions ####################
 

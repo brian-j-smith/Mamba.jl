@@ -460,13 +460,13 @@ Model-Based Inference
 
 .. index:: Deviance Information Criterion (DIC)
 
-.. function:: dic(c::ModelChains)
+.. function:: dic(mc::ModelChains)
 
     Compute the Deviance Information Criterion (DIC) of Spiegelhalter et al. :cite:`spiegelhalter:2002:BMM` and Gelman et al. :cite:`gelman:2013:bda` from MCMC sampler output.
 
     **Arguments**
 
-        * ``c`` : sampler output from a model fit with the :func:`mcmc` function and for which all sampled nodes are monitored.
+        * ``mc`` : sampler output from a model fit with the :func:`mcmc` function.
 
     **Value**
 
@@ -482,20 +482,35 @@ Model-Based Inference
 
         See the :ref:`section-Line-Summaries` section of the tutorial.
 
+.. function:: logpdf(mc::ModelChains, nodekey::Symbol)
+              logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
+
+    Compute the sum of log-densities at each iteration of MCMC output for stochastic nodes.
+
+    **Arguments**
+
+        * ``mc``: sampler output from a model fit with the :func:`mcmc` function.
+        * ``nodekey/nodekeys``: Stochastic model node(s) over which to sum densities.
+
+    **Value**
+
+        A ``ModelChains`` object of resulting summed log-densities at each MCMC iteration of the supplied chain.
+
 .. index:: Posterior Predictive Distribution
 
-.. function:: predict(c::ModelChains, nodekey::Symbol)
+.. function:: predict(mc::ModelChains, nodekey::Symbol)
+              predict(mc::ModelChains, nodekeys::Vector{Symbol})
 
     Generate MCMC draws from a posterior predictive distribution.
 
     **Arguments**
 
-        * ``c``: sampler output from a model fit with the :func:`mcmc` function.
-        * ``nodekey``: an observed Stochastic model node for which to generate draws from its predictive distribution.
+        * ``mc``: sampler output from a model fit with the :func:`mcmc` function.
+        * ``nodekey/nodekeys``: observed Stochastic model node(s) for which to generate draws from the predictive distribution.
 
     **Value**
 
-        A ``Chains`` object of simulated draws.  For observed data node :math:`y`, simulation is from the posterior predictive distribution
+        A ``ModelChains`` object of draws simulated at each MCMC iteration of the supplied chain.  For observed data node :math:`y`, simulation is from the posterior predictive distribution
 
         .. math::
 
