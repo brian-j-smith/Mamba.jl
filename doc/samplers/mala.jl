@@ -14,7 +14,7 @@ data = Dict(
 )
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant and Gradient Vector
-fx = function(x)
+fx = function(x::DenseVector)
   b0 = x[1]
   b1 = x[2]
   logs2 = x[3]
@@ -30,16 +30,20 @@ fx = function(x)
   logf, grad
 end
 
-## MCMC Simulation with Metropolis-adjusted Langevin algorithm
+## MCMC Simulation with Metropolis-Adjusted Langevin Algorithm
+## Without (1) and with (2) a user-specified proposal covariance matrix
 n = 5000
-burnin = 1000
-sim = Chains(n, 3, start = (burnin + 1), names = ["b0", "b1", "s2"])
-theta = MALAVariate([0.0, 0.0, 0.0])
-epsilon = 0.01
+sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
+sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
+theta1 = MALAVariate([0.0, 0.0, 0.0])
+theta2 = MALAVariate([0.0, 0.0, 0.0])
+scale = 0.1
+SigmaF = cholfact(eye(3))
 for i in 1:n
-  mala!(theta, epsilon, cholfact(eye(3)), fx)
-  if i > burnin
-    sim[i,:,1] = [theta[1:2]; exp(theta[3])]
-  end
+  mala!(theta1, scale, fx)
+  mala!(theta2, scale, SigmaF, fx)
+  sim1[i,:,1] = [theta1[1:2]; exp(theta1[3])]
+  sim2[i,:,1] = [theta2[1:2]; exp(theta2[3])]
 end
-describe(sim)
+describe(sim1)
+describe(sim2)

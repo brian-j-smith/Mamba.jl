@@ -8,8 +8,8 @@ test_samplers = [
   "amm",
   "amwg",
   "bmmg",
-  "nuts",
   "mala",
+  "nuts",
   "slice",
   "slicesimplex"
 ]

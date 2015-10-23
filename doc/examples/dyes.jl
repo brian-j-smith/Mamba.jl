@@ -27,8 +27,7 @@ model = Model(
   ),
 
   mu = Stochastic(1,
-    (theta, batches, s2_between) -> Normal(theta, sqrt(s2_between)),
-    false
+    (theta, batches, s2_between) -> Normal(theta, sqrt(s2_between))
   ),
 
   theta = Stochastic(
@@ -55,12 +54,21 @@ inits = [
 ]
 
 
-## Sampling Scheme
+## Sampling Schemes
 scheme = [NUTS([:mu, :theta]),
           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
 setsamplers!(model, scheme)
 
+scheme2 = [MALA([:theta], 50.0),
+           MALA([:mu], 50.0, eye(dyes[:batches])),
+           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
+
 
 ## MCMC Simulations
+setsamplers!(model, scheme)
 sim = mcmc(model, dyes, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim)
+
+setsamplers!(model, scheme2)
+sim2 = mcmc(model, dyes, inits, 10000, burnin=2500, thin=2, chains=2)
+describe(sim2)
