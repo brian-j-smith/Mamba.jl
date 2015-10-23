@@ -73,8 +73,8 @@ function mala!(v::MALAVariate, scale::Float64, U::Cholesky{Float64}, fx::Functio
 
   logf1, grad1 = fx(y)
 
-  q0 = logpdf(MvNormal(v + 0.5 * scale^2 * grad0, scale), y)
-  q1 = logpdf(MvNormal(y + 0.5 * scale^2 * grad1, scale), v)
+  q0 = logpdf(MvNormal(v + 0.5 * scale^2 * M * grad0, scale^2 * M), y)
+  q1 = logpdf(MvNormal(y + 0.5 * scale^2 * M * grad1, scale^2 * M), v)
 
   if rand() < exp( (logf1 + q1) - (logf0 + q0))
     v[:] = y
