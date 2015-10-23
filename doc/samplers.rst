@@ -12,6 +12,7 @@ Listed below are the sampling methods for which functions are provided to simula
     samplers/amwg.rst
     samplers/bmmg.rst
     samplers/dgs.rst
+    samplers/mala.rst
     samplers/miss.rst
     samplers/nuts.rst
     samplers/slice.rst
@@ -33,6 +34,8 @@ The following table summarizes the (*n*-dimensional) sample spaces over which ea
     | :ref:`BMMG <section-BMMG>`                 | :math:`\{0, 1\}^n`                    | Yes        | Yes          | Yes        | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
     | :ref:`DGS <section-DGS>`                   | Finite :math:`S \subset \mathbb{Z}^n` | No         | Yes          | Yes        | No           | No              |
+    +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
+    | :ref:`MALA <section-MALA>`                 | :math:`\mathbb{R}^n`                  | No         | Yes          | No         | Yes          | Yes             |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
     | :ref:`MISS <section-MISS>`                 | Parameter-defined                     | No         | No           | Yes        | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
