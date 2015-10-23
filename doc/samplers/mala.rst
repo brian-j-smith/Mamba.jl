@@ -5,7 +5,7 @@
 Metropolis-adjusted Langevin algorithm (MALA)
 ---------------------------------------------
 
-Implementation of the Metropolis-adjusted Langevin algorithm (MALA) of Roberts et al. :cite:`roberts:1996:MALA` and pre-conditioned MALA of Roberts et al. :cite:`roberts:2003:LD`.  The connection between MALA and HMC is thoroughly addressed by Girolami et al. :cite:`girolami:2011:RMHMC`. The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the Metropolis-adjusted Langevin algorithm (MALA) of Roberts et al. :cite:`roberts:1996:MALA` and pre-conditioned MALA of Roberts et al. :cite:`roberts:2002:LD`.  The connection between MALA and HMC is thoroughly addressed by Girolami et al. :cite:`girolami:2011:RMHMC`. The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 
 Stand-Alone Function
