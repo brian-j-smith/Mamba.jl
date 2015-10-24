@@ -711,6 +711,17 @@ The ``plot`` function can also be used to make autocorrelation and running means
 
     Autocorrelation and running mean plots.
 
+.. code-block:: julia
+
+    ## Pairwise contour plots
+    p = plot(sim1, :contour)
+    draw(p, nrow=2, ncol=2, filename="contourplot.svg")
+
+.. figure:: tutorial/contourplot.*
+    :align: center
+
+    Pairwise posterior density contour plots.
+
 
 .. _section-Line-Performance:
 

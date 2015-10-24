@@ -553,6 +553,7 @@ Plotting
         * ``ptype`` : plot type(s).  Options are
             * ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=round(Int, 10*log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
             * ``:bar`` : bar plots.  Optional argument ``position::Symbol=:stack`` controls whether bars should be stacked on top of each other (default) or placed side by side (``:dodge``).
+            * ``:contour`` : pairwise posterior density contour plots.  Optional argument ``bins::Integer=100`` controls the plot resolution.
             * ``:density`` : density plots.  Optional argument ``trim::Tuple{Real,Real}=(0.025,0.975)`` trims off lower and upper quantiles of density.
             * ``:mean`` : running mean plots.
             * ``:mixeddensity`` : bar plots (``:bar``) for parameters with integer values within bounds defined by optional argument ``barbounds::Tuple{Real,Real}=(0,Inf)``, and density plots (``:density``) otherwise.
