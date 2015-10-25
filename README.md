@@ -29,6 +29,7 @@ Several software options are available for MCMC sampling of Bayesian models.  In
 * Convergence diagnostics: Gelman, Rubin, and Brooks; Geweke; Heidelberger and Welch; Raftery and Lewis.
 * Posterior summaries: moments, quantiles, HPD, cross-covariance, autocorrelation, MCSE, ESS.
 * [Gadfly](https://github.com/dcjones/Gadfly.jl) plotting: trace, density, running mean, autocorrelation.
+* Importing of sampler output saved in the CODA file format.
 * Run-time performance on par with compiled MCMC software.
 
 ## Getting Started

@@ -2,6 +2,16 @@
 
 ## Version Updates
 
+### 0.7.1
+* Implemented Binary Hamiltonian Monte Carlo (BHMC) and Binary Metropolised Gibbs (BMG) samplers for binary model parameters.
+* Implemented pairwise posterior density contour plots.
+* Implemented the Metropolis-Adjusted Langevin Algorithm (MALA) sampler.
+* Added ``first()``, ``step()``, and ``last()`` methods for getting ``AbstractChains`` iteration information.
+* Implemented indexing of ``ModelChains`` by model node symbols.
+* Added ``logpdf()`` method for ``ModelChains``.
+* Relaxed requirement that all sampled nodes be monitored for the calculation of DIC and for the simulation of draws from posterior predictive distributions.
+* Removed ``dependents`` field from ``Model`` type.
+
 ### 0.7.0
 * Implemented function syntax for specification of nodes and user-defined ``Sampler`` constructors.
 * Changed DSG sampler support field and arguments from Vector to Matrix.
