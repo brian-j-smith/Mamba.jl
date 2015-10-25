@@ -94,4 +94,4 @@ Sampler Constructor
 
     **Example**
 
-        See the :ref:`Eyes <example-Eyes>` and other :ref:`section-Examples`.
+        See the :ref:`Eyes <example-Eyes>`, :ref:`Pollution <example-Pollution>`, and other :ref:`section-Examples`.

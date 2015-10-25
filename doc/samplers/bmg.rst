@@ -3,9 +3,9 @@
 .. _section-BMG:
 
 Binary Metropolised Gibbs (BMG)
----------------------------------------------
+-------------------------------
 
-Implementation of the binary-state Metropolised Gibbs sampler of Schafer :cite:`schafer:2012:DIS,schafer:2013:SMCB` in which proposed updates are always state changes.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the binary-state Metropolised Gibbs sampler described by Schafer :cite:`schafer:2012:DIS,schafer:2013:SMCB` in which components are drawn sequentially from full conditional marginal distributions and accepted together in a single Metropolis-Hastings step.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 
 Stand-Alone Function
@@ -18,11 +18,11 @@ Stand-Alone Function
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``x``.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
 
-        Returns ``x`` updated.
+        Returns ``v`` updated with simulated values and associated tuning parameters.
 
     .. _example-bmg:
 
@@ -30,6 +30,7 @@ Stand-Alone Function
 
         .. literalinclude:: bmg.jl
             :language: julia
+
 
 .. index:: Sampler Types; BMGVariate
 
@@ -45,21 +46,38 @@ Fields
 ``````
 
 * ``value::Vector{Float64}`` : vector of sampled values.
+* ``tune::BMGTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: BMGVariate(x::Vector{Float64})
+.. function:: BMGVariate(x::Vector{Float64}, tune::BMGTune)
+              BMGVariate(x::Vector{Float64}, tune=nothing)
 
-    Construct a ``BMGVariate`` object that stores sampled values for BMG sampling.
+    Construct a ``BMGVariate`` object that stores sampled values and tuning parameters for BMG sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``BMGVariate`` type object with fields pointing to the values supplied to arguments ``x``.
+        Returns a ``BMGVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+
+BMGTune Type
+^^^^^^^^^^^^^
+
+Declaration
+```````````
+
+``type BMGTune``
+
+Fields
+``````
+
+* ``probs::Vector{Float64}`` : probabilities of the full conditional marginal distributions from which components of the candidate vector were sequentially drawn.
+
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
@@ -75,3 +93,7 @@ Sampler Constructor
     **Value**
 
         Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`Pollution <example-Pollution>` and other :ref:`section-Examples`.

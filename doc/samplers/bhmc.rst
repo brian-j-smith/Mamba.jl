@@ -1,7 +1,9 @@
 .. index:: Sampling Functions; Binary Hamiltonian Monte Carlo
 
+.. _section-BHMC:
+
 Binary Hamiltonian Monte Carlo (BHMC)
------------------------------------------
+-------------------------------------
 
 Implementation of the binary-state Hamiltonian Monte Carlo sampler of Pakman :cite:`pakman:2013:hmcb`.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
@@ -16,8 +18,8 @@ Stand-Alone Function
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``traveltime`` : Length of time over which particle paths are simulated.
-        * ``logf`` : function to compute the log-transformed density (up to a normalizing constant) at ``v.value``.
+        * ``traveltime`` : length of time over which particle paths are simulated.  It is recommended that supplied values be of the form :math:`(n + \frac{1}{2}) \pi`, where optimal choices of :math:`n \in \mathbb{Z}^+` are expected to grow with the parameter space dimensionality.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
 
@@ -76,11 +78,11 @@ Declaration
 
 Fields
 ``````
-* ``traveltime::Float64`` : Length of time over which particle paths are simulated.
-* ``position::Vector{Float64}`` : Initial particle positions.
-* ``velocity::Vector{Float64}`` : Initial particle velocites. 
-* ``wallhits::Int`` : Number of times particles are reflected off the 0 threshold.
-* ``wallcrosses::Int`` :Number of times particles travel through 0 threshold. 
+* ``traveltime::Float64`` : length of time over which particle paths are simulated.
+* ``position::Vector{Float64}`` : initial particle positions.
+* ``velocity::Vector{Float64}`` : initial particle velocites.
+* ``wallhits::Int`` : number of times particles are reflected off the 0 threshold.
+* ``wallcrosses::Int`` : number of times particles travel through the threshold.
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
@@ -92,8 +94,12 @@ Sampler Constructor
     **Arguments**
 
         * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
-        * ``traveltime::Real`` : Length of time over which particle paths are simulated.
-        
+        * ``traveltime`` : length of time over which particle paths are simulated.  It is recommended that supplied values be of the form :math:`(n + \frac{1}{2}) \pi`, where optimal choices of :math:`n \in \mathbb{Z}^+` are expected to grow with the parameter space dimensionality.
+
     **Value**
 
         Returns a ``Sampler`` type object.
+
+    **Example**
+
+        See the :ref:`Pollution <example-Pollution>` and other :ref:`section-Examples`.

@@ -10,8 +10,8 @@ Listed below are the sampling methods for which functions are provided to simula
 
     samplers/amm.rst
     samplers/amwg.rst
-    samplers/bmg.rst
     samplers/bhmc.rst
+    samplers/bmg.rst
     samplers/bmmg.rst
     samplers/dgs.rst
     samplers/mala.rst
@@ -33,11 +33,11 @@ The following table summarizes the (*d*-dimensional) sample spaces over which ea
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
     | :ref:`AMWG <section-AMWG>`                 | :math:`\mathbb{R}^d`                  | Yes        | No           | Yes        | No           | Yes             |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`BMG <section-BMMG>`                  | :math:`\{0, 1\}^n`                    | Yes        | Yes          | Yes        | Yes          | No              |
+    | :ref:`BHMC <section-BHMC>`                 | :math:`\{0, 1\}^d`                    | No         | Yes          | No         | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`BHMC <section-BMMG>`                 | :math:`\{0, 1\}^n`                    | Yes        | Yes          | Yes        | Yes          | No              |
+    | :ref:`BMG <section-BMG>`                   | :math:`\{0, 1\}^d`                    | No         | Yes          | No         | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
-    | :ref:`BMMG <section-BMMG>`                 | :math:`\{0, 1\}^n`                    | Yes        | Yes          | Yes        | Yes          | No              |
+    | :ref:`BMMG <section-BMMG>`                 | :math:`\{0, 1\}^d`                    | Yes        | Yes          | Yes        | Yes          | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
     | :ref:`DGS <section-DGS>`                   | Finite :math:`S \subset \mathbb{Z}^d` | No         | Yes          | Yes        | No           | No              |
     +--------------------------------------------+---------------------------------------+------------+--------------+------------+--------------+-----------------+
