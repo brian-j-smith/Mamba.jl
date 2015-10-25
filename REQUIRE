@@ -1,10 +1,10 @@
 julia 0.4
 Cairo 0.2.31
 Calculus 0.1.13
-Compose 0.3.17
+Compose 0.3.18
 Distributions 0.8.7
-Gadfly 0.3.17
-Graphs 0.5.6
+Gadfly 0.3.18
+Graphs 0.6.0
 PDMats 0.3.6
 Showoff 0.0.6
-StatsBase 0.7.3
+StatsBase 0.7.4
