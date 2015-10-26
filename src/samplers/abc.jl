@@ -5,8 +5,8 @@ function ABC(params::Vector{Symbol}, summarize::Function,
       tunepar = tune(model, block)
       params = keys(model, :block, block)
 
-      #prior
-      π = x -> begin
+      #logprior
+      logprior = x -> begin
         value = 0.0
         values = relist(model, x, params, true)
         for key in params
@@ -37,7 +37,7 @@ function ABC(params::Vector{Symbol}, summarize::Function,
 
         #Reject/Accept
         if all(tunepar["rho"](Tnew, T0) .< tunepar["epsilon"])
-          if rand() < π(y)/π(x)
+          if rand() < exp(logprior(y)/logprior(x))
             x[:] = y
             break
           end
