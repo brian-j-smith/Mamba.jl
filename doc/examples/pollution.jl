@@ -74,30 +74,22 @@ pollution = Dict{Symbol,Any}(
 ## Model Specification
 model = Model(
 
-  y = Stochastic(1, (sigma2, mu) -> MvNormal(mu, sqrt(sigma2)), false),
+  y = Stochastic(1, (mu, sigma2) -> MvNormal(mu, sqrt(sigma2)), false),
 
   mu = Logical(1, (alpha, X, theta) -> alpha + X * theta, false),
 
-  alpha = Stochastic((mu_a, sigma2_a) -> Normal(mu_a, sqrt(sigma2_a))),
+  alpha = Stochastic(() -> Normal(0, 1000)),
 
   theta = Logical(1, (beta, gamma) -> beta .* gamma),
 
   beta = Stochastic(1,
-    (gamma, mu_b, sigma2_b, p) ->
-      UnivariateDistribution[
-        gamma[i] == 1 ? Normal(mu_b[i], sqrt(sigma2_b)) :
-                        Normal(0, 10^12)
-        for i in 1:p
-      ],
+    p -> UnivariateDistribution[Normal(0, 1000) for i in 1:p],
     false
   ),
 
   gamma = Stochastic(1, () -> Bernoulli(0.5)),
-  mu_a = Stochastic(() -> Normal(0, 10^4), false),
-  mu_b = Stochastic(1, () -> Normal(0, 10^4), false),
-  sigma2_a = Stochastic(() -> InverseGamma(0.0001, 0.0001), false),
-  sigma2_b = Stochastic(() -> InverseGamma(0.0001, 0.0001), false),
-  sigma2 = Stochastic(() -> InverseGamma(0.0001, 0.0001), true)
+
+  sigma2 = Stochastic(() -> InverseGamma(0.0001, 0.0001))
 
 )
 
@@ -126,55 +118,49 @@ p = size(X, 2)
 inits = Dict{Symbol,Any}[
   Dict{Symbol,Any}(
    :y => y, :alpha => mean(y), :gamma => rand(0:1, p),
-   :beta => inv(X' * X + eye(p)) * X' * y, :mu_a => 0, :mu_b => zeros(15),
-   :sigma2_a => 1, :sigma2_b => 1.0, :sigma2 => var(y)),
+   :beta => inv(X' * X + eye(p)) * X' * y, :sigma2 => var(y)),
   Dict{Symbol,Any}(
    :y => y, :alpha => 1, :gamma => rand(0:1, p),
-   :beta => randn(p), :mu_a => 0, :mu_b => zeros(15),
-   :sigma2_a => 1, :sigma2_b => 1.0, :sigma2 => 1),
+   :beta => randn(p), :sigma2 => 1),
   Dict{Symbol,Any}(
    :y => y, :alpha => 17, :gamma => rand(0:1, p),
    :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
-   :mu_a => 0, :mu_b => zeros(15),
-   :sigma2_a=>1, :sigma2_b => 1.0, :sigma2 => 1),
+   :sigma2 => 1),
   Dict{Symbol,Any}(
    :y => y, :alpha => 17, :gamma => rand(0:1, p),
    :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
-   :mu_a => 0, :mu_b => zeros(15),
-   :sigma2_a=>1, :sigma2_b => 1.0, :sigma2 => 1)
+   :sigma2 => 1)
 ]
 
 
 ## Sampling Scheme (without gamma)
 scheme0 = [Gibbs_alphabeta,
-           Slice([:mu_a, :sigma2_a], [1.0, 1.0]),
-           Slice([:mu_b, :sigma2_b], [ones(p); 1.0]),
-           Slice([:sigma2], [10.0])]
-
-
-## Discrete Gibbs Sampling
-scheme1 = [DGS([:gamma]); scheme0]
-setsamplers!(model, scheme1)
-sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=1, chains=4)
-describe(sim1)
+           Slice([:sigma2], [250.0])]
 
 
 ## Binary Hamiltonian Monte Carlo
-scheme2 = [BHMC([:gamma], (2 * p + 0.5) * pi); scheme0]
-setsamplers!(model, scheme2)
-sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=1, chains=4)
-describe(sim2)
+scheme1 = [BHMC([:gamma], (2 * p + 0.5) * pi); scheme0]
+setsamplers!(model, scheme1)
+sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
+describe(sim1)
 
 
 ## Binary Metropolised Gibbs Sampling
-scheme3 = [BMG([:gamma]); scheme0]
-setsamplers!(model, scheme3)
-sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=1, chains=4)
-describe(sim3)
+scheme2 = [BMG([:gamma]); scheme0]
+setsamplers!(model, scheme2)
+sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
+describe(sim2)
 
 
 ## Binary Modified Metropolised Gibbs Sampling
-scheme4 = [BMMG([:gamma], p); scheme0]
+scheme3 = [BMMG([:gamma], p); scheme0]
+setsamplers!(model, scheme3)
+sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
+describe(sim3)
+
+
+## Discrete Gibbs Sampling
+scheme4 = [DGS([:gamma]); scheme0]
 setsamplers!(model, scheme4)
-sim4 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=1, chains=4)
+sim4 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim4)
