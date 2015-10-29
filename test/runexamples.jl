@@ -28,6 +28,7 @@ test_openbugs = [
 ]
 
 test_contributed = [
+  "abc",
   "line_amwg_slice",
   "pollution"
 ]

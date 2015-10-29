@@ -60,5 +60,6 @@ Additional examples are provided below to further illustrate features of the pac
 .. toctree::
     :maxdepth: 1
 
+    examples/abc.rst
     examples/line_amwg_slice.rst
     examples/pollution.rst
