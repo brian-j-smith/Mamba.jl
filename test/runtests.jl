@@ -10,6 +10,7 @@ test_samplers = [
   "bmg",
   "bhmc",
   "bmmg",
+  "hmc",
   "mala",
   "nuts",
   "slice",
