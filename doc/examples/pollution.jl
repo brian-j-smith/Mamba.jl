@@ -109,6 +109,15 @@ Gibbs_alphabeta = Sampler([:alpha, :beta],
     end
 )
 
+Gibbs_sigma2 = Sampler([:sigma2],
+  (mu, sigma2, y) ->
+    begin
+      a = length(y) / 2.0 + shape(sigma2.distr)
+      b = sumabs2(y - mu) / 2.0 + scale(sigma2.distr)
+      rand(InverseGamma(a, b))
+    end
+)
+
 
 ## Initial Values
 y = pollution[:y]
@@ -134,9 +143,7 @@ inits = Dict{Symbol,Any}[
 
 
 ## Sampling Scheme (without gamma)
-scheme0 = [Gibbs_alphabeta,
-           Slice([:sigma2], [250.0])]
-
+scheme0 = [Gibbs_alphabeta, Gibbs_sigma2]
 
 ## Binary Hamiltonian Monte Carlo
 scheme1 = [BHMC([:gamma], (2 * p + 0.5) * pi); scheme0]
