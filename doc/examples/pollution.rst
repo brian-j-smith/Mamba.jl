@@ -5,7 +5,7 @@
 Pollution: Bayesian Variable Selection
 --------------------------------------
 
-Data from McDonald and Schwing :cite:`mcdonald:1973:pol` that include 15 independent variables and a measure of mortality on 60 U.S. metropolitan areas in 1959-1961. Originally, the data were used to illustrate ridge regression (the full covariate matrix has a huge condition number).
+Data from McDonald and Schwing :cite:`mcdonald:1973:pol` that include 15 independent variables and a measure of mortality on 60 U.S. metropolitan areas in 1959-1961. Originally, the data were used to illustrate ridge regression (the full covariate matrix has a huge condition number). This dataset was included in a review of Bayesian variable selection techniques by O'Hara et al :cite:`ohara:2009:BVS`. 
 
 Model
 ^^^^^
