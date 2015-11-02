@@ -194,6 +194,7 @@ module Mamba
   include("samplers/bhmc.jl")
   include("samplers/bmmg.jl")
   include("samplers/dgs.jl")
+  include("samplers/hmc.jl")
   include("samplers/mala.jl")
   include("samplers/miss.jl")
   include("samplers/nuts.jl")
@@ -291,6 +292,9 @@ module Mamba
     dgs!,
     DGS,
     DGSVariate,
+    hmc!,
+    HMC,
+    HMCVariate,
     mala!,
     MALA,
     MALAVariate,
