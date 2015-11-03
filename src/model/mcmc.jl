@@ -5,18 +5,18 @@ function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
     throw(ArgumentError("chain is missing its last iteration"))
 
   mm = deepcopy(mc.model)
-  mc2 = mcmc_master!(mm, mm.states[mc.chains], mm.iter + (1:iters), last(mc),
-                     step(mc), size(mc, 3), verbose)
+  mc2 = mcmc_master!(mm, mm.iter + (1:iters), last(mc), step(mc), mc.chains,
+                     verbose)
   mc2.model.iter += mc.model.iter
   if mc2.names != mc.names
-    mc2 = mc2[:,mc.names,:]
+    mc2 = mc2[:, mc.names, :]
   end
 
   ModelChains(vcat(mc, mc2), mc2.model)
 end
 
 
-function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
+function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol, Any}},
               iters::Integer; burnin::Integer=0, thin::Integer=1,
               chains::Integer=1, verbose::Bool=true)
   @everywhere using Mamba
@@ -28,54 +28,58 @@ function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol,Any}},
 
   mm = deepcopy(m)
   setinputs!(mm, inputs)
-  mm.states = Array(Vector{Float64}, chains)
+  setinits!(mm, inits[1:chains])
   mm.burnin = burnin
 
-  mcmc_master!(mm, inits, 1:iters, burnin, thin, chains, verbose)
+  mcmc_master!(mm, 1:iters, burnin, thin, 1:chains, verbose)
 end
 
 
-function mcmc_master!(m::Model, inits, window::UnitRange{Int}, burnin::Integer,
-                      thin::Integer, chains::Integer, verbose::Bool)
-  n = length(window)
+function mcmc_master!(m::Model, window::UnitRange{Int}, burnin::Integer,
+                      thin::Integer, chains::AbstractArray{Int}, verbose::Bool)
+  states = m.states
+  m.states = []
+
+  N = length(window)
+  K = length(chains)
+
   frame = ChainProgressFrame(
-    "MCMC Simulation of $n Iterations x $chains Chain" * "s"^(chains > 1),
-    verbose
+    "MCMC Simulation of $N Iterations x $K Chain" * "s"^(K > 1), verbose
   )
+
   lsts = [
-    Any[m, inits[k], window, burnin, thin, k, ChainProgress(frame, k, n)]
-    for k in 1:chains
+    Any[m, states[k], window, burnin, thin, ChainProgress(frame, k, N)]
+    for k in chains
   ]
-  sims = mcmcmap(mcmc_worker!, lsts)
-  model = sims[1].model
-  model.states = map(k -> sims[k].model.states[k], 1:chains)
+  results = mcmcmap(mcmc_worker!, lsts)
+
+  sims  = Chains[results[k][1] for k in 1:K]
+  model = results[1][2]
+  model.states = Vector{Float64}[results[k][3] for k in sortperm(chains)]
 
   ModelChains(cat(3, sims...), model)
 end
 
 
 function mcmc_worker!(args::Vector)
-  model, inits, window, burnin, thin, chain, meter = args
+  m, state, window, burnin, thin, meter = args
 
-  setinits!(model, inits)
-  model.iter = first(window) - 1
-  model.chain = chain
+  setstate!(m, state, first(window) - 1)
 
-  pnames = names(model, true)
-  sim = ModelChains(Chains(last(window), length(pnames), start=burnin+thin,
-                           thin=thin, names=pnames), model)
+  pnames = names(m, true)
+  sim = Chains(last(window), length(pnames), start=burnin + thin, thin=thin,
+               names=pnames)
 
   reset!(meter)
   for i in window
-    simulate!(model)
+    simulate!(m)
     if i > burnin && (i - burnin) % thin == 0
-      sim[i,:,1] = unlist(model, true)
+      sim[i, :, 1] = unlist(m, true)
     end
     next!(meter)
   end
-  model.states[chain] = unlist(model)
 
-  sim
+  (sim, m, unlist(m))
 end
 
 
