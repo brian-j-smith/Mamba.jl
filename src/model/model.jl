@@ -2,7 +2,7 @@
 
 #################### Constructors ####################
 
-function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
+function Model(; iter::Integer=0, burnin::Integer=0,
                samplers::Vector{Sampler}=Sampler[], nodes...)
   nodedict = Dict{Symbol,Any}()
   for (key, value) in nodes
@@ -12,8 +12,7 @@ function Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1,
     node.symbol = key
     nodedict[key] = node
   end
-  m = Model(nodedict, Sampler[], Vector{Float64}[], iter, burnin, chain, false,
-            false)
+  m = Model(nodedict, Sampler[], Vector{Float64}[], iter, burnin, false, false)
   g = graph(m)
   dependents = keys(m, :dependent)
   for v in vertices(g)

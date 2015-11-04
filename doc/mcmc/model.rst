@@ -20,14 +20,13 @@ Fields
 * ``states::Vector{Vector{Float64}}`` : states of chains at the end of a possible series of MCMC runs.
 * ``iter::Int`` : current MCMC draw from the target distribution.
 * ``burnin::Int`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
-* ``chain::Int`` : current run of an MCMC simulator in a possible series of runs.
 * ``hasinputs::Bool`` : whether values have been assigned to the input nodes.
 * ``hasinits::Bool`` : whether initial values have been assigned to stochastic nodes.
 
 Constructor
 ^^^^^^^^^^^
 
-.. function:: Model(; iter::Integer=0, burnin::Integer=0, chain::Integer=1, \
+.. function:: Model(; iter::Integer=0, burnin::Integer=0, \
                     samplers::Vector{Sampler}=Sampler[], nodes...)
 
     Construct a ``Model`` object that defines a model for MCMC simulation.
@@ -36,7 +35,6 @@ Constructor
 
         * ``iter`` : current iteration of the MCMC simulation.
         * ``burnin`` : number of initial draws to be discarded as a burn-in sequence to allow for convergence.
-        * ``chain`` : current run of the MCMC simulator in a possible sequence of runs.
         * ``samplers`` : a vector of block-specific sampling functions.
         * ``nodes...`` : an arbitrary number of user-specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``Logical`` or ``Stochastic`` type objects.  Their names in the model will be taken from the argument names.
 

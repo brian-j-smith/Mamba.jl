@@ -128,7 +128,6 @@ module Mamba
     states::Vector{Vector{Float64}}
     iter::Int
     burnin::Int
-    chain::Int
     hasinputs::Bool
     hasinits::Bool
   end

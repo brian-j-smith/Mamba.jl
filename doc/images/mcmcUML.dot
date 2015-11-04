@@ -32,13 +32,13 @@ graph MCMC {
 
     ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}", pos="275,665"]
 
-    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ chain : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275,295"]
+    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275,305"]
 
-    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495,295"]
+    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495,305"]
 
-    AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75,330"]
+    AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75,340"]
 
-    ModelChains [label = "{ModelChains|+ model : Model\l}", pos="75,250"]
+    ModelChains [label = "{ModelChains|+ model : Model\l}", pos="75,260"]
 
     Real -- ScalarVariate [arrowtail = empty]
     DenseArray -- ArrayVariate [arrowtail = empty]
@@ -58,9 +58,9 @@ graph MCMC {
     ScalarVariate -- ScalarStochastic [arrowtail = empty]
 
     Sampler -- AbstractStochastic [taillabel = "1", headlabel = "1..*"]
-    Model -- Sampler [arrowtail = odiamond, headlabel = "0..*"]
-    Model -- AbstractLogical [arrowtail = odiamond, headlabel = "0..*"]
-    Model -- AbstractStochastic [arrowtail = odiamond, headlabel = "0..*", labeldistance = 2.2, labelangle = -15]
+    Model -- Sampler [arrowtail = odiamond, headlabel = "0..*", labeldistance = 1.0, labelangle = -30]
+    Model -- AbstractLogical [arrowtail = odiamond, headlabel = "0..*", labeldistance = 1.0, labelangle = -105]
+    Model -- AbstractStochastic [arrowtail = odiamond, headlabel = "0..*", labeldistance = 2.5, labelangle = -15]
     ModelChains -- Model [arrowtail = odiamond, headlabel = "1"]
 
 }
