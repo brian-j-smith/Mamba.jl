@@ -27,14 +27,14 @@ end
 
 #################### Sampler Constructor ####################
 
-function HMC(params::Vector{Symbol}, epsilon::Real, L::Int; 
+function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
   Sampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = HMCVariate(x, tunepar["sampler"])
-      fx = x -> hmcfx(model, x, block, tunepar["dtype"])
+      fx = x -> hmcfx!(model, x, block, tunepar["dtype"])
       hmc!(v, tunepar["epsilon"], tunepar["L"], fx)
       tunepar["sampler"] = v.tune
       relist(model, v, block, true)
@@ -43,29 +43,21 @@ function HMC(params::Vector{Symbol}, epsilon::Real, L::Int;
   )
 end
 
-function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Int, 
+function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Integer,
                       Sigma::Matrix{T}; dtype::Symbol=:forward)
   Sampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = HMCVariate(x, tunepar["sampler"])
-      fx = x -> hmcfx(model, x, block, tunepar["dtype"])
+      fx = x -> hmcfx!(model, x, block, tunepar["dtype"])
       hmc!(v, tunepar["epsilon"], tunepar["L"], tunepar["SigmaF"], fx)
       tunepar["sampler"] = v.tune
       relist(model, v, block, true)
     end,
-    Dict("epsilon" => epsilon, "L" => L, "SigmaF" => cholfact(Sigma), 
+    Dict("epsilon" => epsilon, "L" => L, "SigmaF" => cholfact(Sigma),
          "dtype" => dtype, "sampler" => nothing)
   )
-end
-
-function hmcfx{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
-  logf = logpdf(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf(m, x, block, true, dtype=dtype) :
-           zeros(length(x))
-  logf, grad
 end
 
 function hmcfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
@@ -78,47 +70,41 @@ end
 
 export hmcfx!
 
+
 #################### Sampling Functions ####################
 
-function hmc!(v::HMCVariate, epsilon::Float64, L::Int, fx::Function)
+function hmc!(v::HMCVariate, epsilon::Real, L::Integer, fx::Function)
   x1 = v[:]
-  # Negative log likelihood and gradient
-  U0, gradU0 = fx(v)
-  U0, gradU0 = -U0, -gradU0
-  U1, gradU1 = U0, gradU0
+  logf0, grad0 = logf1, grad1 = fx(x1)
 
-  # momentum variables
-  p0 = randn(length(v))
-  p1 = p0[:]
+  ## Momentum variables
+  p0 = p1 = randn(length(v))
 
-  # make a half step for a momentum at the beginning
-  p1 = p1 - 0.5 * epsilon * gradU1
+  ## Make a half step for a momentum at the beginning
+  p1 += 0.5 * epsilon * grad0
 
-  # Alternate full steps for position and momentum
+  ## Alternate full steps for position and momentum
   for i in 1:L
-    # Make a full step for the position
-    x1 = x1 + epsilon * p1
+    ## Make a full step for the position
+    x1 += epsilon * p1
 
-    U1, gradU1 = fx(x1)
-    U1, gradU1 = -U1, -gradU1
+    logf1, grad1 = fx(x1)
 
-    # Make a full step for the momentum, except at the end of trajectory
-    if i != L
-      p1 = p1 - epsilon * gradU1
-    end
+    ## Make a full step for the momentum
+    p1 += epsilon * grad1
   end
 
-  # Make a half step for momentum at the end
-  p1 = p1 - 0.5 * epsilon * gradU1
+  ## Make a half step for momentum at the end
+  p1 -= 0.5 * epsilon * grad1
 
-  # Negate momentum at end of trajectory to make the proposal symmetric
-  p1 = -p1
+  ## Negate momentum at end of trajectory to make the proposal symmetric
+  p1 *= -1.0
 
-  # Evaluate potential and kinetic energies at start and end of trajectory
+  ## Evaluate potential and kinetic energies at start and end of trajectory
   Kp0 = 0.5 * sumabs2(p0)
   Kp1 = 0.5 * sumabs2(p1)
 
-  if rand() < exp(U0 - U1 + Kp0 - Kp1)
+  if rand() < exp((logf1 - Kp1) - (logf0 - Kp0))
     v[:] = x1
   end
   v.tune.epsilon = epsilon
@@ -127,49 +113,42 @@ function hmc!(v::HMCVariate, epsilon::Float64, L::Int, fx::Function)
   v
 end
 
-function hmc!(v::HMCVariate, epsilon::Float64, L::Int, 
+function hmc!(v::HMCVariate, epsilon::Real, L::Integer,
               SigmaF::Cholesky{Float64}, fx::Function)
   S = SigmaF[:L]
-  Sinv = inv(L)
+  Sinv = inv(S)
 
   x1 = v[:]
-  # Negative log likelihood and gradient
-  U0, gradU0 = fx(v)
-  U0, gradU0 = -U0, -gradU0
-  U1, gradU1 = U0, gradU0
+  logf0, grad0 = logf1, grad1 = fx(x1)
 
-  # momentum variables
-  p0 = S * randn(length(v))
-  p1 = p0[:]
+  ## Momentum variables
+  p0 = p1 = S * randn(length(v))
 
-  # make a half step for a momentum at the beginning
-  p1 = p1 - 0.5 * epsilon * gradU1
+  ## Make a half step for a momentum at the beginning
+  p1 += 0.5 * epsilon * grad0
 
-  # Alternate full steps for position and momentum
+  ## Alternate full steps for position and momentum
   for i in 1:L
-    # Make a full step for the position
-    x1 = x1 + epsilon * p1
+    ## Make a full step for the position
+    x1 += epsilon * p1
 
-    U1, gradU1 = fx(x1)
-    U1, gradU1 = -U1, -gradU1
+    logf1, grad1 = fx(x1)
 
-    # Make a full step for the momentum, except at the end of trajectory
-    if i != L
-      p1 = p1 - epsilon * gradU1
-    end
+    ## Make a full step for the momentum
+    p1 += epsilon * grad1
   end
 
-  # Make a half step for momentum at the end
-  p1 = p1 - 0.5 * epsilon * gradU1
+  ## Make a half step for momentum at the end
+  p1 -= 0.5 * epsilon * grad1
 
-  # Negate momentum at end of trajectory to make the proposal symmetric
-  p1 = -p1
+  ## Negate momentum at end of trajectory to make the proposal symmetric
+  p1 *= -1.0
 
-  # Evaluate potential and kinetic energies at start and end of trajectory
+  ## Evaluate potential and kinetic energies at start and end of trajectory
   Kp0 = 0.5 * sumabs2(Sinv * p0)
   Kp1 = 0.5 * sumabs2(Sinv * p1)
 
-  if rand() < exp(U0 - U1 + Kp0 - Kp1)
+  if rand() < exp((logf1 - Kp1) - (logf0 - Kp0))
     v[:] = x1
   end
   v.tune.epsilon = epsilon
