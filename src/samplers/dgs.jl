@@ -15,10 +15,10 @@ type DGSVariate <: VectorVariate
   value::Vector{Float64}
   tune::DGSTune
 
-  DGSVariate(x::Vector{Float64}, tune::DGSTune) = new(x, tune)
+  DGSVariate{T<:Real}(x::AbstractVector{T}, tune::DGSTune) = new(x, tune)
 end
 
-function DGSVariate(x::Vector{Float64}, tune=nothing)
+function DGSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = DGSTune(
     Array(Float64, 0, 0),
     Array(Float64, 0)

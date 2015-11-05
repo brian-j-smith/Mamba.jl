@@ -56,8 +56,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: SliceVariate(x::Vector{Float64}, tune::SliceTune)
-              SliceVariate(x::Vector{Float64}, tune=nothing)
+.. function:: SliceVariate(x::AbstractVector{T<:Real}, tune::SliceTune)
+              SliceVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``SliceVariate`` object that stores sampled values and tuning parameters for slice sampling.
 

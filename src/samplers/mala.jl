@@ -11,10 +11,10 @@ type MALAVariate <: VectorVariate
   value::Vector{Float64}
   tune::MALATune
 
-  MALAVariate(x::Vector{Float64}, tune::MALATune) = new(x, tune)
+  MALAVariate{T<:Real}(x::AbstractVector{T}, tune::MALATune) = new(x, tune)
 end
 
-function MALAVariate(x::Vector{Float64}, tune=nothing)
+function MALAVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = MALATune(
     NaN,
     Cholesky(Array(Float64, 0, 0), :U)

@@ -17,10 +17,10 @@ type AMMVariate <: VectorVariate
   value::Vector{Float64}
   tune::AMMTune
 
-  AMMVariate(x::Vector{Float64}, tune::AMMTune) = new(x, tune)
+  AMMVariate{T<:Real}(x::AbstractVector{T}, tune::AMMTune) = new(x, tune)
 end
 
-function AMMVariate(x::Vector{Float64}, tune=nothing)
+function AMMVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = AMMTune(
     false,
     0.05,

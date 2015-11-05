@@ -56,8 +56,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: AMWGVariate(x::Vector{Float64}, tune::AMWGTune)
-              AMWGVariate(x::Vector{Float64}, tune=nothing)
+.. function:: AMWGVariate(x::AbstractVector{T<:Real}, tune::AMWGTune)
+              AMWGVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``AMWGVariate`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
 

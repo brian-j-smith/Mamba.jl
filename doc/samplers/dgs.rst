@@ -46,8 +46,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: DGSVariate(x::Vector{Float64}, tune::DGSTune)
-              DGSVariate(x::Vector{Float64}, tune=nothing)
+.. function:: DGSVariate(x::AbstractVector{T<:Real}, tune::DGSTune)
+              DGSVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``DGSVariate`` object that stores sampled values and tuning parameters for DGS sampling.
 

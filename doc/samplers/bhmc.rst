@@ -52,8 +52,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: BHMCVariate(x::Vector{Float64}, tune::BHMCTune)
-              BHMCVariate(x::Vector{Float64}, tune=nothing)
+.. function:: BHMCVariate(x::AbstractVector{T<:Real}, tune::BHMCTune)
+              BHMCVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``BHMCVariate`` object that stores sampled values and tuning parameters for BHMC sampling.
 

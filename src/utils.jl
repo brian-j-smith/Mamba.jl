@@ -34,6 +34,8 @@ end
 
 #################### Mathematical Operators ####################
 
+isprobvec(p::AbstractVector) = isprobvec(convert(Vector{Float64}, p))
+
 cummean(x::AbstractArray) = mapslices(cummean, x, 1)
 
 function cummean{T<:Real}(x::AbstractVector{T})

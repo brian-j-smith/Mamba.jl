@@ -10,13 +10,14 @@ type SliceSimplexVariate <: VectorVariate
   value::Vector{Float64}
   tune::SliceSimplexTune
 
-  function SliceSimplexVariate(x::Vector{Float64}, tune::SliceSimplexTune)
+  function SliceSimplexVariate{T<:Real}(x::AbstractVector{T},
+                                        tune::SliceSimplexTune)
     isprobvec(x) || throw(ArgumentError("x is not a probability vector"))
     new(x, tune)
   end
 end
 
-function SliceSimplexVariate(x::Vector{Float64}, tune=nothing)
+function SliceSimplexVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = SliceSimplexTune(
     NaN
   )

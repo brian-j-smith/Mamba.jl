@@ -14,14 +14,14 @@ type BHMCVariate <: VectorVariate
   value::Vector{Float64}
   tune::BHMCTune
 
-  function BHMCVariate(x::Vector{Float64}, tune::BHMCTune)
+  function BHMCVariate{T<:Real}(x::AbstractVector{T}, tune::BHMCTune)
     all(insupport(Bernoulli, x)) ||
       throw(ArgumentError("x is not a binary vector"))
     new(x, tune)
   end
 end
 
-function BHMCVariate(x::Vector{Float64}, tune=nothing)
+function BHMCVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = BHMCTune(
     NaN,
     rand(Normal(0, 1), length(x)),

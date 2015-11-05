@@ -52,8 +52,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: SliceSimplexVariate(x::Vector{Float64}, tune::SliceSimplexTune)
-              SliceSimplexVariate(x::Vector{Float64}, tune=nothing)
+.. function:: SliceSimplexVariate(x::AbstractVector{T<:Real}, tune::SliceSimplexTune)
+              SliceSimplexVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``SliceSimplexVariate`` object that stores sampled values and tuning parameters for slice simplex sampling.
 

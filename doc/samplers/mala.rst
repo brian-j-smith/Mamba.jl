@@ -55,8 +55,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: MALAVariate(x::Vector{Float64}, tune::MALATune)
-              MALAVariate(x::Vector{Float64}, tune=nothing)
+.. function:: MALAVariate(x::AbstractVector{T<:Real}, tune::MALATune)
+              MALAVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``MALAVariate`` object that stores sampled values and tuning parameters for MALA sampling.
 

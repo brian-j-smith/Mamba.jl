@@ -54,8 +54,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: AMMVariate(x::Vector{Float64}, tune::AMMTune)
-              AMMVariate(x::Vector{Float64}, tune=nothing)
+.. function:: AMMVariate(x::AbstractVector{T<:Real}, tune::AMMTune)
+              AMMVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
 

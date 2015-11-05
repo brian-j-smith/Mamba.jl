@@ -21,10 +21,10 @@ type NUTSVariate <: VectorVariate
   value::Vector{Float64}
   tune::NUTSTune
 
-  NUTSVariate(x::Vector{Float64}, tune::NUTSTune) = new(x, tune)
+  NUTSVariate{T<:Real}(x::AbstractVector{T}, tune::NUTSTune) = new(x, tune)
 end
 
-function NUTSVariate(x::Vector{Float64}, tune=nothing)
+function NUTSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = NUTSTune(
     false,
     0.0,

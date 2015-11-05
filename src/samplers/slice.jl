@@ -10,10 +10,10 @@ type SliceVariate <: VectorVariate
   value::Vector{Float64}
   tune::SliceTune
 
-  SliceVariate(x::Vector{Float64}, tune::SliceTune) = new(x, tune)
+  SliceVariate{T<:Real}(x::AbstractVector{T}, tune::SliceTune) = new(x, tune)
 end
 
-function SliceVariate(x::Vector{Float64}, tune=nothing)
+function SliceVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = SliceTune(
     Array(Float64, 0)
   )

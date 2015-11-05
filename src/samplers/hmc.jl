@@ -12,10 +12,10 @@ type HMCVariate <: VectorVariate
   value::Vector{Float64}
   tune::HMCTune
 
-  HMCVariate(x::Vector{Float64}, tune::HMCTune) = new(x, tune)
+  HMCVariate{T<:Real}(x::AbstractVector{T}, tune::HMCTune) = new(x, tune)
 end
 
-function HMCVariate(x::Vector{Float64}, tune=nothing)
+function HMCVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = HMCTune(
     NaN,
     0,

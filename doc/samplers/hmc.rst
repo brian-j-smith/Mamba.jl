@@ -54,8 +54,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: HMCVariate(x::Vector{Float64}, tune::HMCTune)
-              HMCVariate(x::Vector{Float64}, tune=nothing)
+.. function:: HMCVariate(x::AbstractVector{T<:Real}, tune::HMCTune)
+              HMCVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``HMCVariate`` object that stores sampled values and tuning parameters for HMC sampling.
 

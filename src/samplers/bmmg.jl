@@ -10,14 +10,14 @@ type BMMGVariate <: VectorVariate
   value::Vector{Float64}
   tune::BMMGTune
 
-  function BMMGVariate(x::Vector{Float64}, tune::BMMGTune)
+  function BMMGVariate{T<:Real}(x::AbstractVector{T}, tune::BMMGTune)
     all(insupport(Bernoulli, x)) ||
       throw(ArgumentError("x is not a binary vector"))
     new(x, tune)
   end
 end
 
-function BMMGVariate(x::Vector{Float64}, tune=nothing)
+function BMMGVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
   tune = BMMGTune(
     Vector{Vector{Int}}[]
   )

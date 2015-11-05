@@ -52,8 +52,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: BMMGVariate(x::Vector{Float64}, tune::BMMGTune)
-              BMMGVariate(x::Vector{Float64}, tune=nothing)
+.. function:: BMMGVariate(x::AbstractVector{T<:Real}, tune::BMMGTune)
+              BMMGVariate(x::AbstractVector{T<:Real}, tune=nothing)
 
     Construct a ``BMMGVariate`` object that stores sampled values and tuning parameters for BMMG sampling.
 
