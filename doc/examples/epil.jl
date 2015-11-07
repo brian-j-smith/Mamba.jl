@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-epil = Dict{Symbol,Any}(
+epil = Dict{Symbol, Any}(
   :y =>
     [ 5  3  3  3
       3  5  3  3
@@ -101,7 +101,7 @@ model = Model(
                    alpha_Trt * (Trt[i] - Trtbar) + alpha_BT * (BT[i] - BTbar) +
                    alpha_Age * (logAge[i] - logAgebar) +
                    alpha_V4 * (V4[j] - V4bar) + b1[i] +
-                   b[i,j])
+                   b[i, j])
           Poisson(mu)
         end
         for i in 1:N, j in 1:T

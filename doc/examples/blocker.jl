@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-blocker = Dict{Symbol,Any}(
+blocker = Dict{Symbol, Any}(
   :rt =>
     [3, 7, 5, 102, 28, 4, 98, 60, 25, 138, 64, 45, 9, 57, 25, 33, 28, 8, 6, 32,
      27, 22],

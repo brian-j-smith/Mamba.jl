@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-bones = Dict{Symbol,Any}(
+bones = Dict{Symbol, Any}(
   :gamma => reshape(
     [ 0.7425,     NaN,     NaN,    NaN,  10.2670,     NaN,     NaN,     NaN,
      10.5215,     NaN,     NaN,    NaN,   9.3877,     NaN,     NaN,     NaN,
@@ -61,10 +61,10 @@ model = Model(
           begin
             n = ncat[j]
             p[1] = 1.0
-            for k in 1:n-1
-              Q = invlogit(delta[j] * (theta[i] - gamma[j,k]))
+            for k in 1:(n - 1)
+              Q = invlogit(delta[j] * (theta[i] - gamma[j, k]))
               p[k] -= Q
-              p[k+1] = Q
+              p[k + 1] = Q
             end
             Categorical(p[1:n])
           end

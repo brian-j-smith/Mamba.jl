@@ -15,7 +15,7 @@ module PDMats2
 
   type PBDiagMat <: AbstractPDMat
     dim::Int
-    mat::SparseMatrixCSC{Float64,Int}
+    mat::SparseMatrixCSC{Float64, Int}
     chol::Vector{Cholesky{Float64}}
     scale::Int
   end
@@ -84,7 +84,7 @@ module PDMats2
     length(r) == n || throw(ArgumentError("incompatible array length"))
     ax = a * x
     for j = 1:n
-      r[j] = dot(a[:,j], ax[:,j])
+      r[j] = dot(a[:, j], ax[:, j])
     end
     r
   end
@@ -96,7 +96,7 @@ module PDMats2
     length(r) == n || throw(ArgumentError("incompatible array length"))
     wx = whiten(a, x)
     for j = 1:n
-      r[j] = sumabs2(wx[:,j])
+      r[j] = sumabs2(wx[:, j])
     end
     r
   end
@@ -127,7 +127,7 @@ module PDMats2
         if isnonzero(x, i, j)
           I[k] = offset + i
           J[k] = offset + j
-          V[k] = x[i,j]
+          V[k] = x[i, j]
           k += 1
         end
       end

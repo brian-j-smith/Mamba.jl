@@ -124,4 +124,3 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
   v[:] = (sign(tune.position) + ones(d)) / 2.0
   v
 end
-

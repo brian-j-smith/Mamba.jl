@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-jaws = Dict{Symbol,Any}(
+jaws = Dict{Symbol, Any}(
   :Y =>
    [47.8 48.8 49.0 49.7
     46.4 47.3 47.7 48.4

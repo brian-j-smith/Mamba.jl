@@ -64,9 +64,9 @@ data = [
  38 28 72  8.9 3.48 10.7 79.8 3451 11.7 37.5 13.0  14  13  39  58  954.44
 ]
 
-pollution = Dict{Symbol,Any}(
+pollution = Dict{Symbol, Any}(
   :y => data[:, end],
-  :X => mapslices(x -> x / sqrt(var(x)), data[:, 1:(end-1)], 1),
+  :X => mapslices(x -> x / sqrt(var(x)), data[:, 1:(end - 1)], 1),
   :p => size(data, 2) - 1
 )
 
@@ -124,21 +124,17 @@ y = pollution[:y]
 X = pollution[:X]
 p = size(X, 2)
 
-inits = Dict{Symbol,Any}[
-  Dict{Symbol,Any}(
-   :y => y, :alpha => mean(y), :gamma => rand(0:1, p),
-   :beta => inv(X' * X + eye(p)) * X' * y, :sigma2 => var(y)),
-  Dict{Symbol,Any}(
-   :y => y, :alpha => 1, :gamma => rand(0:1, p),
-   :beta => randn(p), :sigma2 => 1),
-  Dict{Symbol,Any}(
-   :y => y, :alpha => 17, :gamma => rand(0:1, p),
-   :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
-   :sigma2 => 1),
-  Dict{Symbol,Any}(
-   :y => y, :alpha => 17, :gamma => rand(0:1, p),
-   :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
-   :sigma2 => 1)
+inits = [
+  Dict(:y => y, :alpha => mean(y), :gamma => rand(0:1, p),
+       :beta => inv(X' * X + eye(p)) * X' * y, :sigma2 => var(y)),
+  Dict(:y => y, :alpha => 1, :gamma => rand(0:1, p),
+       :beta => randn(p), :sigma2 => 1),
+  Dict(:y => y, :alpha => 17, :gamma => rand(0:1, p),
+       :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
+       :sigma2 => 1),
+  Dict(:y => y, :alpha => 17, :gamma => rand(0:1, p),
+       :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
+       :sigma2 => 1)
 ]
 
 

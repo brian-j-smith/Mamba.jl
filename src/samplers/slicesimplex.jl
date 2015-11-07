@@ -102,7 +102,7 @@ end
 
 function makefirstsimplex(x::AbstractVector{Float64}, scale::Real)
   vertices = eye(length(x))
-  vertices[:,2:end] += (1.0 - scale) * (vertices[:,1] .- vertices[:,2:end])
+  vertices[:, 2:end] += (1.0 - scale) * (vertices[:, 1] .- vertices[:, 2:end])
   vertices .+ x .- vertices * rand(Dirichlet(ones(x)))
 end
 
@@ -110,8 +110,8 @@ function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
                        cx::AbstractVector{Float64}, cc::AbstractVector{Float64},
                        vertices::AbstractMatrix{Float64})
   for i in find(bc .< bx)
-    inds = [1:(i-1); (i+1):size(vertices,2)]
-    vertices[:,inds] += bc[i] * (vertices[:,i] .- vertices[:,inds])
+    inds = [1:(i - 1); (i + 1):size(vertices, 2)]
+    vertices[:, inds] += bc[i] * (vertices[:, i] .- vertices[:, inds])
     bc = vertices \ cc
   end
   vertices

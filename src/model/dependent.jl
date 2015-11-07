@@ -69,23 +69,24 @@ logpdf(d::AbstractDependent, x, transform::Bool=false) = 0.0
 
 #################### Constructors ####################
 
-function Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+function Logical(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
   value = Float64(NaN)
   l = ScalarLogical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
   setmonitor!(l, monitor)
 end
 
-function Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+function Logical(d::Integer, expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
   l = ArrayLogical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
   setmonitor!(l, monitor)
 end
 
-function Logical(f::Function, monitor::Union{Bool,Vector{Int}}=true)
+function Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
   Logical(modelexpr(f), monitor)
 end
 
-function Logical(d::Integer, f::Function, monitor::Union{Bool,Vector{Int}}=true)
+function Logical(d::Integer, f::Function,
+                 monitor::Union{Bool, Vector{Int}}=true)
   Logical(d, modelexpr(f), monitor)
 end
 
@@ -136,7 +137,7 @@ end
 
 #################### Constructors ####################
 
-function Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
+function Stochastic(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
   value = Float64(NaN)
   s = ScalarStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
                        Symbol[], NullUnivariateDistribution())
@@ -144,19 +145,19 @@ function Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
 end
 
 function Stochastic(d::Integer, expr::Expr,
-                    monitor::Union{Bool,Vector{Int}}=true)
+                    monitor::Union{Bool, Vector{Int}}=true)
   value = Array(Float64, fill(0, d)...)
   s = ArrayStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
                       Symbol[], NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
 
-function Stochastic(f::Function, monitor::Union{Bool,Vector{Int}}=true)
+function Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
   Stochastic(modelexpr(f), monitor)
 end
 
 function Stochastic(d::Integer, f::Function,
-                    monitor::Union{Bool,Vector{Int}}=true)
+                    monitor::Union{Bool, Vector{Int}}=true)
   Stochastic(d, modelexpr(f), monitor)
 end
 

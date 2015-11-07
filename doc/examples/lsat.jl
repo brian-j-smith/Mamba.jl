@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-lsat = Dict{Symbol,Any}(
+lsat = Dict{Symbol, Any}(
   :culm =>
     [3, 9, 11, 22, 23, 24, 27, 31, 32, 40, 40, 56, 56, 59, 61, 76, 86, 115, 129,
      210, 213, 241, 256, 336, 352, 408, 429, 602, 613, 674, 702, 1000],
@@ -45,7 +45,7 @@ lsat[:T] = size(lsat[:response], 2)
 
 n = [lsat[:culm][1]; diff(lsat[:culm])]
 idx = mapreduce(i -> fill(i, n[i]), vcat, 1:length(n))
-lsat[:r] = lsat[:response][idx,:]
+lsat[:r] = lsat[:response][idx, :]
 
 
 ## Model Specification

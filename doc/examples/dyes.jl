@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-dyes = Dict{Symbol,Any}(
+dyes = Dict{Symbol, Any}(
   :y =>
     [1545, 1440, 1440, 1520, 1580,
      1540, 1555, 1490, 1560, 1495,

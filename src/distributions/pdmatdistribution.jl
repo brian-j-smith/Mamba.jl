@@ -8,7 +8,7 @@ function unlist(d::PDMatDistribution, X::AbstractArray)
   k = 0
   for i in 1:n, j in i:n
     k += 1
-    y[k] = X[i,j]
+    y[k] = X[i, j]
   end
   y
 end
@@ -19,7 +19,7 @@ function relistlength(d::PDMatDistribution, X::AbstractArray)
   k = 0
   for i in 1:n, j in i:n
     k += 1
-    Y[i,j] = Y[j,i] = X[k]
+    Y[i, j] = Y[j, i] = X[k]
   end
   (Y, k)
 end
@@ -29,10 +29,10 @@ function link(d::PDMatDistribution, X::DenseMatrix)
   Y = zeros(n, n)
   U = chol(X)
   for i in 1:n
-    Y[i,i] = log(U[i,i])
+    Y[i, i] = log(U[i, i])
   end
-  for i in 1:n, j in (i+1):n
-    Y[i,j] = U[i,j]
+  for i in 1:n, j in (i + 1):n
+    Y[i, j] = U[i, j]
   end
   Y
 end
@@ -41,10 +41,10 @@ function invlink(d::PDMatDistribution, X::DenseMatrix)
   n = dim(d)
   U = zeros(n, n)
   for i in 1:n
-    U[i,i] = exp(X[i,i])
+    U[i, i] = exp(X[i, i])
   end
-  for i in 1:n, j in (i+1):n
-    U[i,j] = X[i,j]
+  for i in 1:n, j in (i + 1):n
+    U[i, j] = X[i, j]
   end
   At_mul_B(U, U)
 end
@@ -55,7 +55,7 @@ function logpdf(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
     U = chol(X)
     n = dim(d)
     for i in 1:n
-      lp += (n - i + 2) * log(U[i,i])
+      lp += (n - i + 2) * log(U[i, i])
     end
     lp += n * log(2)
   end

@@ -77,7 +77,7 @@ module Mamba
   end
 
   type ArrayLogical{N} <: ArrayVariate{N}
-    value::Array{Float64,N}
+    value::Array{Float64, N}
     symbol::Symbol
     monitor::Vector{Int}
     eval::Function
@@ -96,7 +96,7 @@ module Mamba
   end
 
   type ArrayStochastic{N} <: ArrayVariate{N}
-    value::Array{Float64,N}
+    value::Array{Float64, N}
     symbol::Symbol
     monitor::Vector{Int}
     eval::Function
@@ -115,7 +115,7 @@ module Mamba
   type Sampler
     params::Vector{Symbol}
     eval::Function
-    tune::Dict{AbstractString,Any}
+    tune::Dict{AbstractString, Any}
     targets::Vector{Symbol}
   end
 
@@ -123,7 +123,7 @@ module Mamba
   #################### Model Type ####################
 
   type Model
-    nodes::Dict{Symbol,Any}
+    nodes::Dict{Symbol, Any}
     samplers::Vector{Sampler}
     states::Vector{Vector{Float64}}
     iter::Int
@@ -138,14 +138,14 @@ module Mamba
   abstract AbstractChains
 
   immutable Chains <: AbstractChains
-    value::Array{Float64,3}
+    value::Array{Float64, 3}
     range::Range{Int}
     names::Vector{AbstractString}
     chains::Vector{Int}
   end
 
   immutable ModelChains <: AbstractChains
-    value::Array{Float64,3}
+    value::Array{Float64, 3}
     range::Range{Int}
     names::Vector{AbstractString}
     chains::Vector{Int}

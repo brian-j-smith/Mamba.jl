@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-asthma = Dict{Symbol,Any}(
+asthma = Dict{Symbol, Any}(
   :y =>
     [210 60 0 1  1
      88 641 0 4 13
@@ -17,7 +17,7 @@ model = Model(
   y = Stochastic(2,
     (M, q) ->
       MultivariateDistribution[
-        Multinomial(M[i], vec(q[i,:]))
+        Multinomial(M[i], vec(q[i, :]))
         for i in 1:length(M)
       ],
     false
@@ -37,7 +37,7 @@ model = Model(
 
 ## Initial Values
 inits = [
-  Dict{Symbol,Any}(
+  Dict{Symbol, Any}(
     :y => asthma[:y],
     :q => vcat([rand(Dirichlet(ones(5)))' for i in 1:3]...)
   )

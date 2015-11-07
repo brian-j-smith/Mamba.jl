@@ -19,7 +19,7 @@ function logpdf(mc::ModelChains, f::Function, nodekeys::Vector{Symbol})
   relistkeys = union(relistkeys, intersect(nodekeys, keys(m, :block)))
   inds = names2inds(mc, relistkeys)
 
-  m[relistkeys] = relist(m, map(i -> f(mc.value[:,i,:]), inds), relistkeys)
+  m[relistkeys] = relist(m, map(i -> f(mc.value[:, i, :]), inds), relistkeys)
   update!(m, updatekeys)
   mapreduce(key -> logpdf(m[key]), +, nodekeys)
 end
@@ -45,9 +45,9 @@ function logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
   for k in 1:chains
     meter = ChainProgress(frame, k, iters)
     for i in 1:iters
-      m[relistkeys] = relist(m, mc.value[i,inds,k], relistkeys)
+      m[relistkeys] = relist(m, mc.value[i, inds, k], relistkeys)
       update!(m, updatekeys)
-      c.value[i,1,k] = mapreduce(key -> logpdf(m[key]), +, nodekeys)
+      c.value[i, 1, k] = mapreduce(key -> logpdf(m[key]), +, nodekeys)
       next!(meter)
     end
     println()
@@ -79,10 +79,10 @@ function predict(mc::ModelChains, nodekeys::Vector{Symbol})
   iters, _, chains = size(c.value)
   for k in 1:chains
     for i in 1:iters
-      m[relistkeys] = relist(m, mc.value[i,inds,k], relistkeys)
+      m[relistkeys] = relist(m, mc.value[i, inds, k], relistkeys)
       update!(m, updatekeys)
       f = key -> unlist(m[key], rand(m[key]))
-      c.value[i,:,k] = vcat(map(f, nodekeys)...)
+      c.value[i, :, k] = vcat(map(f, nodekeys)...)
     end
   end
 

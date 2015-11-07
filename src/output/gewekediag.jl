@@ -22,8 +22,8 @@ function gewekediag(c::AbstractChains; first::Real=0.1, last::Real=0.5,
   _, p, m = size(c.value)
   vals = Array(Float64, p, 2, m)
   for j in 1:p, k in 1:m
-    vals[j,:,k] = gewekediag(c.value[:,j,k], first=first, last=last,
-                             etype=etype; args...)
+    vals[j, :, k] = gewekediag(c.value[:, j, k], first=first, last=last,
+                               etype=etype; args...)
   end
   hdr = header(c) * "\nGeweke Diagnostic:\nFirst Window Fraction = $first\n" *
         "Second Window Fraction = $last\n"

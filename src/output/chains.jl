@@ -10,7 +10,7 @@ function Chains{T<:AbstractString}(iters::Integer, params::Integer;
   Chains(value, start=start, thin=thin, names=names)
 end
 
-function Chains{T<:Real,U<:AbstractString,V<:Integer}(value::Array{T,3};
+function Chains{T<:Real, U<:AbstractString, V<:Integer}(value::Array{T, 3};
                start::Integer=1, thin::Integer=1,
                names::Vector{U}=AbstractString[], chains::Vector{V}=Int[])
   n, p, m = size(value)
@@ -18,20 +18,20 @@ function Chains{T<:Real,U<:AbstractString,V<:Integer}(value::Array{T,3};
   if isempty(names)
     names = map(i -> "Param$i", 1:p)
   elseif length(names) != p
-    throw(DimensionMismatch("size(value,2) and names length differ"))
+    throw(DimensionMismatch("size(value, 2) and names length differ"))
   end
 
   if isempty(chains)
     chains = collect(1:m)
   elseif length(chains) != m
-    throw(DimensionMismatch("size(value,3) and chains length differ"))
+    throw(DimensionMismatch("size(value, 3) and chains length differ"))
   end
 
   v = convert(Array{Float64, 3}, value)
   Chains(v, range(start, thin, n), AbstractString[names...], Int[chains...])
 end
 
-function Chains{T<:Real,U<:AbstractString}(value::Matrix{T};
+function Chains{T<:Real, U<:AbstractString}(value::Matrix{T};
                start::Integer=1, thin::Integer=1,
                names::Vector{U}=AbstractString[], chains::Integer=1)
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
@@ -69,25 +69,25 @@ end
 
 window2inds(c::AbstractChains, window) =
   throw(ArgumentError("$(typeof(window)) iteration indexing is unsupported"))
-window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c,1))
+window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c, 1))
 window2inds(c::AbstractChains, window::Range) = begin
   range = @mapiters(window, c)
   a = max(ceil(Int, first(range)), 1)
   b = step(window)
-  c = min(floor(Int, last(range)), size(c.value,1))
+  c = min(floor(Int, last(range)), size(c.value, 1))
   a:b:c
 end
 
 iters2inds(c::AbstractChains, iters) = iters
-iters2inds(c::AbstractChains, ::Colon) = 1:size(c.value,1)
+iters2inds(c::AbstractChains, ::Colon) = 1:size(c.value, 1)
 iters2inds(c::AbstractChains, iters::Range) =
-  convert(StepRange{Int,Int}, @mapiters(iters, c))
+  convert(StepRange{Int, Int}, @mapiters(iters, c))
 iters2inds(c::AbstractChains, iter::Real) = Int(@mapiters(iter, c))
 iters2inds{T<:Real}(c::AbstractChains, iters::Vector{T}) =
   Int[@mapiters(i, c) for i in iters]
 
 names2inds(c::AbstractChains, names) = names
-names2inds(c::AbstractChains, ::Colon) = 1:size(c.value,2)
+names2inds(c::AbstractChains, ::Colon) = 1:size(c.value, 2)
 names2inds(c::AbstractChains, name::Real) = [name]
 names2inds(c::AbstractChains, name::AbstractString) = names2inds(c, [name])
 names2inds{T<:AbstractString}(c::AbstractChains, names::Vector{T}) =
@@ -217,13 +217,14 @@ function header(c::AbstractChains)
   )
 end
 
-function indiscretesupport(c::AbstractChains, bounds::Tuple{Real,Real}=(0,Inf))
+function indiscretesupport(c::AbstractChains,
+                           bounds::Tuple{Real, Real}=(0, Inf))
   nrows, nvars, nchains = size(c.value)
   result = Array(Bool, nvars * (nrows > 0))
   for i in 1:nvars
     result[i] = true
     for j in 1:nrows, k in 1:nchains
-      x = c.value[j,i,k]
+      x = c.value[j, i, k]
       if !isinteger(x) || x < bounds[1] || x > bounds[2]
         result[i] = false
         break
@@ -236,9 +237,9 @@ end
 function link(c::AbstractChains)
   cc = copy(c.value)
   for j in 1:length(c.names)
-    x = cc[:,j,:]
+    x = cc[:, j, :]
     if minimum(x) > 0.0
-      cc[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
+      cc[:, j, :] = maximum(x) < 1.0 ? logit(x) : log(x)
     end
   end
   cc

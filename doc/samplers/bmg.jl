@@ -24,6 +24,6 @@ sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
 gamma = BMGVariate(zeros(p))
 for i in 1:t
   bmg!(gamma, logf)
-  sim[i,:,1] = gamma
+  sim[i, :, 1] = gamma
 end
 describe(sim)

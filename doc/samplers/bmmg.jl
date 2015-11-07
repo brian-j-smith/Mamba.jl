@@ -25,7 +25,7 @@ gamma = BMMGVariate(zeros(p))
 indexset = collect(combinations(1:p, 1))
 for i in 1:t
   bmmg!(gamma, indexset, logf)
-  sim[i,:,1] = gamma
+  sim[i, :, 1] = gamma
 end
 describe(sim)
 

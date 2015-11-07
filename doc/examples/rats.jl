@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-rats = Dict{Symbol,Any}(
+rats = Dict{Symbol, Any}(
   :y =>
     [151, 199, 246, 283, 320,
      145, 199, 249, 293, 354,

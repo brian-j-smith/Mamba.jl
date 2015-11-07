@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-surgical = Dict{Symbol,Any}(
+surgical = Dict{Symbol, Any}(
   :r => [0, 18, 8, 46, 8, 13, 9, 31, 14, 8, 29, 24],
   :n => [47, 148, 119, 810, 211, 196, 148, 215, 207, 97, 256, 360]
 )

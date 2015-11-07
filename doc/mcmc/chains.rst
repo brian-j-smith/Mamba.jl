@@ -22,7 +22,7 @@ Declarations
 Fields
 ^^^^^^
 
-* ``value::Array{Float64,3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
+* ``value::Array{Float64, 3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
 * ``names::Vector{AbstractString}`` : names assigned to the parameter elements.
 * ``chains::Vector{Int}`` : indices to the MCMC runs.
@@ -34,7 +34,7 @@ Constructors
 .. function:: Chains(iters::Integer, params::Integer; \
                      start::Integer=1, thin::Integer=1, chains::Integer=1, \
                      names::Vector{T<:AbstractString}=AbstractString[])
-              Chains(value::Array{T<:Real,3}; \
+              Chains(value::Array{T<:Real, 3}; \
                      start::Integer=1, thin::Integer=1, \
                      names::Vector{U<:AbstractString}=AbstractString[], \
                      chains::Vector{V<:Integer}=Int[])
@@ -229,7 +229,7 @@ Gelman, Rubin, and Brooks Diagnostics
         .. code-block:: julia
 
             immutable ChainSummary
-              value::Array{Float64,3}
+              value::Array{Float64, 3}
               rownames::Vector{AbstractString}
               colnames::Vector{AbstractString}
               header::AbstractString
@@ -332,7 +332,7 @@ Posterior Summary Statistics
 
 .. index:: Posterior Summaries; Autocorrelations
 
-.. function:: autocor(c::AbstractChains; lags::Vector=[1,5,10,50], relative::Bool=true)
+.. function:: autocor(c::AbstractChains; lags::Vector=[1, 5, 10, 50], relative::Bool=true)
 
     Compute lag-k autocorrelations for MCMC sampler output.
 
@@ -551,12 +551,12 @@ Plotting
 
         * ``c`` : sampler output to plot.
         * ``ptype`` : plot type(s).  Options are
-            * ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=round(Int, 10*log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
+            * ``:autocor`` : autocorrelation plots, with optional argument ``maxlag::Integer=round(Int, 10 * log10(length(c.range)))`` determining the maximum autocorrelation lag to plot.  Lags are plotted relative to the thinning interval of the output.
             * ``:bar`` : bar plots.  Optional argument ``position::Symbol=:stack`` controls whether bars should be stacked on top of each other (default) or placed side by side (``:dodge``).
             * ``:contour`` : pairwise posterior density contour plots.  Optional argument ``bins::Integer=100`` controls the plot resolution.
-            * ``:density`` : density plots.  Optional argument ``trim::Tuple{Real,Real}=(0.025,0.975)`` trims off lower and upper quantiles of density.
+            * ``:density`` : density plots.  Optional argument ``trim::Tuple{Real, Real}=(0.025, 0.975)`` trims off lower and upper quantiles of density.
             * ``:mean`` : running mean plots.
-            * ``:mixeddensity`` : bar plots (``:bar``) for parameters with integer values within bounds defined by optional argument ``barbounds::Tuple{Real,Real}=(0,Inf)``, and density plots (``:density``) otherwise.
+            * ``:mixeddensity`` : bar plots (``:bar``) for parameters with integer values within bounds defined by optional argument ``barbounds::Tuple{Real, Real}=(0, Inf)``, and density plots (``:density``) otherwise.
             * ``:trace`` : trace plots.
         * ``legend`` : whether to include legends in the plots to identify chain-specific results.
         * ``args...`` : additional keyword arguments to be passed to the ``ptype`` options, as described above.

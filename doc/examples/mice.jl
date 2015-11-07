@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-mice = Dict{Symbol,Any}(
+mice = Dict{Symbol, Any}(
   :t =>
     [12  1  21 25 11  26  27  30 13 12  21 20  23  25  23  29 35 NaN 31 36
      32 27  23 12 18 NaN NaN  38 29 30 NaN 32 NaN NaN NaN NaN 25  30 37 27
@@ -26,7 +26,7 @@ model = Model(
         begin
           lambda = exp(-beta[i] / r)
           0 < lambda < Inf ?
-            Truncated(Weibull(r, lambda), tcensor[i,j], Inf) :
+            Truncated(Weibull(r, lambda), tcensor[i, j], Inf) :
             Uniform(0, Inf)
         end
         for i in 1:M, j in 1:N
@@ -44,7 +44,7 @@ model = Model(
   ),
 
   median = Logical(1,
-    (beta, r) -> exp(-beta / r) * log(2)^(1/r)
+    (beta, r) -> exp(-beta / r) * log(2)^(1 / r)
   ),
 
   veh_control = Logical(

@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-inhalers = Dict{Symbol,Any}(
+inhalers = Dict{Symbol, Any}(
   :pattern =>
     [1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4
      1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4]',
@@ -29,10 +29,10 @@ inhalers[:response] = Array(Int, inhalers[:N], inhalers[:T])
 
 i = 1
 for k in 1:inhalers[:Npattern], g in 1:inhalers[:G]
-  while i <= inhalers[:Ncum][k,g]
+  while i <= inhalers[:Ncum][k, g]
     inhalers[:group][i] = g
     for t in 1:inhalers[:T]
-      inhalers[:response][i,t] = inhalers[:pattern][k,t]
+      inhalers[:response][i, t] = inhalers[:pattern][k, t]
     end
     i += 1
   end
@@ -48,12 +48,12 @@ model = Model(
         a = Float64[a1, a2, a3]
         UnivariateDistribution[
           begin
-            eta = mu[group[i],t] + b[i]
+            eta = mu[group[i], t] + b[i]
             p = ones(4)
             for j in 1:3
               Q = invlogit(-(a[j] + eta))
               p[j] -= Q
-              p[j+1] = Q
+              p[j + 1] = Q
             end
             Categorical(p)
           end
@@ -65,7 +65,7 @@ model = Model(
 
   mu = Logical(2,
     (beta, treat, pi, period, kappa, carry, G, T) ->
-      [ beta * treat[g,t] / 2 + pi * period[g,t] / 2 + kappa * carry[g,t]
+      [ beta * treat[g, t] / 2 + pi * period[g, t] / 2 + kappa * carry[g, t]
         for g in 1:G, t in 1:T ],
     false
   ),

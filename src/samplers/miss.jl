@@ -15,10 +15,10 @@ function MISS(params::Vector{Symbol})
   Sampler(params,
     quote
       tunepar = tune(model, block)
-      value = Dict{Symbol,Any}()
+      value = Dict{Symbol, Any}()
       initialize = tunepar["sampler"] == nothing
       if initialize
-        tunepar["sampler"] = Dict{Symbol,StochasticIndices}()
+        tunepar["sampler"] = Dict{Symbol, StochasticIndices}()
       end
       for key in keys(model, :block, block)
         node = model[key]
@@ -32,7 +32,7 @@ function MISS(params::Vector{Symbol})
       end
       value
     end,
-    Dict{AbstractString,Any}("sampler" => nothing)
+    Dict{AbstractString, Any}("sampler" => nothing)
   )
 end
 

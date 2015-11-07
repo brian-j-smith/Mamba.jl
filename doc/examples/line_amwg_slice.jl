@@ -8,7 +8,7 @@
 using Mamba
 
 ## Data
-data = Dict{Symbol,Any}(
+data = Dict{Symbol, Any}(
   :x => [1, 2, 3, 4, 5],
   :y => [1, 3, 3, 3, 5]
 )
@@ -37,6 +37,6 @@ logs2 = SliceVariate([0.0])
 for i in 1:n
   amwg!(beta, [1.0, 1.0], logf_beta, adapt = (i <= burnin))
   slice!(logs2, [5.0], logf_logs2)
-  sim[i,:,1] = [beta; exp(logs2)]
+  sim[i, :, 1] = [beta; exp(logs2)]
 end
 describe(sim)

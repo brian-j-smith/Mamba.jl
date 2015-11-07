@@ -186,16 +186,16 @@ function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
   else
     xminus, rminus, gradminus, xplus, rplus, gradplus, xprime, nprime, sprime,
       alphaprime, nalphaprime =
-        buildtree(x, r, grad, d, j-1, epsilon, fx, logp0, logu0)
+        buildtree(x, r, grad, d, j - 1, epsilon, fx, logp0, logu0)
     if sprime
       if d == -1
         xminus, rminus, gradminus, _, _, _, xprime2, nprime2, sprime2,
           alphaprime2, nalphaprime2 =
-            buildtree(xminus, rminus, gradminus, d, j-1, epsilon, fx, logp0, logu0)
+            buildtree(xminus, rminus, gradminus, d, j - 1, epsilon, fx, logp0, logu0)
       else
         _, _, _, xplus, rplus, gradplus, xprime2, nprime2, sprime2,
           alphaprime2, nalphaprime2 =
-            buildtree(xplus, rplus, gradplus, d, j-1, epsilon, fx, logp0, logu0)
+            buildtree(xplus, rplus, gradplus, d, j - 1, epsilon, fx, logp0, logu0)
       end
       if rand() < nprime2 / (nprime + nprime2)
         xprime = xprime2
