@@ -106,8 +106,10 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
 
     tune.position[j] = 0
 
-    S1 = (S + ones(d)) / 2.0; S1[j] = 0.0
-    S2 = (S + ones(d)) / 2.0; S2[j] = 1.0
+    S1 = (S + ones(d)) / 2.0
+    S1[j] = 0.0
+    S2 = (S + ones(d)) / 2.0
+    S2[j] = 1.0
 
     v2_new = tune.velocity[j]^2 +
              sign(tune.velocity[j]) * 2.0 * (logf(S2) - logf(S1))
@@ -124,4 +126,3 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
   v[:] = (sign(tune.position) + ones(d)) / 2.0
   v
 end
-

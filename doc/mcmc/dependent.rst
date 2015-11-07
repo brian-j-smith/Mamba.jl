@@ -6,7 +6,7 @@
 Dependent
 ---------
 
-``AbstractDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` types with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Float64`` or ``Array{Float64,N}`` type objects.
+``AbstractDependent`` is an abstract type designed to store values and attributes of model nodes, including parameters :math:`\theta_1, \ldots, \theta_p` to be simulated via MCMC, functions of the parameters, and likelihood specifications on observed data.  It extends the base ``Variate`` types with method functions defined for the fields summarized below.  Like the type it extends, values are stored in a ``value`` field and can be used with method functions that accept ``Float64`` or ``Array{Float64, N}`` type objects.
 
 Since parameter values in the ``AbstractDependent`` structure are stored as a scalar or array, objects of this type can be created for model parameters of corresponding dimensions, with the choice between the two being user and application-specific.  At one end of the spectrum, a model might be formulated in terms of parameters that are all scalars, with a separate instances of  ``AbstractDependent`` for each one.  At the other end, a formulation might be made in terms of a single parameter array, with one corresponding instance of ``AbstractDependent``.  Whether to formulate parameters as scalars or arrays will depend on the application at hand.  Array formulations should be considered for parameters and data that have multivariate distributions, or are to be used as such in numeric operations and functions.  In other cases, scalar parametrizations may be preferable.  Situations in which parameter arrays are often used include the specification of regression coefficients and random effects.
 
@@ -130,10 +130,10 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Logical(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
-              Logical(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
-              Logical(f::Function, monitor::Union{Bool,Vector{Int}}=true)
-              Logical(d::Integer, f::Function, monitor::Union{Bool,Vector{Int}}=true)
+.. function:: Logical(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
+              Logical(d::Integer, expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
+              Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
+              Logical(d::Integer, f::Function, monitor::Union{Bool, Vector{Int}}=true)
 
     Construct a ``Logical`` object that defines a logical model node.
 
@@ -238,10 +238,10 @@ The ``DistributionStruct`` alias defines the types of distribution structures su
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Stochastic(expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
-              Stochastic(d::Integer, expr::Expr, monitor::Union{Bool,Vector{Int}}=true)
-              Stochastic(f::Function, monitor::Union{Bool,Vector{Int}}=true)
-              Stochastic(d::Integer, f::Function, monitor::Union{Bool,Vector{Int}}=true)
+.. function:: Stochastic(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
+              Stochastic(d::Integer, expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
+              Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
+              Stochastic(d::Integer, f::Function, monitor::Union{Bool, Vector{Int}}=true)
 
     Construct a ``Stochastic`` object that defines a stochastic model node.
 

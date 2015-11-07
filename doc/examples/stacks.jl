@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-stacks = Dict{Symbol,Any}(
+stacks = Dict{Symbol, Any}(
   :y => [42, 37, 37, 28, 18, 18, 19, 20, 15, 14, 14, 13, 11, 12, 8, 7, 8, 8, 9,
          15, 15],
   :x =>
@@ -30,10 +30,10 @@ stacks = Dict{Symbol,Any}(
 stacks[:N] = size(stacks[:x], 1)
 stacks[:p] = size(stacks[:x], 2)
 
-stacks[:meanx] = map(j -> mean(stacks[:x][:,j]), 1:stacks[:p])
-stacks[:sdx] = map(j -> std(stacks[:x][:,j]), 1:stacks[:p])
+stacks[:meanx] = map(j -> mean(stacks[:x][:, j]), 1:stacks[:p])
+stacks[:sdx] = map(j -> std(stacks[:x][:, j]), 1:stacks[:p])
 stacks[:z] = Float64[
-  (stacks[:x][i,j] - stacks[:meanx][j]) / stacks[:sdx][j]
+  (stacks[:x][i, j] - stacks[:meanx][j]) / stacks[:sdx][j]
   for i in 1:stacks[:N], j in 1:stacks[:p]
 ]
 
@@ -82,7 +82,7 @@ model = Model(
   outlier = Logical(1,
     (y, mu, sigma, N) ->
       Float64[abs((y[i] - mu[i]) / sigma) > 2.5 for i in 1:N],
-    [1,3,4,21]
+    [1, 3, 4, 21]
   )
 
 )

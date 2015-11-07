@@ -10,7 +10,7 @@ The *MCMC* types and their relationships are depicted below with a Unified Model
 
     UML relational diagram of *MCMC* types and their fields.
 
-The relationships are as follows.  Type ``Model`` contains a dictionary field (``Dict{Symbol,Any}``) of model nodes and a field (``Vector{Sampler}``) of one or more sampling functions.  Nodes can be one of three types:
+The relationships are as follows.  Type ``Model`` contains a dictionary field (``Dict{Symbol, Any}``) of model nodes and a field (``Vector{Sampler}``) of one or more sampling functions.  Nodes can be one of three types:
 
     .. index:: Nodes; Stochastic
     .. index:: Nodes; Logical

@@ -55,7 +55,7 @@ function DGS(params::Vector{Symbol})
       end
       relist(model, x, block)
     end,
-    Dict{AbstractString,Any}("sampler" => nothing)
+    Dict{AbstractString, Any}("sampler" => nothing)
   )
 end
 
@@ -84,7 +84,7 @@ function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T}, logf::Function)
   probs = Array(Float64, n)
   psum = 0.0
   for i in 1:n
-    x = vec(support[i,:])
+    x = vec(support[i, :])
     value = exp(logf(x))
     probs[i] = value
     psum += value

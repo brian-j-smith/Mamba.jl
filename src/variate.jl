@@ -6,8 +6,8 @@ Base.convert(::Type{Bool}, v::ScalarVariate) = convert(Bool, v.value)
 Base.convert{T<:Integer}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
 Base.convert{T<:AbstractFloat}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
 
-Base.convert{T<:Real,N}(::Union{Type{AbstractArray{T,N}},Type{Array{T,N}}},
-                        v::ArrayVariate{N}) = convert(Array{T,N}, v.value)
+Base.convert{T<:Real, N}(::Union{Type{AbstractArray{T, N}}, Type{Array{T, N}}},
+                         v::ArrayVariate{N}) = convert(Array{T, N}, v.value)
 
 Base.unsafe_convert{T<:Real}(::Type{Ptr{T}}, v::ArrayVariate) = pointer(v.value)
 
@@ -22,7 +22,7 @@ Base.stride(v::ArrayVariate, k::Int) = stride(v.value, k)
 #################### Indexing ####################
 
 Base.getindex(v::ScalarVariate, i::Int) = v.value[i]
-Base.getindex(v::ScalarVariate, inds::Union{Range,Vector}) =
+Base.getindex(v::ScalarVariate, inds::Union{Range, Vector}) =
   Float64[v[i] for i in inds]
 Base.getindex(v::ScalarVariate, ::Colon) = v[[1]]
 
@@ -63,7 +63,7 @@ function names(v::ArrayVariate, prefix)
   values = similar(v.value, AbstractString)
   for i in 1:length(v)
     s = string(ind2sub(size(v), i))
-    values[i] = string(prefix, "[", s[2:end-offset], "]")
+    values[i] = string(prefix, "[", s[2:(end - offset)], "]")
   end
   values
 end

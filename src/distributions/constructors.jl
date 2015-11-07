@@ -72,7 +72,8 @@ MvTDist(df::Real, C::PDMat) =
   MvTDist(convert(Float64, df), C)
 
 MvTDist(df::Real, μ::AbstractVector, Σ::AbstractMatrix) =
-  MvTDist(convert(Float64, df), convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
+  MvTDist(convert(Float64, df), convert(Vector{Float64}, μ),
+          convert(Matrix{Float64}, Σ))
 
 MvTDist(df::Real, Σ::AbstractMatrix) =
   MvTDist(convert(Float64, df), convert(Matrix{Float64}, Σ))

@@ -18,20 +18,20 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
       kthin += 1
       test = dichot[1:kthin:nx]
       ntest = length(test)
-      temp = test[1:(ntest-2)] + 2 * test[2:(ntest-1)] + 4 * test[3:ntest]
+      temp = test[1:(ntest - 2)] + 2 * test[2:(ntest - 1)] + 4 * test[3:ntest]
       trantest = reshape(counts(temp, 0:7), 2, 2, 2)
       g2 = 0.0
       for i1 in 1:2, i2 in 1:2, i3 in 1:2
-        tt = trantest[i1,i2,i3]
+        tt = trantest[i1, i2, i3]
         if tt > 0
-          fitted = sum(trantest[:,i2,i3]) * sum(trantest[i1,i2,:]) /
-                   sum(trantest[:,i2,:])
+          fitted = sum(trantest[:, i2, i3]) * sum(trantest[i1, i2, :]) /
+                   sum(trantest[:, i2, :])
           g2 += 2.0 * tt * log(tt / fitted)
         end
       end
       bic = g2 - 2.0 * log(ntest - 2.0)
     end
-    tranfinal = counts(test[1:(ntest-1)] + 2 * test[2:ntest], 0:3)
+    tranfinal = counts(test[1:(ntest - 1)] + 2 * test[2:ntest], 0:3)
     alpha = tranfinal[3] / (tranfinal[1] + tranfinal[3])
     beta = tranfinal[2] / (tranfinal[2] + tranfinal[4])
     kthin *= step(range)
@@ -51,8 +51,8 @@ function rafterydiag(c::AbstractChains; q::Real=0.025, r::Real=0.005, s::Real=0.
   _, p, m = size(c.value)
   vals = Array(Float64, p, 5, m)
   for j in 1:p, k in 1:m
-    vals[j,:,k] = rafterydiag(c.value[:,j,k], q=q, r=r, s=s, eps=eps,
-                              range=c.range)
+    vals[j, :, k] = rafterydiag(c.value[:, j, k], q=q, r=r, s=s, eps=eps,
+                                range=c.range)
   end
   hdr = header(c) * "\nRaftery and Lewis Diagnostic:\n" *
         "Quantile (q) = $q\nAccuracy (r) = $r\nProbability (s) = $s\n"

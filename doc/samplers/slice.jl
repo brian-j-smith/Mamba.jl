@@ -35,8 +35,8 @@ width = [1.0, 1.0, 2.0]
 for i in 1:n
   slice!(theta1, width, logf, :multivar)
   slice!(theta2, width, logf, :univar)
-  sim1[i,:,1] = [theta1[1:2]; exp(theta1[3])]
-  sim2[i,:,1] = [theta2[1:2]; exp(theta2[3])]
+  sim1[i, :, 1] = [theta1[1:2]; exp(theta1[3])]
+  sim2[i, :, 1] = [theta2[1:2]; exp(theta2[3])]
 end
 describe(sim1)
 describe(sim2)

@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-kidney = Dict{Symbol,Any}(
+kidney = Dict{Symbol, Any}(
   :t => reshape(
     [8, 16, 23, NaN, 22, 28, 447, 318, 30, 12, 24, 245, 7, 9, 511, 30, 53, 196,
      15, 154, 7, 333, 141, NaN, 96, 38, NaN, NaN, 536, NaN, 17, NaN, 185, 177,
@@ -45,11 +45,11 @@ model = Model(
         beta_dis = Dx * beta_Dx
         UnivariateDistribution[
           begin
-            mu = alpha + beta_age * age[i,j] + beta_sex * sex[i] + beta_dis[i] +
+            mu = alpha + beta_age * age[i, j] + beta_sex * sex[i] + beta_dis[i] +
                  b[i]
             lambda = exp(-mu / r)
             0 < lambda < Inf ?
-              Truncated(Weibull(r, lambda), tcensor[i,j], Inf) :
+              Truncated(Weibull(r, lambda), tcensor[i, j], Inf) :
               Uniform(0, Inf)
           end
           for i in 1:N, j in 1:M

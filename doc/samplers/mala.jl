@@ -42,8 +42,8 @@ SigmaF = cholfact(eye(3))
 for i in 1:n
   mala!(theta1, scale, fx)
   mala!(theta2, scale, SigmaF, fx)
-  sim1[i,:,1] = [theta1[1:2]; exp(theta1[3])]
-  sim2[i,:,1] = [theta2[1:2]; exp(theta2[3])]
+  sim1[i, :, 1] = [theta1[1:2]; exp(theta1[3])]
+  sim2[i, :, 1] = [theta2[1:2]; exp(theta2[3])]
 end
 describe(sim1)
 describe(sim2)

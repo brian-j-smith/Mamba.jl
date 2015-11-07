@@ -8,11 +8,11 @@ digraph Variate {
 
     AbstractVariate [label = "{AbstractVariate|+ value\l}"]
 
-    ArrayVariate [label = "{ArrayVariate\{N\}|+ value : Array\{Float64,N\}\l}"]
+    ArrayVariate [label = "{ArrayVariate\{N\}|+ value : Array\{Float64, N\}\l}"]
 
     DenseArray [label = "{DenseArray}"]
 
-    MatrixVariate [label = "{MatrixVariate|+ value : Array\{Float64,2\}\l}"]
+    MatrixVariate [label = "{MatrixVariate|+ value : Array\{Float64, 2\}\l}"]
 
     Real [label = "{Real}"]
 
@@ -20,7 +20,7 @@ digraph Variate {
 
     ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}"]
 
-    VectorVariate [label = "{VectorVariate|+ value : Array\{Float64,1\}\l}"]
+    VectorVariate [label = "{VectorVariate|+ value : Array\{Float64, 1\}\l}"]
 
     AbstractVariate -> ArrayVariate
     AbstractVariate -> ScalarVariate

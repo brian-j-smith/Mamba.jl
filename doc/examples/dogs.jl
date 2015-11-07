@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-dogs = Dict{Symbol,Any}(
+dogs = Dict{Symbol, Any}(
   :Y =>
     [0 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
      0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1
@@ -49,7 +49,7 @@ model = Model(
     (Dogs, Trials, alpha, xa, beta, xs) ->
       UnivariateDistribution[
         begin
-          p = exp(alpha * xa[i,j] + beta * xs[i,j])
+          p = exp(alpha * xa[i, j] + beta * xs[i, j])
           Bernoulli(p)
         end
         for i in 1:Dogs, j in 1:Trials-1

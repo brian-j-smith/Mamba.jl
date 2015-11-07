@@ -15,7 +15,7 @@ Declaration
 Fields
 ^^^^^^
 
-* ``nodes::Dict{Symbol,Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
+* ``nodes::Dict{Symbol, Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
 * ``samplers::Vector{Sampler}`` : sampling functions for updating blocks of stochastic nodes.
 * ``states::Vector{Vector{Float64}}`` : states of chains at the end of a possible series of MCMC runs.
 * ``iter::Int`` : current MCMC draw from the target distribution.
@@ -50,7 +50,7 @@ MCMC Engine
 ^^^^^^^^^^^
 
 .. function:: mcmc(m::Model, inputs::Dict{Symbol}, \
-                   inits::Vector{Dict{Symbol,Any}}, iters::Integer; \
+                   inits::Vector{Dict{Symbol, Any}}, iters::Integer; \
                    burnin::Integer=0, thin::Integer=1, chains::Integer=1, \
                    verbose::Bool=true)
               mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
@@ -178,7 +178,7 @@ Display
 Initialization
 ^^^^^^^^^^^^^^
 
-.. function:: setinits!(m::Model, inits::Dict{Symbol,Any})
+.. function:: setinits!(m::Model, inits::Dict{Symbol, Any})
 
     Set the initial values of stochastic model nodes.
 
@@ -195,7 +195,7 @@ Initialization
 
         See the :ref:`section-Line-Development` section of the tutorial.
 
-.. function:: setinputs!(m::Model, inputs::Dict{Symbol,Any})
+.. function:: setinputs!(m::Model, inputs::Dict{Symbol, Any})
 
     Set the values of input model nodes.
 

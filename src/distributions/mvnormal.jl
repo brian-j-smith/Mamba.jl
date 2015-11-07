@@ -1,6 +1,6 @@
 #################### BDiagNormal Distribution ####################
 
-typealias BDiagNormal MvNormal{PBDiagMat,Vector{Float64}}
+typealias BDiagNormal MvNormal{PBDiagMat, Vector{Float64}}
 
 function BDiagNormal(μ::Vector{Float64}, Σ::Matrix{Float64})
   n = div(length(μ), size(Σ, 1))

@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-leuk = Dict{Symbol,Any}(
+leuk = Dict{Symbol, Any}(
   :t_obs =>
     [1, 1, 2, 2, 3, 4, 4, 5, 5, 8, 8, 8, 8, 11, 11, 12, 12, 15, 17, 22, 23, 6,
      6, 6, 6, 7, 9, 10, 10, 11, 13, 16, 17, 19, 20, 22, 23, 25, 32, 32, 34, 35],
@@ -22,8 +22,8 @@ leuk[:Y] = Array(Int, N, T)
 leuk[:dN] = Array(Int, N, T)
 for i in 1:N
   for j in 1:T
-    leuk[:dN][i,j] = leuk[:fail][i] * (leuk[:t_obs][i] == leuk[:t][j])
-    leuk[:Y][i,j] = Int(leuk[:t_obs][i] >= leuk[:t][j])
+    leuk[:dN][i, j] = leuk[:fail][i] * (leuk[:t_obs][i] == leuk[:t][j])
+    leuk[:Y][i, j] = Int(leuk[:t_obs][i] >= leuk[:t][j])
   end
 end
 
@@ -37,14 +37,14 @@ model = Model(
   dN = Stochastic(2,
     (Y, beta, Z, dL0, N, T) ->
       UnivariateDistribution[
-        Y[i,j] > 0 ? Poisson(exp(beta * Z[i]) * dL0[j]) : Flat()
+        Y[i, j] > 0 ? Poisson(exp(beta * Z[i]) * dL0[j]) : Flat()
         for i in 1:N, j in 1:T
       ],
     false
   ),
 
   mu = Logical(1,
-    (c, r, t) -> c * r * (t[2:end] - t[1:end-1]),
+    (c, r, t) -> c * r * (t[2:end] - t[1:(end - 1)]),
     false
   ),
 

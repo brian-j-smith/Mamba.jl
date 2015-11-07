@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-equiv = Dict{Symbol,Any}(
+equiv = Dict{Symbol, Any}(
   :group => [1, 1, 2, 2, 2, 1, 1, 1, 2, 2],
   :y =>
     [1.40 1.65
@@ -30,8 +30,8 @@ model = Model(
         sigma = sqrt(s2_1)
         UnivariateDistribution[
           begin
-            m = mu + (-1)^(T[i,j]-1) * phi / 2 + (-1)^(j-1) * pi / 2 +
-                delta[i,j]
+            m = mu + (-1)^(T[i, j] - 1) * phi / 2 + (-1)^(j - 1) * pi / 2 +
+                delta[i, j]
             Normal(m, sigma)
           end
           for i in 1:10, j in 1:2

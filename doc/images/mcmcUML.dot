@@ -8,37 +8,37 @@ graph MCMC {
 
     edge [fontname = "Helvetica", fontsize = 11, dir = both, arrowtail = none, arrowhead = none]
 
-    Real [label = "{Real}", pos="315,610"]
+    Real [label = "{Real}", pos="315, 610"]
 
-    DenseArray [label = "{DenseArray}", pos="324,570"]
+    DenseArray [label = "{DenseArray}", pos="324, 570"]
 
-    AbstractDependent [label = "{AbstractDependent|+ value\l+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}", pos="275,425"]
+    AbstractDependent [label = "{AbstractDependent|+ value\l+ symbol : Symbol\l+ monitor : Vector\{Int\}\l+ eval : Function\l+ sources : Vector\{Symbol\}\l+ targets : Vector\{Symbol\}\l}", pos="275, 425"]
 
-    AbstractLogical [label = "{AbstractLogical}", pos="75,425"]
+    AbstractLogical [label = "{AbstractLogical}", pos="75, 425"]
 
-    AbstractStochastic [label = "{AbstractStochastic|+ distr\l}", pos="495,425"]
+    AbstractStochastic [label = "{AbstractStochastic|+ distr\l}", pos="495, 425"]
 
-    AbstractVariate [label = "{AbstractVariate|+ value\l}", pos="230,590"]
+    AbstractVariate [label = "{AbstractVariate|+ value\l}", pos="230, 590"]
 
-    ArrayLogical [label = "{ArrayLogical\{N\}}", pos="125,515"]
+    ArrayLogical [label = "{ArrayLogical\{N\}}", pos="125, 515"]
 
-    ArrayStochastic [label = "{ArrayStochastic\{N\}|+ distr : DistributionStruct\l}", pos="425,515"]
+    ArrayStochastic [label = "{ArrayStochastic\{N\}|+ distr : DistributionStruct\l}", pos="425, 515"]
 
-    ArrayVariate [label = "{ArrayVariate\{N\}|+ value : Array\{Float64,N\}\l}", pos="275,515"]
+    ArrayVariate [label = "{ArrayVariate\{N\}|+ value : Array\{Float64, N\}\l}", pos="275, 515"]
 
-    ScalarLogical [label = "{ScalarLogical}", pos="25,515"]
+    ScalarLogical [label = "{ScalarLogical}", pos="25, 515"]
 
-    ScalarStochastic [label = "{ScalarStochastic|+ distr : UnivariateDistribution\l}", pos="575,515"]
+    ScalarStochastic [label = "{ScalarStochastic|+ distr : UnivariateDistribution\l}", pos="575, 515"]
 
-    ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}", pos="275,665"]
+    ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}", pos="275, 665"]
 
-    Model [label = "{Model|+ nodes : Dict\{Symbol,Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275,305"]
+    Model [label = "{Model|+ nodes : Dict\{Symbol, Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275, 305"]
 
-    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String,Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495,305"]
+    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String, Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495, 305"]
 
-    AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64,3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75,340"]
+    AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75, 340"]
 
-    ModelChains [label = "{ModelChains|+ model : Model\l}", pos="75,260"]
+    ModelChains [label = "{ModelChains|+ model : Model\l}", pos="75, 260"]
 
     Real -- ScalarVariate [arrowtail = empty]
     DenseArray -- ArrayVariate [arrowtail = empty]

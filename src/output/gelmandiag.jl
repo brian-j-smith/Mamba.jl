@@ -8,7 +8,7 @@ function gelmandiag(c::AbstractChains; alpha::Real=0.05, mpsrf::Bool=false,
 
   psi = transform ? link(c) : c.value
 
-  S2 = mapslices(cov, psi, [1,2])
+  S2 = mapslices(cov, psi, [1, 2])
   W = squeeze(mapslices(mean, S2, 3), 3)
 
   psibar = reshape(mapslices(mean, psi, 1), p, m)'
@@ -16,7 +16,7 @@ function gelmandiag(c::AbstractChains; alpha::Real=0.05, mpsrf::Bool=false,
 
   w = diag(W)
   b = diag(B)
-  s2 = reshape(mapslices(diag, S2, [1,2]), p, m)'
+  s2 = reshape(mapslices(diag, S2, [1, 2]), p, m)'
   psibar2 = vec(mapslices(mean, psibar, 1))
 
   var_w = vec(mapslices(var, s2, 1)) / m

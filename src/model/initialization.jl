@@ -8,7 +8,7 @@ function reset!(m::Model, iter::Integer)
   m
 end
 
-function setinits!(m::Model, inits::Dict{Symbol,Any})
+function setinits!(m::Model, inits::Dict{Symbol, Any})
   m.hasinputs || throw(ArgumentError("inputs must be set before inits"))
   reset!(m, 0)
   for key in keys(m, :dependent)
@@ -25,7 +25,7 @@ function setinits!(m::Model, inits::Dict{Symbol,Any})
   m
 end
 
-function setinits!(m::Model, inits::Vector{Dict{Symbol,Any}})
+function setinits!(m::Model, inits::Vector{Dict{Symbol, Any}})
   n = length(inits)
   m.states = Array(Vector{Float64}, n)
   for i in n:-1:1
@@ -35,7 +35,7 @@ function setinits!(m::Model, inits::Vector{Dict{Symbol,Any}})
   m
 end
 
-function setinputs!(m::Model, inputs::Dict{Symbol,Any})
+function setinputs!(m::Model, inputs::Dict{Symbol, Any})
   for key in keys(m, :input)
     haskey(inputs, key) ||
       throw(ArgumentError("missing inputs for node : $key"))

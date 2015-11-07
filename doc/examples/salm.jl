@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-salm = Dict{Symbol,Any}(
+salm = Dict{Symbol, Any}(
   :y => reshape(
     [15, 21, 29, 16, 18, 21, 16, 26, 33, 27, 41, 60, 33, 38, 41, 20, 27, 42],
     3, 6),
@@ -18,7 +18,7 @@ model = Model(
     (alpha, beta, gamma, x, lambda) ->
       UnivariateDistribution[
         begin
-          mu = exp(alpha + beta * log(x[j] + 10) + gamma * x[j] + lambda[i,j])
+          mu = exp(alpha + beta * log(x[j] + 10) + gamma * x[j] + lambda[i, j])
           Poisson(mu)
         end
         for i in 1:3, j in 1:6

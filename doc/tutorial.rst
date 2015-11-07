@@ -387,7 +387,7 @@ For the example, observations :math:`(\bm{x}, \bm{y})` are stored in a **julia**
 .. code-block:: julia
 
     ## Data
-    line = Dict{Symbol,Any}(
+    line = Dict{Symbol, Any}(
       :x => [1, 2, 3, 4, 5],
       :y => [1, 3, 3, 3, 5]
     )
@@ -402,7 +402,7 @@ A **julia** vector of dictionaries containing initial values for all stochastic 
 
     ## Initial Values
     inits = [
-      Dict{Symbol,Any}(
+      Dict{Symbol, Any}(
         :y => line[:y],
         :beta => rand(Normal(0, 1), 2),
         :s2 => rand(Gamma(1, 1))

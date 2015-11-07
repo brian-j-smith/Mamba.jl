@@ -62,14 +62,14 @@ function link(c::ModelChains)
     inds = findin(c.names, names(node))
     if !isempty(inds)
       f(x) = unlist(node, relist(node, x), true)
-      cc[:,inds,:] = mapslices(f, cc[:,inds,:], 2)
+      cc[:, inds, :] = mapslices(f, cc[:, inds, :], 2)
       inds_queue = setdiff(inds_queue, inds)
     end
   end
   for j in inds_queue
-    x = cc[:,j,:]
+    x = cc[:, j, :]
     if minimum(x) > 0.0
-      cc[:,j,:] = maximum(x) < 1.0 ? logit(x) : log(x)
+      cc[:, j, :] = maximum(x) < 1.0 ? logit(x) : log(x)
     end
   end
   cc

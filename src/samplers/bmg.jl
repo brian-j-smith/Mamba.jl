@@ -38,7 +38,7 @@ function BMG(params::Vector{Symbol})
       tunepar["sampler"] = v.tune
       relist(model, v, block)
     end,
-    Dict{AbstractString,Any}("sampler" => nothing)
+    Dict{AbstractString, Any}("sampler" => nothing)
   )
 end
 

@@ -3,12 +3,12 @@
 #################### Types and Constructors ####################
 
 immutable ChainSummary
-  value::Array{Float64,3}
+  value::Array{Float64, 3}
   rownames::Vector{AbstractString}
   colnames::Vector{AbstractString}
   header::AbstractString
 
-  function ChainSummary(value::Array{Float64,3},
+  function ChainSummary(value::Array{Float64, 3},
                         rownames::Vector{AbstractString},
                         colnames::Vector{AbstractString},
                         header::AbstractString)
@@ -21,14 +21,14 @@ immutable ChainSummary
   end
 end
 
-function ChainSummary{T<:AbstractString,U<:AbstractString}(
-                     value::Array{Float64,3}, rownames::Vector{T},
+function ChainSummary{T<:AbstractString, U<:AbstractString}(
+                     value::Array{Float64, 3}, rownames::Vector{T},
                      colnames::Vector{U}, header::AbstractString)
   ChainSummary(copy(value), AbstractString[rownames...],
                AbstractString[colnames...], header)
 end
 
-function ChainSummary{T<:AbstractString,U<:AbstractString}(
+function ChainSummary{T<:AbstractString, U<:AbstractString}(
                      value::Matrix{Float64}, rownames::Vector{T},
                      colnames::Vector{U}, header::AbstractString)
   dim = size(value)
@@ -74,8 +74,8 @@ function Base.show(io::IO, s::ChainSummary)
       wrtsp(io, mxrnwid - rnwid[i])
       print(io, s.rownames[i])
       for j in 1:n
-        wrtsp(io, colwid[j] - length(charv[i,j,k]))
-        print(io, charv[i,j,k])
+        wrtsp(io, colwid[j] - length(charv[i, j, k]))
+        print(io, charv[i, j, k])
       end
       println(io)
     end

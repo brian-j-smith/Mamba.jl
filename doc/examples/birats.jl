@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-birats = Dict{Symbol,Any}(
+birats = Dict{Symbol, Any}(
   :N => 30, :T => 5,
   :x => [8.0, 15.0, 22.0, 29.0, 36.0],
   :Y => [151 199 246 283 320
@@ -48,7 +48,7 @@ model = Model(
   Y = Stochastic(2,
     (beta, x, sigmaC, N, T) ->
       UnivariateDistribution[
-        Normal(beta[i,1] + beta[i,2] * x[j], sigmaC)
+        Normal(beta[i, 1] + beta[i, 2] * x[j], sigmaC)
         for i in 1:N, j in 1:T
       ],
     false

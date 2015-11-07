@@ -1,7 +1,7 @@
 using Mamba
 
 ## Data
-magnesium = Dict{Symbol,Any}(
+magnesium = Dict{Symbol, Any}(
   :rt => [1, 9, 2, 1, 10, 1, 1, 90],
   :nt => [40, 135, 200, 48, 150, 59, 25, 1159],
   :rc => [2, 23, 7, 1, 8, 9, 3, 118],
@@ -22,7 +22,7 @@ model = Model(
 
   rcx = Stochastic(2,
     (nc, pc) ->
-      UnivariateDistribution[Binomial(nc[j], pc[i,j]) for i in 1:6, j in 1:8],
+      UnivariateDistribution[Binomial(nc[j], pc[i, j]) for i in 1:6, j in 1:8],
     false
   ),
 
@@ -35,8 +35,8 @@ model = Model(
     (nt, pc, theta) ->
       UnivariateDistribution[
         begin
-          phi = logit(pc[i,j])
-          pt = invlogit(theta[i,j] + phi)
+          phi = logit(pc[i, j])
+          pt = invlogit(theta[i, j] + phi)
           Binomial(nt[j], pt)
         end
         for i in 1:6, j in 1:8
