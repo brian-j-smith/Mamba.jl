@@ -23,7 +23,7 @@ function gradlogpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
 end
 
 function logpdf(m::Model, block::Integer=0, transform::Bool=false)
-  value = 0.0
+  lp = 0.0
   if block != 0
     sampler = m.samplers[block]
     params = sampler.params
@@ -33,23 +33,23 @@ function logpdf(m::Model, block::Integer=0, transform::Bool=false)
     nodekeys = keys(m, :stochastic)
   end
   for key in nodekeys
-    value += logpdf(m[key], transform && key in params)
-    isfinite(value) || return -Inf
+    lp += logpdf(m[key], transform && key in params)
+    isfinite(lp) || return -Inf
   end
-  value
+  lp
 end
 
 function logpdf{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                          transform::Bool=false)
   x0 = unlist(m, block)
-  value = logpdf!(m, x, block, transform)
+  lp = logpdf!(m, x, block, transform)
   relist!(m, x0, block)
-  value
+  lp
 end
 
 function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                           transform::Bool=false)
-  value = 0.0
+  lp = 0.0
   if block != 0
     sampler = m.samplers[block]
     params = sampler.params
@@ -60,15 +60,15 @@ function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
   end
   m[params] = relist(m, x, params, transform)
   for key in setdiff(params, targets)
-    value += logpdf(m[key], transform)
-    isfinite(value) || return -Inf
+    lp += logpdf(m[key], transform)
+    isfinite(lp) || return -Inf
   end
   for key in targets
     update!(m[key], m)
-    value += logpdf(m[key], transform && key in params)
-    isfinite(value) || return -Inf
+    lp += logpdf(m[key], transform && key in params)
+    isfinite(lp) || return -Inf
   end
-  value
+  lp
 end
 
 function relist{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
