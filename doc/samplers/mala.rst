@@ -5,7 +5,7 @@
 Metropolis-Adjusted Langevin Algorithm (MALA)
 ---------------------------------------------
 
-Implementation of the Metropolis-Adjusted Langevin Algorithm (MALA) of Roberts and Tweedie :cite:`roberts:1996:MALA` and Roberts and Stramer :cite:`roberts:2002:LD`.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.  MALA is related to Hamiltonian Monte Carlo as described thoroughly by Girolami an Calderhead :cite:`girolami:2011:RMHMC`.
+Implementation of the Metropolis-Adjusted Langevin Algorithm (MALA) of Roberts and Tweedie :cite:`roberts:1996:MALA` and Roberts and Stramer :cite:`roberts:2002:LD`.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.  MALA is related to Hamiltonian Monte Carlo as described thoroughly by Girolami and Calderhead :cite:`girolami:2011:RMHMC`.
 
 
 Stand-Alone Function
