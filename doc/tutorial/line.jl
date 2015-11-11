@@ -149,17 +149,17 @@ p = plot(sim1)
 
 ## Write plot to file
 draw(p, filename="summaryplot.svg")
-draw(p, filename="summaryplot.pdf", fmt=:pdf)
+#draw(p, filename="summaryplot.pdf", fmt=:pdf)
 
 ## Autocorrelation and running mean plots
 p = plot(sim1, [:autocor, :mean], legend=true)
 draw(p, nrow=3, ncol=2, filename="autocormeanplot.svg")
-draw(p, nrow=3, ncol=2, filename="autocormeanplot.pdf", fmt=:pdf)
+#draw(p, nrow=3, ncol=2, filename="autocormeanplot.pdf", fmt=:pdf)
 
 ## Pairwise contour plots
 p = plot(sim1, :contour)
 draw(p, nrow=2, ncol=2, filename="contourplot.svg")
-draw(p, nrow=2, ncol=2, filename="contourplot.pdf", fmt=:pdf)
+#draw(p, nrow=2, ncol=2, filename="contourplot.pdf", fmt=:pdf)
 
 ## Development and Testing
 
