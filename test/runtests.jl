@@ -1,10 +1,10 @@
 include("utils.jl")
 
-test_tutorials = [
+const tutorialtests = [
   "line"
 ]
 
-test_samplers = [
+const samplertests = [
   "amm",
   "amwg",
   "bmg",
@@ -17,32 +17,32 @@ test_samplers = [
   "slicesimplex"
 ]
 
-test_mcmc = [
+const mcmctests = [
   "readcoda"
 ]
 
-test_extensions = [
+const extensiontests = [
   "newunivardist",
   "newmultivardist"
 ]
 
 println("Running tests:")
 
-for t in test_tutorials
+for t in tutorialtests
   @everywhere srand(123)
   @runtest "../doc/tutorial/" t
 end
 
-for t in test_samplers
+for t in samplertests
   @everywhere srand(123)
   @runtest "../doc/samplers/" t
 end
 
-for t in test_mcmc
+for t in mcmctests
   @runtest "../doc/mcmc/" t
 end
 
-for t in test_extensions
+for t in extensiontests
   @everywhere srand(123)
   @runtest "../doc/mcmc/" t
 end

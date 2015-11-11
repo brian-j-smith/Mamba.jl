@@ -2,7 +2,7 @@ using Mamba
 
 include("utils.jl")
 
-test_openbugs = [
+const openbugstests = [
   "asthma",
   "birats",
   "blocker",
@@ -27,20 +27,20 @@ test_openbugs = [
   "surgical"
 ]
 
-test_contributed = [
+const contributedtests = [
   "line_amwg_slice",
   "pollution"
 ]
 
 println("Running examples:")
 
-for t in test_openbugs
+for t in openbugstests
   @everywhere srand(123)
   @runtest "../doc/examples/" t
   gelmandiag(sim) |> show
 end
 
-for t in test_contributed
+for t in contributedtests
   @everywhere srand(123)
   @runtest "../doc/examples/" t
 end
