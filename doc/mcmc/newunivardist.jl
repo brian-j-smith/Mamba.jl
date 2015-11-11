@@ -5,7 +5,6 @@
   ## Load needed packages and import methods to be extended
   using Distributions
   import Distributions: minimum, maximum, logpdf
-  export NewUnivarDist
 
   ## Type declaration
   type NewUnivarDist <: ContinuousUnivariateDistribution
@@ -42,7 +41,7 @@ Testing.logpdf(d, 2.0)
 
 ## Add the extensions
 using Mamba
-@everywhere eval(Mamba, extensions)
+@everywhere eval(extensions)
 
 ## Implement a Mamba model using the new distribution
 model = Model(

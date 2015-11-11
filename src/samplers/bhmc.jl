@@ -36,8 +36,8 @@ end
 #################### Sampler Constructor ####################
 
 function BHMC(params::Vector{Symbol}, traveltime::Real)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block)
       v = BHMCVariate(x, tunepar["sampler"])

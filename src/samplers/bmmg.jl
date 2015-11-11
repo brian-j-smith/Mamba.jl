@@ -34,8 +34,8 @@ function BMMG(params::Vector{Symbol}, d::Integer, k::Integer=1)
 end
 
 function BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block)
       v = BMMGVariate(x, tunepar["sampler"])

@@ -1,29 +1,48 @@
 #################### Model Expression Operators ####################
 
-function modelexpr(f::Function)
+function modelfx(literalargs::Vector{Tuple{Symbol, Symbol}}, f::Function)
+  modelfxsrc(literalargs, f)[1]
+end
+
+function modelfxsrc(literalargs::Vector{Tuple{Symbol, Symbol}}, f::Function)
+  args = Expr(:tuple, map(arg -> Expr(:(::), arg[1], arg[2]), literalargs)...)
+  expr, src = modelexprsrc(f, literalargs)
+  fx = eval(Expr(:function, args, expr))
+  (fx, src)
+end
+
+
+function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, Symbol}})
   ast = ccall(:jl_uncompress_ast, Any, (Any, Any), f.code, f.code.ast)
+  fargs = ast.args[1]
+  n = length(fargs)
+  fkeys = Symbol[arg.args[1] for arg in fargs]
+  ftypes = Symbol[arg.args[2] for arg in fargs]
 
-  types = Symbol[args.args[2] for args in ast.args[1]]
-  all(T -> T == :Any, types) ||
-    throw(ArgumentError("node function arguments are not all of type Any"))
-
-  src = Symbol[args.args[1] for args in ast.args[1]]
-  modelargs = [Expr(:ref, :model, QuoteNode(s)) for s in src]
-  Expr(:block, Expr(:(=), :f, f), Expr(:call, :f, modelargs...))
-end
-
-macro modelexpr(args...)
-  quote
-    n = length($args)
-    ex = Array(Expr, n)
-    for i in 1:(n-1)
-      x = $args[i]
-      ex[i] = Expr(:(=), x, Expr(:ref, :model, QuoteNode(x)))
+  literalinds = Int[]
+  for (key, T) in literalargs
+    i = findfirst(fkey -> fkey == key, fkeys)
+    if i != 0 && ftypes[i] == T
+      push!(literalinds, i)
     end
-    ex[n] = $args[n]
-    Expr(:block, ex...)
   end
+  nodeinds = setdiff(1:n, literalinds)
+
+  all(T -> T == :Any, ftypes[nodeinds]) ||
+    throw(ArgumentError("model node arguments are not all of type Any"))
+
+  modelargs = Array(Any, n)
+  for i in nodeinds
+    modelargs[i] = Expr(:ref, :model, QuoteNode(fkeys[i]))
+  end
+  for i in literalinds
+    modelargs[i] = fkeys[i]
+  end
+  expr = Expr(:block, Expr(:(=), :f, f), Expr(:call, :f, modelargs...))
+
+  (expr, fkeys[nodeinds])
 end
+
 
 macro promote_scalarvariate(V)
   quote

@@ -42,8 +42,8 @@ function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = AMMVariate(x, tunepar["sampler"])

@@ -2,9 +2,6 @@ using Distributions
 
 module Mamba
 
-  using Distributions
-
-
   #################### Imports ####################
 
   import Base: cor, dot
@@ -27,14 +24,15 @@ module Mamba
          Weibull,
          ## DiscreteUnivariateDistribution Types
          Bernoulli, Binomial, Categorical, DiscreteUniform, Geometric,
-         Hypergeometric, NegativeBinomial, Pareto, PoissonBinomial, Skellam,
+         Hypergeometric, NegativeBinomial, NoncentralHypergeometric, Pareto,
+         PoissonBinomial, Skellam,
          ## MultivariateDistribution Types
          Dirichlet, Multinomial, MvNormal, MvNormalCanon, MvTDist, VonMisesFisher,
          ## MatrixDistribution Types
          InverseWishart, Wishart,
          ## Methods
-         gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum, minimum,
-         quantile, rand, support
+         dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
+         minimum, quantile, rand, support
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,

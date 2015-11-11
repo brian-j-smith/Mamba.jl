@@ -1,5 +1,8 @@
 #################### Dependent ####################
 
+const depfxargs = [(:model, :Model)]
+
+
 #################### Base Methods ####################
 
 function Base.show(io::IO, d::AbstractDependent)
@@ -69,25 +72,19 @@ logpdf(d::AbstractDependent, x, transform::Bool=false) = 0.0
 
 #################### Constructors ####################
 
-function Logical(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-  value = Float64(NaN)
-  l = ScalarLogical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
-  setmonitor!(l, monitor)
-end
-
-function Logical(d::Integer, expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-  value = Array(Float64, fill(0, d)...)
-  l = ArrayLogical(value, :nothing, Int[], depfx(expr), depsrc(expr), Symbol[])
-  setmonitor!(l, monitor)
-end
-
 function Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
-  Logical(modelexpr(f), monitor)
+  value = Float64(NaN)
+  fx, src = modelfxsrc(depfxargs, f)
+  l = ScalarLogical(value, :nothing, Int[], fx, src, Symbol[])
+  setmonitor!(l, monitor)
 end
 
 function Logical(d::Integer, f::Function,
                  monitor::Union{Bool, Vector{Int}}=true)
-  Logical(d, modelexpr(f), monitor)
+  value = Array(Float64, fill(0, d)...)
+  fx, src = modelfxsrc(depfxargs, f)
+  l = ArrayLogical(value, :nothing, Int[], fx, src, Symbol[])
+  setmonitor!(l, monitor)
 end
 
 
@@ -137,28 +134,21 @@ end
 
 #################### Constructors ####################
 
-function Stochastic(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-  value = Float64(NaN)
-  s = ScalarStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
-                       Symbol[], NullUnivariateDistribution())
-  setmonitor!(s, monitor)
-end
-
-function Stochastic(d::Integer, expr::Expr,
-                    monitor::Union{Bool, Vector{Int}}=true)
-  value = Array(Float64, fill(0, d)...)
-  s = ArrayStochastic(value, :nothing, Int[], depfx(expr), depsrc(expr),
-                      Symbol[], NullUnivariateDistribution())
-  setmonitor!(s, monitor)
-end
-
 function Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
-  Stochastic(modelexpr(f), monitor)
+  value = Float64(NaN)
+  fx, src = modelfxsrc(depfxargs, f)
+  s = ScalarStochastic(value, :nothing, Int[], fx, src, Symbol[],
+                       NullUnivariateDistribution())
+  setmonitor!(s, monitor)
 end
 
 function Stochastic(d::Integer, f::Function,
                     monitor::Union{Bool, Vector{Int}}=true)
-  Stochastic(d, modelexpr(f), monitor)
+  value = Array(Float64, fill(0, d)...)
+  fx, src = modelfxsrc(depfxargs, f)
+  s = ArrayStochastic(value, :nothing, Int[], fx, src, Symbol[],
+                      NullUnivariateDistribution())
+  setmonitor!(s, monitor)
 end
 
 
@@ -223,22 +213,3 @@ function logpdf(s::AbstractStochastic, x, transform::Bool=false)
 end
 
 rand(s::AbstractStochastic) = rand_sub(s.distr, s.value)
-
-
-#################### Auxiliary Functions ####################
-
-function depsrc(expr::Expr)
-  if expr.head == :ref && expr.args[1] == :model && isa(expr.args[2], QuoteNode)
-    Symbol[expr.args[2].value]
-  else
-    mapreduce(depsrc, union, expr.args)
-  end
-end
-
-function depsrc(expr)
-  Symbol[]
-end
-
-function depfx(expr::Expr)
-  eval(Expr(:function, :(model::Mamba.Model,), expr))
-end
