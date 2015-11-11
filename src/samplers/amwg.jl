@@ -39,8 +39,8 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = AMWGVariate(x, tunepar["sampler"])

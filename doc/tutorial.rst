@@ -158,7 +158,7 @@ where :math:`\bm{\Sigma} = \left(\frac{1}{\sigma^2} \bm{X}^\top \bm{X} + \bm{\Si
     p(\sigma^2 | \bm{\beta}, \mathbf{y}) &\propto p(\bm{y} | \bm{\beta}, \sigma^2) p(\sigma^2) \\
     &\propto \left(\sigma^2\right)^{-(n/2 + \alpha_\pi) - 1} \exp\left\{-\frac{1}{\sigma^2} \left(\frac{1}{2} (\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) + \beta_\pi \right) \right\},
 
-whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) / 2 + \beta_\pi` scale parameters.  A user-defined sampling scheme to generate draws from these full conditionals is constructed below.
+whose form is inverse gamma with :math:`n / 2 + \alpha_\pi` shape and :math:`(\bm{y} - \bm{X} \bm{\beta})^\top (\bm{y} - \bm{X} \bm{\beta}) / 2 + \beta_\pi` scale parameters.  A user-defined sampling scheme to generate draws from these full conditionals is constructed below.  Another example is given in the :ref:`Pollution <example-Pollution>` example for the sampling of multiple nodes.
 
 .. code-block:: julia
 
@@ -197,134 +197,6 @@ When possible to do so, direct sampling from full conditions is often preferred 
     setsamplers!(model, scheme1)
 
 Alternatively, a predefined scheme can be passed in to the ``Model`` constructor at the time of model implementation as the value to its ``samplers`` argument.
-
-.. _section-Model-Expression:
-
-Model Expression Syntax
-^^^^^^^^^^^^^^^^^^^^^^^
-
-All nodes in an implemented model are stored in a `Mamba` ``Model`` structure, from which they can be accessed with the symbol representations of their names (keys).  For instance, in the regression example, ``:y``, ``:beta``, ``:s2``, ``:mu``, and ``:xmat`` are the symbol representations of the stochastic, logical, and input nodes described previously.  The ``Model`` structure can be referenced directly by the name ``model`` if expression syntax, instead of the previously presented function syntax, is used for the specification of nodes, as shown below.  Model expression syntax is a legacy feature of the package that is being phased out in favor of the recommended function syntax.
-
-.. code-block:: julia
-
-    model = Model(
-
-      y = Stochastic(1,
-        quote
-          mu = model[:mu]
-          s2 = model[:s2]
-          MvNormal(mu, sqrt(s2))
-        end,
-        false
-      ),
-
-      mu = Logical(1,
-        :(model[:xmat] * model[:beta]),
-        false
-      ),
-
-      beta = Stochastic(1,
-        :(MvNormal(2, sqrt(1000)))
-      ),
-
-      s2 = Stochastic(
-        :(InverseGamma(0.001, 0.001))
-      )
-
-    )
-
-    Gibbs_beta = Sampler([:beta],
-      quote
-        beta = model[:beta]
-        s2 = model[:s2]
-        xmat = model[:xmat]
-        y = model[:y]
-        beta_mean = mean(beta.distr)
-        beta_invcov = invcov(beta.distr)
-        Sigma = inv(xmat' * xmat / s2 + beta_invcov)
-        mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
-        rand(MvNormal(mu, Sigma))
-      end
-    )
-
-    Gibbs_s2 = Sampler([:s2],
-      quote
-        mu = model[:mu]
-        s2 = model[:s2]
-        y = model[:y]
-        a = length(y) / 2.0 + shape(s2.distr)
-        b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
-        rand(InverseGamma(a, b))
-      end
-    )
-
-An auxiliary macro is provided to simplify the syntax for expression-based node specification.
-
-.. function:: @modelexpr(args...)
-
-    A `macro <http://julia.readthedocs.org/en/latest/manual/metaprogramming/#macros>`_ to automate the declaration of ``model`` variables in expression supplied to ``MCMCStocastic``, ``Logical``, and ``Sampler`` constructors.
-
-    **Arguments**
-
-        * ``args...`` : sequence of one or more arguments, such that the last argument is a single expression or code block, and the previous ones are variable names of model nodes upon which the expression depends.
-
-    **Value**
-
-        An expression block of nodal variable declarations followed by the specified expression.
-
-    **Example**
-
-        Calls to ``@modelexpr`` can be used to shorten the expressions specified in the previous ``Model`` specification and calls to ``Sampler``, as shown below.  In essence, this macro call automates the tasks of declaring variables ``beta``, ``s2``, ``xmat``, and ``y``; and returns the same quoted expressions as before but with less coding required.
-
-        .. code-block:: julia
-
-            model = Model(
-
-              y = Stochastic(1,
-                @modelexpr(mu, s2,
-                  MvNormal(mu, sqrt(s2))
-                ),
-                false
-              ),
-
-              mu = Logical(1,
-                @modelexpr(xmat, beta,
-                  xmat * beta
-                ),
-                false
-              ),
-
-              beta = Stochastic(1,
-                :(MvNormal(2, sqrt(1000)))
-              ),
-
-              s2 = Stochastic(
-                :(InverseGamma(0.001, 0.001))
-              )
-
-            )
-
-            Gibbs_beta = Sampler([:beta],
-              @modelexpr(beta, s2, xmat, y,
-                begin
-                  beta_mean = mean(beta.distr)
-                  beta_invcov = invcov(beta.distr)
-                  Sigma = inv(xmat' * xmat / s2 + beta_invcov)
-                  mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
-                  rand(MvNormal(mu, Sigma))
-                end
-              )
-            )
-
-            Gibbs_s2 = Sampler([:s2],
-              @modelexpr(mu, s2, y,
-                begin
-                  a = length(y) / 2.0 + shape(s2.distr)
-                  b = sumabs2(y - mu) / 2.0 + scale(s2.distr)
-                  rand(InverseGamma(a, b))
-                end
-              )
-            )
 
 
 .. _section-Line-DAG:

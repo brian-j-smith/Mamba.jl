@@ -60,8 +60,6 @@ New known, unknown, or unnormalized univariate distributions can be created and 
 
     #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
 
-    #. Export the name of the new distribution being created.
-
     #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments and explicitly converts them in the constructor body to concrete types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
     #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
@@ -85,9 +83,9 @@ New known, unknown, or unnormalized univariate distributions can be created and 
         .. code-block:: julia
 
             using Mamba
-            @everywhere eval(Mamba, extensions)
+            @everywhere eval(extensions)
 
-Below is a univariate example based on the linear regression model in the :ref:`section-Line`.  Note that if model nodes are specified with the function syntax, as is done in the code below and as opposed to the legacy :ref:`section-Model-Expression`, then the previous export step may be skipped and the new distribution  block evaluated apart from *Mamba*; e.g., ``@everywhere eval(extensions)``.
+Below is a univariate example based on the linear regression model in the :ref:`section-Line`.
 
 .. literalinclude:: newunivardist.jl
     :language: julia
@@ -151,8 +149,6 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
     #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
 
-    #. Export the name of the new distribution being created.
-
     #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments and explicitly converts them in the constructor body to concrete types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
     #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
@@ -176,9 +172,9 @@ New known, unknown, or unnormalized multivariate distributions can be created an
         .. code-block:: julia
 
             using Mamba
-            @everywhere eval(Mamba, extensions)
+            @everywhere eval(extensions)
 
-Below is a multivariate example based on the linear regression model in the :ref:`section-Line`.  Note that if model nodes are specified with the function syntax, as is done in the code below and as opposed to the legacy :ref:`section-Model-Expression`, then the previous export step may be skipped and the new distribution  block evaluated apart from *Mamba*; e.g., ``@everywhere eval(extensions)``.
+Below is a multivariate example based on the linear regression model in the :ref:`section-Line`.
 
 .. literalinclude:: newmultivardist.jl
     :language: julia

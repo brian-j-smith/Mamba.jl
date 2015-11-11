@@ -28,8 +28,8 @@ end
 #################### Sampler Constructor ####################
 
 function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block)
       offset = 0

@@ -26,8 +26,8 @@ end
 #################### Sampler Constructor ####################
 
 function MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = MALAVariate(x, tunepar["sampler"])
@@ -42,8 +42,8 @@ end
 
 function MALA{T<:Real}(params::Vector{Symbol}, scale::Real, Sigma::Matrix{T};
                        dtype::Symbol=:forward)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = MALAVariate(x, tunepar["sampler"])
@@ -64,8 +64,6 @@ function malafx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
            zeros(x)
   logf, grad
 end
-
-export malafx!
 
 
 #################### Sampling Functions ####################

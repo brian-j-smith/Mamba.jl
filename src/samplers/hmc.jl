@@ -29,8 +29,8 @@ end
 
 function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = HMCVariate(x, tunepar["sampler"])
@@ -45,8 +45,8 @@ end
 
 function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Integer,
                       Sigma::Matrix{T}; dtype::Symbol=:forward)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = HMCVariate(x, tunepar["sampler"])
@@ -67,8 +67,6 @@ function hmcfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
            zeros(length(x))
   logf, grad
 end
-
-export hmcfx!
 
 
 #################### Sampling Functions ####################

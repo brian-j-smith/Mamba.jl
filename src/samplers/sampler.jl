@@ -1,13 +1,12 @@
 #################### Sampler ####################
 
+const samplerfxargs = [(:model, :Model), (:block, :Integer)]
+
+
 #################### Constructors ####################
 
-function Sampler(params::Vector{Symbol}, expr::Expr, tune::Dict=Dict())
-  Sampler(params, samplerfx(expr), tune, Symbol[])
-end
-
 function Sampler(params::Vector{Symbol}, f::Function, tune::Dict=Dict())
-  Sampler(params, modelexpr(f), tune)
+  Sampler(params, modelfx(samplerfxargs, f), tune, Symbol[])
 end
 
 
@@ -28,11 +27,4 @@ function Base.showall(io::IO, s::Sampler)
   show(io, s.tune)
   print(io, "\n\nTarget Nodes:\n")
   show(io, s.targets)
-end
-
-
-#################### Auxiliary Functions ####################
-
-function samplerfx(expr::Expr)
-  eval(Expr(:function, :(model::Mamba.Model, block::Integer), expr))
 end

@@ -46,8 +46,8 @@ end
 #################### Sampler Constructor ####################
 
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       x = unlist(model, block, true)
       v = NUTSVariate(x, tunepar["sampler"])
@@ -81,8 +81,6 @@ function nutsfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
            zeros(x)
   logf, grad
 end
-
-export nutsfx, nutsfx!
 
 
 #################### Sampling Functions ####################

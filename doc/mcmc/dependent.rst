@@ -99,13 +99,7 @@ Node Operations
 Logical
 -------
 
-The ``Logical`` types inherit fields and method functions from the ``AbstractDependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.  Stored in the field ``eval`` is an anonymous function defined as
-
-.. code-block:: julia
-
-    function(model::Mamba.Model)
-
-where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code block written in terms of other nodes and data structures.  It should return values with which to update the node in the same type as the ``value`` field of the node.
+The ``Logical`` types inherit fields and method functions from the ``AbstractDependent`` type, and adds the constructors and methods listed below.  It is designed for nodes that are deterministic functions of model parameters and data.
 
 Declarations
 ^^^^^^^^^^^^
@@ -130,9 +124,7 @@ Fields
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Logical(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-              Logical(d::Integer, expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-              Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
+.. function:: Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
               Logical(d::Integer, f::Function, monitor::Union{Bool, Vector{Int}}=true)
 
     Construct a ``Logical`` object that defines a logical model node.
@@ -140,8 +132,7 @@ Constructors
     **Arguments**
 
         * ``d`` : number of dimensions for array nodes.
-        * ``expr`` : a quoted expression or code-block defining the function body of the ``eval`` field.
-        * ``f`` : a function whose arguments are the other model nodes upon which this one depends, and that will be evaluated by the ``eval`` field function.
+        * ``f`` : a function whose untyped arguments are the other model nodes upon which this one depends.  The function may contain any valid **julia** expression or code block.  It will be saved in the ``eval`` field of the constructed logical node and should return a value in the same type as and with which to update the node's ``value`` field.
         * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
     **Value**
@@ -195,13 +186,7 @@ Node Operations
 Stochastic
 ----------
 
-The ``Stochastic`` types inherit fields and method functions from the ``AbstractDependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the ``Distributions`` structure stored in field ``distr``.  Stored in the field ``eval`` is an anonymous function defined as
-
-.. code-block:: julia
-
-    function(model::Mamba.Model)
-
-where ``model`` contains all model nodes.  The function can contain any valid **julia** expression or code-block.  It should return a single :ref:`section-Distributions` object for all node elements or a structure of the same type as the node with element-specific :ref:`section-Distributions` objects.
+The ``Stochastic`` types inherit fields and method functions from the ``AbstractDependent`` type, and adds the additional ones listed below.  It is designed for model parameters or data that have distributional or likelihood specifications, respectively.  Its stochastic relationship to other nodes and data structures is represented by the structure stored in ``distr`` field.
 
 Declarations
 ^^^^^^^^^^^^
@@ -227,7 +212,7 @@ Fields
 Distribution Structures
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``DistributionStruct`` alias defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution``, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
+The ``DistributionStruct`` alias defines the types of distribution structures supported for ``AbstractStochastic`` nodes.  Single ``Distribution`` types from the :ref:`section-Distributions` section, arrays of ``UnivariateDistribution``, and arrays of ``MultivariateDistribution`` objects are supported.  When a ``MultivariateDistribution`` array is specified for a stochastic node, the node is assumed to be one dimension bigger than the array, with the last dimension containing values from the distributions stored in the previous dimensions.  Such arrays may contain distributions of different lengths.  Model specification syntax for all three types of distribution structures can be seen in the :ref:`Birats Example <example-Birats>`.
 
 .. code-block:: julia
 
@@ -238,9 +223,7 @@ The ``DistributionStruct`` alias defines the types of distribution structures su
 Constructors
 ^^^^^^^^^^^^
 
-.. function:: Stochastic(expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-              Stochastic(d::Integer, expr::Expr, monitor::Union{Bool, Vector{Int}}=true)
-              Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
+.. function:: Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
               Stochastic(d::Integer, f::Function, monitor::Union{Bool, Vector{Int}}=true)
 
     Construct a ``Stochastic`` object that defines a stochastic model node.
@@ -248,8 +231,7 @@ Constructors
     **Arguments**
 
         * ``d`` : number of dimensions for array nodes.
-        * ``expr`` : a quoted expression or code-block defining the function body of the ``eval`` field.
-        * ``f`` : a function whose arguments are the other model nodes upon which this one depends, and that will be evaluated by the ``eval`` field function.
+        * ``f`` : a function whose untyped arguments are the other model nodes upon which this one depends.  The function may contain any valid **julia** expression or code block.  It will be saved in the ``eval`` field of the constructed stochastic node and should return a ``DistributionStruct`` object to be stored in the node's ``distr`` field.
         * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
 
     **Value**

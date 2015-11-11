@@ -12,8 +12,8 @@ end
 #################### Sampler Constructor ####################
 
 function MISS(params::Vector{Symbol})
-  Sampler(params,
-    quote
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
       tunepar = tune(model, block)
       value = Dict{Symbol, Any}()
       initialize = tunepar["sampler"] == nothing

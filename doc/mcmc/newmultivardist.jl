@@ -5,7 +5,6 @@
   ## Load needed packages and import methods to be extended
   using Distributions
   import Distributions: length, insupport, _logpdf
-  export NewMultivarDist
 
   ## Type declaration
   type NewMultivarDist <: ContinuousMultivariateDistribution
@@ -44,7 +43,7 @@ Testing.logpdf(d, [2.0, 3.0])
 
 ## Add the extensions
 using Mamba
-@everywhere eval(Mamba, extensions)
+@everywhere eval(extensions)
 
 ## Implement a Mamba model using the new distribution
 model = Model(

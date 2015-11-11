@@ -4,8 +4,7 @@
 
 #################### Categorical ####################
 
-Distributions.Categorical(p::AbstractVector) =
-  Categorical(convert(Vector{Float64}, p))
+Categorical(p::AbstractVector) = Categorical(convert(Vector{Float64}, p))
 
 
 ######################################################################
