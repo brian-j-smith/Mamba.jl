@@ -3,7 +3,6 @@ using Distributions
 module Mamba
 
   using Distributions
-  using Gadfly
 
 
   #################### Imports ####################
