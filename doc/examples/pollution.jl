@@ -145,8 +145,8 @@ sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim1)
 
 
-## Binary Metropolised Gibbs Sampling
-scheme2 = [BMG([:gamma]); scheme0]
+## Binary Gibbs Sampling
+scheme2 = [BGS([:gamma]); scheme0]
 setsamplers!(model, scheme2)
 sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim2)

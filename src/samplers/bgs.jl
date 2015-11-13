@@ -1,40 +1,40 @@
-############ Binary Metropolised Gibbs Sampler ##############
+############ Binary Gibbs Sampler ##############
 
 #################### Types ####################
 
-type BMGTune
+type BGSTune
   probs::Vector{Float64}
 end
 
-type BMGVariate <: VectorVariate
+type BGSVariate <: VectorVariate
   value::Vector{Float64}
-  tune::BMGTune
+  tune::BGSTune
 
-  function BMGVariate(x::Vector{Float64}, tune::BMGTune)
+  function BGSVariate(x::Vector{Float64}, tune::BGSTune)
     all(insupport(Bernoulli, x)) ||
       throw(ArgumentError("x is not a binary vector"))
     new(x, tune)
   end
 end
 
-function BMGVariate(x::Vector{Float64}, tune=nothing)
-  tune = BMGTune(
+function BGSVariate(x::Vector{Float64}, tune=nothing)
+  tune = BGSTune(
     fill(NaN, length(x))
   )
-  BMGVariate(x, tune)
+  BGSVariate(x, tune)
 end
 
 
 #################### Sampler Constructor ####################
 
-function BMG(params::Vector{Symbol})
+function BGS(params::Vector{Symbol})
   Sampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block)
-      v = BMGVariate(x, tunepar["sampler"])
+      v = BGSVariate(x, tunepar["sampler"])
       f = x -> logpdf!(model, x, block)
-      bmg!(v, f)
+      bgs!(v, f)
       tunepar["sampler"] = v.tune
       relist(model, v, block)
     end,
@@ -45,15 +45,12 @@ end
 
 #################### Sampling Functions ####################
 
-function bmg!(v::BMGVariate, logf::Function)
-  y = v[:]
+function bgs!(v::BGSVariate, logf::Function)
   tune = v.tune
 
-  v0 = v[:]
-  v1 = v[:]
   for i in 1:length(v)
-    v0_i = v0[i]
-    v1_i = v1[i]
+    v0 = v[:]
+    v1 = v[:]
 
     v0[i] = 0.0
     v1[i] = 1.0
@@ -61,15 +58,8 @@ function bmg!(v::BMGVariate, logf::Function)
     if p < 0.0 || p > 1.0
       p = 0.5
     end
-    y[i] = rand() < p ? 1.0 : 0.0
+    v[i] = rand() < p ? 1.0 : 0.0
     tune.probs[i] = p
-
-    v0[i] = v0_i
-    v1[i] = v1_i
   end
-  if rand() < exp(logf(y) - logf(v.value))
-    v[:] = y
-  end
-
   v
 end
