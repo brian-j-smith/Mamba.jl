@@ -7,7 +7,6 @@ function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
   mm = deepcopy(mc.model)
   mc2 = mcmc_master!(mm, mm.iter + (1:iters), last(mc), step(mc), mc.chains,
                      verbose)
-  mc2.model.iter += mc.model.iter
   if mc2.names != mc.names
     mc2 = mc2[:, mc.names, :]
   end
