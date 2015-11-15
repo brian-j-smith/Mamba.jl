@@ -31,7 +31,7 @@ Features
 
     * Directed acyclic graph representations of models.
     * Arbitrary blocking of model parameters and designation of block-specific samplers.
-    * Samplers that can be used with the included simulation engine or apart from it, including Slice, adaptive multivariate Metropolis, adaptive Metropolis within Gibbs, and No-U-Turn (Hamiltonian Monte Carlo) samplers.
+    * Samplers that can be used with the included simulation engine or apart from it, including adaptive Metropolis within Gibbs, adaptive multivariate Metropolis, binary, Hamiltonian Monte Carlo (simple and No-U-Turn), simplex, and slice samplers.
     * Automatic parallel execution of parallel MCMC chains on multi-processor systems.
     * Restarting of chains.
     * Command-line access to all package functionality, including its simulation API.

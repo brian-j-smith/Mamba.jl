@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.7.2
+* Deprecated model expression syntax, in favor of model function syntax, for the construction of ``Logical`` and ``Stochastic`` nodes and ``Sampler`` objects.
+* Implemented a Hamiltonian Monte Carlo (HMC) sampler.
+* Removed ``chain`` field from ``Model`` type.
+
 ### 0.7.1
 * Implemented Binary Hamiltonian Monte Carlo (BHMC) and Binary Metropolised Gibbs (BMG) samplers for binary model parameters.
 * Implemented pairwise posterior density contour plots.
