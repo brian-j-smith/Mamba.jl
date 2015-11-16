@@ -105,18 +105,25 @@ end
 function getsimkeys(mc::ModelChains, nodekeys::Vector{Symbol})
   relistkeys = Symbol[]
   updatekeys = Symbol[]
+
   m = mc.model
-  terminal = union(keys(m, :stochastic), keys(mc, :dependent))
   g = graph(m)
+
+  nodekeys = intersect(nodekeys, keys(m, :stochastic))
+  blockkeys = keys(m, :block)
+  dynamickeys = union(blockkeys, keys(m, :target, blockkeys))
+  terminalkeys = union(keys(m, :stochastic), keys(mc, :dependent))
+
   for v in vertices(g)
-    if isa(m[v.key], AbstractDependent)
-      if any(key -> key in nodekeys, gettargets(v, g, m, terminal))
-        v.key in terminal ?
+    if v.key in dynamickeys
+      if any(key -> key in nodekeys, gettargets(v, g, m, terminalkeys))
+        v.key in terminalkeys ?
           push!(relistkeys, v.key) :
           push!(updatekeys, v.key)
       end
     end
   end
   if !isempty(relistkeys) append!(updatekeys, nodekeys) end
+
   relistkeys, intersect(keys(m, :dependent), updatekeys)
 end
