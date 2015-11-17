@@ -1,46 +1,46 @@
-#################### Binary Modified Metropolised Gibbs ####################
+#################### Binary MCMC Model Composition ####################
 
 #################### Types and Constructors ####################
 
-type BMMGTune
+type BMC3Tune
   indexset::Vector{Vector{Int}}
 end
 
-type BMMGVariate <: VectorVariate
+type BMC3Variate <: VectorVariate
   value::Vector{Float64}
-  tune::BMMGTune
+  tune::BMC3Tune
 
-  function BMMGVariate(x::Vector{Float64}, tune::BMMGTune)
+  function BMC3Variate(x::Vector{Float64}, tune::BMC3Tune)
     all(insupport(Bernoulli, x)) ||
       throw(ArgumentError("x is not a binary vector"))
     new(x, tune)
   end
 end
 
-function BMMGVariate(x::Vector{Float64}, tune=nothing)
-  tune = BMMGTune(
+function BMC3Variate(x::Vector{Float64}, tune=nothing)
+  tune = BMC3Tune(
     Vector{Vector{Int}}[]
   )
-  BMMGVariate(x, tune)
+  BMC3Variate(x, tune)
 end
 
 
 #################### Sampler Constructor ####################
 
-function BMMG(params::Vector{Symbol}, d::Integer, k::Integer=1)
+function BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
   d >= k > 0 || throw(ArgumentError("values do not satisfy d >= k > 0"))
   indexset = collect(combinations(1:d, k))
-  BMMG(params, indexset)
+  BMC3(params, indexset)
 end
 
-function BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
+function BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
   Sampler(params,
     quote
       tunepar = tune(model, block)
       x = unlist(model, block)
-      v = BMMGVariate(x, tunepar["sampler"])
+      v = BMC3Variate(x, tunepar["sampler"])
       f = x -> logpdf!(model, x, block)
-      bmmg!(v, tunepar["indexset"], f)
+      bmc3!(v, tunepar["indexset"], f)
       tunepar["sampler"] = v.tune
       relist(model, v, block)
     end,
@@ -51,7 +51,7 @@ end
 
 #################### Sampling Functions ####################
 
-function bmmg!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
+function bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
   x = v[:]
   idx = indexset[rand(1:length(indexset))]
   x[idx] = 1.0 - v[idx]

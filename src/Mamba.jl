@@ -192,7 +192,7 @@ module Mamba
   include("samplers/amwg.jl")
   include("samplers/bmg.jl")
   include("samplers/bhmc.jl")
-  include("samplers/bmmg.jl")
+  include("samplers/bmc3.jl")
   include("samplers/dgs.jl")
   include("samplers/mala.jl")
   include("samplers/miss.jl")
@@ -285,9 +285,9 @@ module Mamba
     bhmc!,
     BHMC,
     BHMCVariate,
-    bmmg!,
-    BMMG,
-    BMMGVariate,
+    bmc3!,
+    BMC3,
+    BMC3Variate,
     dgs!,
     DGS,
     DGSVariate,

@@ -1,19 +1,19 @@
-.. index:: Sampling Functions; Binary Modified Metropolised Gibbs
+.. index:: Sampling Functions; Binary MCMC Model Composition
 
-.. _section-BMMG:
+.. _section-BMC3:
 
-Binary Modified Metropolised Gibbs (BMMG)
+Binary MCMC Model Composition (BMC3)
 -----------------------------------------
 
-Implementation of the binary-state modified Metropolised Gibbs sampler of Schafer :cite:`schafer:2012:DIS,schafer:2013:SMCB` in which proposed updates are always state changes.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the binary-state MCMC Model Composition of Madigan and York :cite:`madigan:1995:MC3` in which proposed updates are always state changes.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bmmg!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
+.. function:: bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
 
-    Simulate one draw from a target distribution using the BMMG sampler.  Parameters are assumed to have binary numerical values (0 or 1).
+    Simulate one draw from a target distribution using the BMC3 sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
@@ -25,37 +25,37 @@ Stand-Alone Function
 
         Returns ``v`` updated with simulated values and associated tuning parameters.
 
-    .. _example-bmmg:
+    .. _example-bmc3:
 
     **Example**
 
-        .. literalinclude:: bmmg.jl
+        .. literalinclude:: bmc3.jl
             :language: julia
 
 
-.. index:: Sampler Types; BMMGVariate
+.. index:: Sampler Types; BMC3Variate
 
-BMMGVariate Type
+BMC3Variate Type
 ^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``BMMGVariate <: VectorVariate``
+``BMC3Variate <: VectorVariate``
 
 Fields
 ``````
 
 * ``value::Vector{Float64}`` : vector of sampled values.
-* ``tune::BMMGTune`` : tuning parameters for the sampling algorithm.
+* ``tune::BMC3Tune`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: BMMGVariate(x::Vector{Float64}, tune::BMMGTune)
-              BMMGVariate(x::Vector{Float64}, tune=nothing)
+.. function:: BMC3Variate(x::Vector{Float64}, tune::BMC3Tune)
+              BMC3Variate(x::Vector{Float64}, tune=nothing)
 
-    Construct a ``BMMGVariate`` object that stores sampled values and tuning parameters for BMMG sampling.
+    Construct a ``BMC3Variate`` object that stores sampled values and tuning parameters for BMC3 sampling.
 
     **Arguments**
 
@@ -64,17 +64,17 @@ Constructors
 
     **Value**
 
-        Returns a ``BMMGVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``BMC3Variate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
 
-.. index:: Sampler Types; BMMGTune
+.. index:: Sampler Types; BMC3Tune
 
-BMMGTune Type
+BMC3Tune Type
 ^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type BMMGTune``
+``type BMC3Tune``
 
 Fields
 ``````
@@ -85,10 +85,10 @@ Fields
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMMG(params::Vector{Symbol}, d::Integer, k::Integer=1)
-              BMMG(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
+.. function:: BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
+              BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
 
-    Construct a ``Sampler`` object for BMMG sampling.  Parameters are assumed to have binary numerical values (0 or 1).
+    Construct a ``Sampler`` object for BMC3 sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 

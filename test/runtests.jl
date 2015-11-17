@@ -9,7 +9,7 @@ test_samplers = [
   "amwg",
   "bmg",
   "bhmc",
-  "bmmg",
+  "bmc3",
   "mala",
   "nuts",
   "slice",
