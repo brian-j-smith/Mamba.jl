@@ -6,10 +6,13 @@ end
 
 function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
              epsilon::Real; rho::Function = (x, y) -> sqrt(sum((x - y) .^ 2)),
-             s::Int = 1, n::Int = 50, kernel::Symbol = :uniform)
+             s::Int = 1, n::Int = 50, kernel::Symbol = :uniform, adapt::Symbol = :dynamic)
   kernel in [:uniform, :epanechnikov, :gaussian] ||
-    throw(ArgumentError("adapt must be one of :uniform, 
+    throw(ArgumentError("kernel must be one of :uniform, 
     :epanechnikov, or :gaussian"))
+
+  adapt in [:dynamic, :augment] ||
+    throw(ArgumentError("adapt must be one of :dynamic or :augment"))
 
   Sampler(params,
     quote
@@ -50,7 +53,8 @@ function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
           x0 =  vcat(map(d -> unlist(model[d], 
                   rand(model[d])), terminals)...)
           Told[:, i] = vcat(map(f -> f(x0), tunepar["summarize"])...)
-          eps0[i] = tunepar["rho"](Told[:, i], T0)
+          eps0[i] = tunepar["adapt"] == :dynamic ? 
+            tunepar["rho"](Told[:, i], T0) : Inf
         end
         tunepar["sampler"] = ABCTune(Told, eps0, terminals)
       else
@@ -71,7 +75,11 @@ function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
         ratio_den = 0.0
 
         Tnew = zeros(length(T0), tunepar["s"])
-        epsilon = zeros(tunepar["s"])
+        #epsilon = zeros(tunepar["s"])
+        epsilon = fill(Inf, tunepar["s"])
+
+        logeps1 = 0.0
+        logeps0 = 0.0
 
         for i in 1:tunepar["s"]
           #new data
@@ -82,8 +90,14 @@ function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
           Tnew[:, i] = vcat(map(f -> f(dnew), tunepar["summarize"])...)
 
           #epsilon
-          epsilon[i] = max(tunepar["epsilon"], min(tunepar["rho"](Tnew[:, i], 
-                         T0), tunepar["sampler"].epsilon[i]))
+          if tunepar["adapt"] == :dynamic
+            epsilon[i] = max(tunepar["epsilon"], min(tunepar["rho"](Tnew[:, i], 
+              T0), tunepar["sampler"].epsilon[i]))
+          elseif model.iter > 1
+            epsilon[i] = randexp() * tunepar["epsilon"] 
+          else
+            epsilon[i] = tunepar["sampler"].epsilon[i]
+          end
 
           #weighting density
           rho0 = 0
@@ -105,9 +119,12 @@ function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
           ratio_den += rho0
         end
 
+        logeps1 = sum(logpdf(Exponential(tunepar["epsilon"]), epsilon))
+        logeps0 = sum(logpdf(Exponential(tunepar["epsilon"]), tunepar["sampler"].epsilon))
+
 
         #Reject/Accept
-        if rand() < ratio_num / ratio_den * exp(logprior(y) - logprior(x))
+        if rand() < ratio_num / ratio_den * exp(logprior(y) - logprior(x) + logeps1 - logeps0)
           x[:] = y
           tunepar["sampler"].Told = Tnew
           tunepar["sampler"].epsilon = epsilon
@@ -119,6 +136,6 @@ function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
     Dict("summarize" => summarize, "rho" => rho, "n" => convert(Int64, n), 
          "s" => convert(Int64, s), "epsilon" => convert(Float64, epsilon), 
          "sigma" => convert(Float64, sigma), "kernel" => kernel, 
-         "sampler" => nothing)
+         "adapt" => adapt, "sampler" => nothing)
     )
 end
