@@ -87,3 +87,17 @@ function pcramer(q::Real)
   end
   p / (pi^1.5 * sqrt(q))
 end
+
+
+#################### Auxiliary Functions ####################
+
+## pmap2 is a partial work-around for the pmap issue in julia 0.4.0 of worker
+## node errors being blocked.  In single-processor mode, pmap2 calls map
+## instead to avoid the error handling issue.  In multi-processor model, pmap is
+## called and will apply its error processing.  If and when the pmap issue is
+## resolved in a future version of julia, calls to pmap2 should be reverted to
+## a call to pmap.
+
+function pmap2(f::Function, lsts::AbstractArray)
+  nprocs() > 1 ? pmap(f, lsts) : map(f, lsts)
+end

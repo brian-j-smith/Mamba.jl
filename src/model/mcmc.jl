@@ -50,7 +50,7 @@ function mcmc_master!(m::Model, window::UnitRange{Int}, burnin::Integer,
     Any[m, states[k], window, burnin, thin, ChainProgress(frame, k, N)]
     for k in chains
   ]
-  results = mcmcmap(mcmc_worker!, lsts)
+  results = pmap2(mcmc_worker!, lsts)
 
   sims  = Chains[results[k][1] for k in 1:K]
   model = results[1][2]
@@ -79,18 +79,4 @@ function mcmc_worker!(args::Vector)
   end
 
   (sim, m, unlist(m))
-end
-
-
-#################### Auxiliary Functions ####################
-
-## mcmcmap is a partial work-around for the pmap issue in julia 0.4.0 of worker
-## node errors being blocked.  In single-processor mode, mcmcmap calls map
-## instead to avoid the error handling issue.  In multi-processor model, pmap is
-## called and will apply its error processing.  If and when the pmap issue is
-## resolved in a future version of julia, calls to mcmcmap should be reverted to
-## a call to pmap.
-
-function mcmcmap(f::Function, lsts::AbstractArray)
-  nprocs() > 1 ? pmap(f, lsts) : map(f, lsts)
 end
