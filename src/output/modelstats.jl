@@ -28,32 +28,42 @@ end
 logpdf(mc::ModelChains, nodekey::Symbol) = logpdf(mc, [nodekey])
 
 function logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
-  m = mc.model
+  N = length(mc.range)
+  K = size(mc, 3)
 
   relistkeys, updatekeys = getsimkeys(mc, nodekeys)
-  relistkeys = union(relistkeys, intersect(nodekeys, keys(m, :block)))
+  relistkeys = union(relistkeys, intersect(nodekeys, keys(mc.model, :block)))
   inds = names2inds(mc, relistkeys)
 
-  c = Chains(size(mc, 1), 1, chains=size(mc, 3), start=first(mc), thin=step(mc),
-             names=["logpdf"])
-
-  iters, _, chains = size(c.value)
   frame = ChainProgressFrame(
-    "MCMC Processing of $iters Iterations x $chains Chain" * "s"^(chains > 1),
-    true
+    "MCMC Processing of $N Iterations x $K Chain" * "s"^(K > 1), true
   )
-  for k in 1:chains
-    meter = ChainProgress(frame, k, iters)
-    for i in 1:iters
-      m[relistkeys] = relist(m, mc.value[i, inds, k], relistkeys)
-      update!(m, updatekeys)
-      c.value[i, 1, k] = mapreduce(key -> logpdf(m[key]), +, nodekeys)
-      next!(meter)
-    end
-    println()
+
+  lsts = [
+    Any[mc[:, :, k], nodekeys, relistkeys, inds, updatekeys,
+        ChainProgress(frame, k, N)]
+    for k in 1:K
+  ]
+  sims = pmap2(logpdf_modelchains_worker, lsts)
+
+  ModelChains(cat(3, sims...), mc.model)
+end
+
+
+function logpdf_modelchains_worker(args::Vector)
+  mc, nodekeys, relistkeys, inds, updatekeys, meter = args
+  m = mc.model
+
+  sim = Chains(size(mc, 1), 1, start=first(mc), thin=step(mc), names=["logpdf"])
+
+  for i in 1:size(mc.value, 1)
+    m[relistkeys] = relist(m, mc.value[i, inds, 1], relistkeys)
+    update!(m, updatekeys)
+    sim.value[i, 1, 1] = mapreduce(key -> logpdf(m[key]), +, nodekeys)
+    next!(meter)
   end
 
-  ModelChains(c, m)
+  sim
 end
 
 
