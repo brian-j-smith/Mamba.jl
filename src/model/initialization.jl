@@ -2,8 +2,10 @@
 
 function reset!(m::Model, iter::Integer)
   m.iter = iter
-  for s in m.samplers
-    s.tune["sampler"] = nothing
+  if iter == 0
+    for s in m.samplers
+      s.tune["sampler"] = nothing
+    end
   end
   m
 end
