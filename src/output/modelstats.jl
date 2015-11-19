@@ -27,7 +27,8 @@ end
 
 logpdf(mc::ModelChains, nodekey::Symbol) = logpdf(mc, [nodekey])
 
-function logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
+function logpdf(mc::ModelChains,
+                nodekeys::Vector{Symbol}=keys(mc.model, :stochastic))
   N = length(mc.range)
   K = size(mc, 3)
 
@@ -69,7 +70,8 @@ end
 
 predict(mc::ModelChains, nodekey::Symbol) = predict(mc, [nodekey])
 
-function predict(mc::ModelChains, nodekeys::Vector{Symbol})
+function predict(mc::ModelChains,
+                 nodekeys::Vector{Symbol}=keys(mc.model, :output))
   m = mc.model
 
   outputs = keys(m, :output)

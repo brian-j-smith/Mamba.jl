@@ -497,14 +497,15 @@ Model-Based Inference
         See the :ref:`section-Line-Summaries` section of the tutorial.
 
 .. function:: logpdf(mc::ModelChains, nodekey::Symbol)
-              logpdf(mc::ModelChains, nodekeys::Vector{Symbol})
+              logpdf(mc::ModelChains, \
+                     nodekeys::Vector{Symbol}=keys(mc.model, :stochastic))
 
     Compute the sum of log-densities at each iteration of MCMC output for stochastic nodes.
 
     **Arguments**
 
         * ``mc``: sampler output from a model fit with the :func:`mcmc` function.
-        * ``nodekey/nodekeys``: Stochastic model node(s) over which to sum densities.
+        * ``nodekey/nodekeys``: Stochastic model node(s) over which to sum densities (default: all).
 
     **Value**
 
@@ -513,14 +514,15 @@ Model-Based Inference
 .. index:: Posterior Predictive Distribution
 
 .. function:: predict(mc::ModelChains, nodekey::Symbol)
-              predict(mc::ModelChains, nodekeys::Vector{Symbol})
+              predict(mc::ModelChains, \
+                      nodekeys::Vector{Symbol}=keys(mc.model, :output))
 
     Generate MCMC draws from a posterior predictive distribution.
 
     **Arguments**
 
         * ``mc``: sampler output from a model fit with the :func:`mcmc` function.
-        * ``nodekey/nodekeys``: observed Stochastic model node(s) for which to generate draws from the predictive distribution.
+        * ``nodekey/nodekeys``: observed Stochastic model node(s) for which to generate draws from the predictive distribution (default: all observed data nodes).
 
     **Value**
 
