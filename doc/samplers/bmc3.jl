@@ -18,16 +18,16 @@ logf = function(gamma::DenseVector)
   logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
 end
 
-## MCMC Simulation with Binary Modified Metropolised Gibbs Sampling
+## MCMC Simulation with Binary MCMC Model Composition
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = BMMGVariate(zeros(p))
+gamma = BMC3Variate(zeros(p))
 indexset = collect(combinations(1:p, 1))
 for i in 1:t
-  bmmg!(gamma, indexset, logf)
+  bmc3!(gamma, indexset, logf)
   sim[i, :, 1] = gamma
 end
 describe(sim)
 
 p = plot(sim, [:trace, :mixeddensity])
-draw(p, filename = "bmmgplot")
+draw(p, filename = "bmc3plot")
