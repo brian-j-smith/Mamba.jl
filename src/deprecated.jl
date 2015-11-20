@@ -108,3 +108,12 @@ end
 function depsrc(expr)
   Symbol[]
 end
+
+
+## Deprecated at 0.7.3
+
+@deprecate(bmmg!, bmc3!)
+@deprecate(BMMG, BMC3)
+@deprecate(BMMGVariate, BMC3Variate)
+
+export bmmg!, BMMG, BMMGVariate
