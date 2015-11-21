@@ -112,8 +112,16 @@ end
 
 ## Deprecated at 0.7.3
 
+export bmmg!, BMMG, BMMGVariate
+
 @deprecate(bmmg!, bmc3!)
 @deprecate(BMMG, BMC3)
 @deprecate(BMMGVariate, BMC3Variate)
 
-export bmmg!, BMMG, BMMGVariate
+function BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
+  msg = string("BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1) is deprecated; ",
+               "use BMC3(params::Vector{Symbol}; k::Integer=1) instead")
+  Base.depwarn(msg, :BMC3)
+
+  BMC3(params, k)
+end

@@ -27,10 +27,19 @@ end
 
 #################### Sampler Constructor ####################
 
-function BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
-  d >= k > 0 || throw(ArgumentError("values do not satisfy d >= k > 0"))
-  indexset = collect(combinations(1:d, k))
-  BMC3(params, indexset)
+function BMC3(params::Vector{Symbol}; k::Integer=1)
+  Sampler(params, (model::Model, block::Integer) ->
+    begin
+      tunepar = tune(model, block)
+      x = unlist(model, block)
+      v = BMC3Variate(x, tunepar["sampler"])
+      f = x -> logpdf!(model, x, block)
+      bmc3!(v, f, k=tunepar["k"])
+      tunepar["sampler"] = v.tune
+      relist(model, v, block)
+    end,
+    Dict("k" => k, "sampler" => nothing)
+  )
 end
 
 function BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
@@ -51,14 +60,22 @@ end
 
 #################### Sampling Functions ####################
 
+function bmc3!(v::BMC3Variate, logf::Function; k::Integer=1)
+  d = length(v)
+  k <= d || throw(ArgumentError("k is greater than length(v)"))
+  bmc3_sub!(v, randperm(d)[1:k], logf)
+end
+
 function bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
+  v.tune.indexset = indexset
+  bmc3_sub!(v, indexset[rand(1:length(indexset))], logf)
+end
+
+function bmc3_sub!(v::BMC3Variate, idx::Vector{Int}, logf::Function)
   x = v[:]
-  idx = indexset[rand(1:length(indexset))]
   x[idx] = 1.0 - v[idx]
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x
   end
-  v.tune.indexset = indexset
-
   v
 end

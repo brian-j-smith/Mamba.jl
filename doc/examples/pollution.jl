@@ -156,7 +156,7 @@ describe(sim2)
 
 
 ## Binary MCMC Model Composition
-scheme3 = [BMC3([:gamma], p); scheme0]
+scheme3 = [BMC3([:gamma]); scheme0]
 setsamplers!(model, scheme3)
 sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim3)

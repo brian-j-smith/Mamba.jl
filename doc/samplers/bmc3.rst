@@ -12,15 +12,17 @@ Implementation of the binary-state MCMC Model Composition of Madigan and York :c
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
+.. function:: bmc3!(v::BMMGVariate, logf::Function; k::Integer=1)
+              bmc3!(v::BMMGVariate, indexset::Vector{Vector{Int}}, logf::Function)
 
     Simulate one draw from a target distribution using the BMC3 sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``indexset`` : candidate set of indices of the parameters whose states are to be changed simultaneously.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``k`` : number of parameters, such that ``k <= length(v)``, to select at random for simultaneous updating in each call to the sampler.
+        * ``indexset`` : candidate set of indices of the parameters whose states are to be changed simultaneously.
 
     **Value**
 
@@ -86,7 +88,7 @@ Fields
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
+.. function:: BMC3(params::Vector{Symbol}; k::Integer=1)
               BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
 
     Construct a ``Sampler`` object for BMC3 sampling.  Parameters are assumed to have binary numerical values (0 or 1).
@@ -94,8 +96,7 @@ Sampler Constructor
     **Arguments**
 
         * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
-        * ``d`` : total length of the parameters in the combined nodes.
-        * ``k`` : generate all combinations of ``k <= d`` candidate indices of the parameters to change.
+        * ``k`` : number of parameters to select at random for updating in each call to the sampler.
         * ``indexset`` : candidate set of indices of the parameters to change.
 
     **Value**
