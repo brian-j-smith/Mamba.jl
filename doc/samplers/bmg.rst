@@ -11,7 +11,7 @@ Implementation of the binary-state Metropolised Gibbs sampler described by Schaf
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bmg!(v::BMGVariate, logf::Function)
+.. function:: bmg!(v::BMGVariate, logf::Function; k::Integer=1)
 
     Simulate one draw from a target distribution using the BMG sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
@@ -19,6 +19,7 @@ Stand-Alone Function
 
         * ``v`` : current state of parameters to be simulated.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``k`` : number of parameters, such that ``k <= length(v)``, to select at random for simultaneous updating in each call to the sampler.
 
     **Value**
 
@@ -73,22 +74,18 @@ Declaration
 
 ``type BMGTune``
 
-Fields
-``````
-
-* ``probs::Vector{Float64}`` : probabilities of the full conditional marginal distributions from which components of the candidate vector were sequentially drawn.
-
 
 Sampler Constructor
 ^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMG(params::Vector{Symbol})
+.. function:: BMG(params::Vector{Symbol}; k::Integer=1)
 
     Construct a ``Sampler`` object for BMG sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
+        * ``k`` : number of parameters to select at random for updating in each call to the sampler.
 
     **Value**
 

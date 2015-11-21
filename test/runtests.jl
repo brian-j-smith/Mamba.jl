@@ -7,9 +7,9 @@ const tutorialtests = [
 const samplertests = [
   "amm",
   "amwg",
-  "bmg",
   "bhmc",
   "bmc3",
+  "bmg",
   "hmc",
   "mala",
   "nuts",
