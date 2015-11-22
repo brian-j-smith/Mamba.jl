@@ -2,6 +2,13 @@
 
 ## Version Updates
 
+### 0.7.3
+* Parallelize ``logpdf()`` method for ``ModelChains``.
+* Update BMG algorithm and interface.
+* Simplify BMC3 interface.
+* Rename sampler BMMG to BMC3.
+* Fix errant reinitialization of samplers when restarting chains with ``mcmc()``.
+
 ### 0.7.2
 * Deprecated model expression syntax, in favor of model function syntax, for the construction of ``Logical`` and ``Stochastic`` nodes and ``Sampler`` objects.
 * Implemented a Hamiltonian Monte Carlo (HMC) sampler.
