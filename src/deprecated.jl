@@ -123,5 +123,5 @@ function BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
                "use BMC3(params::Vector{Symbol}; k::Integer=1) instead")
   Base.depwarn(msg, :BMC3)
 
-  BMC3(params, k)
+  BMC3(params, k=k)
 end
