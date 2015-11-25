@@ -68,15 +68,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: NUTSVariate(x::AbstractVector{T<:Real}, tune::NUTSTune)
-              NUTSVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: NUTSVariate(x::AbstractVector{T<:Real})
+              NUTSVariate(x::AbstractVector{T<:Real}, tune::NUTSTune)
 
     Construct a ``NUTSVariate`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

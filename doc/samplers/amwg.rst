@@ -56,15 +56,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: AMWGVariate(x::AbstractVector{T<:Real}, tune::AMWGTune)
-              AMWGVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: AMWGVariate(x::AbstractVector{T<:Real})
+              AMWGVariate(x::AbstractVector{T<:Real}, tune::AMWGTune)
 
     Construct a ``AMWGVariate`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

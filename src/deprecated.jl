@@ -125,3 +125,29 @@ function BMC3(params::Vector{Symbol}, d::Integer, k::Integer=1)
 
   BMC3(params, k=k)
 end
+
+
+## Deprecated at 0.7.4
+
+macro depsamplermethod(T)
+  esc(quote
+        function $T{T<:Real}(x::AbstractVector{T}, tune::Any)
+          msg = string($T, "{T<:Real}(x::AbstractVector{T}, tune::Any) is deprecated; ",
+                       "use ", $T, "{T<:Real}(x::AbstractVector{T}) instead")
+          Base.depwarn(msg, symbol($T))
+          $T(x)
+        end
+      end)
+end
+
+@depsamplermethod AMMVariate
+@depsamplermethod AMWGVariate
+@depsamplermethod BHMCVariate
+@depsamplermethod BMC3Variate
+@depsamplermethod BMGVariate
+@depsamplermethod DGSVariate
+@depsamplermethod HMCVariate
+@depsamplermethod MALAVariate
+@depsamplermethod NUTSVariate
+@depsamplermethod SliceVariate
+@depsamplermethod SliceSimplexVariate

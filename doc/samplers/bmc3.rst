@@ -55,15 +55,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: BMC3Variate(x::AbstractVector{T<:Real}, tune::BMC3Tune)
-              BMC3Variate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: BMC3Variate(x::AbstractVector{T<:Real})
+              BMC3Variate(x::AbstractVector{T<:Real}, tune::BMC3Tune)
 
     Construct a ``BMC3Variate`` object that stores sampled values and tuning parameters for BMC3 sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

@@ -33,7 +33,7 @@ type AMMVariate <: SamplerVariate
   AMMVariate{T<:Real}(x::AbstractVector{T}, tune::AMMTune) = new(x, tune)
 end
 
-function AMMVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function AMMVariate{T<:Real}(x::AbstractVector{T})
   AMMVariate(x, AMMTune(length(x)))
 end
 

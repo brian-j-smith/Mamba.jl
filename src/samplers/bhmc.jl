@@ -31,7 +31,7 @@ type BHMCVariate <: SamplerVariate
   end
 end
 
-function BHMCVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function BHMCVariate{T<:Real}(x::AbstractVector{T})
   BHMCVariate(x, BHMCTune(length(x)))
 end
 

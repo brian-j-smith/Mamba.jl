@@ -23,7 +23,7 @@ type BMC3Variate <: SamplerVariate
   end
 end
 
-function BMC3Variate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function BMC3Variate{T<:Real}(x::AbstractVector{T})
   BMC3Variate(x, BMC3Tune(length(x)))
 end
 

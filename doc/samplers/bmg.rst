@@ -52,15 +52,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: BMGVariate(x::AbstractVector{T<:Real}, tune::BMGTune)
-              BMGVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: BMGVariate(x::AbstractVector{T<:Real})
+              BMGVariate(x::AbstractVector{T<:Real}, tune::BMGTune)
 
     Construct a ``BMGVariate`` object that stores sampled values and tuning parameters for BMG sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

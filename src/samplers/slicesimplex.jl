@@ -23,7 +23,7 @@ type SliceSimplexVariate <: SamplerVariate
   end
 end
 
-function SliceSimplexVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function SliceSimplexVariate{T<:Real}(x::AbstractVector{T})
   SliceSimplexVariate(x, SliceSimplexTune(length(x)))
 end
 

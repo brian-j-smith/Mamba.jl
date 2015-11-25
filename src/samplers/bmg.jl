@@ -17,7 +17,7 @@ type BMGVariate <: SamplerVariate
   end
 end
 
-function BMGVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function BMGVariate{T<:Real}(x::AbstractVector{T})
   BMGVariate(x, BMGTune(length(x)))
 end
 

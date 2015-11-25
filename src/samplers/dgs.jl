@@ -25,7 +25,7 @@ type DGSVariate <: SamplerVariate
   DGSVariate{T<:Real}(x::AbstractVector{T}, tune::DGSTune) = new(x, tune)
 end
 
-function DGSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function DGSVariate{T<:Real}(x::AbstractVector{T})
   DGSVariate(x, DGSTune(length(x)))
 end
 

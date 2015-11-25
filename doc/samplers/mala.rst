@@ -55,15 +55,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: MALAVariate(x::AbstractVector{T<:Real}, tune::MALATune)
-              MALAVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: MALAVariate(x::AbstractVector{T<:Real})
+              MALAVariate(x::AbstractVector{T<:Real}, tune::MALATune)
 
     Construct a ``MALAVariate`` object that stores sampled values and tuning parameters for MALA sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

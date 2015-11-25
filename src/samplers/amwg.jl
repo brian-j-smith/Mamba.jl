@@ -29,7 +29,7 @@ type AMWGVariate <: SamplerVariate
   AMWGVariate{T<:Real}(x::AbstractVector{T}, tune::AMWGTune) = new(x, tune)
 end
 
-function AMWGVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function AMWGVariate{T<:Real}(x::AbstractVector{T})
   AMWGVariate(x, AMWGTune(length(x)))
 end
 

@@ -21,7 +21,7 @@ type MALAVariate <: SamplerVariate
   MALAVariate{T<:Real}(x::AbstractVector{T}, tune::MALATune) = new(x, tune)
 end
 
-function MALAVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function MALAVariate{T<:Real}(x::AbstractVector{T})
   MALAVariate(x, MALATune(length(x)))
 end
 

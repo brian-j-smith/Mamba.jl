@@ -52,15 +52,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: BHMCVariate(x::AbstractVector{T<:Real}, tune::BHMCTune)
-              BHMCVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: BHMCVariate(x::AbstractVector{T<:Real})
+              BHMCVariate(x::AbstractVector{T<:Real}, tune::BHMCTune)
 
     Construct a ``BHMCVariate`` object that stores sampled values and tuning parameters for BHMC sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

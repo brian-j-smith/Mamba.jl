@@ -23,7 +23,7 @@ type HMCVariate <: SamplerVariate
   HMCVariate{T<:Real}(x::AbstractVector{T}, tune::HMCTune) = new(x, tune)
 end
 
-function HMCVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function HMCVariate{T<:Real}(x::AbstractVector{T})
   HMCVariate(x, HMCTune(length(x)))
 end
 

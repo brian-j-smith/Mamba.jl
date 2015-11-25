@@ -41,7 +41,7 @@ type NUTSVariate <: SamplerVariate
   NUTSVariate{T<:Real}(x::AbstractVector{T}, tune::NUTSTune) = new(x, tune)
 end
 
-function NUTSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function NUTSVariate{T<:Real}(x::AbstractVector{T})
   NUTSVariate(x, NUTSTune(length(x)))
 end
 

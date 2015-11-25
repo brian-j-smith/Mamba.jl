@@ -19,7 +19,7 @@ type SliceVariate <: SamplerVariate
   SliceVariate{T<:Real}(x::AbstractVector{T}, tune::SliceTune) = new(x, tune)
 end
 
-function SliceVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+function SliceVariate{T<:Real}(x::AbstractVector{T})
   SliceVariate(x, SliceTune(length(x)))
 end
 

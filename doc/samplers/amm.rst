@@ -54,15 +54,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: AMMVariate(x::AbstractVector{T<:Real}, tune::AMMTune)
-              AMMVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: AMMVariate(x::AbstractVector{T<:Real})
+              AMMVariate(x::AbstractVector{T<:Real}, tune::AMMTune)
 
     Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 

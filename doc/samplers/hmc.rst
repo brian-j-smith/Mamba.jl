@@ -54,15 +54,15 @@ Fields
 Constructors
 ````````````
 
-.. function:: HMCVariate(x::AbstractVector{T<:Real}, tune::HMCTune)
-              HMCVariate(x::AbstractVector{T<:Real}, tune=nothing)
+.. function:: HMCVariate(x::AbstractVector{T<:Real})
+              HMCVariate(x::AbstractVector{T<:Real}, tune::HMCTune)
 
     Construct a ``HMCVariate`` object that stores sampled values and tuning parameters for HMC sampling.
 
     **Arguments**
 
         * ``x`` : vector of sampled values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If ``nothing`` is supplied, parameters are set to their defaults.
+        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
