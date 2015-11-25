@@ -29,35 +29,31 @@ end
 
 function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = HMCVariate(x, tunepar["sampler"])
-      fx = x -> hmcfx!(model, x, block, tunepar["dtype"])
-      hmc!(v, tunepar["epsilon"], tunepar["L"], fx)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("epsilon" => epsilon, "L" => L, "dtype" => dtype, "sampler" => nothing)
-  )
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = HMCVariate(x, tunepar["sampler"])
+    fx = x -> hmcfx!(model, x, block, dtype)
+    hmc!(v, epsilon, L, fx)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Integer,
                       Sigma::Matrix{T}; dtype::Symbol=:forward)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = HMCVariate(x, tunepar["sampler"])
-      fx = x -> hmcfx!(model, x, block, tunepar["dtype"])
-      hmc!(v, tunepar["epsilon"], tunepar["L"], tunepar["SigmaF"], fx)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("epsilon" => epsilon, "L" => L, "SigmaF" => cholfact(Sigma),
-         "dtype" => dtype, "sampler" => nothing)
-  )
+  SigmaF = cholfact(Sigma)
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = HMCVariate(x, tunepar["sampler"])
+    fx = x -> hmcfx!(model, x, block, dtype)
+    hmc!(v, epsilon, L, SigmaF, fx)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function hmcfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)

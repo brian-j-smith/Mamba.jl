@@ -12,28 +12,26 @@ end
 #################### Sampler Constructor ####################
 
 function MISS(params::Vector{Symbol})
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      value = Dict{Symbol, Any}()
-      initialize = tunepar["sampler"] == nothing
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    value = Dict{Symbol, Any}()
+    initialize = tunepar["sampler"] == nothing
+    if initialize
+      tunepar["sampler"] = Dict{Symbol, StochasticIndices}()
+    end
+    for key in params
+      node = model[key]
+      x = node[:]
       if initialize
-        tunepar["sampler"] = Dict{Symbol, StochasticIndices}()
+        tunepar["sampler"][key] = findmissing(node)
       end
-      for key in keys(model, :block, block)
-        node = model[key]
-        x = node[:]
-        if initialize
-          tunepar["sampler"][key] = findmissing(node)
-        end
-        inds = tunepar["sampler"][key]
-        x[inds.value] = rand(node, inds)
-        value[key] = x
-      end
-      value
-    end,
-    Dict{AbstractString, Any}("sampler" => nothing)
-  )
+      inds = tunepar["sampler"][key]
+      x[inds.value] = rand(node, inds)
+      value[key] = x
+    end
+    value
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 

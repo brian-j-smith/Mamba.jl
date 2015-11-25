@@ -42,20 +42,19 @@ function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = AMMVariate(x, tunepar["sampler"])
-      f = x -> logpdf!(model, x, block, true)
-      adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
-              tunepar["adapt"] == :all ? true : false
-      amm!(v, tunepar["SigmaF"], f, adapt=adapt)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("SigmaF" => cholfact(Sigma), "adapt" => adapt, "sampler" => nothing)
-  )
+  SigmaF = cholfact(Sigma)
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = AMMVariate(x, tunepar["sampler"])
+    f = x -> logpdf!(model, x, block, true)
+    isadapt = adapt == :burnin ? model.iter <= model.burnin :
+              adapt == :all ? true : false
+    amm!(v, SigmaF, f, adapt=isadapt)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 

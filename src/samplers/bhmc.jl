@@ -36,18 +36,16 @@ end
 #################### Sampler Constructor ####################
 
 function BHMC(params::Vector{Symbol}, traveltime::Real)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block)
-      v = BHMCVariate(x, tunepar["sampler"])
-      f = x -> logpdf!(model, x, block)
-      bhmc!(v, tunepar["traveltime"], f)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block)
-    end,
-  Dict("traveltime" => Float64(traveltime), "sampler" => nothing)
-  )
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block)
+    v = BHMCVariate(x, tunepar["sampler"])
+    f = x -> logpdf!(model, x, block)
+    bhmc!(v, traveltime, f)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 

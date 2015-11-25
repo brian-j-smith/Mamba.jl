@@ -25,19 +25,17 @@ end
 
 function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
                         stype::Symbol=:multivar; transform::Bool=false)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, tunepar["transform"])
-      v = SliceVariate(x, tunepar["sampler"])
-      f = x -> logpdf!(model, x, block, tunepar["transform"])
-      slice!(v, tunepar["width"], f, tunepar["stype"])
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, tunepar["transform"])
-    end,
-    Dict("width" => Float64[width...], "stype" => stype,
-         "transform" => transform, "sampler" => nothing)
-  )
+  width = Float64[width...]
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, transform)
+    v = SliceVariate(x, tunepar["sampler"])
+    f = x -> logpdf!(model, x, block, transform)
+    slice!(v, width, f, stype)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, transform)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 

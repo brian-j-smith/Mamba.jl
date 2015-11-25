@@ -39,22 +39,19 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = AMWGVariate(x, tunepar["sampler"])
-      f = x -> logpdf!(model, x, block, true)
-      adapt = tunepar["adapt"] == :burnin ? model.iter <= model.burnin :
-              tunepar["adapt"] == :all ? true : false
-      amwg!(v, tunepar["sigma"], f, adapt=adapt, batchsize=tunepar["batchsize"],
-            target=tunepar["target"])
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("sigma" => Float64[sigma...], "adapt" => adapt,
-         "batchsize" => batchsize, "target" => target, "sampler" => nothing)
-  )
+  sigma = Float64[sigma...]
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = AMWGVariate(x, tunepar["sampler"])
+    f = x -> logpdf!(model, x, block, true)
+    isadapt = adapt == :burnin ? model.iter <= model.burnin :
+              adapt == :all ? true : false
+    amwg!(v, sigma, f, adapt=isadapt, batchsize=batchsize, target=target)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 

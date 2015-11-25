@@ -26,35 +26,31 @@ end
 #################### Sampler Constructor ####################
 
 function MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = MALAVariate(x, tunepar["sampler"])
-      fx = x -> malafx!(model, x, block, tunepar["dtype"])
-      mala!(v, tunepar["scale"], fx)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("scale" => scale, "dtype" => dtype, "sampler" => nothing)
-  )
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = MALAVariate(x, tunepar["sampler"])
+    fx = x -> malafx!(model, x, block, dtype)
+    mala!(v, scale, fx)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function MALA{T<:Real}(params::Vector{Symbol}, scale::Real, Sigma::Matrix{T};
                        dtype::Symbol=:forward)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = MALAVariate(x, tunepar["sampler"])
-      fx = x -> malafx!(model, x, block, tunepar["dtype"])
-      mala!(v, tunepar["scale"], tunepar["SigmaF"], fx)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("scale" => scale, "SigmaF" => cholfact(Sigma), "dtype" => dtype,
-         "sampler" => nothing)
-  )
+  SigmaF = cholfact(Sigma)
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = MALAVariate(x, tunepar["sampler"])
+    fx = x -> malafx!(model, x, block, dtype)
+    mala!(v, scale, SigmaF, fx)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function malafx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)

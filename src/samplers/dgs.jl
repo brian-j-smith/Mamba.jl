@@ -30,33 +30,31 @@ end
 #################### Sampler Constructor ####################
 
 function DGS(params::Vector{Symbol})
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block)
-      offset = 0
-      for key in keys(model, :block, block)
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block)
+    offset = 0
+    for key in params
 
-        sim = function(inds, d, logf)
-          v = DGSVariate(x[offset + inds], tunepar["sampler"])
-          dgs!(v, d, logf)
-          x[offset + inds] = v
-          tunepar["sampler"] = v.tune
-        end
-
-        logf = function(inds, value)
-          x[offset + inds] = value
-          logpdf!(model, x, block)
-        end
-
-        node = model[key]
-        DGS_sub!(node.distr, sim, logf)
-        offset += length(node)
+      sim = function(inds, d, logf)
+        v = DGSVariate(x[offset + inds], tunepar["sampler"])
+        dgs!(v, d, logf)
+        x[offset + inds] = v
+        tunepar["sampler"] = v.tune
       end
-      relist(model, x, block)
-    end,
-    Dict{AbstractString, Any}("sampler" => nothing)
-  )
+
+      logf = function(inds, value)
+        x[offset + inds] = value
+        logpdf!(model, x, block)
+      end
+
+      node = model[key]
+      DGS_sub!(node.distr, sim, logf)
+      offset += length(node)
+    end
+    relist(model, x, block)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function DGS_sub!(d::UnivariateDistribution, sim::Function, logf::Function)

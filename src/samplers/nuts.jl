@@ -46,24 +46,21 @@ end
 #################### Sampler Constructor ####################
 
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block, true)
-      v = NUTSVariate(x, tunepar["sampler"])
-      if model.iter <= 1
-        f = x -> nutsfx(model, x, block, tunepar["dtype"])
-        tunepar["epsilon"] = nutsepsilon(v, f)
-      end
-      f = x -> nutsfx!(model, x, block, tunepar["dtype"])
-      nuts!(v, tunepar["epsilon"], f, adapt=model.iter <= model.burnin,
-            target=tunepar["target"])
-      tunepar["sampler"] = v.tune
-      relist(model, v, block, true)
-    end,
-    Dict("epsilon" => 1.0, "target" => target, "dtype" => dtype,
-         "sampler" => nothing)
-  )
+  epsilon = NaN
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block, true)
+    v = NUTSVariate(x, tunepar["sampler"])
+    if model.iter <= 1
+      f = x -> nutsfx(model, x, block, dtype)
+      epsilon = nutsepsilon(v, f)
+    end
+    f = x -> nutsfx!(model, x, block, dtype)
+    nuts!(v, epsilon, f, adapt=model.iter <= model.burnin, target=target)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block, true)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function nutsfx{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)

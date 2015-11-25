@@ -24,18 +24,16 @@ end
 #################### Sampler Constructor ####################
 
 function BMG(params::Vector{Symbol}; k::Integer=1)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block)
-      v = BMGVariate(x, tunepar["sampler"])
-      f = x -> logpdf!(model, x, block)
-      bmg!(v, f)
-      tunepar["sampler"] = v.tune
-      relist(model, v, block)
-    end,
-    Dict("k" => k, "sampler" => nothing)
-  )
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block)
+    v = BMGVariate(x, tunepar["sampler"])
+    f = x -> logpdf!(model, x, block)
+    bmg!(v, f, k=k)
+    tunepar["sampler"] = v.tune
+    relist(model, v, block)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 

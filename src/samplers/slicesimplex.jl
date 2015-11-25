@@ -28,32 +28,30 @@ end
 #################### Sampler Constructor ####################
 
 function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
-  Sampler(params, (model::Model, block::Integer) ->
-    begin
-      tunepar = tune(model, block)
-      x = unlist(model, block)
-      offset = 0
-      for key in keys(model, :block, block)
+  samplerfx = function(model::Model, block::Integer)
+    tunepar = tune(model, block)
+    x = unlist(model, block)
+    offset = 0
+    for key in params
 
-        sim = function(inds, logf)
-          v = SliceSimplexVariate(x[offset + inds], tunepar["sampler"])
-          slicesimplex!(v, logf, scale=tunepar["scale"])
-          tunepar["sampler"] = v.tune
-        end
-
-        logf = function(inds, value)
-          x[offset + inds] = value
-          logpdf!(model, x, block)
-        end
-
-        node = model[key]
-        SliceSimplex_sub!(node.distr, sim, logf)
-        offset += length(node)
+      sim = function(inds, logf)
+        v = SliceSimplexVariate(x[offset + inds], tunepar["sampler"])
+        slicesimplex!(v, logf, scale=scale)
+        tunepar["sampler"] = v.tune
       end
-      relist(model, x, block)
-    end,
-    Dict("scale" => scale, "sampler" => nothing)
-  )
+
+      logf = function(inds, value)
+        x[offset + inds] = value
+        logpdf!(model, x, block)
+      end
+
+      node = model[key]
+      SliceSimplex_sub!(node.distr, sim, logf)
+      offset += length(node)
+    end
+    relist(model, x, block)
+  end
+  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
 end
 
 function SliceSimplex_sub!(d::MultivariateDistribution, sim::Function,
