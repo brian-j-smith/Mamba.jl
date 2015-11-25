@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type AMMTune
+type AMMTune <: SamplerTune
   adapt::Bool
   beta::Real
   m::Int
@@ -13,7 +13,7 @@ type AMMTune
   SigmaLm::Matrix{Float64}
 end
 
-type AMMVariate <: VectorVariate
+type AMMVariate <: SamplerVariate
   value::Vector{Float64}
   tune::AMMTune
 

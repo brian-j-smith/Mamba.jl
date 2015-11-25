@@ -2,11 +2,11 @@
 
 #################### Types and Constructors ####################
 
-type BMC3Tune
+type BMC3Tune <: SamplerTune
   indexset::Vector{Vector{Int}}
 end
 
-type BMC3Variate <: VectorVariate
+type BMC3Variate <: SamplerVariate
   value::Vector{Float64}
   tune::BMC3Tune
 

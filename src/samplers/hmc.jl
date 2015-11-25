@@ -2,13 +2,13 @@
 
 #################### Types and Constructors ####################
 
-type HMCTune
+type HMCTune <: SamplerTune
   epsilon::Float64
   L::Int
   SigmaF::Cholesky{Float64}
 end
 
-type HMCVariate <: VectorVariate
+type HMCVariate <: SamplerVariate
   value::Vector{Float64}
   tune::HMCTune
 

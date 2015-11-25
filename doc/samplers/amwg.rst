@@ -45,7 +45,7 @@ AMWGVariate Type
 Declaration
 ```````````
 
-``AMWGVariate <: VectorVariate``
+``AMWGVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -79,7 +79,7 @@ AMWGTune Type
 Declaration
 ```````````
 
-``type AMWGTune``
+``type AMWGTune <: SamplerTune``
 
 Fields
 ``````

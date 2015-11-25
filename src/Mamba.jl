@@ -109,6 +109,9 @@ module Mamba
 
   #################### Sampler Type ####################
 
+  abstract SamplerTune
+  abstract SamplerVariate <: VectorVariate
+
   type Sampler
     params::Vector{Symbol}
     eval::Function
@@ -216,6 +219,8 @@ module Mamba
     Model,
     ModelChains,
     Sampler,
+    SamplerTune,
+    SamplerVariate,
     ScalarLogical,
     ScalarStochastic,
     ScalarVariate,

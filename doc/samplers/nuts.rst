@@ -57,7 +57,7 @@ NUTSVariate Type
 Declaration
 ```````````
 
-``NUTSVariate <: VectorVariate``
+``NUTSVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -91,7 +91,7 @@ NUTSTune Type
 Declaration
 ```````````
 
-``type NUTSTune``
+``type NUTSTune <: SamplerTune``
 
 Fields
 ``````

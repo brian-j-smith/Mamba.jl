@@ -43,7 +43,7 @@ HMCVariate Type
 Declaration
 ```````````
 
-``HMCVariate <: VectorVariate``
+``HMCVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -76,7 +76,7 @@ HMCTune Type
 Declaration
 ```````````
 
-``type HMCTune``
+``type HMCTune <: SamplerTune``
 
 Fields
 ``````

@@ -41,7 +41,7 @@ BMGVariate Type
 Declaration
 ```````````
 
-``BMGVariate <: VectorVariate``
+``BMGVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -72,7 +72,7 @@ BMGTune Type
 Declaration
 ```````````
 
-``type BMGTune``
+``type BMGTune <: SamplerTune``
 
 
 Sampler Constructor

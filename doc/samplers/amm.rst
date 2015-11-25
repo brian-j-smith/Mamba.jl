@@ -43,7 +43,7 @@ AMMVariate Type
 Declaration
 ```````````
 
-``AMMVariate <: VectorVariate``
+``AMMVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -77,7 +77,7 @@ AMMTune Type
 Declaration
 ```````````
 
-``type AMMTune``
+``type AMMTune <: SamplerTune``
 
 Fields
 ``````

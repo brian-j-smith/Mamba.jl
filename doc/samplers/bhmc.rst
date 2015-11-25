@@ -41,7 +41,7 @@ BHMCVariate Type
 Declaration
 ```````````
 
-``BHMCVariate <: VectorVariate``
+``BHMCVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -74,7 +74,7 @@ BHMCTune Type
 Declaration
 ```````````
 
-``type BHMCTune``
+``type BHMCTune <: SamplerTune``
 
 Fields
 ``````

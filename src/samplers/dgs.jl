@@ -6,12 +6,12 @@ typealias DGSUnivariateDistribution
           Union{Bernoulli, Binomial, Categorical, DiscreteUniform,
                 Hypergeometric, NoncentralHypergeometric}
 
-type DGSTune
+type DGSTune <: SamplerTune
   support::Matrix{Real}
   probs::Vector{Float64}
 end
 
-type DGSVariate <: VectorVariate
+type DGSVariate <: SamplerVariate
   value::Vector{Float64}
   tune::DGSTune
 

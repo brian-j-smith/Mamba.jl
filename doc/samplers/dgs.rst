@@ -35,7 +35,7 @@ DGSVariate Type
 Declaration
 ```````````
 
-``DGSVariate <: VectorVariate``
+``DGSVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -68,7 +68,7 @@ DGSTune Type
 Declaration
 ```````````
 
-``type DGSTune``
+``type DGSTune <: SamplerTune``
 
 Fields
 ``````

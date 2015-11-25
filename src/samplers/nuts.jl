@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type NUTSTune
+type NUTSTune <: SamplerTune
   adapt::Bool
   alpha::Float64
   epsilon::Float64
@@ -17,7 +17,7 @@ type NUTSTune
   target::Float64
 end
 
-type NUTSVariate <: VectorVariate
+type NUTSVariate <: SamplerVariate
   value::Vector{Float64}
   tune::NUTSTune
 

@@ -44,7 +44,7 @@ MALAVariate Type
 Declaration
 ```````````
 
-``MALAVariate <: VectorVariate``
+``MALAVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -77,7 +77,7 @@ MALATune Type
 Declaration
 ```````````
 
-``type MALATune``
+``type MALATune <: SamplerTune``
 
 Fields
 ``````

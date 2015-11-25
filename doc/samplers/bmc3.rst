@@ -44,7 +44,7 @@ BMC3Variate Type
 Declaration
 ```````````
 
-``BMC3Variate <: VectorVariate``
+``BMC3Variate <: SamplerVariate``
 
 Fields
 ``````
@@ -77,7 +77,7 @@ BMC3Tune Type
 Declaration
 ```````````
 
-``type BMC3Tune``
+``type BMC3Tune <: SamplerTune``
 
 Fields
 ``````

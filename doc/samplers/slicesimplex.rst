@@ -41,7 +41,7 @@ SliceSimplexVariate Type
 Declaration
 ```````````
 
-``SliceSimplexVariate <: VectorVariate``
+``SliceSimplexVariate <: SamplerVariate``
 
 Fields
 ``````
@@ -74,7 +74,7 @@ SliceSimplexTune Type
 Declaration
 ```````````
 
-``type SliceSimplexTune``
+``type SliceSimplexTune <: SamplerTune``
 
 Fields
 ``````

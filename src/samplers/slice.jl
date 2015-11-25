@@ -2,11 +2,11 @@
 
 #################### Types and Constructors ####################
 
-type SliceTune
+type SliceTune <: SamplerTune
   width::Vector{Float64}
 end
 
-type SliceVariate <: VectorVariate
+type SliceVariate <: SamplerVariate
   value::Vector{Float64}
   tune::SliceTune
 

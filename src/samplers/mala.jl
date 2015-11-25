@@ -2,12 +2,12 @@
 
 #################### Types ####################
 
-type MALATune
+type MALATune <: SamplerTune
   scale::Float64
   SigmaF::Cholesky{Float64}
 end
 
-type MALAVariate <: VectorVariate
+type MALAVariate <: SamplerVariate
   value::Vector{Float64}
   tune::MALATune
 

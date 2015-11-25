@@ -2,7 +2,7 @@
 
 #################### Types ####################
 
-type BHMCTune
+type BHMCTune <: SamplerTune
   traveltime::Float64
   position::Vector{Float64}
   velocity::Vector{Float64}
@@ -10,7 +10,7 @@ type BHMCTune
   wallcrosses::Int
 end
 
-type BHMCVariate <: VectorVariate
+type BHMCVariate <: SamplerVariate
   value::Vector{Float64}
   tune::BHMCTune
 

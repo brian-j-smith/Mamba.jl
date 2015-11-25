@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type AMWGTune
+type AMWGTune <: SamplerTune
   adapt::Bool
   accept::Vector{Int}
   batchsize::Int
@@ -11,7 +11,7 @@ type AMWGTune
   target::Real
 end
 
-type AMWGVariate <: VectorVariate
+type AMWGVariate <: SamplerVariate
   value::Vector{Float64}
   tune::AMWGTune
 

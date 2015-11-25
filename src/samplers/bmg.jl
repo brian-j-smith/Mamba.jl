@@ -2,9 +2,9 @@
 
 #################### Types ####################
 
-type BMGTune end
+type BMGTune <: SamplerTune end
 
-type BMGVariate <: VectorVariate
+type BMGVariate <: SamplerVariate
   value::Vector{Float64}
   tune::BMGTune
 
