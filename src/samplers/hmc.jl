@@ -35,7 +35,7 @@ function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
   samplerfx = function(model::Model, block::Integer)
     v = variate!(HMCVariate, unlist(model, block, true),
                  model.samplers[block], model.iter)
-    fx = x -> hmcfx!(model, x, block, dtype)
+    fx = x -> logpdfgrad!(model, x, block, dtype)
     hmc!(v, epsilon, L, fx)
     relist(model, v, block, true)
   end
@@ -48,19 +48,11 @@ function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Integer,
   samplerfx = function(model::Model, block::Integer)
     v = variate!(HMCVariate, unlist(model, block, true),
                  model.samplers[block], model.iter)
-    fx = x -> hmcfx!(model, x, block, dtype)
+    fx = x -> logpdfgrad!(model, x, block, dtype)
     hmc!(v, epsilon, L, SigmaF, fx)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, HMCTune())
-end
-
-function hmcfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
-  logf = logpdf!(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf!(m, x, block, true, dtype=dtype) :
-           zeros(length(x))
-  logf, grad
 end
 
 

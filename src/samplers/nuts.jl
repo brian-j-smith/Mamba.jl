@@ -54,30 +54,14 @@ function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
     v = variate!(NUTSVariate, unlist(model, block, true),
                  model.samplers[block], model.iter)
     if model.iter == 1
-      f = x -> nutsfx(model, x, block, dtype)
-      epsilon = nutsepsilon(v, f)
+      fx = x -> logpdfgrad(model, x, block, dtype)
+      epsilon = nutsepsilon(v, fx)
     end
-    f = x -> nutsfx!(model, x, block, dtype)
-    nuts!(v, epsilon, f, adapt=model.iter <= model.burnin, target=target)
+    fx = x -> logpdfgrad!(model, x, block, dtype)
+    nuts!(v, epsilon, fx, adapt=model.iter <= model.burnin, target=target)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, NUTSTune())
-end
-
-function nutsfx{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
-  logf = logpdf(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf(m, x, block, true, dtype=dtype) :
-           zeros(x)
-  logf, grad
-end
-
-function nutsfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
-  logf = logpdf!(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf!(m, x, block, true, dtype=dtype) :
-           zeros(x)
-  logf, grad
 end
 
 

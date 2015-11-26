@@ -32,6 +32,24 @@ end
 
 #################### Auxiliary Functions ####################
 
+function logpdfgrad{T<:Real}(m::Model, x::Vector{T}, block::Integer,
+                             dtype::Symbol)
+  logf = logpdf(m, x, block, true)
+  grad = isfinite(logf) ?
+           gradlogpdf(m, x, block, true, dtype=dtype) :
+           zeros(x)
+  logf, grad
+end
+
+function logpdfgrad!{T<:Real}(m::Model, x::Vector{T}, block::Integer,
+                              dtype::Symbol)
+  logf = logpdf!(m, x, block, true)
+  grad = isfinite(logf) ?
+           gradlogpdf!(m, x, block, true, dtype=dtype) :
+           zeros(length(x))
+  logf, grad
+end
+
 function variate!{T<:SamplerVariate, U<:SamplerTune}(V::Type{T},
                  x::AbstractVector, s::Sampler{U}, iter::Integer)
   if iter == 1

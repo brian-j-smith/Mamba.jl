@@ -32,7 +32,7 @@ function MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
     v = variate!(MALAVariate, unlist(model, block, true),
                  model.samplers[block], model.iter)
-    fx = x -> malafx!(model, x, block, dtype)
+    fx = x -> logpdfgrad!(model, x, block, dtype)
     mala!(v, scale, fx)
     relist(model, v, block, true)
   end
@@ -45,19 +45,11 @@ function MALA{T<:Real}(params::Vector{Symbol}, scale::Real, Sigma::Matrix{T};
   samplerfx = function(model::Model, block::Integer)
     v = variate!(MALAVariate, unlist(model, block, true),
                  model.samplers[block], model.iter)
-    fx = x -> malafx!(model, x, block, dtype)
+    fx = x -> logpdfgrad!(model, x, block, dtype)
     mala!(v, scale, SigmaF, fx)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, MALATune())
-end
-
-function malafx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)
-  logf = logpdf!(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf!(m, x, block, true, dtype=dtype) :
-           zeros(x)
-  logf, grad
 end
 
 
