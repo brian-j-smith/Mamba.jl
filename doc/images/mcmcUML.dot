@@ -34,7 +34,7 @@ graph MCMC {
 
     Model [label = "{Model|+ nodes : Dict\{Symbol, Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275, 305"]
 
-    Sampler [label = "{Sampler|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : Dict\{String, Any\}\l+ targets : Vector\{Symbol\}\l}", pos="495, 305"]
+    Sampler [label = "{Sampler\{T\}|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : T\l+ targets : Vector\{Symbol\}\l}", pos="495, 305"]
 
     AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75, 340"]
 

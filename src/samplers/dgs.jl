@@ -11,6 +11,13 @@ type DGSTune <: SamplerTune
   probs::Vector{Float64}
 end
 
+function DGSTune(d::Integer=0)
+  DGSTune(
+    Array(Float64, 0, 0),
+    Array(Float64, 0)
+  )
+end
+
 type DGSVariate <: SamplerVariate
   value::Vector{Float64}
   tune::DGSTune
@@ -19,11 +26,7 @@ type DGSVariate <: SamplerVariate
 end
 
 function DGSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = DGSTune(
-    Array(Float64, 0, 0),
-    Array(Float64, 0)
-  )
-  DGSVariate(x, tune)
+  DGSVariate(x, DGSTune(length(x)))
 end
 
 
@@ -31,16 +34,15 @@ end
 
 function DGS(params::Vector{Symbol})
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
+    s = model.samplers[block]
     x = unlist(model, block)
     offset = 0
     for key in params
 
       sim = function(inds, d, logf)
-        v = DGSVariate(x[offset + inds], tunepar["sampler"])
+        v = variate!(DGSVariate, x[offset + inds], s, model.iter)
         dgs!(v, d, logf)
         x[offset + inds] = v
-        tunepar["sampler"] = v.tune
       end
 
       logf = function(inds, value)
@@ -54,7 +56,7 @@ function DGS(params::Vector{Symbol})
     end
     relist(model, x, block)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, DGSTune())
 end
 
 function DGS_sub!(d::UnivariateDistribution, sim::Function, logf::Function)

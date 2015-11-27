@@ -10,6 +10,16 @@ type BHMCTune <: SamplerTune
   wallcrosses::Int
 end
 
+function BHMCTune(d::Integer=0)
+  BHMCTune(
+    NaN,
+    rand(Normal(0, 1), d),
+    rand(Normal(0, 1), d),
+    0,
+    0
+  )
+end
+
 type BHMCVariate <: SamplerVariate
   value::Vector{Float64}
   tune::BHMCTune
@@ -22,14 +32,7 @@ type BHMCVariate <: SamplerVariate
 end
 
 function BHMCVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = BHMCTune(
-    NaN,
-    rand(Normal(0, 1), length(x)),
-    rand(Normal(0, 1), length(x)),
-    0,
-    0
-  )
-  BHMCVariate(x, tune)
+  BHMCVariate(x, BHMCTune(length(x)))
 end
 
 
@@ -37,15 +40,13 @@ end
 
 function BHMC(params::Vector{Symbol}, traveltime::Real)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block)
-    v = BHMCVariate(x, tunepar["sampler"])
+    v = variate!(BHMCVariate, unlist(model, block),
+                 model.samplers[block], model.iter)
     f = x -> logpdf!(model, x, block)
     bhmc!(v, traveltime, f)
-    tunepar["sampler"] = v.tune
     relist(model, v, block)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, BHMCTune())
 end
 
 

@@ -6,6 +6,12 @@ type BMC3Tune <: SamplerTune
   indexset::Vector{Vector{Int}}
 end
 
+function BMC3Tune(d::Integer=0)
+  BMC3Tune(
+    Vector{Vector{Int}}[]
+  )
+end
+
 type BMC3Variate <: SamplerVariate
   value::Vector{Float64}
   tune::BMC3Tune
@@ -18,10 +24,7 @@ type BMC3Variate <: SamplerVariate
 end
 
 function BMC3Variate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = BMC3Tune(
-    Vector{Vector{Int}}[]
-  )
-  BMC3Variate(x, tune)
+  BMC3Variate(x, BMC3Tune(length(x)))
 end
 
 
@@ -29,28 +32,24 @@ end
 
 function BMC3(params::Vector{Symbol}; k::Integer=1)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block)
-    v = BMC3Variate(x, tunepar["sampler"])
+    v = variate!(BMC3Variate, unlist(model, block),
+                 model.samplers[block], model.iter)
     f = x -> logpdf!(model, x, block)
     bmc3!(v, f, k=k)
-    tunepar["sampler"] = v.tune
     relist(model, v, block)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, BMC3Tune())
 end
 
 function BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block)
-    v = BMC3Variate(x, tunepar["sampler"])
+    v = variate!(BMC3Variate, unlist(model, block),
+                 model.samplers[block], model.iter)
     f = x -> logpdf!(model, x, block)
     bmc3!(v, indexset, f)
-    tunepar["sampler"] = v.tune
     relist(model, v, block)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, BMC3Tune())
 end
 
 

@@ -6,6 +6,12 @@ type SliceSimplexTune <: SamplerTune
   scale::Float64
 end
 
+function SliceSimplexTune(d::Integer=0)
+  SliceSimplexTune(
+    NaN
+  )
+end
+
 type SliceSimplexVariate <: SamplerVariate
   value::Vector{Float64}
   tune::SliceSimplexTune
@@ -18,10 +24,7 @@ type SliceSimplexVariate <: SamplerVariate
 end
 
 function SliceSimplexVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = SliceSimplexTune(
-    NaN
-  )
-  SliceSimplexVariate(x, tune)
+  SliceSimplexVariate(x, SliceSimplexTune(length(x)))
 end
 
 
@@ -29,15 +32,14 @@ end
 
 function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
+    s = model.samplers[block]
     x = unlist(model, block)
     offset = 0
     for key in params
 
       sim = function(inds, logf)
-        v = SliceSimplexVariate(x[offset + inds], tunepar["sampler"])
+        v = variate!(SliceSimplexVariate, x[offset + inds], s, model.iter)
         slicesimplex!(v, logf, scale=scale)
-        tunepar["sampler"] = v.tune
       end
 
       logf = function(inds, value)
@@ -51,7 +53,7 @@ function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
     end
     relist(model, x, block)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, SliceSimplexTune())
 end
 
 function SliceSimplex_sub!(d::MultivariateDistribution, sim::Function,

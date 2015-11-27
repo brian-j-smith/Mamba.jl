@@ -10,20 +10,20 @@ Each of the :math:`\{f_j\}_{j=1}^{B}` sampling functions of the :ref:`figure-Gib
 Declaration
 ^^^^^^^^^^^
 
-``type Sampler``
+``type Sampler{T}``
 
 Fields
 ^^^^^^
 
 * ``params::Vector{Symbol}`` : symbols of stochastic nodes in the block being updated by the sampler.
 * ``eval::Function`` : a sampling function that updates values of the ``params`` nodes.
-* ``tune::Dict{AbstractString, Any}`` : any tuning parameters needed by the sampling function.
+* ``tune::T`` : any tuning parameters needed by the sampling function.
 * ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on and whose states must be updated after ``params``.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructor
 ^^^^^^^^^^^
 
-.. function:: Sampler(params::Vector{Symbol}, f::Function, tune::Dict=Dict())
+.. function:: Sampler(params::Vector{Symbol}, f::Function, tune::Any=Dict())
 
     Construct a ``Sampler`` object that defines a sampling function for a block of stochastic nodes.
 

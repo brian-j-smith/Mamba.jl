@@ -11,6 +11,17 @@ type AMWGTune <: SamplerTune
   target::Real
 end
 
+function AMWGTune(d::Integer=0)
+  AMWGTune(
+    false,
+    zeros(Int, d),
+    50,
+    0,
+    Array(Float64, 0),
+    0.44
+  )
+end
+
 type AMWGVariate <: SamplerVariate
   value::Vector{Float64}
   tune::AMWGTune
@@ -19,15 +30,7 @@ type AMWGVariate <: SamplerVariate
 end
 
 function AMWGVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = AMWGTune(
-    false,
-    zeros(Int, length(x)),
-    50,
-    0,
-    Array(Float64, 0),
-    0.44
-  )
-  AMWGVariate(x, tune)
+  AMWGVariate(x, AMWGTune(length(x)))
 end
 
 
@@ -41,17 +44,15 @@ function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
 
   sigma = Float64[sigma...]
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block, true)
-    v = AMWGVariate(x, tunepar["sampler"])
+    v = variate!(AMWGVariate, unlist(model, block, true),
+                 model.samplers[block], model.iter)
     f = x -> logpdf!(model, x, block, true)
     isadapt = adapt == :burnin ? model.iter <= model.burnin :
               adapt == :all ? true : false
     amwg!(v, sigma, f, adapt=isadapt, batchsize=batchsize, target=target)
-    tunepar["sampler"] = v.tune
     relist(model, v, block, true)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, AMWGTune())
 end
 
 

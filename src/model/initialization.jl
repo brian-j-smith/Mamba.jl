@@ -1,18 +1,8 @@
 #################### Model Initialization ####################
 
-function reset!(m::Model, iter::Integer)
-  m.iter = iter
-  if iter == 0
-    for s in m.samplers
-      s.tune["sampler"] = nothing
-    end
-  end
-  m
-end
-
 function setinits!(m::Model, inits::Dict{Symbol, Any})
   m.hasinputs || throw(ArgumentError("inputs must be set before inits"))
-  reset!(m, 0)
+  m.iter = 0
   for key in keys(m, :dependent)
     node = m[key]
     if isa(node, AbstractStochastic)
@@ -49,15 +39,10 @@ function setinputs!(m::Model, inputs::Dict{Symbol, Any})
   m
 end
 
-function setsamplers!(m::Model, samplers::Vector{Sampler})
+function setsamplers!{T<:Sampler}(m::Model, samplers::Vector{T})
   m.samplers = deepcopy(samplers)
   for sampler in m.samplers
     sampler.targets = keys(m, :target, sampler.params)
   end
   m
-end
-
-function setstate!(m::Model, state::Vector{Float64}, iter::Integer)
-  reset!(m, iter)
-  relist!(m, state)
 end

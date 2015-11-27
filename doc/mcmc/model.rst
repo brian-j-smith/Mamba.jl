@@ -212,7 +212,7 @@ Initialization
 
         See the :ref:`section-Line-Development` section of the tutorial.
 
-.. function:: setsamplers!(m::Model, samplers::Vector{Sampler})
+.. function:: setsamplers!(m::Model, samplers::Vector{T<:Sampler})
 
     Set the block-samplers for stochastic model nodes.
 

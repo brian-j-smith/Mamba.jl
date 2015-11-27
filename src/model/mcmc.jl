@@ -63,7 +63,8 @@ end
 function mcmc_worker!(args::Vector)
   m, state, window, burnin, thin, meter = args
 
-  setstate!(m, state, first(window) - 1)
+  m.iter = first(window) - 1
+  relist!(m, state)
 
   pnames = names(m, true)
   sim = Chains(last(window), length(pnames), start=burnin + thin, thin=thin,

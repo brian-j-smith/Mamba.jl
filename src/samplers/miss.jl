@@ -15,7 +15,7 @@ function MISS(params::Vector{Symbol})
   samplerfx = function(model::Model, block::Integer)
     tunepar = tune(model, block)
     value = Dict{Symbol, Any}()
-    initialize = tunepar["sampler"] == nothing
+    initialize = model.iter == 1
     if initialize
       tunepar["sampler"] = Dict{Symbol, StochasticIndices}()
     end

@@ -8,6 +8,14 @@ type HMCTune <: SamplerTune
   SigmaF::Cholesky{Float64}
 end
 
+function HMCTune(d::Integer=0)
+  HMCTune(
+    NaN,
+    0,
+    Cholesky(Array(Float64, 0, 0), :U)
+  )
+end
+
 type HMCVariate <: SamplerVariate
   value::Vector{Float64}
   tune::HMCTune
@@ -16,12 +24,7 @@ type HMCVariate <: SamplerVariate
 end
 
 function HMCVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = HMCTune(
-    NaN,
-    0,
-    Cholesky(Array(Float64, 0, 0), :U)
-  )
-  HMCVariate(x, tune)
+  HMCVariate(x, HMCTune(length(x)))
 end
 
 
@@ -30,30 +33,26 @@ end
 function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block, true)
-    v = HMCVariate(x, tunepar["sampler"])
+    v = variate!(HMCVariate, unlist(model, block, true),
+                 model.samplers[block], model.iter)
     fx = x -> hmcfx!(model, x, block, dtype)
     hmc!(v, epsilon, L, fx)
-    tunepar["sampler"] = v.tune
     relist(model, v, block, true)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, HMCTune())
 end
 
 function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Integer,
                       Sigma::Matrix{T}; dtype::Symbol=:forward)
   SigmaF = cholfact(Sigma)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block, true)
-    v = HMCVariate(x, tunepar["sampler"])
+    v = variate!(HMCVariate, unlist(model, block, true),
+                 model.samplers[block], model.iter)
     fx = x -> hmcfx!(model, x, block, dtype)
     hmc!(v, epsilon, L, SigmaF, fx)
-    tunepar["sampler"] = v.tune
     relist(model, v, block, true)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, HMCTune())
 end
 
 function hmcfx!{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)

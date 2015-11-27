@@ -2,7 +2,9 @@
 
 #################### Types ####################
 
-type BMGTune <: SamplerTune end
+type BMGTune <: SamplerTune
+  BMGTune(d::Integer=0) = new()
+end
 
 type BMGVariate <: SamplerVariate
   value::Vector{Float64}
@@ -16,8 +18,7 @@ type BMGVariate <: SamplerVariate
 end
 
 function BMGVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = BMGTune()
-  BMGVariate(x, tune)
+  BMGVariate(x, BMGTune(length(x)))
 end
 
 
@@ -25,15 +26,13 @@ end
 
 function BMG(params::Vector{Symbol}; k::Integer=1)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block)
-    v = BMGVariate(x, tunepar["sampler"])
+    v = variate!(BMGVariate, unlist(model, block),
+                 model.samplers[block], model.iter)
     f = x -> logpdf!(model, x, block)
     bmg!(v, f, k=k)
-    tunepar["sampler"] = v.tune
     relist(model, v, block)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, BMGTune())
 end
 
 

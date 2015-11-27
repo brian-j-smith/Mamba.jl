@@ -121,12 +121,9 @@ function relist!(m::Model, values::AbstractArray{Float64},
 end
 
 function simulate!(m::Model, block::Integer=0)
-  if block != 0
-    blocks = block
-  else
-    m.iter += 1
-    blocks = 1:length(m.samplers)
-  end
+  m.iter += 1
+  isoneblock = block != 0
+  blocks = isoneblock ? block : 1:length(m.samplers)
   for b in blocks
     sampler = m.samplers[b]
     value = sampler.eval(m, b)
@@ -135,6 +132,7 @@ function simulate!(m::Model, block::Integer=0)
       update!(m, b)
     end
   end
+  m.iter -= isoneblock
   m
 end
 

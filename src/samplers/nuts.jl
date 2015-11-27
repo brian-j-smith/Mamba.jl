@@ -17,15 +17,8 @@ type NUTSTune <: SamplerTune
   target::Float64
 end
 
-type NUTSVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::NUTSTune
-
-  NUTSVariate{T<:Real}(x::AbstractVector{T}, tune::NUTSTune) = new(x, tune)
-end
-
-function NUTSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
-  tune = NUTSTune(
+function NUTSTune(d::Integer=0)
+  NUTSTune(
     false,
     0.0,
     NaN,
@@ -39,7 +32,17 @@ function NUTSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
     10.0,
     0.44
   )
-  NUTSVariate(x, tune)
+end
+
+type NUTSVariate <: SamplerVariate
+  value::Vector{Float64}
+  tune::NUTSTune
+
+  NUTSVariate{T<:Real}(x::AbstractVector{T}, tune::NUTSTune) = new(x, tune)
+end
+
+function NUTSVariate{T<:Real}(x::AbstractVector{T}, tune=nothing)
+  NUTSVariate(x, NUTSTune(length(x)))
 end
 
 
@@ -48,19 +51,17 @@ end
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   epsilon = NaN
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
-    x = unlist(model, block, true)
-    v = NUTSVariate(x, tunepar["sampler"])
-    if model.iter <= 1
+    v = variate!(NUTSVariate, unlist(model, block, true),
+                 model.samplers[block], model.iter)
+    if model.iter == 1
       f = x -> nutsfx(model, x, block, dtype)
       epsilon = nutsepsilon(v, f)
     end
     f = x -> nutsfx!(model, x, block, dtype)
     nuts!(v, epsilon, f, adapt=model.iter <= model.burnin, target=target)
-    tunepar["sampler"] = v.tune
     relist(model, v, block, true)
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, NUTSTune())
 end
 
 function nutsfx{T<:Real}(m::Model, x::Vector{T}, block::Integer, dtype::Symbol)

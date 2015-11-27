@@ -112,10 +112,10 @@ module Mamba
   abstract SamplerTune
   abstract SamplerVariate <: VectorVariate
 
-  type Sampler
+  type Sampler{T}
     params::Vector{Symbol}
     eval::Function
-    tune::Dict{AbstractString, Any}
+    tune::T
     targets::Vector{Symbol}
   end
 
