@@ -130,7 +130,7 @@ function barplot(c::AbstractChains; legend::Bool=false,
   return plots
 end
 
-function contourplot(c::ModelChains; bins::Integer=100, na...)
+function contourplot(c::AbstractChains; bins::Integer=100, na...)
   nrows, nvars, nchains = size(c.value)
   plots = Plot[]
   offset = 1e4 * eps()
