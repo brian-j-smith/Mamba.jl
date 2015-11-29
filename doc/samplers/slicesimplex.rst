@@ -41,7 +41,7 @@ SliceSimplexVariate Type
 Declaration
 ```````````
 
-``SliceSimplexVariate <: SamplerVariate``
+``typealias SliceSimplexVariate SamplerVariate{SliceSimplexTune}``
 
 Fields
 ``````

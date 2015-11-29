@@ -35,7 +35,7 @@ DGSVariate Type
 Declaration
 ```````````
 
-``DGSVariate <: SamplerVariate``
+``typealias DGSVariate SamplerVariate{DGSTune}``
 
 Fields
 ``````

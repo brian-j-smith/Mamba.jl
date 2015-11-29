@@ -41,7 +41,7 @@ BMGVariate Type
 Declaration
 ```````````
 
-``BMGVariate <: SamplerVariate``
+``typealias BMGVariate SamplerVariate{BMGTune}``
 
 Fields
 ``````

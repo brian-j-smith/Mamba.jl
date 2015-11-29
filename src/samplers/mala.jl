@@ -5,33 +5,24 @@
 type MALATune <: SamplerTune
   scale::Float64
   SigmaF::Cholesky{Float64}
+
+  function MALATune(value::Vector{Float64}=Float64[])
+    new(
+      NaN,
+      Cholesky(Array(Float64, 0, 0), :U)
+    )
+  end
 end
 
-function MALATune(d::Integer=0)
-  MALATune(
-    NaN,
-    Cholesky(Array(Float64, 0, 0), :U)
-  )
-end
 
-type MALAVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::MALATune
-
-  MALAVariate{T<:Real}(x::AbstractVector{T}, tune::MALATune) = new(x, tune)
-end
-
-function MALAVariate{T<:Real}(x::AbstractVector{T})
-  MALAVariate(x, MALATune(length(x)))
-end
+typealias MALAVariate SamplerVariate{MALATune}
 
 
 #################### Sampler Constructor ####################
 
 function MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(MALAVariate, unlist(model, block, true),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block, true)
     fx = x -> logpdfgrad!(model, x, block, dtype)
     mala!(v, scale, fx)
     relist(model, v, block, true)
@@ -43,8 +34,7 @@ function MALA{T<:Real}(params::Vector{Symbol}, scale::Real, Sigma::Matrix{T};
                        dtype::Symbol=:forward)
   SigmaF = cholfact(Sigma)
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(MALAVariate, unlist(model, block, true),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block, true)
     fx = x -> logpdfgrad!(model, x, block, dtype)
     mala!(v, scale, SigmaF, fx)
     relist(model, v, block, true)

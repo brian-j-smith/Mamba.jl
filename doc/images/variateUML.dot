@@ -16,7 +16,7 @@ digraph Variate {
 
     Real [label = "{Real}"]
 
-    SamplerVariate [label = "{SamplerVariate|+ tune : SamplerTune\l}"]
+    SamplerVariate [label = "{SamplerVariate\{T\<\:SamplerTune\}|+ tune : T\l}"]
 
     ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}"]
 

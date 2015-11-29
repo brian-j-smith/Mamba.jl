@@ -43,7 +43,7 @@ AMMVariate Type
 Declaration
 ```````````
 
-``AMMVariate <: SamplerVariate``
+``typealias AMMVariate SamplerVariate{AMMTune}``
 
 Fields
 ``````

@@ -4,28 +4,16 @@
 
 type SliceSimplexTune <: SamplerTune
   scale::Float64
-end
 
-function SliceSimplexTune(d::Integer=0)
-  SliceSimplexTune(
-    NaN
-  )
-end
-
-type SliceSimplexVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::SliceSimplexTune
-
-  function SliceSimplexVariate{T<:Real}(x::AbstractVector{T},
-                                        tune::SliceSimplexTune)
-    isprobvec(x) || throw(ArgumentError("x is not a probability vector"))
-    new(x, tune)
+  function SliceSimplexTune(value::Vector{Float64}=Float64[])
+    new(
+      NaN
+    )
   end
 end
 
-function SliceSimplexVariate{T<:Real}(x::AbstractVector{T})
-  SliceSimplexVariate(x, SliceSimplexTune(length(x)))
-end
+
+typealias SliceSimplexVariate SamplerVariate{SliceSimplexTune}
 
 
 #################### Sampler Constructor ####################
@@ -38,7 +26,7 @@ function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
     for key in params
 
       sim = function(inds, logf)
-        v = variate!(SliceSimplexVariate, x[offset + inds], s, model.iter)
+        v = SamplerVariate(x[offset + inds], s, model.iter)
         slicesimplex!(v, logf, scale=scale)
       end
 

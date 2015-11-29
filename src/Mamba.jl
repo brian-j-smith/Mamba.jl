@@ -107,10 +107,25 @@ module Mamba
   typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}
 
 
-  #################### Sampler Type ####################
+  #################### Sampler Types ####################
 
   abstract SamplerTune
-  abstract SamplerVariate <: VectorVariate
+
+  type SamplerVariate{T<:SamplerTune} <: VectorVariate
+    value::Vector{Float64}
+    tune::T
+
+    function SamplerVariate{U<:Real}(x::AbstractVector{U}, tune::T)
+      v = new(x, tune)
+      validate(v)
+    end
+
+    function SamplerVariate{U<:Real}(x::AbstractVector{U})
+      value = convert(Vector{Float64}, x)
+      SamplerVariate{T}(value, T(value))
+    end
+  end
+
 
   type Sampler{T}
     params::Vector{Symbol}
@@ -197,9 +212,10 @@ module Mamba
   include("samplers/mala.jl")
   include("samplers/miss.jl")
   include("samplers/nuts.jl")
-  include("samplers/sampler.jl")
   include("samplers/slice.jl")
   include("samplers/slicesimplex.jl")
+
+  include("samplers/sampler.jl")
 
 
   #################### Exports ####################

@@ -131,8 +131,8 @@ end
 
 macro depsamplermethod(T)
   esc(quote
-        function $T{T<:Real}(x::AbstractVector{T}, tune::Any)
-          msg = string($T, "{T<:Real}(x::AbstractVector{T}, tune::Any) is deprecated; ",
+        function $T{T<:Real}(x::AbstractVector{T}, tune::Void)
+          msg = string($T, "{T<:Real}(x::AbstractVector{T}, tune::Void) is deprecated; ",
                        "use ", $T, "{T<:Real}(x::AbstractVector{T}) instead")
           Base.depwarn(msg, symbol($T))
           $T(x)

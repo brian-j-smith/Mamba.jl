@@ -4,24 +4,16 @@
 
 type SliceTune <: SamplerTune
   width::Vector{Float64}
+
+  function SliceTune(value::Vector{Float64}=Float64[])
+    new(
+      Array(Float64, 0)
+    )
+  end
 end
 
-function SliceTune(d::Integer=0)
-  SliceTune(
-    Array(Float64, 0)
-  )
-end
 
-type SliceVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::SliceTune
-
-  SliceVariate{T<:Real}(x::AbstractVector{T}, tune::SliceTune) = new(x, tune)
-end
-
-function SliceVariate{T<:Real}(x::AbstractVector{T})
-  SliceVariate(x, SliceTune(length(x)))
-end
+typealias SliceVariate SamplerVariate{SliceTune}
 
 
 #################### Sampler Constructor ####################
@@ -30,8 +22,7 @@ function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
                         stype::Symbol=:multivar; transform::Bool=false)
   width = Float64[width...]
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(SliceVariate, unlist(model, block, transform),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block, transform)
     f = x -> logpdf!(model, x, block, transform)
     slice!(v, width, f, stype)
     relist(model, v, block, transform)

@@ -41,7 +41,7 @@ BHMCVariate Type
 Declaration
 ```````````
 
-``BHMCVariate <: SamplerVariate``
+``typealias BHMCVariate SamplerVariate{BHMCTune}``
 
 Fields
 ``````

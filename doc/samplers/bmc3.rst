@@ -44,7 +44,7 @@ BMC3Variate Type
 Declaration
 ```````````
 
-``BMC3Variate <: SamplerVariate``
+``typealias BMC3Variate SamplerVariate{BMC3Tune}``
 
 Fields
 ``````

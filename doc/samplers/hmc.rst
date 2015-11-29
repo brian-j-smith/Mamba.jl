@@ -43,7 +43,7 @@ HMCVariate Type
 Declaration
 ```````````
 
-``HMCVariate <: SamplerVariate``
+``typealias HMCVariate SamplerVariate{HMCTune}``
 
 Fields
 ``````

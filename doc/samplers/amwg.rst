@@ -45,7 +45,7 @@ AMWGVariate Type
 Declaration
 ```````````
 
-``AMWGVariate <: SamplerVariate``
+``typealias AMWGVariate SamplerVariate{AMWGTune}``
 
 Fields
 ``````

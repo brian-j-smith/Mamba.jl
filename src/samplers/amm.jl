@@ -11,31 +11,23 @@ type AMMTune <: SamplerTune
   scale::Real
   SigmaF::Cholesky{Float64}
   SigmaLm::Matrix{Float64}
+
+  function AMMTune(value::Vector{Float64}=Float64[])
+    new(
+      false,
+      0.05,
+      0,
+      Array(Float64, 0),
+      Array(Float64, 0, 0),
+      2.38^2,
+      Cholesky(Array(Float64, 0, 0), :U),
+      Array(Float64, 0, 0)
+    )
+  end
 end
 
-function AMMTune(d::Integer=0)
-  AMMTune(
-    false,
-    0.05,
-    0,
-    Array(Float64, 0),
-    Array(Float64, 0, 0),
-    2.38^2,
-    Cholesky(Array(Float64, 0, 0), :U),
-    Array(Float64, 0, 0)
-  )
-end
 
-type AMMVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::AMMTune
-
-  AMMVariate{T<:Real}(x::AbstractVector{T}, tune::AMMTune) = new(x, tune)
-end
-
-function AMMVariate{T<:Real}(x::AbstractVector{T})
-  AMMVariate(x, AMMTune(length(x)))
-end
+typealias AMMVariate SamplerVariate{AMMTune}
 
 
 #################### Sampler Constructor ####################
@@ -47,8 +39,7 @@ function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
 
   SigmaF = cholfact(Sigma)
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(AMMVariate, unlist(model, block, true),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block, true)
     f = x -> logpdf!(model, x, block, true)
     isadapt = adapt == :burnin ? model.iter <= model.burnin :
               adapt == :all ? true : false

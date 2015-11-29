@@ -4,36 +4,23 @@
 
 type BMC3Tune <: SamplerTune
   indexset::Vector{Vector{Int}}
-end
 
-function BMC3Tune(d::Integer=0)
-  BMC3Tune(
-    Vector{Vector{Int}}[]
-  )
-end
-
-type BMC3Variate <: SamplerVariate
-  value::Vector{Float64}
-  tune::BMC3Tune
-
-  function BMC3Variate{T<:Real}(x::AbstractVector{T}, tune::BMC3Tune)
-    all(insupport(Bernoulli, x)) ||
-      throw(ArgumentError("x is not a binary vector"))
-    new(x, tune)
+  function BMC3Tune(value::Vector{Float64}=Float64[])
+    new(
+      Vector{Vector{Int}}[]
+    )
   end
 end
 
-function BMC3Variate{T<:Real}(x::AbstractVector{T})
-  BMC3Variate(x, BMC3Tune(length(x)))
-end
+
+typealias BMC3Variate SamplerVariate{BMC3Tune}
 
 
 #################### Sampler Constructor ####################
 
 function BMC3(params::Vector{Symbol}; k::Integer=1)
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(BMC3Variate, unlist(model, block),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)
     bmc3!(v, f, k=k)
     relist(model, v, block)
@@ -43,8 +30,7 @@ end
 
 function BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(BMC3Variate, unlist(model, block),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)
     bmc3!(v, indexset, f)
     relist(model, v, block)

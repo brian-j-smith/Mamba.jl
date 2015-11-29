@@ -44,7 +44,7 @@ MALAVariate Type
 Declaration
 ```````````
 
-``MALAVariate <: SamplerVariate``
+``typealias MALAVariate SamplerVariate{MALATune}``
 
 Fields
 ``````

@@ -9,25 +9,17 @@ typealias DGSUnivariateDistribution
 type DGSTune <: SamplerTune
   support::Matrix{Real}
   probs::Vector{Float64}
+
+  function DGSTune(value::Vector{Float64}=Float64[])
+    new(
+      Array(Float64, 0, 0),
+      Array(Float64, 0)
+    )
+  end
 end
 
-function DGSTune(d::Integer=0)
-  DGSTune(
-    Array(Float64, 0, 0),
-    Array(Float64, 0)
-  )
-end
 
-type DGSVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::DGSTune
-
-  DGSVariate{T<:Real}(x::AbstractVector{T}, tune::DGSTune) = new(x, tune)
-end
-
-function DGSVariate{T<:Real}(x::AbstractVector{T})
-  DGSVariate(x, DGSTune(length(x)))
-end
+typealias DGSVariate SamplerVariate{DGSTune}
 
 
 #################### Sampler Constructor ####################
@@ -40,7 +32,7 @@ function DGS(params::Vector{Symbol})
     for key in params
 
       sim = function(inds, d, logf)
-        v = variate!(DGSVariate, x[offset + inds], s, model.iter)
+        v = SamplerVariate(x[offset + inds], s, model.iter)
         dgs!(v, d, logf)
         x[offset + inds] = v
       end

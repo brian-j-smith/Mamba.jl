@@ -15,35 +15,27 @@ type NUTSTune <: SamplerTune
   nalpha::Int
   t0::Float64
   target::Float64
+
+  function NUTSTune(value::Vector{Float64}=Float64[])
+    new(
+      false,
+      0.0,
+      NaN,
+      1.0,
+      0.05,
+      0.0,
+      0.75,
+      0,
+      NaN,
+      0,
+      10.0,
+      0.44
+    )
+  end
 end
 
-function NUTSTune(d::Integer=0)
-  NUTSTune(
-    false,
-    0.0,
-    NaN,
-    1.0,
-    0.05,
-    0.0,
-    0.75,
-    0,
-    NaN,
-    0,
-    10.0,
-    0.44
-  )
-end
 
-type NUTSVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::NUTSTune
-
-  NUTSVariate{T<:Real}(x::AbstractVector{T}, tune::NUTSTune) = new(x, tune)
-end
-
-function NUTSVariate{T<:Real}(x::AbstractVector{T})
-  NUTSVariate(x, NUTSTune(length(x)))
-end
+typealias NUTSVariate SamplerVariate{NUTSTune}
 
 
 #################### Sampler Constructor ####################
@@ -51,8 +43,7 @@ end
 function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
   epsilon = NaN
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(NUTSVariate, unlist(model, block, true),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block, true)
     if model.iter == 1
       fx = x -> logpdfgrad(model, x, block, dtype)
       epsilon = nutsepsilon(v, fx)

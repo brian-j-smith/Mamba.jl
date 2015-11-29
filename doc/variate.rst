@@ -26,7 +26,8 @@ Declarations
     typealias VectorVariate ArrayVariate{1}
     typealias MatrixVariate ArrayVariate{2}
 
-    abstract SamplerVariate <: VectorVariate
+    abstract SamplerTune
+    type SamplerVariate{T<:SamplerTune} <: VectorVariate
 
 Type Hierarchy
 ^^^^^^^^^^^^^^

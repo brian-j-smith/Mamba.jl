@@ -3,31 +3,18 @@
 #################### Types ####################
 
 type BMGTune <: SamplerTune
-  BMGTune(d::Integer=0) = new()
+  BMGTune(value::Vector{Float64}=Float64[]) = new()
 end
 
-type BMGVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::BMGTune
 
-  function BMGVariate{T<:Real}(x::AbstractVector{T}, tune::BMGTune)
-    all(insupport(Bernoulli, x)) ||
-      throw(ArgumentError("x is not a binary vector"))
-    new(x, tune)
-  end
-end
-
-function BMGVariate{T<:Real}(x::AbstractVector{T})
-  BMGVariate(x, BMGTune(length(x)))
-end
+typealias BMGVariate SamplerVariate{BMGTune}
 
 
 #################### Sampler Constructor ####################
 
 function BMG(params::Vector{Symbol}; k::Integer=1)
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(BMGVariate, unlist(model, block),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)
     bmg!(v, f, k=k)
     relist(model, v, block)

@@ -8,40 +8,28 @@ type BHMCTune <: SamplerTune
   velocity::Vector{Float64}
   wallhits::Int
   wallcrosses::Int
-end
 
-function BHMCTune(d::Integer=0)
-  BHMCTune(
-    NaN,
-    rand(Normal(0, 1), d),
-    rand(Normal(0, 1), d),
-    0,
-    0
-  )
-end
-
-type BHMCVariate <: SamplerVariate
-  value::Vector{Float64}
-  tune::BHMCTune
-
-  function BHMCVariate{T<:Real}(x::AbstractVector{T}, tune::BHMCTune)
-    all(insupport(Bernoulli, x)) ||
-      throw(ArgumentError("x is not a binary vector"))
-    new(x, tune)
+  function BHMCTune(value::Vector{Float64}=Float64[])
+    d = length(value)
+    new(
+      NaN,
+      rand(Normal(0, 1), d),
+      rand(Normal(0, 1), d),
+      0,
+      0
+    )
   end
 end
 
-function BHMCVariate{T<:Real}(x::AbstractVector{T})
-  BHMCVariate(x, BHMCTune(length(x)))
-end
+
+typealias BHMCVariate SamplerVariate{BHMCTune}
 
 
 #################### Sampler Constructor ####################
 
 function BHMC(params::Vector{Symbol}, traveltime::Real)
   samplerfx = function(model::Model, block::Integer)
-    v = variate!(BHMCVariate, unlist(model, block),
-                 model.samplers[block], model.iter)
+    v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)
     bhmc!(v, traveltime, f)
     relist(model, v, block)

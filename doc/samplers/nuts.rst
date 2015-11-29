@@ -57,7 +57,7 @@ NUTSVariate Type
 Declaration
 ```````````
 
-``NUTSVariate <: SamplerVariate``
+``typealias NUTSVariate SamplerVariate{NUTSTune}``
 
 Fields
 ``````
