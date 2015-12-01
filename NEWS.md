@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.7.4
+* Simplified implementations of sampling function types and constructors.
+* Implemented ``SamplerTune`` and ``SamplerVariate`` types.
+* Extended contour plots from ``ModelChains`` to ``AbstractChains``.
+
 ### 0.7.3
 * Parallelize ``logpdf()`` method for ``ModelChains``.
 * Update BMG algorithm and interface.
