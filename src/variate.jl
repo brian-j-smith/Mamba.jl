@@ -12,6 +12,13 @@ Base.convert{T<:Real, N}(::Union{Type{AbstractArray{T, N}}, Type{Array{T, N}}},
 Base.unsafe_convert{T<:Real}(::Type{Ptr{T}}, v::ArrayVariate) = pointer(v.value)
 
 
+macro promote_scalarvariate(V)
+  quote
+    Base.promote_rule{T<:Real}(::Type{$V}, ::Type{T}) = Float64
+  end
+end
+
+
 #################### Base Functions ####################
 
 Base.size(v::AbstractVariate) = size(v.value)

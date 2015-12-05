@@ -44,13 +44,6 @@ function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, Symbol}})
 end
 
 
-macro promote_scalarvariate(V)
-  quote
-    Base.promote_rule{T<:Real}(::Type{$V}, ::Type{T}) = Float64
-  end
-end
-
-
 #################### Mathematical Operators ####################
 
 isprobvec(p::AbstractVector) = isprobvec(convert(Vector{Float64}, p))

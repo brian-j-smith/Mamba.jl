@@ -5,8 +5,17 @@ const samplerfxargs = [(:model, :Model), (:block, :Integer)]
 
 #################### Constructors ####################
 
+function Sampler(params::Vector{Symbol}, f::Function, tune::Any=Dict())
+  Sampler(params, modelfx(samplerfxargs, f), tune, Symbol[])
+end
+
+
 function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U}, tune::T)
   SamplerVariate{T}(x, tune)
+end
+
+function SamplerVariate(m::Model, block::Integer, transform::Bool=false)
+  SamplerVariate(unlist(m, block, transform), m.samplers[block], m.iter)
 end
 
 function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
@@ -18,15 +27,6 @@ function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
     v = SamplerVariate{T}(x, s.tune)
   end
   v
-end
-
-function SamplerVariate(m::Model, block::Integer, transform::Bool=false)
-  SamplerVariate(unlist(m, block, transform), m.samplers[block], m.iter)
-end
-
-
-function Sampler(params::Vector{Symbol}, f::Function, tune::Any=Dict())
-  Sampler(params, modelfx(samplerfxargs, f), tune, Symbol[])
 end
 
 

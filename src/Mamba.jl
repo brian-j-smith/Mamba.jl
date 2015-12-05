@@ -109,6 +109,14 @@ module Mamba
 
   #################### Sampler Types ####################
 
+  type Sampler{T}
+    params::Vector{Symbol}
+    eval::Function
+    tune::T
+    targets::Vector{Symbol}
+  end
+
+
   abstract SamplerTune
 
   type SamplerVariate{T<:SamplerTune} <: VectorVariate
@@ -124,14 +132,6 @@ module Mamba
       value = convert(Vector{Float64}, x)
       SamplerVariate{T}(value, T(value))
     end
-  end
-
-
-  type Sampler{T}
-    params::Vector{Symbol}
-    eval::Function
-    tune::T
-    targets::Vector{Symbol}
   end
 
 
