@@ -7,6 +7,31 @@ Shrinkage Slice (Slice)
 
 Implementation of the shrinkage slice sampler of Neal :cite:`neal:2003:SS` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: Slice(params::Vector{Symbol}, width::Vector{T<:Real}, \
+                    stype::Symbol=:multivar; transform::Bool=false)
+
+    Construct a ``Sampler`` object for shrinkage slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+
+    **Arguments**
+
+        *  ``params`` : stochastic nodes to be updated with the sampler.
+        * ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
+        * ``stype`` : sampler type. Options are
+            * ``:multivar`` : Joint multivariate sampling of parameters.
+            * ``:univar`` : Sequential univariate sampling.
+        * ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
+
+    **Value**
+
+        Returns a ``Sampler{SliceTune}`` type object.
+
+    **Example**
+
+        See the :ref:`Birats <example-Birats>`, :ref:`Rats <example-Rats>`, and other :ref:`section-Examples`.
+
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -50,7 +75,7 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{Float64}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : simulated values.
 * ``tune::SliceTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -59,16 +84,16 @@ Constructors
 .. function:: SliceVariate(x::AbstractVector{T<:Real})
               SliceVariate(x::AbstractVector{T<:Real}, tune::SliceTune)
 
-    Construct a ``SliceVariate`` object that stores sampled values and tuning parameters for slice sampling.
+    Construct a ``SliceVariate`` object that stores simulated values and tuning parameters for slice sampling.
 
     **Arguments**
 
-        * ``x`` : vector of sampled values.
+        * ``x`` : simulated values.
         * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``SliceVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``SliceVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
 
 .. index:: Sampler Types; SliceTune
 
@@ -84,29 +109,3 @@ Fields
 ``````
 
 * ``width::Vector{Float64}`` : vector of initial widths defining hyperrectangles from which to simulate values.
-
-
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. function:: Slice(params::Vector{Symbol}, width::Vector{T<:Real}, \
-                    stype::Symbol=:multivar; transform::Bool=false)
-
-    Construct a ``Sampler`` object for shrinkage slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-
-    **Arguments**
-
-        *  ``params`` : stochastic nodes to be updated with the sampler.
-        * ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
-        * ``stype`` : sampler type. Options are
-            * ``:multivar`` : Joint multivariate sampling of parameters.
-            * ``:univar`` : Sequential univariate sampling.
-        * ``transform`` : whether to sample parameters on the link-transformed scale (unconstrained parameter space).  If ``true``, then constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function, and ``width`` is interpreted as being relative to the unconstrained parameter space.  Otherwise, sampling is relative to the untransformed space.
-
-    **Value**
-
-        Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`Birats <example-Birats>`, :ref:`Rats <example-Rats>`, and other :ref:`section-Examples`.

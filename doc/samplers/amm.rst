@@ -7,6 +7,31 @@ Adaptive Mixture Metropolis (AMM)
 
 Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive (multivariate) mixture Metropolis :cite:`haario:2001:AMA,hastings:1970:MCS,metropolis:1953:ESC` sampler for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
+                  adapt::Symbol=:all)
+
+    Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+
+    **Arguments**
+
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``adapt`` : type of adaptation phase.  Options are
+            * ``:all`` : adapt proposal during all iterations.
+            * ``:burnin`` : adapt proposal during burn-in iterations.
+            * ``:none`` : no adaptation (multivariate Metropolis sampling with fixed proposal).
+
+    **Value**
+
+        Returns a ``Sampler{AMMTune}`` type object.
+
+    **Example**
+
+        See the :ref:`Seeds <example-Seeds>` and other :ref:`section-Examples`.
+
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -48,7 +73,7 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{Float64}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : simulated values.
 * ``tune::AMMTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -57,16 +82,16 @@ Constructors
 .. function:: AMMVariate(x::AbstractVector{T<:Real})
               AMMVariate(x::AbstractVector{T<:Real}, tune::AMMTune)
 
-    Construct a ``AMMVariate`` object that stores sampled values and tuning parameters for adaptive mixture Metropolis sampling.
+    Construct a ``AMMVariate`` object that stores simulated values and tuning parameters for adaptive mixture Metropolis sampling.
 
     **Arguments**
 
-        * ``x`` : vector of sampled values.
+        * ``x`` : simulated values.
         * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``AMMVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``AMMVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
 
 
 .. index:: Sampler Types; AMMTune
@@ -90,28 +115,3 @@ Fields
 * ``scale::Real`` : fixed value ``2.38^2`` in the factor (``scale / length(v)``) by which the adaptively updated covariance matrix is scaled---adopted from Gelman, Roberts, and Gilks :cite:`gelman:1996:EMJ`.
 * ``SigmaF::Cholesky{Float64}`` : factorization of the non-adaptive covariance matrix.
 * ``SigmaLm::Matrix{Float64}`` : lower-triangular factorization of the adaptively tuned covariance matrix.
-
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
-                  adapt::Symbol=:all)
-
-    Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-
-    **Arguments**
-
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
-        * ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
-        * ``adapt`` : type of adaptation phase.  Options are
-            * ``:all`` : adapt proposal during all iterations.
-            * ``:burnin`` : adapt proposal during burn-in iterations.
-            * ``:none`` : no adaptation (multivariate Metropolis sampling with fixed proposal).
-
-    **Value**
-
-        Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`Seeds <example-Seeds>` and other :ref:`section-Examples`.

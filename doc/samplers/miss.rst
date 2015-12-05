@@ -7,7 +7,7 @@ Missing Values Sampler (MISS)
 
 A sampler to simulate missing output values from their likelihood distributions.
 
-Sampler Constructor
+Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: MISS(params::Vector{Symbol})
@@ -20,7 +20,7 @@ Sampler Constructor
 
     **Value**
 
-        Returns a ``Sampler`` type object.
+        Returns a ``Sampler{Dict{AbstractString, Any}}`` type object.
 
     **Example**
 

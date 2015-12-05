@@ -7,6 +7,25 @@ Binary Hamiltonian Monte Carlo (BHMC)
 
 Implementation of the binary-state Hamiltonian Monte Carlo sampler of Pakman :cite:`pakman:2013:hmcb`.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: BHMC(params::Vector{Symbol}, traveltime::Real)
+
+    Construct a ``Sampler`` object for BHMC sampling.  Parameters are assumed to have binary numerical values (0 or 1).
+
+    **Arguments**
+
+        * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
+        * ``traveltime`` : length of time over which particle paths are simulated.  It is recommended that supplied values be of the form :math:`(n + \frac{1}{2}) \pi`, where optimal choices of :math:`n \in \mathbb{Z}^+` are expected to grow with the parameter space dimensionality.
+
+    **Value**
+
+        Returns a ``Sampler{BHMCTune}`` type object.
+
+    **Example**
+
+        See the :ref:`Pollution <example-Pollution>` and other :ref:`section-Examples`.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
@@ -46,7 +65,7 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{Float64}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : simulated values.
 * ``tune::BHMCTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -55,16 +74,16 @@ Constructors
 .. function:: BHMCVariate(x::AbstractVector{T<:Real})
               BHMCVariate(x::AbstractVector{T<:Real}, tune::BHMCTune)
 
-    Construct a ``BHMCVariate`` object that stores sampled values and tuning parameters for BHMC sampling.
+    Construct a ``BHMCVariate`` object that stores simulated values and tuning parameters for BHMC sampling.
 
     **Arguments**
 
-        * ``x`` : vector of sampled values.
+        * ``x`` : simulated values.
         * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``BHMCVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``BHMCVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
 
 .. index:: Sampler Types; BHMCTune
 
@@ -83,23 +102,3 @@ Fields
 * ``velocity::Vector{Float64}`` : initial particle velocites.
 * ``wallhits::Int`` : number of times particles are reflected off the 0 threshold.
 * ``wallcrosses::Int`` : number of times particles travel through the threshold.
-
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^
-
-.. function:: BHMC(params::Vector{Symbol}, traveltime::Real)
-
-    Construct a ``Sampler`` object for BHMC sampling.  Parameters are assumed to have binary numerical values (0 or 1).
-
-    **Arguments**
-
-        * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
-        * ``traveltime`` : length of time over which particle paths are simulated.  It is recommended that supplied values be of the form :math:`(n + \frac{1}{2}) \pi`, where optimal choices of :math:`n \in \mathbb{Z}^+` are expected to grow with the parameter space dimensionality.
-
-    **Value**
-
-        Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`Pollution <example-Pollution>` and other :ref:`section-Examples`.

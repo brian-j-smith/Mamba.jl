@@ -59,7 +59,6 @@ Contents
 
     intro.rst
     tutorial.rst
-    variate.rst
     mcmc.rst
     samplers.rst
     examples.rst

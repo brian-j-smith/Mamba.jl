@@ -1,6 +1,3 @@
-Variate Types
-=============
-
 .. index:: Variate Types
 .. index:: Variate Types; AbstractVariate
 .. index:: Variate Types; ScalarVariate
@@ -13,7 +10,7 @@ Variate Types
 Variate
 -------
 
-``Variate`` is a set of abstract types that serves as the basis for several concrete types in the *Mamba* package.  Conceptually, it represents a data structure that stores numeric values sampled from a target distribution.  As an abstract type, ``Variate`` cannot be instantiated and cannot have fields.  It can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining the functionality once on the abstract type (see `julia Types <http://docs.julialang.org/en/latest/manual/types/>`_).  Accordingly, a core set of functionality is defined for the ``Variate`` type through the field and method functions summarized below.  Although the (abstract) type does not have fields, its method functions assume that all subtypes will be declared with the ``value`` field shown.
+``ScalarVariate`` and ``ArrayVariate{N}`` are abstract types that serve as the basis for several concrete types in the *Mamba* package.  Conceptually, they represent data structures that store numeric values simulated from target distributions.  Being abstract, these variate types cannot be instantiated and cannot have fields.  They can, however, have method functions, which descendant subtypes will inherit.  Such inheritance allows one to endow a core set of functionality to all subtypes by simply defining method functions once on the abstract types (see `julia Types <http://docs.julialang.org/en/latest/manual/types/>`_).  Accordingly, a core set of functionality is defined for the variate types through the field and method functions discussed below.  Although the (abstract) types do not have fields, their method functions assume that all subtypes will be declared with a ``value`` field.
 
 Declarations
 ^^^^^^^^^^^^^
@@ -26,15 +23,12 @@ Declarations
     typealias VectorVariate ArrayVariate{1}
     typealias MatrixVariate ArrayVariate{2}
 
-    abstract SamplerTune
-    type SamplerVariate{T<:SamplerTune} <: VectorVariate
-
 Type Hierarchy
 ^^^^^^^^^^^^^^
 
-Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logical`, and :ref:`section-Stochastic` types, as well as the those defined for supplied :ref:`section-Sampling-Functions`.
+Subtypes of the variate types include the :ref:`section-Dependent`, :ref:`section-Logical`, :ref:`section-Stochastic`, and :ref:`section-SamplerVariate` types.
 
-.. figure:: images/variateUML.png
+.. figure:: ../images/variateUML.png
     :align: center
 
     UML relational diagram of ``Variate`` types and their fields.
@@ -42,7 +36,7 @@ Subtypes of ``Variate`` include the :ref:`section-Dependent`, :ref:`section-Logi
 Field
 ^^^^^
 
-* ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
+* ``value::T`` : scalar or array of ``Float64`` values that represent simulated values from a target distribution.
 
 Methods
 ^^^^^^^

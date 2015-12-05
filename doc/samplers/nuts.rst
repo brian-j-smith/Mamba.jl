@@ -7,6 +7,30 @@ No-U-Turn Sampler (NUTS)
 
 Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2014:nuts` to Hamiltonian Monte Carlo :cite:`neal:2011:hmc` for simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
+                   target::Real=0.6)
+
+    Construct a ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+
+    **Arguments**
+
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``dtype`` : type of differentiation for gradient calculations.  Options are
+            * ``:central`` : central differencing.
+            * ``:forward`` : forward differencing.
+        * ``target`` : a target acceptance rate for the algorithm.
+
+    **Value**
+
+        Returns a ``Sampler{NUTSTune}`` type object.
+
+    **Example**
+
+        See the :ref:`Dyes <example-Dyes>`, :ref:`Equiv <example-Equiv>`, and other :ref:`section-Examples`.
+
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -62,7 +86,7 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{Float64}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : simulated values.
 * ``tune::NUTSTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -71,16 +95,16 @@ Constructors
 .. function:: NUTSVariate(x::AbstractVector{T<:Real})
               NUTSVariate(x::AbstractVector{T<:Real}, tune::NUTSTune)
 
-    Construct a ``NUTSVariate`` object that stores sampled values and tuning parameters for No-U-Turn sampling.
+    Construct a ``NUTSVariate`` object that stores simulated values and tuning parameters for No-U-Turn sampling.
 
     **Arguments**
 
-        * ``x`` : vector of sampled values.
+        * ``x`` : simulated values.
         * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``NUTSVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``NUTSVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
 
 
 .. index:: Sampler Types; NUTSTune
@@ -108,27 +132,3 @@ Fields
 * ``nalpha::Int`` : the total number :math:`n_\alpha` of leapfrog steps performed.
 * ``t0::Float64`` : dual averaging parameter, fixed at :math:`t_0 = 10`.
 * ``target::Float64`` : target acceptance rate for the adaptive algorithm.
-
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
-                   target::Real=0.6)
-
-    Construct a ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-
-    **Arguments**
-
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
-        * ``dtype`` : type of differentiation for gradient calculations.  Options are
-            * ``:central`` : central differencing.
-            * ``:forward`` : forward differencing.
-        * ``target`` : a target acceptance rate for the algorithm.
-
-    **Value**
-
-        Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`Dyes <example-Dyes>`, :ref:`Equiv <example-Equiv>`, and other :ref:`section-Examples`.

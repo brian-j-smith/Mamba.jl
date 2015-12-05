@@ -7,6 +7,33 @@ Adaptive Metropolis within Gibbs (AMWG)
 
 Implementation of a Metropolis-within-Gibbs sampler :cite:`metropolis:1953:ESC,robert:2009:EAM,tierney:1994:MCE` for iteratively simulating autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: AMWG(params::Vector{Symbol}, sigma::Vector{T<:Real}; \
+                   adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
+
+    Construct a ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+
+    **Arguments**
+
+        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``sigma`` : initial standard deviations for the univariate normal proposal distributions.  Standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``adapt`` : type of adaptation phase.  Options are
+            * ``:all`` : adapt proposals during all iterations.
+            * ``:burnin`` : adapt proposals during burn-in iterations.
+            * ``:none`` : no adaptation (Metropolis-within-Gibbs sampling with fixed proposals).
+        * ``batchsize`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
+        * ``target`` : a target acceptance rate for the algorithm.
+
+    **Value**
+
+        Returns a ``Sampler{AMWGTune}`` type object.
+
+    **Example**
+
+        See the :ref:`Birats <example-Birats>`, :ref:`Blocker <example-Blocker>`, and other :ref:`section-Examples`.
+
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -50,7 +77,7 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{Float64}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : simulated values.
 * ``tune::AMWGTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -59,16 +86,16 @@ Constructors
 .. function:: AMWGVariate(x::AbstractVector{T<:Real})
               AMWGVariate(x::AbstractVector{T<:Real}, tune::AMWGTune)
 
-    Construct a ``AMWGVariate`` object that stores sampled values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
+    Construct a ``AMWGVariate`` object that stores simulated values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
 
     **Arguments**
 
-        * ``x`` : vector of sampled values.
+        * ``x`` : simulated values.
         * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``AMWGVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``AMWGVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
 
 
 .. index:: Sampler Types; AMWGTune
@@ -90,30 +117,3 @@ Fields
 * ``m::Int`` : number of adaptive update iterations that have been performed.
 * ``sigma::Vector{Float64}`` : updated values of the proposal standard deviations if ``adapt = true``, and the user-defined values otherwise.
 * ``target::Real`` : target acceptance rate for the adaptive algorithm.
-
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. function:: AMWG(params::Vector{Symbol}, sigma::Vector{T<:Real}; \
-                   adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
-
-    Construct a ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
-
-    **Arguments**
-
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
-        * ``sigma`` : initial standard deviations for the univariate normal proposal distributions.  Standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
-        * ``adapt`` : type of adaptation phase.  Options are
-            * ``:all`` : adapt proposals during all iterations.
-            * ``:burnin`` : adapt proposals during burn-in iterations.
-            * ``:none`` : no adaptation (Metropolis-within-Gibbs sampling with fixed proposals).
-        * ``batchsize`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
-        * ``target`` : a target acceptance rate for the algorithm.
-
-    **Value**
-
-        Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`Birats <example-Birats>`, :ref:`Blocker <example-Blocker>`, and other :ref:`section-Examples`.

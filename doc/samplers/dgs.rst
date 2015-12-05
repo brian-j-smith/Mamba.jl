@@ -7,8 +7,27 @@ Discrete Gibbs Sampler (DGS)
 
 Implementation of a sampler for the simulation of discrete or discretized model parameters with finite support.  Draws are simulated directly from a probability mass function that can be specified up to a constant of proportionality.  Note that versions of this sampler evaluate the probability function over all points in the parameter space; and, as a result, may be very computationally intensive for large spaces.
 
-Stand-Alone Function
-^^^^^^^^^^^^^^^^^^^^
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. function:: DGS(params::Vector{Symbol})
+
+    Construct a ``Sampler`` object for which DGS sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to have discrete univariate distributions with finite supports.
+
+    **Arguments**
+
+        *  ``params`` : stochastic nodes to be updated with the sampler.
+
+    **Value**
+
+        Returns a ``Sampler{DGSTune}`` type object.
+
+    **Example**
+
+        See the :ref:`Eyes <example-Eyes>`, :ref:`Pollution <example-Pollution>`, and other :ref:`section-Examples`.
+
+Stand-Alone Functions
+^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: dgs!(v::DGSVariate, support::Matrix{T<:Real}, logf::Function)
               dgs!(v::DGSVariate, support::Matrix{T<:Real}, probs::Vector{Float64})
@@ -40,7 +59,7 @@ Declaration
 Fields
 ``````
 
-* ``value::Vector{Float64}`` : vector of sampled values.
+* ``value::Vector{Float64}`` : simulated values.
 * ``tune::DGSTune`` : tuning parameters for the sampling algorithm.
 
 Constructors
@@ -49,16 +68,16 @@ Constructors
 .. function:: DGSVariate(x::AbstractVector{T<:Real})
               DGSVariate(x::AbstractVector{T<:Real}, tune::DGSTune)
 
-    Construct a ``DGSVariate`` object that stores sampled values and tuning parameters for DGS sampling.
+    Construct a ``DGSVariate`` object that stores simulated values and tuning parameters for DGS sampling.
 
     **Arguments**
 
-        * ``x`` : vector of sampled values.
+        * ``x`` : simulated values.
         * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
 
     **Value**
 
-        Returns a ``DGSVariate`` type object with fields pointing to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``DGSVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
 
 .. index:: Sampler Types; DGSTune
 
@@ -75,23 +94,3 @@ Fields
 
 * ``support::Matrix{Real}`` : matrix whose rows contain the vector coordinates in the parameter space from which to simulate values.
 * ``probs::Vector{Float64}`` : sampling probabilities for the rows of ``support``.
-
-
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^
-
-.. function:: DGS(params::Vector{Symbol})
-
-    Construct a ``Sampler`` object for which DGS sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to have discrete univariate distributions with finite supports.
-
-    **Arguments**
-
-        *  ``params`` : stochastic nodes to be updated with the sampler.
-
-    **Value**
-
-        Returns a ``Sampler`` type object.
-
-    **Example**
-
-        See the :ref:`Eyes <example-Eyes>`, :ref:`Pollution <example-Pollution>`, and other :ref:`section-Examples`.

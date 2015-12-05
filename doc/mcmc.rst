@@ -25,6 +25,7 @@ The relationships are as follows.  Type ``Model`` contains a dictionary field (`
 .. toctree::
     :maxdepth: 1
 
+    mcmc/variate.rst
     mcmc/dependent.rst
     mcmc/distributions.rst
     mcmc/sampler.rst
