@@ -20,8 +20,25 @@ Model-Based Constructor
 
     **Value**
 
-        Returns a ``Sampler{Dict{AbstractString, Any}}`` type object.
+        Returns a ``Sampler{Dict{Symbol, MISSTune}}`` type object.
 
     **Example**
 
         See the :ref:`Bones <example-Bones>` and other :ref:`section-Examples`.
+
+.. index:: Sampler Types; MISSTune
+
+MISSTune Type
+^^^^^^^^^^^^^
+
+Declaration
+```````````
+
+``type MISSTune``
+
+Fields
+``````
+
+* ``dims::Tuple`` : dimensions of a stochastic node to be updated.
+* ``valueinds::Vector{Int}`` : indices to missing values in the node.
+* ``distrinds::Vector{Int}`` : indices to node distributions from which to sample the missing values.

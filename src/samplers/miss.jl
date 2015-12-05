@@ -2,10 +2,37 @@
 
 #################### Types and Constructors ####################
 
-type StochasticIndices
+type MISSTune
   dims::Tuple
-  value::Vector{Int}
-  distr::Vector{Int}
+  valueinds::Vector{Int}
+  distrinds::Vector{Int}
+end
+
+function MISSTune(s::AbstractStochastic)
+  MISSTune(s.distr, s.value)
+end
+
+function MISSTune(d::Distribution, v)
+  MISSTune((), find(isnan(v)), Int[])
+end
+
+function MISSTune(D::Array{UnivariateDistribution}, v::Array)
+  inds = find(isnan(v))
+  MISSTune(dims(D), inds, inds)
+end
+
+function MISSTune(D::Array{MultivariateDistribution}, v::Array)
+  isvalueinds = falses(v)
+  isdistrinds = falses(D)
+  for sub in CartesianRange(size(D))
+    n = length(D[sub])
+    for i in 1:n
+      if isnan(v[sub, i])
+        isvalueinds[sub, i] = isdistrinds[sub] = true
+      end
+    end
+  end
+  MISSTune(dims(D), find(isvalueinds), find(isdistrinds))
 end
 
 
@@ -15,76 +42,45 @@ function MISS(params::Vector{Symbol})
   samplerfx = function(model::Model, block::Integer)
     tunepar = tune(model, block)
     value = Dict{Symbol, Any}()
-    initialize = model.iter == 1
-    if initialize
-      tunepar["sampler"] = Dict{Symbol, StochasticIndices}()
-    end
+    isfirstiter = model.iter == 1
     for key in params
       node = model[key]
       x = node[:]
-      if initialize
-        tunepar["sampler"][key] = findmissing(node)
+      if isfirstiter
+        tunepar[key] = MISSTune(node)
       end
-      inds = tunepar["sampler"][key]
-      x[inds.value] = rand(node, inds)
+      miss = tunepar[key]
+      x[miss.valueinds] = rand(node, miss)
       value[key] = x
     end
     value
   end
-  Sampler(params, samplerfx, Dict{AbstractString, Any}("sampler" => nothing))
+  Sampler(params, samplerfx, Dict{Symbol, MISSTune}())
 end
 
 
 #################### Sampling Functions ####################
 
-function findmissing(s::AbstractStochastic)
-  findmissing(s.distr, s.value)
-end
+rand(s::AbstractStochastic, miss::MISSTune) = rand_sub(s.distr, miss)
 
-function findmissing(d::Distribution, v)
-  StochasticIndices((), find(isnan(v)), Int[])
-end
-
-function findmissing(D::Array{UnivariateDistribution}, v::Array)
-  inds = find(isnan(v))
-  StochasticIndices(dims(D), inds, inds)
-end
-
-function findmissing(D::Array{MultivariateDistribution}, v::Array)
-  Mvalue = falses(v)
-  Mdistr = falses(D)
-  for sub in CartesianRange(size(D))
-    n = length(D[sub])
-    for i in 1:n
-      if isnan(v[sub, i])
-        Mvalue[sub, i] = Mdistr[sub] = true
-      end
-    end
-  end
-  StochasticIndices(dims(D), find(Mvalue), find(Mdistr))
-end
-
-
-rand(s::AbstractStochastic, inds::StochasticIndices) = rand_sub(s.distr, inds)
-
-function rand_sub(d::Distribution, inds::StochasticIndices)
-  if isempty(inds.value)
+function rand_sub(d::Distribution, miss::MISSTune)
+  if isempty(miss.valueinds)
     Float64[]
   else
     x = rand(d)
-    Float64[x[i] for i in inds.value]
+    Float64[x[i] for i in miss.valueinds]
   end
 end
 
-function rand_sub(D::Array{UnivariateDistribution}, inds::StochasticIndices)
-  Float64[rand(d) for d in D[inds.value]]
+function rand_sub(D::Array{UnivariateDistribution}, miss::MISSTune)
+  Float64[rand(d) for d in D[miss.valueinds]]
 end
 
-function rand_sub(D::Array{MultivariateDistribution}, inds::StochasticIndices)
-  X = Array(Float64, inds.dims)
-  for i in inds.distr
+function rand_sub(D::Array{MultivariateDistribution}, miss::MISSTune)
+  X = Array(Float64, miss.dims)
+  for i in miss.distrinds
     d = D[i]
     X[ind2sub(D, i)..., 1:length(d)] = rand(d)
   end
-  X[inds.value]
+  X[miss.valueinds]
 end
