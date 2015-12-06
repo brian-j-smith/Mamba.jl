@@ -8,6 +8,7 @@ Listed below are the sampling methods for which functions are provided to simula
 .. toctree::
     :maxdepth: 1
 
+    samplers/abc.rst
     samplers/amm.rst
     samplers/amwg.rst
     samplers/bhmc.rst
@@ -30,6 +31,8 @@ The following table summarizes the (*d*-dimensional) sample spaces over which ea
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
     | Method                                     | Sample Space                          | Univariate | Multivariate | Transformations | Univariate | Multivariate |
     +============================================+=======================================+============+==============+=================+============+==============+
+    | :ref:`ABC <section-ABC>`                   | :math:`\mathbb{R}^d`                  | No         | Yes          | Yes             | No         | No           |
+    +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
     | :ref:`AMM <section-AMM>`                   | :math:`\mathbb{R}^d`                  | No         | Yes          | Yes             | No         | Yes          |
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
     | :ref:`AMWG <section-AMWG>`                 | :math:`\mathbb{R}^d`                  | Yes        | No           | Yes             | Yes        | No           |
