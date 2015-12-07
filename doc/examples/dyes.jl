@@ -57,7 +57,6 @@ inits = [
 ## Sampling Schemes
 scheme = [NUTS([:mu, :theta]),
           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
-setsamplers!(model, scheme)
 
 scheme2 = [MALA([:theta], 50.0),
            MALA([:mu], 50.0, eye(dyes[:batches])),
@@ -65,6 +64,10 @@ scheme2 = [MALA([:theta], 50.0),
 
 scheme3 = [HMC([:theta], 10.0, 5),
            HMC([:mu], 10.0, 5, eye(dyes[:batches])),
+           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
+
+scheme4 = [RWM([:theta], [50.0]),
+           RWM([:mu], fill(50.0, dyes[:batches])),
            Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
 
 
@@ -80,3 +83,7 @@ describe(sim2)
 setsamplers!(model, scheme3)
 sim3 = mcmc(model, dyes, inits, 10000, burnin=2500, thin=2, chains=2)
 describe(sim3)
+
+setsamplers!(model, scheme4)
+sim4 = mcmc(model, dyes, inits, 10000, burnin=2500, thin=2, chains=2)
+describe(sim4)

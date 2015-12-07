@@ -210,6 +210,7 @@ module Mamba
   include("samplers/mala.jl")
   include("samplers/miss.jl")
   include("samplers/nuts.jl")
+  include("samplers/rwm.jl")
   include("samplers/slice.jl")
   include("samplers/slicesimplex.jl")
 
@@ -318,6 +319,9 @@ module Mamba
     nutsepsilon,
     NUTS,
     NUTSVariate,
+    rwm!,
+    RWM,
+    RWMVariate,
     slice!,
     Slice,
     SliceVariate,

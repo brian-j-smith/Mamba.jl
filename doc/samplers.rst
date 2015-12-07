@@ -18,6 +18,7 @@ Listed below are the sampling methods for which functions are provided to simula
     samplers/mala.rst
     samplers/miss.rst
     samplers/nuts.rst
+    samplers/rwm.rst
     samplers/slice.rst
     samplers/slicesimplex.rst
 
@@ -49,6 +50,8 @@ The following table summarizes the (*d*-dimensional) sample spaces over which ea
     | :ref:`MISS <section-MISS>`                 | Parameter-defined                     | Yes        | Yes          | No              | No         | No           |
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
     | :ref:`NUTS <section-NUTS>`                 | :math:`\mathbb{R}^d`                  | No         | Yes          | Yes             | No         | Yes          |
+    +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
+    | :ref:`RWM <section-RWM>`                   | :math:`\mathbb{R}^d`                  | No         | Yes          | Yes             | No         | Yes          |
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
     | :ref:`Slice <section-Slice>`               | :math:`S \subseteq \mathbb{R}^d`      | Yes        | Yes          | Optional        | Yes        | Yes          |
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
