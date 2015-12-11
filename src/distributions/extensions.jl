@@ -1,3 +1,18 @@
+#################### Flat Distribution ####################
+
+immutable Flat <: ContinuousUnivariateDistribution end
+
+minimum(d::Flat) = -Inf
+maximum(d::Flat) = Inf
+insupport(d::Flat, x::Real) = true
+
+logpdf(d::Flat, x::Real) = 0.0
+
+function Truncated(d::Flat, l::Float64, u::Float64)
+  Truncated{Flat, Continuous}(d, l, u, 0.0, 1.0, 1.0, 0.0)
+end
+
+
 #################### BDiagNormal Distribution ####################
 
 typealias BDiagNormal MvNormal{PBDiagMat, Vector{Float64}}
@@ -16,3 +31,8 @@ BDiagNormal(μ::AbstractVector, Σ::AbstractMatrix) =
 
 BDiagNormal(μ::AbstractVector, Σ::AbstractVector) =
   BDiagNormal(convert(Vector{Float64}, μ), Matrix{Float64}[Σ...])
+
+
+#################### Null Distribution ####################
+
+immutable NullUnivariateDistribution <: UnivariateDistribution{ValueSupport} end

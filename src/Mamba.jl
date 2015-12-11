@@ -176,9 +176,7 @@ module Mamba
 
   include("distributions/constructors.jl")
   include("distributions/distributionstruct.jl")
-  include("distributions/flat.jl")
-  include("distributions/mvnormal.jl")
-  include("distributions/null.jl")
+  include("distributions/extensions.jl")
   include("distributions/pdmatdistribution.jl")
   include("distributions/transformdistribution.jl")
 
