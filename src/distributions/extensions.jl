@@ -36,3 +36,18 @@ BDiagNormal(μ::AbstractVector, Σ::AbstractVector) =
 #################### Null Distribution ####################
 
 immutable NullUnivariateDistribution <: UnivariateDistribution{ValueSupport} end
+
+
+#################### SymUniform Distribution ####################
+
+type SymUniform <: ContinuousUnivariateDistribution
+  SymUniform() = Uniform(-1.0, 1.0)
+  SymUniform(μ::Real, σ::Real) = Uniform(μ - σ, μ + σ)
+end
+
+
+#################### Type Aliases ####################
+
+typealias SymDistributionType
+          Union{Type{Biweight}, Type{Cosine}, Type{Epanechnikov}, Type{Normal},
+                Type{SymTriangularDist}, Type{Triweight}, Type{SymUniform}}

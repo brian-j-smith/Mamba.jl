@@ -249,7 +249,8 @@ module Mamba
 
   export
     BDiagNormal,
-    Flat
+    Flat,
+    SymUniform
 
   export
     @modelexpr,

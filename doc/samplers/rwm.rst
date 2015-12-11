@@ -5,19 +5,21 @@
 Random Walk Metropolis (RWM)
 ----------------------------
 
-Simple random walk Metropolis-Hastings algorithm :cite:`hastings:1970:MCS,metropolis:1953:ESC` in which parameters are perturbed from their previous iteration by a user-specified amount. Simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Random walk Metropolis-Hastings algorithm :cite:`hastings:1970:MCS,metropolis:1953:ESC` in which parameters are sampled from symmetric distributions centered around the current values.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: RWM(params::Vector{Symbol}, delta::Vector{T<:Real})
+.. function:: RWM(params::Vector{Symbol}, scale::ElementOrVector{T<:Real}; \
+                  proposal::SymDistributionType=Normal)
 
-    Construct a ``Sampler`` object for random walk Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+    Construct a ``Sampler`` object for RWM sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
         * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
-        * ``delta`` : parameters are perturbed from previous iteration by Uniform(-delta, delta).
+        * ``scale`` : scaling value or vector of the same length as the combined elements of nodes ``params`` for the ``proposal`` distribution.  Values are relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``proposal`` : symmetric distribution of type ``Biweight``, ``Cosine``, ``Epanechnikov``, ``Normal``, ``SymTriangularDist``, ``SymUniform``, or ``Triweight`` to be centered around current parameter values and used to generate proposal draws.  Specified ``scale`` determines the standard deviations of Normal proposals and widths of the others.
 
     **Value**
 
@@ -30,15 +32,17 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: rwm!(v::RWMVariate, delta::Vector{T<:Real}, logf::Function)
+.. function:: rwm!(v::RWMVariate, scale::ElementOrVector{T<:Real}, \
+                   logf::Function; proposal::SymDistributionType=Normal)
 
-    Simulate one draw from a target distribution using an random walk Metropolis sampler.  Parameters are assumed to be continuous and unconstrained.
+    Simulate one draw from a target distribution using an RWM sampler.  Parameters are assumed to be continuous and unconstrained.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``delta`` : parameters are perturbed from previous iteration by Uniform(-delta, delta).
+        * ``scale`` : scalar or vector of the same length as ``v`` for the ``proposal`` distribution.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``proposal`` : symmetric distribution of type ``Biweight``, ``Cosine``, ``Epanechnikov``, ``Normal``, ``SymTriangularDist``, ``SymUniform``, or ``Triweight`` to be centered around current parameter values and used to generate proposal draws.  Specified ``scale`` determines the standard deviations of Normal proposals and widths of the others.
 
     **Value**
 
@@ -75,7 +79,7 @@ Constructors
 .. function:: RWMVariate(x::AbstractVector{T<:Real})
               RWMVariate(x::AbstractVector{T<:Real}, tune::RWMTune)
 
-    Construct a ``RWMVariate`` object that stores simulated values and tuning parameters for random walk Metropolis sampling.
+    Construct a ``RWMVariate`` object that stores simulated values and tuning parameters for RWM sampling.
 
     **Arguments**
 
@@ -100,4 +104,5 @@ Declaration
 Fields
 ``````
 
-* ``delta`` : parameters are perturbed from previous iteration by Uniform(-delta, delta).
+* ``scale::Union{Real, Vector}`` : scaling for the proposal distribution.
+* ``proposal::SymDistributionType`` : proposal distribution.
