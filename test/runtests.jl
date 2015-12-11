@@ -13,6 +13,7 @@ const samplertests = [
   "hmc",
   "mala",
   "nuts",
+  "rwm",
   "slice",
   "slicesimplex"
 ]
