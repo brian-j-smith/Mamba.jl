@@ -51,3 +51,5 @@ end
 typealias SymDistributionType
           Union{Type{Biweight}, Type{Cosine}, Type{Epanechnikov}, Type{Normal},
                 Type{SymTriangularDist}, Type{Triweight}, Type{SymUniform}}
+
+typealias KernelDensityType SymDistributionType

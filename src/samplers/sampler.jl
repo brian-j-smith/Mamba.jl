@@ -70,7 +70,7 @@ end
 
 #################### Auxiliary Functions ####################
 
-asvec(x::Symbol) = [x]
+asvec(x::Union{Number, Symbol}) = [x]
 asvec(x::Vector) = x
 
 function logpdfgrad{T<:Real}(m::Model, x::Vector{T}, block::Integer,

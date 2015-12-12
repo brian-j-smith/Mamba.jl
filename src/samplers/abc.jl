@@ -1,140 +1,116 @@
-#################### Approximate Bayesian Computing ####################
+#################### Approximate Bayesian Computation ####################
 
 #################### Types and Constructors ####################
 
 type ABCTune
-  Told::Matrix{Float64}
+  datakeys::Vector{Symbol}
+  Tsim::Vector{Vector{Float64}}
   epsilon::Vector{Float64}
-  terminals::Vector{Symbol}
+
+  function ABCTune()
+    new(
+      Vector{Symbol}(),
+      Vector{Vector{Float64}}(),
+      Vector{Float64}()
+    )
+  end
 end
 
-ABCTune() = ABCTune(Matrix{Float64}(), Vector{Float64}(), Vector{Symbol}())
 
-function ABC(params::Vector{Symbol}, sigma::Real, summarize::Vector{Function},
-             target::Real; rho::Function = (x, y) -> sqrt(sumabs2(x - y)),
-             s::Integer = 1, n::Integer = 50, kernel::Symbol = :uniform)
+#################### Sampler Constructor ####################
 
-  kernel in [:uniform, :epanechnikov, :gaussian] ||
-    throw(ArgumentError(
-      "kernel must be one of :uniform, :epanechnikov, or :gaussian"
-    ))
+function ABC{T<:Real}(params::ElementOrVector{Symbol},
+                      scale::ElementOrVector{T}, summary::Function,
+                      epsilon::Real; kernel::KernelDensityType=SymUniform,
+                      dist::Function=(Tsim, Tobs) -> sqrt(sumabs2(Tsim - Tobs)),
+                      proposal::SymDistributionType=Normal, maxdraw::Integer=1,
+                      nsim::Integer=1, args...)
+
+  params = asvec(params)
+  kernelpdf = (epsilon, d) -> pdf(kernel(0.0, epsilon), d)
+  local obsdata, simdata, summarizenodes
 
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
+    tune = Mamba.tune(model, block)
 
-    ## previous value
-    x = unlist(model, block, true)
-    logfx = mapreduce(p -> logpdf(model[p], true), +, params)
-    
+    ## current parameter and density values
+    theta0 = unlist(model, block, true)
+    logprior0 = mapreduce(key -> logpdf(model[key], true), +, params)
+    pi_epsilon0 = 0.0
 
-    T0 = NaN
-    Told = NaN
-    Tnew = NaN
-
-    ## Initialize tune
+    ## initialize tuning parameters
+    local Tobs
     if model.iter == 1
-      terminals = keys(model, :output)
-      nt = length(terminals)
+      ## data node symbols
+      targets = keys(model, :target, params)
+      stochastics = keys(model, :stochastic)
+      tune.datakeys = intersect(setdiff(targets, params), stochastics)
 
-      ## data
-      dvec = map(node -> unlist(model, [node]), terminals)
+      ## local functions to get and summarize data nodes
+      obsdata = key -> unlist(model, [key])
+      simdata = key -> unlist(model[key], rand(model[key]))
+      summarizenodes = length(tune.datakeys) > 1 ?
+        data -> vcat(map(key -> summary(data(key)), tune.datakeys)...) :
+        data -> asvec(summary(data(tune.datakeys[1])))
 
-      ## summary stat of data
-      T0vec = Array(Array{Float64, 1}, nt)
-      for d in 1:nt
-        T0vec[d] = vcat(map(f -> f(dvec[d]), summarize)...)
+      ## observed data summary statistics
+      Tobs = summarizenodes(obsdata)
+
+      tune.Tsim = Array(Vector{Float64}, nsim)
+      tune.epsilon = Array(Float64, nsim)
+      for i in 1:nsim
+        ## simulated data summary statistics for current parameter values
+        tune.Tsim[i] = summarizenodes(simdata)
+        d = dist(tune.Tsim[i], Tobs; args...)
+
+        ## starting tolerance
+        tune.epsilon[i] = max(epsilon, d)
+
+        ## kernel density evaluation
+        pi_epsilon0 += kernelpdf(tune.epsilon[i], d)
       end
-      T0 = vcat(T0vec...)
-
-      m = length(T0)
-
-      Told = zeros(m, s)
-      eps0 = zeros(s)
-      for i in 1:s
-        Toldvec = Array(Array{Float64, 1}, nt)
-        for d in 1:nt
-          x0 = unlist(model[terminals[d]], rand(model[terminals[d]]))
-          Toldvec[d] = vcat(map(f -> f(x0), summarize)...)
-        end
-        Told[:, i] = vcat(Toldvec...)
-        eps0[i] = rho(Told[:, i], T0)
-      end
-      tunepar.Told = Told
-      tunepar.epsilon = eps0
-      tunepar.terminals = terminals
     else
-      nt = length(tunepar.terminals)
-      ## data
-      dvec = map(node -> unlist(model, [node]), tunepar.terminals)
-
-      ## summary stat of data
-      T0vec = Array(Array{Float64, 1}, nt)
-      for d in 1:nt
-        T0vec[d] = vcat(map(f -> f(dvec[d]), summarize)...)
+      Tobs = summarizenodes(obsdata)
+      for i in 1:nsim
+        d = dist(tune.Tsim[i], Tobs; args...)
+        pi_epsilon0 += kernelpdf(tune.epsilon[i], d)
       end
-      T0 = vcat(T0vec...)
-      Told = tunepar.Told
     end
 
-    nt = length(tunepar.terminals)
+    Tsim1 = similar(tune.Tsim)
+    epsilon1 = similar(tune.epsilon)
 
-    ## Attempt n times to get new proposal
-    for k in 1:n
-      ## proposal
-      y = x + sigma * randn(length(x))
-      relist!(model, y, block, true)
-      logfy = mapreduce(p -> logpdf(model[p], true), +, params)
+    for k in 1:maxdraw
+      ## candidate draw and prior density value
+      theta1 = theta0 + scale .* rand(proposal(0.0, 1.0), length(theta0))
+      relist!(model, theta1, block, true)
+      logprior1 = mapreduce(key -> logpdf(model[key], true), +, params)
 
-      ratio_num = 0.0
-      ratio_den = 0.0
+      ## tolerances and kernel density
+      pi_epsilon1 = 0.0
+      for i in 1:nsim
+        ## simulated data summary statistics for candidate draw
+        Tsim1[i] = summarizenodes(simdata)
+        d = dist(Tsim1[i], Tobs; args...)
 
-      Tnew = zeros(length(T0), s)
-      epsilon = zeros(s)
+        ## monotonically decrease tolerance to target
+        epsilon1[i] = max(epsilon, min(d, tune.epsilon[i]))
 
-      ## Simulate s data sets
-      for i in 1:s
-        ## new data
-        Tnewvec = Array(Array{Float64, 1}, nt)
-        for d in 1:nt
-          x0 = unlist(model[tunepar.terminals[d]], rand(model[tunepar.terminals[d]]))
-          Tnewvec[d] = vcat(map(f -> f(x0), summarize)...)
-        end
-
-        ## summary stat of new data
-        Tnew[:, i] = vcat(Tnewvec...)
-
-        ## Monotonically decrease epsilon to target
-        epsilon[i] = max(target, min(rho(Tnew[:, i], T0), tunepar.epsilon[i]))
-
-        ## weighting density
-        rho0 = 0
-        rho1 = 0
-        if kernel == :uniform
-          rho0 = pdf(Uniform(0, epsilon[i]), rho(Told[:, i], T0))
-          rho1 = pdf(Uniform(0, epsilon[i]), rho(Tnew[:, i], T0))
-        elseif kernel == :epanechnikov
-          rho0 = prod([pdf(Epanechnikov(Told[j, i], epsilon[i]), T0[j]) 
-                       for j in 1:length(T0)])
-          rho1 = prod([pdf(Epanechnikov(Tnew[j, i], epsilon[i]), T0[j]) 
-                       for j in 1:length(T0)])
-        elseif kernel == :gaussian
-          rho0 = pdf(MvNormal(collect(Told[:, i]), epsilon[i]), collect(T0))
-          rho1 = pdf(MvNormal(collect(Tnew[:, i]), epsilon[i]), collect(T0))
-        end
-
-        ratio_num += rho1
-        ratio_den += rho0
+        ## kernel density evaluation
+        pi_epsilon1 += kernelpdf(epsilon1[i], d)
       end
 
-      ## Reject/Accept
-      if rand() < ratio_num / ratio_den * exp(logfy - logfx)
-        x[:] = y
-        tunepar.Told = Tnew
-        tunepar.epsilon = epsilon
+      ## accept/reject the candidate draw
+      if rand() < pi_epsilon1 / pi_epsilon0 * exp(logprior1 - logprior0)
+        theta0 = theta1
+        tune.Tsim = Tsim1
+        tune.epsilon = epsilon1
         break
       end
     end
-    relist(model, x, block, true)
+
+    relist(model, theta0, block, true)
   end
+
   Sampler(params, samplerfx, ABCTune())
 end
