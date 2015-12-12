@@ -34,7 +34,7 @@ Bone heights are modelled as
     \beta_0, \beta_1 &\sim \text{Normal}(0, \sqrt{1000}) \\
     \bm{\Sigma} &\sim \text{InverseWishart}(4, \bm{I})
 
-where :math:`\bm{y}_i` is a vector of the four repeated measurements for boy :math:`i`.  In the model specification below, the bone heights are arranged into a 1-dimensional vector on which a :ref:`section-Distribution-BDiagNormal` is specified.  Furthermore, since :math:`\bm{\Sigma}` is a covariance matrix, it is symmetric with ``M * (M + 1) / 2`` unique (upper or lower triangular) parameters, where ``M`` is the matrix dimension.  Consequently, that is the number of parameters to account for when defining samplers for :math:`\bm{\Sigma}`; e.g., ``AMWG([:Sigma], fill(0.1, Int(M * (M + 1) / 2)))``.
+where :math:`\bm{y}_i` is a vector of the four repeated measurements for boy :math:`i`.  In the model specification below, bone heights are arranged into a 1-dimensional vector on which a :ref:`section-Distribution-BDiagNormal` is specified.  Also not that since :math:`\bm{\Sigma}` is a covariance matrix, it is symmetric with ``M * (M + 1) / 2`` unique (upper or lower triangular) parameters, where ``M`` is the matrix dimension.
 
 
 Analysis Program

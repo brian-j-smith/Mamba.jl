@@ -28,15 +28,17 @@ typealias AMWGVariate SamplerVariate{AMWGTune}
 
 #################### Sampler Constructor ####################
 
-function AMWG{T<:Real}(params::Vector{Symbol}, sigma::Vector{T};
+function AMWG{T<:Real}(params::Vector{Symbol}, sigma::ElementOrVector{T};
                        adapt::Symbol=:all, batchsize::Integer=50,
                        target::Real=0.44)
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
-  sigma = Float64[sigma...]
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)
+    if model.iter == 1 && isa(sigma, Real)
+      sigma = fill(sigma, length(v))
+    end
     f = x -> logpdf!(model, x, block, true)
     isadapt = adapt == :burnin ? model.iter <= model.burnin :
               adapt == :all ? true : false
@@ -49,8 +51,9 @@ end
 
 #################### Sampling Functions ####################
 
-function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
-               adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
+function amwg!{T<:Real}(v::AMWGVariate, sigma::Vector{T}, logf::Function;
+                        adapt::Bool=true, batchsize::Integer=50,
+                        target::Real=0.44)
   tune = v.tune
 
   if adapt
@@ -63,7 +66,7 @@ function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
       tune.target = target
     end
     tune.m += 1
-    amwg_sub!(v, tune.sigma, logf)
+    amwg_sub!(v, logf)
     if tune.m % tune.batchsize == 0
       delta = min(0.01, (tune.m / tune.batchsize)^-0.5)
       for i in 1:length(tune.sigma)
@@ -75,16 +78,17 @@ function amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function;
     if !tune.adapt
       tune.sigma = sigma
     end
-    amwg_sub!(v, tune.sigma, logf)
+    amwg_sub!(v, logf)
   end
 
   v
 end
 
-function amwg_sub!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function)
+
+function amwg_sub!(v::AMWGVariate, logf::Function)
   logf0 = logf(v.value)
   d = length(v)
-  z = randn(d) .* sigma
+  z = v.tune.sigma .* randn(d)
   for i in 1:d
     x = v[i]
     v[i] += z[i]

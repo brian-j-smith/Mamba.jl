@@ -10,7 +10,7 @@ Implementation of a Metropolis-within-Gibbs sampler :cite:`metropolis:1953:ESC,r
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: AMWG(params::Vector{Symbol}, sigma::Vector{T<:Real}; \
+.. function:: AMWG(params::Vector{Symbol}, sigma::ElementOrVector{T<:Real}; \
                    adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
 
     Construct a ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
@@ -18,13 +18,13 @@ Model-Based Constructor
     **Arguments**
 
         * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
-        * ``sigma`` : initial standard deviations for the univariate normal proposal distributions.  Standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``sigma`` : scaling value or vector of the same length as the combined elements of nodes ``params``, defining initial standard deviations for univariate normal proposal distributions.  Standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
         * ``adapt`` : type of adaptation phase.  Options are
             * ``:all`` : adapt proposals during all iterations.
             * ``:burnin`` : adapt proposals during burn-in iterations.
             * ``:none`` : no adaptation (Metropolis-within-Gibbs sampling with fixed proposals).
         * ``batchsize`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
-        * ``target`` : a target acceptance rate for the algorithm.
+        * ``target`` : target acceptance rate for the algorithm.
 
     **Value**
 
@@ -37,7 +37,7 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: amwg!(v::AMWGVariate, sigma::Vector{Float64}, logf::Function; \
+.. function:: amwg!(v::AMWGVariate, sigma::Vector{T<:Real}, logf::Function; \
                     adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
 
     Simulate one draw from a target distribution using an adaptive Metropolis-within-Gibbs sampler.  Parameters are assumed to be continuous and unconstrained.
@@ -45,11 +45,11 @@ Stand-Alone Function
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
-        * ``sigma`` : initial standard deviations for the univariate normal proposal distributions.
+        * ``sigma`` : vector of the same length as ``v``, defining initial standard deviations for univariate normal proposal distributions.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
         * ``adapt`` : whether to adaptively update the proposal distribution.
         * ``batchsize`` : number of samples that must be newly accumulated before applying an adaptive update to the proposal distributions.
-        * ``target`` : a target acceptance rate for the adaptive algorithm.
+        * ``target`` : target acceptance rate for the adaptive algorithm.
 
     **Value**
 
