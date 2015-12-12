@@ -110,9 +110,9 @@ inits = [
 
 ## Sampling Scheme
 scheme = [AMWG([:alpha, :beta1, :beta2], fill(1.0, 3)),
-          Slice([:s2], [1.0]),
-          Slice([:mu], ones(oxford[:K])),
-          Slice([:b], ones(oxford[:K]))]
+          Slice([:s2], 1.0),
+          Slice([:mu], 1.0),
+          Slice([:b], 1.0)]
 setsamplers!(model, scheme)
 
 

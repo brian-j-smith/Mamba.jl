@@ -10,15 +10,15 @@ Implementation of the shrinkage slice sampler of Neal :cite:`neal:2003:SS` for s
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: Slice(params::Vector{Symbol}, width::Vector{T<:Real}, \
+.. function:: Slice(params::Vector{Symbol}, width::ElementOrVector{T<:Real}, \
                     stype::Symbol=:multivar; transform::Bool=false)
 
     Construct a ``Sampler`` object for shrinkage slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        *  ``params`` : stochastic nodes to be updated with the sampler.
-        * ``width`` : vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
+        * ``params`` : stochastic nodes to be updated with the sampler.
+        * ``width`` : scaling value or vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
         * ``stype`` : sampler type. Options are
             * ``:multivar`` : Joint multivariate sampling of parameters.
             * ``:univar`` : Sequential univariate sampling.
@@ -35,14 +35,15 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: slice!(v::SliceVariate, width::Vector{Float64}, logf::Function, stype::Symbol=:multivar)
+.. function:: slice!(v::SliceVariate, width::ElementOrVector{T<:Real}, \
+                     logf::Function, stype::Symbol=:multivar)
 
     Simulate one draw from a target distribution using a shrinkage slice sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``width`` : vector of the same length as ``v``, defining initial widths of a hyperrectangle from which to simulate values.
+        * ``width`` : scalar or vector of the same length as ``v``, defining initial widths of a hyperrectangle from which to simulate values.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
         * ``stype`` : sampler type. Options are
             * ``:multivar`` : Joint multivariate sampling of parameters.
@@ -108,4 +109,4 @@ Declaration
 Fields
 ``````
 
-* ``width::Vector{Float64}`` : vector of initial widths defining hyperrectangles from which to simulate values.
+* ``width::Union{Real, Vector}`` : initial widths defining hyperrectangles from which to simulate values.

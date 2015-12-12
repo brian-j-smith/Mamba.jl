@@ -176,9 +176,9 @@ inits = [
 ## Sampling Scheme
 scheme = [AMWG([:a0, :alpha_Base, :alpha_Trt, :alpha_BT, :alpha_Age,
                 :alpha_V4], fill(0.1, 6)),
-          Slice([:b1], fill(0.5, epil[:N])),
-          Slice([:b], fill(0.5, epil[:N] * epil[:T])),
-          Slice([:s2_b1, :s2_b], ones(2))]
+          Slice([:b1], 0.5),
+          Slice([:b], 0.5),
+          Slice([:s2_b1, :s2_b], 1.0)]
 setsamplers!(model, scheme)
 
 

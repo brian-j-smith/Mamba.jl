@@ -87,8 +87,8 @@ inits = [
 
 ## Sampling Scheme
 scheme = [NUTS([:delta]),
-          Slice([:mu, :phi, :pi], fill(1.0, 3)),
-          Slice([:s2_1, :s2_2], ones(2), :univar)]
+          Slice([:mu, :phi, :pi], 1.0),
+          Slice([:s2_1, :s2_2], 1.0, :univar)]
 setsamplers!(model, scheme)
 
 

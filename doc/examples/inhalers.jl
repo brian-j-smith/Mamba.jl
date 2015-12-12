@@ -117,8 +117,8 @@ inits = [
 
 ## Sampling Scheme
 scheme = [AMWG([:b], fill(0.1, inhalers[:N])),
-          Slice([:a1, :a2, :a3], fill(2.0, 3)),
-          Slice([:beta, :pi, :kappa, :s2], fill(1.0, 4), :univar)]
+          Slice([:a1, :a2, :a3], 2.0),
+          Slice([:beta, :pi, :kappa, :s2], 1.0, :univar)]
 setsamplers!(model, scheme)
 
 

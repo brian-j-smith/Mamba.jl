@@ -84,7 +84,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [Slice([:alpha, :beta], [1.0, 1.0])]
+scheme = [Slice([:alpha, :beta], 1.0)]
 setsamplers!(model, scheme)
 
 

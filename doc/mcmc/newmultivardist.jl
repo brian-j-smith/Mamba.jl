@@ -70,7 +70,7 @@ model = Model(
 
 ## Sampling Scheme
 scheme = [NUTS([:beta]),
-          Slice([:s2], [3.0])]
+          Slice([:s2], 3.0)]
 
 ## Sampling Scheme Assignment
 setsamplers!(model, scheme)

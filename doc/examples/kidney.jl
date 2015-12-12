@@ -101,10 +101,10 @@ inits = [
 
 ## Sampling Scheme
 scheme = [MISS([:t]),
-          Slice([:alpha, :beta_age, :beta_sex, :beta_Dx], fill(0.1, 6)),
-          Slice([:b], fill(0.01, kidney[:N])),
-          Slice([:s2], [0.1]),
-          Slice([:r], [0.001])]
+          Slice([:alpha, :beta_age, :beta_sex, :beta_Dx], 0.1),
+          Slice([:b], 0.01),
+          Slice([:s2], 0.1),
+          Slice([:r], 0.001)]
 setsamplers!(model, scheme)
 
 

@@ -97,7 +97,7 @@ inits = [
 
 ## Sampling Scheme
 scheme = [NUTS([:beta0, :beta]),
-          Slice([:s2], [1.0])]
+          Slice([:s2], 1.0)]
 setsamplers!(model, scheme)
 
 

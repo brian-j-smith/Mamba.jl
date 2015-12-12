@@ -76,7 +76,7 @@ inits = [
 ## Sampling Scheme
 scheme = [AMWG([:mu], fill(0.1, blocker[:N])),
           AMWG([:delta, :delta_new], fill(0.1, blocker[:N] + 1)),
-          Slice([:d, :s2], [1.0, 1.0])]
+          Slice([:d, :s2], 1.0)]
 setsamplers!(model, scheme)
 
 

@@ -96,7 +96,7 @@ inits = [
 ## Sampling Scheme
 scheme = [AMWG([:beta, :mu_beta], repeat([10.0, 1.0], outer=[birats[:N] + 1])),
           AMWG([:Sigma], fill(1.0, 3)),
-          Slice([:sigma2C], [10.0])]
+          Slice([:sigma2C], 10.0)]
 setsamplers!(model, scheme)
 
 

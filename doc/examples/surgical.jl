@@ -49,7 +49,7 @@ inits = [
 
 ## Sampling Scheme
 scheme = [NUTS([:b]),
-          Slice([:mu, :s2], [1.0, 1.0])]
+          Slice([:mu, :s2], 1.0)]
 setsamplers!(model, scheme)
 
 

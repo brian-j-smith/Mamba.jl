@@ -49,8 +49,8 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [Slice([:alpha, :beta], [1.0, 1.0], :univar),
-          Slice([:theta], ones(pumps[:N]), :univar)]
+scheme = [Slice([:alpha, :beta], 1.0, :univar),
+          Slice([:theta], 1.0, :univar)]
 setsamplers!(model, scheme)
 
 

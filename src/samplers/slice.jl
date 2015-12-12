@@ -3,11 +3,11 @@
 #################### Types and Constructors ####################
 
 type SliceTune <: SamplerTune
-  width::Vector{Float64}
+  width::Union{Real, Vector}
 
   function SliceTune(value::Vector{Float64}=Float64[])
     new(
-      Array(Float64, 0)
+      NaN
     )
   end
 end
@@ -18,9 +18,8 @@ typealias SliceVariate SamplerVariate{SliceTune}
 
 #################### Sampler Constructor ####################
 
-function Slice{T<:Real}(params::Vector{Symbol}, width::Vector{T},
+function Slice{T<:Real}(params::Vector{Symbol}, width::ElementOrVector{T},
                         stype::Symbol=:multivar; transform::Bool=false)
-  width = Float64[width...]
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, transform)
     f = x -> logpdf!(model, x, block, transform)
@@ -33,21 +32,23 @@ end
 
 #################### Sampling Functions ####################
 
-function slice!(v::SliceVariate, width::Vector{Float64}, logf::Function,
-                stype::Symbol=:multivar)
-  stype == :multivar ? slice_multi!(v, width, logf) :
-  stype == :univar   ? slice_uni!(v, width, logf) :
+function slice!{T<:Real}(v::SliceVariate, width::ElementOrVector{T},
+                         logf::Function, stype::Symbol=:multivar)
+  v.tune.width = width
+  stype == :multivar ? slice_multi!(v, logf) :
+  stype == :univar   ? slice_uni!(v, logf) :
     throw(ArgumentError("unsupported slice sampler type $stype"))
 end
 
-function slice_multi!(v::SliceVariate, width::Vector{Float64}, logf::Function)
+
+function slice_multi!(v::SliceVariate, logf::Function)
   p0 = logf(v.value) + log(rand())
 
   n = length(v)
-  lower = v - width .* rand(n)
-  upper = lower + width
+  lower = v - v.tune.width .* rand(n)
+  upper = lower + v.tune.width
 
-  x = width .* rand(n) + lower
+  x = v.tune.width .* rand(n) + lower
   while logf(x) < p0
     for i in 1:n
       value = x[i]
@@ -56,37 +57,39 @@ function slice_multi!(v::SliceVariate, width::Vector{Float64}, logf::Function)
       else
         upper[i] = value
       end
-      x[i] = (upper[i] - lower[i]) * rand() + lower[i]
+      x[i] = rand(Uniform(lower[i], upper[i]))
     end
   end
   v[:] = x
-  v.tune.width = width
 
   v
 end
 
-function slice_uni!(v::SliceVariate, width::Vector{Float64}, logf::Function)
+
+function slice_uni!(v::SliceVariate, logf::Function)
   logf0 = logf(v.value)
-  for i in 1:length(v)
+
+  n = length(v)
+  lower = v - v.tune.width .* rand(n)
+  upper = lower + v.tune.width
+
+  for i in 1:n
     p0 = logf0 + log(rand())
 
-    lower = v[i] - width[i] * rand()
-    upper = lower + width[i]
-
     x = v[i]
-    v[i] = width[i] * rand() + lower
+    v[i] = rand(Uniform(lower[i], upper[i]))
     while true
       logf0 = logf(v.value)
       logf0 < p0 || break
       value = v[i]
       if value < x
-        lower = value
+        lower[i] = value
       else
-        upper = value
+        upper[i] = value
       end
-      v[i] = (upper - lower) * rand() + lower
+      v[i] = rand(Uniform(lower[i], upper[i]))
     end
   end
-  v.tune.width = width
+
   v
 end

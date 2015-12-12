@@ -56,19 +56,19 @@ inits = [
 
 ## Sampling Schemes
 scheme = [NUTS([:mu, :theta]),
-          Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
+          Slice([:s2_within, :s2_between], 1000.0)]
 
 scheme2 = [MALA([:theta], 50.0),
            MALA([:mu], 50.0, eye(dyes[:batches])),
-           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
+           Slice([:s2_within, :s2_between], 1000.0)]
 
 scheme3 = [HMC([:theta], 10.0, 5),
            HMC([:mu], 10.0, 5, eye(dyes[:batches])),
-           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
+           Slice([:s2_within, :s2_between], 1000.0)]
 
 scheme4 = [RWM([:theta], 50.0, proposal=Cosine),
            RWM([:mu], 50.0),
-           Slice([:s2_within, :s2_between], [1000.0, 1000.0])]
+           Slice([:s2_within, :s2_between], 1000.0)]
 
 
 ## MCMC Simulations

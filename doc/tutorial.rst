@@ -139,7 +139,7 @@ The package provides a flexible system for the specification of schemes to sampl
 
     ## Hybrid No-U-Turn and Slice Sampling Scheme
     scheme1 = [NUTS([:beta]),
-               Slice([:s2], [3.0])]
+               Slice([:s2], 3.0)]
 
     ## No-U-Turn Sampling Scheme
     scheme2 = [NUTS([:beta, :s2])]
