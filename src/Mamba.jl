@@ -45,6 +45,11 @@ module Mamba
   importall .PDMats2
 
 
+  #################### Types ####################
+
+  typealias ElementOrVector{T} Union{T, Vector{T}}
+
+
   #################### Variate Types ####################
 
   abstract ScalarVariate <: Real
