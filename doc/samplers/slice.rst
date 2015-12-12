@@ -10,14 +10,15 @@ Implementation of the shrinkage slice sampler of Neal :cite:`neal:2003:SS` for s
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: Slice(params::Vector{Symbol}, width::ElementOrVector{T<:Real}, \
-                    stype::Symbol=:multivar; transform::Bool=false)
+.. function:: Slice(params::ElementOrVector{Symbol}, \
+                    width::ElementOrVector{T<:Real}, stype::Symbol=:multivar; \
+                    transform::Bool=false)
 
     Construct a ``Sampler`` object for shrinkage slice sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.
+        * ``params`` : stochastic node(s) to be updated with the sampler.
         * ``width`` : scaling value or vector of the same length as the combined elements of nodes ``params``, defining initial widths of a hyperrectangle from which to simulate values.
         * ``stype`` : sampler type. Options are
             * ``:multivar`` : Joint multivariate sampling of parameters.

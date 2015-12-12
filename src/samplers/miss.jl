@@ -38,7 +38,8 @@ end
 
 #################### Sampler Constructor ####################
 
-function MISS(params::Vector{Symbol})
+function MISS(params::ElementOrVector{Symbol})
+  params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
     tunepar = tune(model, block)
     value = Dict{Symbol, Any}()

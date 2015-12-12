@@ -46,7 +46,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [SliceSimplex([:q])]
+scheme = [SliceSimplex(:q)]
 setsamplers!(model, scheme)
 
 

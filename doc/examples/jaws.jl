@@ -63,7 +63,7 @@ inits = [
 
 ## Sampling Scheme
 scheme = [Slice([:beta0, :beta1], [10, 1]),
-          AMWG([:Sigma], 0.1)]
+          AMWG(:Sigma, 0.1)]
 setsamplers!(model, scheme)
 
 

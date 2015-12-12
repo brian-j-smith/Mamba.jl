@@ -27,7 +27,7 @@ typealias BHMCVariate SamplerVariate{BHMCTune}
 
 #################### Sampler Constructor ####################
 
-function BHMC(params::Vector{Symbol}, traveltime::Real)
+function BHMC(params::ElementOrVector{Symbol}, traveltime::Real)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)

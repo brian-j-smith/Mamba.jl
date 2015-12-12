@@ -10,14 +10,14 @@ Implementation of the slice simplex sampler as described by Cowles et al. :cite:
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
+.. function:: SliceSimplex(params::ElementOrVector{Symbol}; scale::Real=1.0)
 
     Construct a ``Sampler`` object for which slice simplex sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to be continuous and constrained to a simplex.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
-        * ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
+        * ``params`` : stochastic node(s) to be updated with the sampler.
+        * ``scale`` : value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
 
     **Value**
 
@@ -37,7 +37,7 @@ Stand-Alone Function
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
+        * ``scale`` : value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
@@ -98,4 +98,4 @@ Declaration
 Fields
 ``````
 
-* ``scale`` : a value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
+* ``scale`` : value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.

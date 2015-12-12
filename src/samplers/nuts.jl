@@ -40,7 +40,8 @@ typealias NUTSVariate SamplerVariate{NUTSTune}
 
 #################### Sampler Constructor ####################
 
-function NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, target::Real=0.6)
+function NUTS(params::ElementOrVector{Symbol}; dtype::Symbol=:forward,
+              target::Real=0.6)
   epsilon = NaN
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)

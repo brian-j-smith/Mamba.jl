@@ -98,10 +98,10 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [AMWG([:theta], 0.1),
-          AMWG([:mu], 0.1),
-          Slice([:pc], 0.25, :univar),
-          Slice([:priors], [1.0, 5.0, 5.0, 0.25, 0.25, 5.0], :univar)]
+scheme = [AMWG(:theta, 0.1),
+          AMWG(:mu, 0.1),
+          Slice(:pc, 0.25, :univar),
+          Slice(:priors, [1.0, 5.0, 5.0, 0.25, 0.25, 5.0], :univar)]
 setsamplers!(model, scheme)
 
 

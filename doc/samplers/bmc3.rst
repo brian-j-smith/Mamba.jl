@@ -10,14 +10,14 @@ Implementation of the binary-state MCMC Model Composition of Madigan and York :c
 Model-Based Constructors
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMC3(params::Vector{Symbol}; k::Integer=1)
-              BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
+.. function:: BMC3(params::ElementOrVector{Symbol}; k::Integer=1)
+              BMC3(params::ElementOrVector{Symbol}, indexset::Vector{Vector{Int}})
 
     Construct a ``Sampler`` object for BMC3 sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
-        * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
+        * ``params`` : stochastic node(s) to be updated with the sampler.
         * ``k`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
         * ``indexset`` : candidate set of indices of the parameters whose states are to be changed simultaneously.
 

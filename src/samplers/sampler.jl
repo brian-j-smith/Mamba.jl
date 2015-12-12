@@ -5,6 +5,8 @@ const samplerfxargs = [(:model, :Model), (:block, :Integer)]
 
 #################### Constructors ####################
 
+Sampler(param::Symbol, args...) = Sampler([param], args...)
+
 function Sampler(params::Vector{Symbol}, f::Function, tune::Any=Dict())
   Sampler(params, modelfx(samplerfxargs, f), tune, Symbol[])
 end
@@ -67,6 +69,9 @@ end
 
 
 #################### Auxiliary Functions ####################
+
+asvec(x::Symbol) = [x]
+asvec(x::Vector) = x
 
 function logpdfgrad{T<:Real}(m::Model, x::Vector{T}, block::Integer,
                              dtype::Symbol)

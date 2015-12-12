@@ -24,7 +24,8 @@ typealias DGSVariate SamplerVariate{DGSTune}
 
 #################### Sampler Constructor ####################
 
-function DGS(params::Vector{Symbol})
+function DGS(params::ElementOrVector{Symbol})
+  params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
     s = model.samplers[block]
     x = unlist(model, block)

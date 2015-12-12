@@ -18,7 +18,8 @@ typealias SliceSimplexVariate SamplerVariate{SliceSimplexTune}
 
 #################### Sampler Constructor ####################
 
-function SliceSimplex(params::Vector{Symbol}; scale::Real=1.0)
+function SliceSimplex(params::ElementOrVector{Symbol}; scale::Real=1.0)
+  params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
     s = model.samplers[block]
     x = unlist(model, block)

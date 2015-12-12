@@ -9,16 +9,16 @@ Implementation of the Hybrid Monte Carlo (also known as Hamiltonian Monte Carlo)
 Model-Based Constructors
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: HMC(params::Vector{Symbol}, epsilon::Real, L::Integer; \
+.. function:: HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer; \
                   dtype::Symbol=:forward)
-              HMC(params::Vector{Symbol}, epsilon::Real, L::Integer, \
-                  Sigma::Matrix{T<:Real}; dtype::Symbol=:forward)
+              HMC(params::ElementOrVector{Symbol}, epsilon::Real, \
+                  L::Integer, Sigma::Matrix{T<:Real}; dtype::Symbol=:forward)
 
     Construct a ``Sampler`` object for HMC sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``epsilon`` : step size.
         * ``L`` : number of steps to take in the Leapfrog algorithm.
         * ``Sigma`` : covariance matrix for the multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.  If omitted, the identity matrix is assumed.

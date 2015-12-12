@@ -89,8 +89,8 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [MISS([:grade]),
-          AMWG([:theta], 0.1)]
+scheme = [MISS(:grade),
+          AMWG(:theta, 0.1)]
 setsamplers!(model, scheme)
 
 

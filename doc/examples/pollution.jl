@@ -142,25 +142,25 @@ inits = [
 scheme0 = [Gibbs_alphabeta, Gibbs_sigma2]
 
 ## Binary Hamiltonian Monte Carlo
-scheme1 = [BHMC([:gamma], (2 * p + 0.5) * pi); scheme0]
+scheme1 = [BHMC(:gamma, (2 * p + 0.5) * pi); scheme0]
 setsamplers!(model, scheme1)
 sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim1)
 
 ## Binary MCMC Model Composition
-scheme3 = [BMC3([:gamma]); scheme0]
+scheme3 = [BMC3(:gamma); scheme0]
 setsamplers!(model, scheme3)
 sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim3)
 
 ## Binary Metropolised Gibbs Sampling
-scheme2 = [BMG([:gamma]); scheme0]
+scheme2 = [BMG(:gamma); scheme0]
 setsamplers!(model, scheme2)
 sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim2)
 
 ## Discrete Gibbs Sampling
-scheme4 = [DGS([:gamma]); scheme0]
+scheme4 = [DGS(:gamma); scheme0]
 setsamplers!(model, scheme4)
 sim4 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim4)

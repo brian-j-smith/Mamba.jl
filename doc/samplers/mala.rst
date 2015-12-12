@@ -10,15 +10,16 @@ Implementation of the Metropolis-Adjusted Langevin Algorithm (MALA) of Roberts a
 Model-Based Constructors
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
-              MALA(params::Vector{Symbol}, scale::Real, Sigma::Matrix{T<:Real}; \
+.. function:: MALA(params::ElementOrVector{Symbol}, scale::Real; \
                    dtype::Symbol=:forward)
+              MALA(params::ElementOrVector{Symbol}, scale::Real, \
+                   Sigma::Matrix{T<:Real}; dtype::Symbol=:forward)
 
     Construct a ``Sampler`` object for MALA sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``scale`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
         * ``Sigma`` : covariance matrix for the multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.  If omitted, the identity matrix is assumed.
         * ``dtype`` : type of differentiation for gradient calculations. Options are

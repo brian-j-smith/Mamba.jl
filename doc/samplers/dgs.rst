@@ -10,13 +10,13 @@ Implementation of a sampler for the simulation of discrete or discretized model 
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: DGS(params::Vector{Symbol})
+.. function:: DGS(params::ElementOrVector{Symbol})
 
     Construct a ``Sampler`` object for which DGS sampling is to be applied separately to each of the supplied parameters.  Parameters are assumed to have discrete univariate distributions with finite supports.
 
     **Arguments**
 
-        *  ``params`` : stochastic nodes to be updated with the sampler.
+        *  ``params`` : stochastic node(s) to be updated with the sampler.
 
     **Value**
 

@@ -18,7 +18,7 @@ typealias BMC3Variate SamplerVariate{BMC3Tune}
 
 #################### Sampler Constructor ####################
 
-function BMC3(params::Vector{Symbol}; k::Integer=1)
+function BMC3(params::ElementOrVector{Symbol}; k::Integer=1)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)
@@ -28,7 +28,7 @@ function BMC3(params::Vector{Symbol}; k::Integer=1)
   Sampler(params, samplerfx, BMC3Tune())
 end
 
-function BMC3(params::Vector{Symbol}, indexset::Vector{Vector{Int}})
+function BMC3(params::ElementOrVector{Symbol}, indexset::Vector{Vector{Int}})
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)

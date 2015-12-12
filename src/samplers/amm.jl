@@ -32,7 +32,7 @@ typealias AMMVariate SamplerVariate{AMMTune}
 
 #################### Sampler Constructor ####################
 
-function AMM{T<:Real}(params::Vector{Symbol}, Sigma::Matrix{T};
+function AMM{T<:Real}(params::ElementOrVector{Symbol}, Sigma::Matrix{T};
                       adapt::Symbol=:all)
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))

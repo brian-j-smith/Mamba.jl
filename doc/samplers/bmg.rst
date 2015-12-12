@@ -10,13 +10,13 @@ Implementation of the binary-state Metropolised Gibbs sampler described by Schaf
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMG(params::Vector{Symbol}; k::Integer=1)
+.. function:: BMG(params::ElementOrVector{Symbol}; k::Integer=1)
 
     Construct a ``Sampler`` object for BMG sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
-        * ``params`` : stochastic nodes containing the parameters to be updated with the sampler.
+        * ``params`` : stochastic node(s) to be updated with the sampler.
         * ``k`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
 
     **Value**

@@ -10,14 +10,14 @@ Implementation of the Roberts and Rosenthal :cite:`robert:2009:EAM` adaptive (mu
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: AMM(params::Vector{Symbol}, Sigma::Matrix{T<:Real}; \
+.. function:: AMM(params::ElementOrVector{Symbol}, Sigma::Matrix{T<:Real}; \
                   adapt::Symbol=:all)
 
     Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
         * ``adapt`` : type of adaptation phase.  Options are
             * ``:all`` : adapt proposal during all iterations.

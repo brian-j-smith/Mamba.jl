@@ -20,7 +20,8 @@ typealias RWMVariate SamplerVariate{RWMTune}
 
 #################### Sampler Constructor ####################
 
-function RWM{T<:Real}(params::Vector{Symbol}, scale::ElementOrVector{T};
+function RWM{T<:Real}(params::ElementOrVector{Symbol},
+                      scale::ElementOrVector{T};
                       proposal::SymDistributionType=Normal)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)

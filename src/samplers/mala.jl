@@ -20,7 +20,8 @@ typealias MALAVariate SamplerVariate{MALATune}
 
 #################### Sampler Constructor ####################
 
-function MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
+function MALA(params::ElementOrVector{Symbol}, scale::Real;
+              dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)
     fx = x -> logpdfgrad!(model, x, block, dtype)
@@ -30,8 +31,8 @@ function MALA(params::Vector{Symbol}, scale::Real; dtype::Symbol=:forward)
   Sampler(params, samplerfx, MALATune())
 end
 
-function MALA{T<:Real}(params::Vector{Symbol}, scale::Real, Sigma::Matrix{T};
-                       dtype::Symbol=:forward)
+function MALA{T<:Real}(params::ElementOrVector{Symbol}, scale::Real,
+                       Sigma::Matrix{T}; dtype::Symbol=:forward)
   SigmaF = cholfact(Sigma)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)

@@ -10,14 +10,15 @@ Random walk Metropolis-Hastings algorithm :cite:`hastings:1970:MCS,metropolis:19
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: RWM(params::Vector{Symbol}, scale::ElementOrVector{T<:Real}; \
+.. function:: RWM(params::ElementOrVector{Symbol}, \
+                  scale::ElementOrVector{T<:Real}; \
                   proposal::SymDistributionType=Normal)
 
     Construct a ``Sampler`` object for RWM sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``scale`` : scaling value or vector of the same length as the combined elements of nodes ``params`` for the ``proposal`` distribution.  Values are relative to the unconstrained parameter space, where candidate draws are generated.
         * ``proposal`` : symmetric distribution of type ``Biweight``, ``Cosine``, ``Epanechnikov``, ``Normal``, ``SymTriangularDist``, ``SymUniform``, or ``Triweight`` to be centered around current parameter values and used to generate proposal draws.  Specified ``scale`` determines the standard deviations of Normal proposals and widths of the others.
 

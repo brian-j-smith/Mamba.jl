@@ -12,7 +12,7 @@ typealias BMGVariate SamplerVariate{BMGTune}
 
 #################### Sampler Constructor ####################
 
-function BMG(params::Vector{Symbol}; k::Integer=1)
+function BMG(params::ElementOrVector{Symbol}; k::Integer=1)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block)
     f = x -> logpdf!(model, x, block)

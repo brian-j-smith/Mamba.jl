@@ -10,18 +10,18 @@ Implementation of the NUTS extension (algorithm 6) :cite:`hoffman:2014:nuts` to 
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: NUTS(params::Vector{Symbol}; dtype::Symbol=:forward, \
+.. function:: NUTS(params::ElementOrVector{Symbol}; dtype::Symbol=:forward, \
                    target::Real=0.6)
 
     Construct a ``Sampler`` object for No-U-Turn sampling, with the algorithm's step size parameter adaptively tuned during burn-in iterations.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``dtype`` : type of differentiation for gradient calculations.  Options are
             * ``:central`` : central differencing.
             * ``:forward`` : forward differencing.
-        * ``target`` : a target acceptance rate for the algorithm.
+        * ``target`` : target acceptance rate for the algorithm.
 
     **Value**
 
@@ -58,7 +58,7 @@ Stand-Alone Functions
         * ``epsilon`` : the NUTS algorithm step size parameter.
         * ``fx`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
         * ``adapt`` : whether to adaptively update the ``epsilon`` step size parameter.
-        * ``target`` : a target acceptance rate for the algorithm.
+        * ``target`` : target acceptance rate for the algorithm.
 
     **Value**
 

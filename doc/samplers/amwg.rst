@@ -10,14 +10,15 @@ Implementation of a Metropolis-within-Gibbs sampler :cite:`metropolis:1953:ESC,r
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: AMWG(params::Vector{Symbol}, sigma::ElementOrVector{T<:Real}; \
-                   adapt::Symbol=:all, batchsize::Integer=50, target::Real=0.44)
+.. function:: AMWG(params::ElementOrVector{Symbol}, \
+                       sigma::ElementOrVector{T<:Real}; adapt::Symbol=:all, \
+                       batchsize::Integer=50, target::Real=0.44)
 
     Construct a ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
-        * ``params`` : stochastic nodes to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
+        * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
         * ``sigma`` : scaling value or vector of the same length as the combined elements of nodes ``params``, defining initial standard deviations for univariate normal proposal distributions.  Standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
         * ``adapt`` : type of adaptation phase.  Options are
             * ``:all`` : adapt proposals during all iterations.

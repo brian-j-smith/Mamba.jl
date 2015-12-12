@@ -71,10 +71,10 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [DGS([:T]),
+scheme = [DGS(:T),
           Slice([:lambda0, :theta], [5.0, 1.0]),
-          Slice([:s2], 2.0, transform=true),
-          SliceSimplex([:P], scale=0.75)]
+          Slice(:s2, 2.0, transform=true),
+          SliceSimplex(:P, scale=0.75)]
 setsamplers!(model, scheme)
 
 

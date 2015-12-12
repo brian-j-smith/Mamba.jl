@@ -18,8 +18,9 @@ typealias SliceVariate SamplerVariate{SliceTune}
 
 #################### Sampler Constructor ####################
 
-function Slice{T<:Real}(params::Vector{Symbol}, width::ElementOrVector{T},
-                        stype::Symbol=:multivar; transform::Bool=false)
+function Slice{T<:Real}(params::ElementOrVector{Symbol},
+                        width::ElementOrVector{T}, stype::Symbol=:multivar;
+                        transform::Bool=false)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, transform)
     f = x -> logpdf!(model, x, block, transform)

@@ -22,7 +22,7 @@ typealias HMCVariate SamplerVariate{HMCTune}
 
 #################### Sampler Constructor ####################
 
-function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
+function HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)
@@ -33,8 +33,8 @@ function HMC(params::Vector{Symbol}, epsilon::Real, L::Integer;
   Sampler(params, samplerfx, HMCTune())
 end
 
-function HMC{T<:Real}(params::Vector{Symbol}, epsilon::Real, L::Integer,
-                      Sigma::Matrix{T}; dtype::Symbol=:forward)
+function HMC{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
+                      L::Integer, Sigma::Matrix{T}; dtype::Symbol=:forward)
   SigmaF = cholfact(Sigma)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)

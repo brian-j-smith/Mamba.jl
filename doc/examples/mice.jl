@@ -70,9 +70,9 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [MISS([:t]),
-          Slice([:beta], 1.0, :univar),
-          Slice([:r], 0.25)]
+scheme = [MISS(:t),
+          Slice(:beta, 1.0, :univar),
+          Slice(:r, 0.25)]
 setsamplers!(model, scheme)
 
 
