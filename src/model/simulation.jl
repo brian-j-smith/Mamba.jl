@@ -92,11 +92,6 @@ function relist{T<:Real}(m::Model, values::AbstractArray{T},
 end
 
 function relist!{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
-                          transform::Bool=false)
-  relist!(m, convert(Array{Float64}, values), block, transform)
-end
-
-function relist!(m::Model, values::AbstractArray{Float64}, block::Integer=0,
                  transform::Bool=false)
   nodekeys = keys(m, :block, block)
   x = relist(m, values, nodekeys, transform)
@@ -107,11 +102,6 @@ function relist!(m::Model, values::AbstractArray{Float64}, block::Integer=0,
 end
 
 function relist!{T<:Real}(m::Model, values::AbstractArray{T},
-                          nodekeys::Vector{Symbol}, transform::Bool=false)
-  relist!(m, convert(Array{Float64}, values), nodekeys, transform)
-end
-
-function relist!(m::Model, values::AbstractArray{Float64},
                  nodekeys::Vector{Symbol}, transform::Bool=false)
   x = relist(m, values, nodekeys, transform)
   for key in nodekeys
