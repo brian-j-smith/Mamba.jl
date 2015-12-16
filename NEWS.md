@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.8.0
+* Simplified sampler interfaces.
+* Implemented an approximate Bayesian computation (ABC) sampler.
+* Implemented a random walk Metropolis (RWM) sampler.
+
 ### 0.7.4
 * Simplified implementations of sampling function types and constructors.
 * Implemented ``SamplerTune`` and ``SamplerVariate`` types.
