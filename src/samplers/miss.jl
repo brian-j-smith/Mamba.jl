@@ -41,16 +41,16 @@ end
 function MISS(params::ElementOrVector{Symbol})
   params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
-    tunepar = tune(model, block)
+    tune = Mamba.tune(model, block)
     value = Dict{Symbol, Any}()
     isfirstiter = model.iter == 1
     for key in params
       node = model[key]
       x = node[:]
       if isfirstiter
-        tunepar[key] = MISSTune(node)
+        tune[key] = MISSTune(node)
       end
-      miss = tunepar[key]
+      miss = tune[key]
       x[miss.valueinds] = rand(node, miss)
       value[key] = x
     end
