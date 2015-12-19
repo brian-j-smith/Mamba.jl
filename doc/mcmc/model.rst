@@ -104,7 +104,7 @@ Indexing
         * ``ntype`` : the type of nodes to return.  Options are
             * ``:all`` : all input, logical, and stochastic model nodes.
             * ``:assigned`` : nodes that have been assigned values.
-            * ``:block`` : stochastic nodes being updated by the sampling block(s) ``at::Integer=0`` (default: all blocks).
+            * ``:block`` : stochastic nodes being updated by the sampling block(s) ``at::Integer=0`` (default: all).
             * ``:dependent`` : logical and stochastic (dependent) nodes in topologically sorted order.
             * ``:independent`` or ``:input`` : input (independent) nodes.
             * ``:logical`` : logical nodes.
@@ -112,7 +112,7 @@ Indexing
             * ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
             * ``:source`` : nodes upon which the node ``at::Symbol`` or vector of nodes ``at::Vector{Symbol}`` depends.
             * ``:stochastic`` : stochastic nodes.
-            * ``:target`` : topollogically sorted nodes that depend on the node ``at::Symbol`` or vector of nodes ``at::Vector{Symbol}``.
+            * ``:target`` : topologically sorted nodes that depend on the sampling block(s) ``at::Integer=0`` (default: all), node ``at::Symbol``, or vector of nodes ``at::Vector{Symbol}``.
         * ``at...`` : additional positional arguments to be passed to the ``ntype`` options, as described above.
 
     **Value**

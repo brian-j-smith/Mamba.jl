@@ -91,7 +91,7 @@ function keys_assigned(m::Model)
 end
 
 function keys_block(m::Model, block::Integer=0)
-  block != 0 ? m.samplers[block].params : keys_block0(m)
+  block == 0 ? keys_block0(m) : m.samplers[block].params
 end
 
 function keys_block0(m::Model)
@@ -174,7 +174,17 @@ function keys_stochastic(m::Model)
   values
 end
 
-keys_target(m::Model, nodekey::Symbol) = m[nodekey].targets
+function keys_target(m::Model, block::Integer=0)
+  block == 0 ? keys_target0(m) : m.samplers[block].targets
+end
+
+function keys_target0(m::Model)
+  values = Symbol[]
+  for sampler in m.samplers
+    append!(values, sampler.targets)
+  end
+  intersect(keys(m, :dependent), values)
+end
 
 function keys_target(m::Model, nodekeys::Vector{Symbol})
   values = Symbol[]
