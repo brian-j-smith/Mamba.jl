@@ -22,19 +22,18 @@ function gradlogpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
   gradient(f, x, dtype)
 end
 
+
 function logpdf(m::Model, block::Integer=0, transform::Bool=false)
+  params = keys(m, :block, block)
+  targets = keys(m, :target, block)
+  logpdf(m, params, transform) + logpdf(m, setdiff(targets, params))
+end
+
+function logpdf(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
   lp = 0.0
-  if block != 0
-    sampler = m.samplers[block]
-    params = sampler.params
-    nodekeys = union(sampler.params, sampler.targets)
-  else
-    params = keys(m, :block)
-    nodekeys = keys(m, :stochastic)
-  end
   for key in nodekeys
-    lp += logpdf(m[key], transform && key in params)
-    isfinite(lp) || return -Inf
+    lp += logpdf(m[key], transform)
+    isfinite(lp) || break
   end
   lp
 end
@@ -49,27 +48,20 @@ end
 
 function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                           transform::Bool=false)
-  lp = 0.0
-  if block != 0
-    sampler = m.samplers[block]
-    params = sampler.params
-    targets = sampler.targets
-  else
-    params = keys(m, :block)
-    targets = keys(m, :stochastic)
-  end
+  params = keys(m, :block, block)
+  targets = keys(m, :target, block)
   m[params] = relist(m, x, params, transform)
-  for key in setdiff(params, targets)
-    lp += logpdf(m[key], transform)
-    isfinite(lp) || return -Inf
-  end
-  for key in targets
-    update!(m[key], m)
-    lp += logpdf(m[key], transform && key in params)
-    isfinite(lp) || return -Inf
+  lp = logpdf(m, setdiff(params, targets), transform)
+  state = start(targets)
+  while !done(targets, state) && isfinite(lp)
+    key, state = next(targets, state)
+    node = m[key]
+    update!(node, m)
+    lp += key in params ? logpdf(node, transform) : logpdf(node)
   end
   lp
 end
+
 
 function relist{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
                          transform::Bool=false)
@@ -110,6 +102,7 @@ function relist!{T<:Real}(m::Model, values::AbstractArray{T},
   update!(m)
 end
 
+
 function simulate!(m::Model, block::Integer=0)
   m.iter += 1
   isoneblock = block != 0
@@ -126,6 +119,7 @@ function simulate!(m::Model, block::Integer=0)
   m
 end
 
+
 function tune(m::Model, block::Integer=0)
   if block != 0
     values = m.samplers[block].tune
@@ -138,6 +132,7 @@ function tune(m::Model, block::Integer=0)
   end
   values
 end
+
 
 function unlist(m::Model, block::Integer=0, transform::Bool=false)
   unlist(m, keys(m, :block, block), transform)
@@ -155,6 +150,7 @@ end
 function unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
   vcat(map(key -> unlist(m[key], transform), nodekeys)...)
 end
+
 
 function update!(m::Model, block::Integer=0)
   nodekeys = block != 0 ? m.samplers[block].targets : keys(m, :dependent)

@@ -260,6 +260,7 @@ Parameter Block Operations
         Numerical approximation of derivatives by central and forward differencing is performed with the `Calculus` package :cite:`white:2014:CP`.
 
 .. function:: logpdf(m::Model, block::Integer=0, transform::Bool=false)
+              logpdf(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
               logpdf(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
                      transform::Bool=false)
               logpdf!(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
@@ -272,6 +273,7 @@ Parameter Block Operations
         * ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
         * ``x`` : a value (possibly different than the current one) at which to evaluate densities.
         * ``block`` : the sampling block of stochastic nodes over which to sum densities (default: all stochastic nodes).
+        * ``nodekeys`` : nodes over which to sum densities.
         * ``transform`` : whether to evaluate evaluate log-densities of block parameters on the link–transformed scale.
 
     **Value**
