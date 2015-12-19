@@ -42,9 +42,9 @@ end
 #################### Sampling Functions ####################
 
 function bmc3!(v::BMC3Variate, logf::Function; k::Integer=1)
-  d = length(v)
-  k <= d || throw(ArgumentError("k is greater than length(v)"))
-  bmc3_sub!(v, randperm(d)[1:k], logf)
+  n = length(v)
+  k <= n || throw(ArgumentError("k is greater than length(v)"))
+  bmc3_sub!(v, randperm(n)[1:k], logf)
 end
 
 function bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)

@@ -87,9 +87,9 @@ end
 
 function amwg_sub!(v::AMWGVariate, logf::Function)
   logf0 = logf(v.value)
-  d = length(v)
-  z = v.tune.sigma .* randn(d)
-  for i in 1:d
+  n = length(v)
+  z = v.tune.sigma .* randn(n)
+  for i in 1:n
     x = v[i]
     v[i] += z[i]
     logfprime = logf(v.value)

@@ -26,11 +26,11 @@ end
 #################### Sampling Functions ####################
 
 function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
-  d = length(v)
-  k <= d || throw(ArgumentError("k is greater than length(v)"))
+  n = length(v)
+  k <= n || throw(ArgumentError("k is greater than length(v)"))
 
-  probs = Array(Float64, d)
-  idx = randperm(d)[1:k]
+  probs = Array(Float64, n)
+  idx = randperm(n)[1:k]
 
   pbernoulli! = function(x, probs)
     for i in idx
@@ -53,7 +53,7 @@ function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
   pbernoulli!(x, probs)
   theta = map(p -> rand() < p, probs[idx])
 
-  if d == 1
+  if n == 1
     v[idx] = theta
   else
     y = v[:]

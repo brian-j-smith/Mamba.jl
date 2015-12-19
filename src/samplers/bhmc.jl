@@ -10,11 +10,11 @@ type BHMCTune <: SamplerTune
   wallcrosses::Int
 
   function BHMCTune(value::Vector{Float64}=Float64[])
-    d = length(value)
+    n = length(value)
     new(
       NaN,
-      rand(Normal(0, 1), d),
-      rand(Normal(0, 1), d),
+      rand(Normal(0, 1), n),
+      rand(Normal(0, 1), n),
       0,
       0
     )
@@ -47,7 +47,7 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
   j = 0
   totaltime = 0.0                     ## time the particle already moved
 
-  d = length(v)                       ## length of binary vector
+  n = length(v)                       ## length of binary vector
   S = sign(tune.position)
 
   while true
@@ -93,9 +93,9 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
 
     tune.position[j] = 0
 
-    S1 = (S + ones(d)) / 2.0
+    S1 = (S + ones(n)) / 2.0
     S1[j] = 0.0
-    S2 = (S + ones(d)) / 2.0
+    S2 = (S + ones(n)) / 2.0
     S2[j] = 1.0
 
     v2_new = tune.velocity[j]^2 +
@@ -110,6 +110,6 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
   end
 
   ## convert from (-/+1) to (0/1)
-  v[:] = (sign(tune.position) + ones(d)) / 2.0
+  v[:] = (sign(tune.position) + ones(n)) / 2.0
   v
 end

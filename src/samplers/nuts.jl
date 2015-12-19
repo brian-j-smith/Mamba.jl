@@ -65,9 +65,9 @@ function nutsepsilon(v::NUTSVariate, fx::Function)
   epsilon = 1.0
   _, rprime, gradprime, logfprime = leapfrog(v.value, r0, grad0, epsilon, fx)
   prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
-  d = 2 * (prob > 0.5) - 1
-  while prob^d > 0.5^d
-    epsilon *= 2.0^d
+  pm = 2 * (prob > 0.5) - 1
+  while prob^pm > 0.5^pm
+    epsilon *= 2.0^pm
     _, rprime, _, logfprime = leapfrog(v.value, r0, grad0, epsilon, fx)
     prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
   end
@@ -115,13 +115,13 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   n = 1
   s = true
   while s
-    d = 2 * (rand() > 0.5) - 1
-    if d == -1
+    pm = 2 * (rand() > 0.5) - 1
+    if pm == -1
       xminus, rminus, gradminus, _, _, _, xprime, nprime, sprime, alpha, nalpha =
-        buildtree(xminus, rminus, gradminus, d, j, epsilon, fx, logp0, logu0)
+        buildtree(xminus, rminus, gradminus, pm, j, epsilon, fx, logp0, logu0)
     else
       _, _, _, xplus, rplus, gradplus, xprime, nprime, sprime, alpha, nalpha =
-        buildtree(xplus, rplus, gradplus, d, j, epsilon, fx, logp0, logu0)
+        buildtree(xplus, rplus, gradplus, pm, j, epsilon, fx, logp0, logu0)
     end
     if sprime && rand() < nprime / n
       v[:] = xprime
@@ -143,10 +143,10 @@ function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
   x, r, grad, logf
 end
 
-function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
+function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
                    epsilon::Real, fx::Function, logp0::Real, logu0::Real)
   if j == 0
-    xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, d * epsilon, fx)
+    xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, pm * epsilon, fx)
     logpprime = logfprime - 0.5 * dot(rprime)
     nprime = Int(logu0 < logpprime)
     sprime = logu0 < logpprime + 1000.0
@@ -158,16 +158,16 @@ function buildtree(x::Vector, r::Vector, grad::Vector, d::Integer, j::Integer,
   else
     xminus, rminus, gradminus, xplus, rplus, gradplus, xprime, nprime, sprime,
       alphaprime, nalphaprime =
-        buildtree(x, r, grad, d, j - 1, epsilon, fx, logp0, logu0)
+        buildtree(x, r, grad, pm, j - 1, epsilon, fx, logp0, logu0)
     if sprime
-      if d == -1
+      if pm == -1
         xminus, rminus, gradminus, _, _, _, xprime2, nprime2, sprime2,
           alphaprime2, nalphaprime2 =
-            buildtree(xminus, rminus, gradminus, d, j - 1, epsilon, fx, logp0, logu0)
+            buildtree(xminus, rminus, gradminus, pm, j - 1, epsilon, fx, logp0, logu0)
       else
         _, _, _, xplus, rplus, gradplus, xprime2, nprime2, sprime2,
           alphaprime2, nalphaprime2 =
-            buildtree(xplus, rplus, gradplus, d, j - 1, epsilon, fx, logp0, logu0)
+            buildtree(xplus, rplus, gradplus, pm, j - 1, epsilon, fx, logp0, logu0)
       end
       if rand() < nprime2 / (nprime + nprime2)
         xprime = xprime2

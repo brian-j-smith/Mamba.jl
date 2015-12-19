@@ -56,7 +56,7 @@ function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
               adapt::Bool=true)
   tune = v.tune
 
-  d = length(v)
+  n = length(v)
   if adapt
     if !tune.adapt
       tune.adapt = true
@@ -64,32 +64,32 @@ function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
       tune.Mv = v.value
       tune.Mvv = v * v'
       tune.SigmaF = SigmaF
-      tune.SigmaLm = zeros(d, d)
+      tune.SigmaLm = zeros(n, n)
     end
-    x = v + tune.SigmaF[:L] * randn(d)
-    if tune.m > 2 * d
-      x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(d))
+    x = v + tune.SigmaF[:L] * randn(n)
+    if tune.m > 2 * n
+      x = tune.beta * x + (1.0 - tune.beta) * (v + tune.SigmaLm * randn(n))
     end
     if rand() < exp(logf(x) - logf(v.value))
       v[:] = x
     end
     tune.m += 1
-    sd = tune.scale / d
+    sd = tune.scale / n
     p = tune.m / (tune.m + 1.0)
     tune.Mv = p * tune.Mv + (1.0 - p) * v
     tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
     Sigma = (sd / p) * (tune.Mvv - tune.Mv * tune.Mv')
     F = cholfact(Sigma, :U, Val{true})
-    if rank(F) == d
+    if rank(F) == n
       tune.SigmaLm = F[:P] * F[:L]
     end
   else
     if tune.adapt
-      x = v + tune.beta * (tune.SigmaF[:L] * randn(d)) +
-          (1.0 - tune.beta) * (tune.SigmaLm * randn(d))
+      x = v + tune.beta * (tune.SigmaF[:L] * randn(n)) +
+          (1.0 - tune.beta) * (tune.SigmaLm * randn(n))
     else
       tune.SigmaF = SigmaF
-      x = v + tune.SigmaF[:L] * randn(d)
+      x = v + tune.SigmaF[:L] * randn(n)
     end
     if rand() < exp(logf(x) - logf(v.value))
       v[:] = x
