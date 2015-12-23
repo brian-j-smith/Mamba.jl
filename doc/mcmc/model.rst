@@ -15,12 +15,12 @@ Declaration
 Fields
 ^^^^^^
 
-* ``nodes::Dict{Symbol, Any}`` : a dictionary containing all input, logical, and stochastic model nodes.
+* ``nodes::Dict{Symbol, Any}`` : all input, logical, and stochastic model nodes.
 * ``samplers::Vector{Sampler}`` : sampling functions for updating blocks of stochastic nodes.
-* ``states::Vector{Vector{Float64}}`` : states of chains at the end of a possible series of MCMC runs.
+* ``states::Vector{Vector{Float64}}`` : states of chains at the end of an MCMC run in a possible series of runs.
 * ``iter::Int`` : current MCMC draw from the target distribution.
 * ``burnin::Int`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
-* ``hasinputs::Bool`` : whether values have been assigned to the input nodes.
+* ``hasinputs::Bool`` : whether values have been assigned to input nodes.
 * ``hasinits::Bool`` : whether initial values have been assigned to stochastic nodes.
 
 Constructor
@@ -35,8 +35,8 @@ Constructor
 
         * ``iter`` : current iteration of the MCMC simulation.
         * ``burnin`` : number of initial draws to be discarded as a burn-in sequence to allow for convergence.
-        * ``samplers`` : a vector of block-specific sampling functions.
-        * ``nodes...`` : an arbitrary number of user-specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``Logical`` or ``Stochastic`` type objects.  Their names in the model will be taken from the argument names.
+        * ``samplers`` : block-specific sampling functions.
+        * ``nodes...`` : arbitrary number of user-specified arguments defining logical and stochastic nodes in the model.  Argument values must be ``Logical`` or ``Stochastic`` type objects.  Their names in the model will be taken from the argument names.
 
     **Value**
 
@@ -49,20 +49,19 @@ Constructor
 MCMC Engine
 ^^^^^^^^^^^
 
-.. function:: mcmc(m::Model, inputs::Dict{Symbol}, \
-                   inits::Vector{Dict{Symbol, Any}}, iters::Integer; \
-                   burnin::Integer=0, thin::Integer=1, chains::Integer=1, \
-                   verbose::Bool=true)
+.. function:: mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol, Any}}, \
+                   iters::Integer; burnin::Integer=0, thin::Integer=1, \
+                   chains::Integer=1, verbose::Bool=true)
               mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
 
     Simulate MCMC draws for a specified model.
 
     **Arguments**
 
-        * ``m`` : a specified model.
+        * ``m`` : specified model.
         * ``mc`` : chains from a previous call to ``mcmc`` for which to simulate additional draws.
-        * ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
-        * ``inits`` : a vector of dictionaries that contain initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.  Consecutive runs of the simulator will iterate through the vector's dictionary elements.
+        * ``inputs`` : values for input model nodes.  Dictionary keys and values should be given for each input node.
+        * ``inits`` : dictionaries that contain initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.  Consecutive runs of the simulator will iterate through the vector's dictionary elements.
         * ``iters`` : number of draws to generate for each simulation run.
         * ``burnin`` : numer of initial draws to discard as a burn-in sequence to allow for convergence.
         * ``thin`` : step-size between draws to output.
@@ -80,14 +79,14 @@ MCMC Engine
 Indexing
 ^^^^^^^^
 
-.. function:: getindex(m::Model, key::Symbol)
+.. function:: getindex(m::Model, nodekey::Symbol)
 
-    Returns a model node identified by its symbol.  The syntax ``m[key]`` is converted to ``getindex(m, key)``.
+    Returns a model node identified by its symbol.  The syntax ``m[nodekey]`` is converted to ``getindex(m, nodekey)``.
 
     **Arguments**
 
-        * ``m`` : a model contining the node to get.
-        * ``key`` : symbol of the node to get.
+        * ``m`` : model containing the node to get.
+        * ``nodekey`` : node to get.
 
     **Value**
 
@@ -100,11 +99,11 @@ Indexing
 
     **Arguments**
 
-        * ``m`` : a model containing the nodes of interest.
-        * ``ntype`` : the type of nodes to return.  Options are
+        * ``m`` : model containing the nodes of interest.
+        * ``ntype`` : type of nodes to return.  Options are
             * ``:all`` : all input, logical, and stochastic model nodes.
             * ``:assigned`` : nodes that have been assigned values.
-            * ``:block`` : stochastic nodes being updated by the sampling block(s) ``at::Integer=0`` (default: all).
+            * ``:block`` : stochastic nodes being updated by the sampling block(s) ``at::Integer=0`` (default: all blocks).
             * ``:dependent`` : logical and stochastic (dependent) nodes in topologically sorted order.
             * ``:independent`` or ``:input`` : input (independent) nodes.
             * ``:logical`` : logical nodes.
@@ -112,7 +111,7 @@ Indexing
             * ``:output`` : stochastic nodes upon which no other stochastic nodes depend.
             * ``:source`` : nodes upon which the node ``at::Symbol`` or vector of nodes ``at::Vector{Symbol}`` depends.
             * ``:stochastic`` : stochastic nodes.
-            * ``:target`` : topologically sorted nodes that depend on the sampling block(s) ``at::Integer=0`` (default: all), node ``at::Symbol``, or vector of nodes ``at::Vector{Symbol}``.
+            * ``:target`` : topologically sorted nodes that depend on the sampling block(s) ``at::Integer=0`` (default: all blocks), node ``at::Symbol``, or vector of nodes ``at::Vector{Symbol}``.
         * ``at...`` : additional positional arguments to be passed to the ``ntype`` options, as described above.
 
     **Value**
@@ -128,8 +127,8 @@ Display
 
     **Arguments**
 
-        * ``m`` : a model for which to construct a graph.
-        * ``filename`` : an external file to which to save the resulting graph, or an empty string to draw to standard output (default).  If a supplied external file name does not include a dot (``.``), the file extension ``.dot`` will be appended automatically.
+        * ``m`` : model for which to construct a graph.
+        * ``filename`` : external file to which to save the resulting graph, or an empty string to draw to standard output (default).  If a supplied external file name does not include a dot (``.``), the file extension ``.dot`` will be appended automatically.
 
     **Value**
 
@@ -145,7 +144,7 @@ Display
 
     **Arguments**
 
-        * ``m`` : a model for which to construct a graph.
+        * ``m`` : model for which to construct a graph.
 
     **Value**
 
@@ -157,7 +156,7 @@ Display
 
     **Arguments**
 
-        * ``m`` : a model for which to construct a graph.
+        * ``m`` : model for which to construct a graph.
 
     **Value**
 
@@ -184,8 +183,8 @@ Initialization
 
     **Arguments**
 
-        * ``m`` : a model with nodes to be initialized.
-        * ``inits`` : a dictionary of initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.
+        * ``m`` : model with nodes to be initialized.
+        * ``inits`` : initial values for stochastic model nodes.  Dictionary keys and values should be given for each stochastic node.
 
     **Value**
 
@@ -201,8 +200,8 @@ Initialization
 
     **Arguments**
 
-        * ``m`` : a model with input nodes to be assigned.
-        * ``inputs`` : a dictionary of values for input model nodes.  Dictionary keys and values should be given for each input node.
+        * ``m`` : model with input nodes to be assigned.
+        * ``inputs`` : values for input model nodes.  Dictionary keys and values should be given for each input node.
 
     **Value**
 
@@ -218,7 +217,7 @@ Initialization
 
     **Arguments**
 
-        * ``m`` : a model with stochastic nodes to be sampled.
+        * ``m`` : model with stochastic nodes to be sampled.
         * ``samplers`` : block-specific samplers.
 
     **Values:**
@@ -243,9 +242,9 @@ Parameter Block Operations
 
     **Arguments**
 
-        * ``m`` : a model containing the stochastic nodes for which to compute the gradient.
-        * ``x`` : a value (possibly different than the current one) at which to compute the gradient.
-        * ``block`` : the sampling block of stochastic nodes for which to compute the gradient (default: all stochastic nodes).
+        * ``m`` : model containing the stochastic nodes for which to compute the gradient.
+        * ``block`` : sampling block of stochastic nodes for which to compute the gradient (default: all stochastic nodes).
+        * ``x`` : value (possibly different than the current one) at which to compute the gradient.
         * ``transform`` : whether to compute the gradient of block parameters on the link–transformed scale.
         * ``dtype`` : type of differentiation for gradient calculations.  Options are
             * ``:central`` : central differencing.
@@ -270,10 +269,10 @@ Parameter Block Operations
 
     **Arguments**
 
-        * ``m`` : a model containing the stochastic nodes for which to evaluate log-densities.
-        * ``x`` : a value (possibly different than the current one) at which to evaluate densities.
-        * ``block`` : the sampling block of stochastic nodes over which to sum densities (default: all stochastic nodes).
+        * ``m`` : model containing the stochastic nodes for which to evaluate log-densities.
+        * ``block`` : sampling block of stochastic nodes over which to sum densities (default: all stochastic nodes).
         * ``nodekeys`` : nodes over which to sum densities.
+        * ``x`` : value (possibly different than the current one) at which to evaluate densities.
         * ``transform`` : whether to evaluate evaluate log-densities of block parameters on the link–transformed scale.
 
     **Value**
@@ -286,8 +285,8 @@ Parameter Block Operations
 
     **Argument:**
 
-        * ``m`` : a model specification.
-        * ``block`` : the block for which to simulate an MCMC draw (default: all blocks).
+        * ``m`` : model specification.
+        * ``block`` : block for which to simulate an MCMC draw (default: all blocks).
 
     **Value**
 
@@ -303,8 +302,8 @@ Parameter Block Operations
 
     **Arguments**
 
-        * ``m`` : a model with block-samplers.
-        * ``block`` : the block for which to return the tuning parameters (default: all blocks).
+        * ``m`` : model with block-samplers.
+        * ``block`` : block for which to return the tuning parameters (default: all blocks).
 
     **Value**
 
@@ -312,23 +311,23 @@ Parameter Block Operations
 
 .. function:: unlist(m::Model, block::Integer=0, transform::Bool=false)
               unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
-              relist(m::Model, values::AbstractArray{T<:Real}, \
-                     block::Integer=0, transform::Bool=false)
-              relist(m::Model, values::AbstractArray{T<:Real}, \
-                     nodekeys::Vector{Symbol},transform::Bool=false)
-              relist!(m::Model, values::AbstractArray{T<:Real}, \
-                      block::Integer=0, transform::Bool=false)
-              relist!(m::Model, values::AbstractArray{T<:Real}, nodekey::Symbol, \ 
+              relist(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
+                     transform::Bool=false)
+              relist(m::Model, x::AbstractArray{T<:Real}, \
+                     nodekeys::Vector{Symbol}, transform::Bool=false)
+              relist!(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
+                      transform::Bool=false)
+              relist!(m::Model, x::AbstractArray{T<:Real}, nodekey::Symbol, \
                       transform::Bool=false)
 
     Convert (unlist) sets of logical and/or stochastic node values to vectors, or reverse (relist) the process.
 
     **Arguments**
 
-        * ``m`` : a model containing nodes to be unlisted or relisted.
-        * ``values`` : values to re-list.
-        * ``block`` : the sampling block of nodes to be listed (default: all blocks).
+        * ``m`` : model containing nodes to be unlisted or relisted.
+        * ``block`` : sampling block of nodes to be listed (default: all blocks).
         * ``nodekey/nodekeys`` : node(s) to be listed.
+        * ``x`` : values to re-list.
         * ``transform`` : whether to apply a link transformation in the conversion.
 
     **Value**
@@ -336,13 +335,15 @@ Parameter Block Operations
         The ``unlist`` methods return vectors of concatenated node values, ``relist`` return dictionaries of symbol keys and values for the specified nodes, and ``relist!`` return their model argument with values copied to the nodes.
 
 .. function:: update!(m::Model, block::Integer=0)
+              update!(m::Model, nodekeys::Vector{Symbol})
 
     Update values of logical and stochastic model node according to their relationship with others in a model.
 
     **Arguments**
 
-        * ``m`` : a mode with nodes to be updated.
-        * ``block`` : the sampling block of nodes to be updated (default: all blocks).
+        * ``m`` : mode with nodes to be updated.
+        * ``block`` : sampling block of nodes to be updated (default: all blocks).
+        * ``nodekeys`` : nodes to be updated in the given order.
 
     **Value**
 

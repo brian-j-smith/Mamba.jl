@@ -18,12 +18,12 @@ Declaration
 Fields
 ^^^^^^
 
-* ``value::T`` : a scalar or array of ``Float64`` values that represent samples from a target distribution.
-* ``symbol::Symbol`` : an identifying symbol for the node.
+* ``value::T`` : scalar or array of ``Float64`` values that represent samples from a target distribution.
+* ``symbol::Symbol`` : identifying symbol for the node.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
-* ``eval::Function`` : a function for updating the state of the node.
-* ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
-* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``eval::Function`` : function for updating the state of the node.
+* ``sources::Vector{Symbol}`` : other nodes upon whom the values of this one depends.
+* ``targets::Vector{Symbol}`` : ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Display
 ^^^^^^^
@@ -46,8 +46,8 @@ Initialization
 
     **Arguments**
 
-        * ``d`` : a node whose elements contain sampled MCMC values.
-        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+        * ``d`` : node whose elements contain sampled MCMC values.
+        * ``monitor`` : boolean indicating whether all elements are monitored, or vector of element-wise indices of elements to monitor.
 
     **Value**
 
@@ -63,7 +63,7 @@ Node Operations
 
     **Arguments**
 
-        * ``d`` : a node for which to evaluate the log-density.
+        * ``d`` : node for which to evaluate the log-density.
         * ``x`` : value, of the same type and shape as the node value, at which to perform the evaluation.  If not specified, the node value is used.
         * ``transform`` : whether the evaluation is on the link-transformed scale.
 
@@ -80,7 +80,7 @@ Node Operations
 
     **Arguments**
 
-        * ``d`` : a node for which to unlist or relist values.
+        * ``d`` : node for which to unlist or relist values.
         * ``x`` : values to be listed.  If not specified, the node values are used.
         * ``transform`` : whether to apply a link or inverse-link transformation to the values.  In this generic method, transformations are defined to be the identity function.
 
@@ -115,11 +115,11 @@ Fields
 ^^^^^^
 
 * ``value`` : values of type ``Float64`` for ``ScalarLogical`` nodes and ``Array{Float64}`` for ``ArrayLogical`` nodes that represent samples from a target distribution.
-* ``symbol::Symbol`` : an identifying symbol for the node.
+* ``symbol::Symbol`` : identifying symbol for the node.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
-* ``eval::Function`` : a function for updating values stored in ``value``.
-* ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the values of this one depends.
-* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``eval::Function`` : function for updating values stored in ``value``.
+* ``sources::Vector{Symbol}`` : other nodes upon whom the values of this one depends.
+* ``targets::Vector{Symbol}`` : ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructors
 ^^^^^^^^^^^^
@@ -132,8 +132,8 @@ Constructors
     **Arguments**
 
         * ``d`` : number of dimensions for array nodes.
-        * ``f`` : a function whose untyped arguments are the other model nodes upon which this one depends.  The function may contain any valid **julia** expression or code block.  It will be saved in the ``eval`` field of the constructed logical node and should return a value in the same type as and with which to update the node's ``value`` field.
-        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+        * ``f`` : function whose untyped arguments are the other model nodes upon which this one depends.  The function may contain any valid **julia** expression or code block.  It will be saved in the ``eval`` field of the constructed logical node and should return a value in the same type as and with which to update the node's ``value`` field.
+        * ``monitor`` : boolean indicating whether all elements are monitored, or vector of element-wise indices of elements to monitor.
 
     **Value**
 
@@ -152,8 +152,8 @@ Initialization
 
     **Arguments**
 
-        * ``l`` : a logical node to which to assign initial values.
-        * ``m`` : a model that contains the node.
+        * ``l`` : logical node to which to assign initial values.
+        * ``m`` : model containing the node.
 
     **Value**
 
@@ -168,8 +168,8 @@ Node Operations
 
     **Arguments**
 
-        * ``l`` : a logical node to update.
-        * ``m`` : a model that contains the node.
+        * ``l`` : logical node to update.
+        * ``m`` : model containing the node.
 
     **Value**
 
@@ -202,12 +202,12 @@ Fields
 ^^^^^^
 
 * ``value`` : values of type ``Float64`` for ``ScalarStochastic`` nodes and ``Array{Float64}`` for ``ArrayStochastic`` nodes that represent samples from a target distribution.
-* ``symbol::Symbol`` : an identifying symbol for the node.
+* ``symbol::Symbol`` : identifying symbol for the node.
 * ``monitor::Vector{Int}`` : indices identifying elements of the ``value`` field to include in monitored MCMC sampler output.
-* ``eval::Function`` : a function for updating the ``distr`` field for the node.
-* ``sources::Vector{Symbol}`` : symbols of other nodes upon whom the distributional specification for this one depends.
-* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
-* ``distr`` : a distributional specification of type ``UnivariateDistribution`` for ``ScalarStochastic`` nodes and ``DistributionStruct`` for ``ArrayStochastic`` nodes.
+* ``eval::Function`` : function for updating the ``distr`` field for the node.
+* ``sources::Vector{Symbol}`` : other nodes upon whom the distributional specification for this one depends.
+* ``targets::Vector{Symbol}`` : ``Dependent`` nodes that depend on this one.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``distr`` : distributional specification of type ``UnivariateDistribution`` for ``ScalarStochastic`` nodes and ``DistributionStruct`` for ``ArrayStochastic`` nodes.
 
 Distribution Structures
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -231,8 +231,8 @@ Constructors
     **Arguments**
 
         * ``d`` : number of dimensions for array nodes.
-        * ``f`` : a function whose untyped arguments are the other model nodes upon which this one depends.  The function may contain any valid **julia** expression or code block.  It will be saved in the ``eval`` field of the constructed stochastic node and should return a ``DistributionStruct`` object to be stored in the node's ``distr`` field.
-        * ``monitor`` : a boolean indicating whether all elements are monitored, or a vector of element-wise indices of elements to monitor.
+        * ``f`` : function whose untyped arguments are the other model nodes upon which this one depends.  The function may contain any valid **julia** expression or code block.  It will be saved in the ``eval`` field of the constructed stochastic node and should return a ``DistributionStruct`` object to be stored in the node's ``distr`` field.
+        * ``monitor`` : boolean indicating whether all elements are monitored, or vector of element-wise indices of elements to monitor.
 
     **Value**
 
@@ -251,8 +251,8 @@ Initialization
 
     **Arguments**
 
-        * ``s`` : a stochastic node to which to assign initial values.
-        * ``m`` : a model that contains the node.
+        * ``s`` : stochastic node to which to assign initial values.
+        * ``m`` : model containing the node.
         * ``x`` : values to assign to the node.
 
     **Value**
@@ -269,7 +269,7 @@ Node Operations
 
     **Arguments**
 
-        * ``s`` : a stochastic node for which to evaluate the log-density.
+        * ``s`` : stochastic node for which to evaluate the log-density.
         * ``x`` : value, of the same type and shape as the node value, at which to perform the evaluation.  If not specified, the node value is used.
         * ``transform`` : whether the evaluation is on the link-transformed scale.
 
@@ -283,7 +283,7 @@ Node Operations
 
     **Arguments**
 
-        * ``s`` : a stochastic node from which to generate a random sample.
+        * ``s`` : stochastic node from which to generate a random sample.
 
     **Value**
 
@@ -298,7 +298,7 @@ Node Operations
 
     **Arguments**
 
-        * ``s`` : a stochastic node for which to unlist or relist values.
+        * ``s`` : stochastic node for which to unlist or relist values.
         * ``x`` : values to be listed.  If not specified, the node values are used.
         * ``transform`` : whether to apply a link transformation, or its inverse, to map values in a constrained distributional support to an unconstrained space.  Supports for continuous, univariate distributions and positive-definite matrix distributions (Wishart or inverse-Wishart) are transformed as follows:
 
@@ -317,8 +317,8 @@ Node Operations
 
     **Arguments**
 
-        * ``s`` : a stochastic node to update.
-        * ``m`` : a model that contains the node.
+        * ``s`` : stochastic node to update.
+        * ``m`` : model containing the node.
 
     **Value**
 

@@ -22,11 +22,11 @@ Declarations
 Fields
 ^^^^^^
 
-* ``value::Array{Float64, 3}`` : a 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
+* ``value::Array{Float64, 3}`` : 3-dimensional array of sampled values whose first, second, and third dimensions index the iterations, parameter elements, and runs of an MCMC sampler, respectively.
 * ``range::Range{Int}`` : range of iterations stored in the rows of the ``value`` array.
 * ``names::Vector{AbstractString}`` : names assigned to the parameter elements.
 * ``chains::Vector{Int}`` : indices to the MCMC runs.
-* ``model::Model`` : the model from which the sampled values were generated (``ModelChains`` only).
+* ``model::Model`` : model from which the sampled values were generated (``ModelChains`` only).
 
 Constructors
 ^^^^^^^^^^^^
@@ -52,12 +52,12 @@ Constructors
 
         * ``iters`` : total number of iterations in each sampler run, of which ``length(start:thin:iters)`` outputted iterations will be stored in the object.
         * ``params`` : number of parameters to store.
-        * ``value`` : an array whose first, second (optional), and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
+        * ``value`` : array whose first, second (optional), and third (optional) dimensions index outputted iterations, parameter elements, and runs of an MCMC sampler, respectively.
         * ``start`` : number of the first iteration to be stored.
         * ``thin`` : number of steps between consecutive iterations to be stored.
         * ``chains`` : number of simulation runs for which to store output, or indices to the runs (default: 1, 2, ...).
         * ``names`` : names to assign to the parameter elements (default: ``"Param1"``, ``"Param2"``, ...).
-        * ``m`` : the model for which simulated values were generated.
+        * ``m`` : model for which simulated values were generated.
 
     **Value**
 
@@ -111,9 +111,9 @@ Indexing and Concatenation
     **Arguments**
 
         * ``c`` : sampler output to subset.
-        * ``window`` : Indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.
-        * ``names`` : Indices for subsetting of parameters that can be specified as strings, integers, or booleans identifying parameters to be kept.  ``ModelChains`` may additionally be indexed by model node symbols.
-        * ``chains`` : Indices for chains can be integers or booleans.
+        * ``window`` : indices of the form ``start:stop`` or ``start:thin:stop`` can be used to subset iterations, where ``start`` and ``stop`` define a range for the subset and ``thin`` will apply additional thinning to existing sampler output.
+        * ``names`` : indices for subsetting of parameters that can be specified as strings, integers, or booleans identifying parameters to be kept.  ``ModelChains`` may additionally be indexed by model node symbols.
+        * ``chains`` : indices for chains can be integers or booleans.
 
     A value of ``:`` can be specified for any of the dimensions to indicate no subsetting.
 
@@ -133,9 +133,9 @@ Indexing and Concatenation
 
         * ``c`` : object within which to store sampler output.
         * ``value`` : sampler output.
-        * ``iters`` : Iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.
-        * ``names`` : Indices for subsetting of parameters can be specified as strings, integers, or booleans.
-        * ``chains`` : Indices for chains can be integers or booleans.
+        * ``iters`` : iterations can be indexed as a ``start:stop`` or ``start:thin:stop`` range, a single numeric index, or a vector of indices; and are taken to be relative to the index range store in the ``c.range`` field.
+        * ``names`` : indices for subsetting of parameters can be specified as strings, integers, or booleans.
+        * ``chains`` : indices for chains can be integers or booleans.
 
         A value of ``:`` can be specified for any of the dimensions to index all corresponding elements.
 
@@ -156,8 +156,8 @@ File I/O
 
     **Arguments**
 
-        * ``output`` : Name of a text file containing the iteration numbers and sampled values for the model parameters.
-        * ``index`` : Name of a text file containing the names of the parameters, followed by the first and last rows in which their output can be found in the ``output`` file.
+        * ``output`` : text file containing the iteration numbers and sampled values for the model parameters.
+        * ``index`` : text file containing the names of the parameters, followed by the first and last rows in which their output can be found in the ``output`` file.
 
     **Value**
 
@@ -431,7 +431,7 @@ Posterior Summary Statistics
 
     **Arguments**
 
-        * ``x`` : a time series of values on which to perform calculations.
+        * ``x`` : time series of values on which to perform calculations.
         * ``method`` : method used for the calculations.  Options are
             * ``:bm`` : batch means :cite:`glynn:1991:EAV`, with optional argument ``size::Integer=100`` determining the number of sequential values to include in each batch.  This method requires that the number of values in ``x`` is at least 2 times the batch size.
             * ``:imse`` : initial monotone sequence estimator :cite:`geyer:1992:PMC`.
@@ -505,7 +505,7 @@ Model-Based Inference
     **Arguments**
 
         * ``mc``: sampler output from a model fit with the :func:`mcmc` function.
-        * ``nodekey/nodekeys``: Stochastic model node(s) over which to sum densities (default: all).
+        * ``nodekey/nodekeys``: stochastic model node(s) over which to sum densities (default: all).
 
     **Value**
 
@@ -584,14 +584,14 @@ Plotting
 
     **Arguments**
 
-        * ``p`` : array of plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
+        * ``p`` : plots to be drawn.  Elements of ``p`` are read in the order stored by **julia** (e.g. column-major order for matrices) and written to the display grid according to the ``byrow`` argument.  Grids will be filled sequentially until all plots have been drawn.
         * ``fmt`` : output format. Options are
             * ``:pdf`` : Portable Document Format (.pdf).
             * ``:pgf`` : Portable Graphics Format (.pgf).
             * ``:png`` : Portable Network Graphics (.png).
             * ``:ps``  : Postscript (.ps).
             * ``:svg`` : Scalable Vector Graphics (.svg).
-        * ``filename`` : an external file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
+        * ``filename`` : file to which to save the display grids as they are drawn, or an empty string to draw to the display device (default).  If a supplied external file name does not include a dot (``.``), then a hyphen followed by the grid sequence number and then the format extension will be appended automatically.  In the case of multiple grids, the former file name behavior will write all grids to the single named file, but prompt users before advancing to the next grid and overwriting the file; the latter behavior will write each grid to a different file.
         * ``width/height`` : grid widths/heights in ``cm``, ``mm``, ``inch``, ``pt``, or ``px`` units.
         * ``nrow/ncol`` : number of rows/columns in the display grids.
         * ``byrow`` : whether the display grids should be filled by row.

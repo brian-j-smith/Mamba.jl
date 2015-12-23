@@ -63,40 +63,40 @@ function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
 end
 
 
-function relist{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
+function relist{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                          transform::Bool=false)
-  relist(m, values, keys(m, :block, block), transform)
+  relist(m, x, keys(m, :block, block), transform)
 end
 
-function relist{T<:Real}(m::Model, values::AbstractArray{T},
+function relist{T<:Real}(m::Model, x::AbstractArray{T},
                          nodekeys::Vector{Symbol}, transform::Bool=false)
-  x = Dict{Symbol,Any}()
-  N = length(values)
+  values = Dict{Symbol,Any}()
+  N = length(x)
   offset = 0
   for key in nodekeys
-    value, n = relistlength(m[key], sub(values, (offset + 1):N), transform)
-    x[key] = value
+    value, n = relistlength(m[key], sub(x, (offset + 1):N), transform)
+    values[key] = value
     offset += n
   end
-  offset == length(values) ||
+  offset == length(x) ||
     throw(ArgumentError("incompatible number of values to put in nodes"))
-  x
+  values
 end
 
-function relist!{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
+function relist!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                  transform::Bool=false)
   nodekeys = keys(m, :block, block)
-  x = relist(m, values, nodekeys, transform)
+  values = relist(m, x, nodekeys, transform)
   for key in nodekeys
-    m[key].value = x[key]
+    m[key].value = values[key]
   end
   update!(m, block)
 end
 
-function relist!{T<:Real}(m::Model, values::AbstractArray{T}, nodekey::Symbol,
+function relist!{T<:Real}(m::Model, x::AbstractArray{T}, nodekey::Symbol,
                           transform::Bool=false)
   node = m[nodekey]
-  m[nodekey] = relist(node, values, transform)
+  m[nodekey] = relist(node, x, transform)
   update!(m, node.targets)
 end
 

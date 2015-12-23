@@ -1,5 +1,4 @@
 .. index:: Sampler Types
-
 .. index:: Sampler Types; Sampler
 
 .. _section-Sampler:
@@ -17,10 +16,10 @@ Declaration
 Fields
 ^^^^^^
 
-* ``params::Vector{Symbol}`` : symbols of stochastic nodes in the block being updated by the sampler.
+* ``params::Vector{Symbol}`` : stochastic nodes in the block being updated by the sampler.
 * ``eval::Function`` : sampling function that updates values of the ``params`` nodes.
 * ``tune::T`` : tuning parameters needed by the sampling function.
-* ``targets::Vector{Symbol}`` : symbols of ``Dependent`` nodes that depend on and whose states must be updated after ``params``.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
+* ``targets::Vector{Symbol}`` : ``Dependent`` nodes that depend on and whose states must be updated after ``params``.  Elements of ``targets`` are topologically sorted so that a given node in the vector is conditionally independent of subsequent nodes, given the previous ones.
 
 Constructors
 ^^^^^^^^^^^^
@@ -32,7 +31,7 @@ Constructors
 
     **Arguments**
 
-        * ``param/params`` : symbol(s) of nodes that are being block-updated by the sampler.
+        * ``param/params`` : node(s) being block-updated by the sampler.
         * ``f`` : function for the ``eval`` field of the constructed sampler and whose arguments are the other model nodes upon which the sampler depends, typed argument ``model::Model`` that contains all model nodes, and/or typed argument ``block::Integer`` that is an index identifying the corresponding sampling function in a vector of all samplers for the associated model.  Through the arguments, all model nodes and fields can be accessed in the body of the function.  The function may return an updated sample for the nodes identified in its ``params`` field.  Such a return value can be a structure of the same type as the node if the block consists of only one node, or a dictionary of node structures with keys equal to the block node symbols if one or more.  Alternatively, a value of ``nothing`` may be returned.  Return values that are not ``nothing`` will be used to automatically update the node values and propagate them to dependent nodes.  No automatic updating will be done if ``nothing`` is returned.
         * ``tune`` : tuning parameters needed by the sampling function.
 

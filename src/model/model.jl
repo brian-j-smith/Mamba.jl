@@ -26,9 +26,7 @@ end
 
 #################### Indexing ####################
 
-function Base.getindex(m::Model, key::Symbol)
-  m.nodes[key]
-end
+Base.getindex(m::Model, nodekey::Symbol) = m.nodes[nodekey]
 
 function Base.setindex!(m::Model, values::Dict, nodekeys::Vector{Symbol})
   for key in nodekeys
