@@ -28,21 +28,29 @@ Base.stride(v::ArrayVariate, k::Int) = stride(v.value, k)
 
 #################### Indexing ####################
 
-Base.getindex(v::ScalarVariate, i::Int) = v.value[i]
-Base.getindex(v::ScalarVariate, inds::Union{Range, Vector}) =
+Base.getindex(v::ScalarVariate, ind::Int) = v.value[ind]
+
+Base.getindex(v::ScalarVariate, inds::Union{Range{Int}, Vector{Int}}) =
   Float64[v[i] for i in inds]
-Base.getindex(v::ScalarVariate, ::Colon) = v[[1]]
 
 Base.getindex(v::ArrayVariate, inds::Int...) = getindex(v.value, inds...)
 
-function Base.setindex!(v::ScalarVariate, x, inds)
-  length(x) == 1 || throw(ArgumentError("value to set is not of length 1"))
-  for i in inds
-    i == 1 || throw(BoundsError())
-    v.value = x[i]
+
+Base.setindex!(v::ScalarVariate, x::Real, ind::Int) = (v.value = x[ind])
+
+function Base.setindex!{T<:Real}(v::ScalarVariate, x::Vector{T},
+                                 inds::Union{Range{Int}, Vector{Int}})
+  nx = length(x)
+  ninds = length(inds)
+  nx == ninds ||
+    throw(DimensionMismatch(
+      "tried to assign $nx elements to $ninds destinations"
+    ))
+
+  for i in 1:nx
+    v[inds[i]] = x[i]
   end
 end
-Base.setindex!(v::ScalarVariate, x, ::Colon) = (v[1] = x)
 
 Base.setindex!(v::ArrayVariate, x, inds::Int...) = setindex!(v.value, x, inds...)
 

@@ -28,19 +28,25 @@ end
 
 Base.getindex(m::Model, nodekey::Symbol) = m.nodes[nodekey]
 
+
+function Base.setindex!(m::Model, value, nodekey::Symbol)
+  node = m[nodekey]
+  if isa(node, AbstractDependent)
+    node.value = value
+  else
+    m.nodes[nodekey] = convert(typeof(node), value)
+  end
+end
+
 function Base.setindex!(m::Model, values::Dict, nodekeys::Vector{Symbol})
   for key in nodekeys
-    m[key][:] = values[key]
+    m[key] = values[key]
   end
 end
 
 function Base.setindex!(m::Model, value, nodekeys::Vector{Symbol})
   length(nodekeys) == 1 || throw(BoundsError())
-  m[nodekeys[1]][:] = value
-end
-
-function Base.setindex!(m::Model, value, nodekey::Symbol)
-  m[nodekey][:] = value
+  m[first(nodekeys)] = value
 end
 
 

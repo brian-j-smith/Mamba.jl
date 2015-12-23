@@ -96,7 +96,7 @@ function setinits!(l::AbstractLogical, m::Model, ::Any=nothing)
 end
 
 function update!(l::AbstractLogical, m::Model)
-  l[:] = l.eval(m)
+  l.value = l.eval(m)
   l
 end
 
