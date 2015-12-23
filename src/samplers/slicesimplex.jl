@@ -22,25 +22,26 @@ function SliceSimplex(params::ElementOrVector{Symbol}; scale::Real=1.0)
   params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
     s = model.samplers[block]
-    x = unlist(model, block)
-    offset = 0
+    local node, x
     for key in params
+      node = model[key]
+      x = unlist(node)
 
-      sim = function(inds, logf)
-        v = SamplerVariate(x[offset + inds], s, model.iter)
+      sim = function(inds::Range, logf::Function)
+        v = SamplerVariate(x[inds], s, model.iter)
         slicesimplex!(v, logf, scale=scale)
       end
 
-      logf = function(inds, value)
-        x[offset + inds] = value
-        logpdf!(model, x, block)
+      logf = function(d::MultivariateDistribution, v::AbstractVector,
+                      inds::Range)
+        x[inds] = v
+        relist!(model, x, key)
+        logpdf(d, v) + logpdf(model, node.targets)
       end
 
-      node = model[key]
       SliceSimplex_sub!(node.distr, sim, logf)
-      offset += length(node)
     end
-    relist(model, x, block)
+    nothing
   end
   Sampler(params, samplerfx, SliceSimplexTune())
 end
@@ -48,15 +49,16 @@ end
 function SliceSimplex_sub!(d::MultivariateDistribution, sim::Function,
                            logf::Function)
   inds = 1:length(d)
-  sim(inds, x -> logf(inds, x))
+  sim(inds, v -> logf(d, v, inds))
 end
 
 function SliceSimplex_sub!(D::Array{MultivariateDistribution}, sim::Function,
                            logf::Function)
   inds = 0:0
   for i in 1:length(D)
-    inds = last(inds) + (1:length(D[i]))
-    sim(inds, x -> logf(inds, x))
+    d = D[i]
+    inds = last(inds) + (1:length(d))
+    sim(inds, v -> logf(d, v, inds))
   end
 end
 

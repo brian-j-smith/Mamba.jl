@@ -35,7 +35,7 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
 
     ## current parameter and density values
     theta0 = unlist(model, block, true)
-    logprior0 = mapreduce(key -> logpdf(model[key], true), +, params)
+    logprior0 = logpdf(model, params, true)
     pi_epsilon0 = 0.0
 
     ## initialize tuning parameters
@@ -47,7 +47,7 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
       tune.datakeys = intersect(setdiff(targets, params), stochastics)
 
       ## local functions to get and summarize data nodes
-      obsdata = key -> unlist(model, [key])
+      obsdata = key -> unlist(model[key])
       simdata = key -> unlist(model[key], rand(model[key]))
       summarizenodes = length(tune.datakeys) > 1 ?
         data -> vcat(map(key -> summary(data(key)), tune.datakeys)...) :
@@ -84,7 +84,7 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
       ## candidate draw and prior density value
       theta1 = theta0 + scale .* rand(proposal(0.0, 1.0), length(theta0))
       relist!(model, theta1, block, true)
-      logprior1 = mapreduce(key -> logpdf(model[key], true), +, params)
+      logprior1 = logpdf(model, params, true)
 
       ## tolerances and kernel density
       pi_epsilon1 = 0.0

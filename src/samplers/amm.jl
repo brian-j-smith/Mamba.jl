@@ -61,7 +61,7 @@ function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
     if !tune.adapt
       tune.adapt = true
       tune.m = 0
-      tune.Mv = v.value
+      tune.Mv = v
       tune.Mvv = v * v'
       tune.SigmaF = SigmaF
       tune.SigmaLm = zeros(n, n)

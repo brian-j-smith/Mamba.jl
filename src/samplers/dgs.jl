@@ -28,40 +28,40 @@ function DGS(params::ElementOrVector{Symbol})
   params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
     s = model.samplers[block]
-    x = unlist(model, block)
-    offset = 0
+    local node, x
     for key in params
-
-      sim = function(inds, d, logf)
-        v = SamplerVariate(x[offset + inds], s, model.iter)
-        dgs!(v, d, logf)
-        x[offset + inds] = v
-      end
-
-      logf = function(inds, value)
-        x[offset + inds] = value
-        logpdf!(model, x, block)
-      end
-
       node = model[key]
+      x = unlist(node)
+
+      sim = function(i::Integer, d::UnivariateDistribution, logf::Function)
+        v = SamplerVariate([x[i]], s, model.iter)
+        dgs!(v, d, logf)
+        x[i] = v[1]
+        relist!(model, x, key)
+      end
+
+      logf = function(d::UnivariateDistribution, v::AbstractVector, i::Integer)
+        x[i] = value = v[1]
+        relist!(model, x, key)
+        logpdf(d, value) + logpdf(model, node.targets)
+      end
+
       DGS_sub!(node.distr, sim, logf)
-      offset += length(node)
     end
-    relist(model, x, block)
+    nothing
   end
   Sampler(params, samplerfx, DGSTune())
 end
 
 function DGS_sub!(d::UnivariateDistribution, sim::Function, logf::Function)
-  inds = [1]
-  sim(inds, d, x -> logf(inds, x))
+  sim(1, d, v -> logf(d, v, 1))
 end
 
 function DGS_sub!(D::Array{UnivariateDistribution}, sim::Function,
                   logf::Function)
   for i in 1:length(D)
-    inds = [i]
-    sim(inds, D[i], x -> logf(inds, x))
+    d = D[i]
+    sim(i, d, v -> logf(d, v, i))
   end
 end
 
