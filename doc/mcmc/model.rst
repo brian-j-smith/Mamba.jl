@@ -318,8 +318,8 @@ Parameter Block Operations
                      nodekeys::Vector{Symbol},transform::Bool=false)
               relist!(m::Model, values::AbstractArray{T<:Real}, \
                       block::Integer=0, transform::Bool=false)
-              relist!(m::Model, values::AbstractArray{T<:Real}, \
-                      nodekeys::Vector{Symbol}, transform::Bool=false)
+              relist!(m::Model, values::AbstractArray{T<:Real}, nodekey::Symbol, \ 
+                      transform::Bool=false)
 
     Convert (unlist) sets of logical and/or stochastic node values to vectors, or reverse (relist) the process.
 
@@ -328,7 +328,7 @@ Parameter Block Operations
         * ``m`` : a model containing nodes to be unlisted or relisted.
         * ``values`` : values to re-list.
         * ``block`` : the sampling block of nodes to be listed (default: all blocks).
-        * ``nodekeys`` : a vector of symbols identifying the nodes to be listed.
+        * ``nodekey/nodekeys`` : node(s) to be listed.
         * ``transform`` : whether to apply a link transformation in the conversion.
 
     **Value**

@@ -93,13 +93,11 @@ function relist!{T<:Real}(m::Model, values::AbstractArray{T}, block::Integer=0,
   update!(m, block)
 end
 
-function relist!{T<:Real}(m::Model, values::AbstractArray{T},
-                 nodekeys::Vector{Symbol}, transform::Bool=false)
-  x = relist(m, values, nodekeys, transform)
-  for key in nodekeys
-    m[key].value = x[key]
-  end
-  update!(m)
+function relist!{T<:Real}(m::Model, values::AbstractArray{T}, nodekey::Symbol,
+                          transform::Bool=false)
+  node = m[nodekey]
+  m[nodekey] = relist(node, values, transform)
+  update!(m, node.targets)
 end
 
 
