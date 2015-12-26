@@ -60,7 +60,7 @@ New known, unknown, or unnormalized univariate distributions can be created and 
 
     #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
 
-    #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments and explicitly converts them in the constructor body to concrete types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
+    #. Declare the new distribution subtype, say ``D``, within the block.  Any constructors explicitly defined for the subtype should accept un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments.  Implementing constructors in this way ensures that they will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
     #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
 
@@ -149,7 +149,7 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
     #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
 
-    #. Declare the new distribution subtype, say ``D``, within the block.  Create a constructor for the subtype that accepts un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments and explicitly converts them in the constructor body to concrete types for the fields of ``D``.  Implementing the constructor in this way ensures that it will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
+    #. Declare the new distribution subtype, say ``D``, within the block.  Any constructors explicitly defined for the subtype should accept un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments.  Implementing constructors in this way ensures that they will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
     #. Extend/define the following *Distributions* package methods for the new distribution ``D``.
 
@@ -157,11 +157,11 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
             Return the sample space size (dimension) of ``d``.
 
-        .. function:: insupport{T<:Real}(d::D, x::Vector{T})
+        .. function:: insupport{T<:Real}(d::D, x::AbstractVector{T})
 
             Return a logical indicating whether ``x`` is in the support of ``d``.
 
-        .. function:: _logpdf{T<:Real}(d::D, x::Vector{T})
+        .. function:: _logpdf{T<:Real}(d::D, x::AbstractVector{T})
 
             Return the normalized or unnomalized log-density evaluated at ``x``.
 

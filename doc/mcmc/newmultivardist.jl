@@ -10,11 +10,6 @@
   type NewMultivarDist <: ContinuousMultivariateDistribution
     mu::Vector{Float64}
     sigma::Float64
-
-    ## Constructor
-    function NewMultivarDist(mu::AbstractVector, sigma::Real)
-      new(convert(Vector{Float64}, mu), convert(Float64, sigma))
-    end
   end
 
   ## The following method functions must be implemented
@@ -23,12 +18,12 @@
   length(d::NewMultivarDist) = length(d.mu)
 
   ## Logical indicating whether x is in the support
-  function insupport{T<:Real}(d::NewMultivarDist, x::Vector{T})
+  function insupport{T<:Real}(d::NewMultivarDist, x::AbstractVector{T})
     length(d) == length(x) && all(isfinite(x))
   end
 
   ## Normalized or unnormalized log-density value
-  function _logpdf{T<:Real}(d::NewMultivarDist, x::Vector{T})
+  function _logpdf{T<:Real}(d::NewMultivarDist, x::AbstractVector{T})
     -length(x) * log(d.sigma) - 0.5 * sumabs2(x - d.mu) / d.sigma^2
   end
 

@@ -10,11 +10,6 @@
   type NewUnivarDist <: ContinuousUnivariateDistribution
     mu::Float64
     sigma::Float64
-
-    ## Constructor
-    function NewUnivarDist(mu::Real, sigma::Real)
-      new(convert(Float64, mu), convert(Float64, sigma))
-    end
   end
 
   ## The following method functions must be implemented
