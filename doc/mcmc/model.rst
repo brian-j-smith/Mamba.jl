@@ -231,6 +231,19 @@ Initialization
 Parameter Block Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. function:: gettune(m::Model, block::Integer=0)
+
+    Get block-sampler tuning parameters.
+
+    **Arguments**
+
+        * ``m`` : model with block-samplers.
+        * ``block`` : block for which to get the tuning parameters (default: all blocks).
+
+    **Value**
+
+        A ``Vector{Any}`` of all block-specific tuning parameters if ``block=0``, and turning parameters for the specified block otherwise.
+
 .. function:: gradlogpdf(m::Model, block::Integer=0, transform::Bool=false; \
                          dtype::Symbol=:forward)
               gradlogpdf(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
@@ -295,19 +308,6 @@ Parameter Block Operations
     **Example**
 
         See the :ref:`section-Line-Development` section of the tutorial.
-
-.. function:: tune(m::Model, block::Integer=0)
-
-    Get block-sampler tuning parameters.
-
-    **Arguments**
-
-        * ``m`` : model with block-samplers.
-        * ``block`` : block for which to return the tuning parameters (default: all blocks).
-
-    **Value**
-
-        If ``block = 0``, a vector of dictionaries containing block-specific tuning parameters; otherwise, one block-specific dictionary.
 
 .. function:: unlist(m::Model, block::Integer=0, transform::Bool=false)
               unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)

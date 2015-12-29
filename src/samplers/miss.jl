@@ -41,7 +41,7 @@ end
 function MISS(params::ElementOrVector{Symbol})
   params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
-    tune = Mamba.tune(model, block)
+    tune = gettune(model, block)
     if model.iter == 1
       for key in params
         miss = MISSTune(model[key])

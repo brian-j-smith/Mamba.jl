@@ -1,5 +1,19 @@
 #################### Model Simulation ####################
 
+function gettune(m::Model, block::Integer=0)
+  if block == 0
+    n = length(m.samplers)
+    values = Array(Any, n)
+    for i in 1:n
+      values[i] = m.samplers[i].tune
+    end
+  else
+    values = m.samplers[block].tune
+  end
+  values
+end
+
+
 function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
                     dtype::Symbol=:forward)
   x0 = unlist(m, block, transform)
@@ -77,20 +91,6 @@ function simulate!(m::Model, block::Integer=0)
   end
   m.iter -= isoneblock
   m
-end
-
-
-function tune(m::Model, block::Integer=0)
-  if block == 0
-    n = length(m.samplers)
-    values = Array(Any, n)
-    for i in 1:n
-      values[i] = m.samplers[i].tune
-    end
-  else
-    values = m.samplers[block].tune
-  end
-  values
 end
 
 

@@ -143,3 +143,8 @@ function relist!{T<:Real}(m::Model, values::AbstractArray{T},
   end
   update!(m)
 end
+
+
+export tune
+
+@deprecate tune gettune

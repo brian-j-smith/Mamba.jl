@@ -31,7 +31,7 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
   local obsdata, simdata, summarizenodes
 
   samplerfx = function(model::Model, block::Integer)
-    tune = Mamba.tune(model, block)
+    tune = gettune(model, block)
 
     ## current parameter and density values
     theta0 = unlist(model, block, true)

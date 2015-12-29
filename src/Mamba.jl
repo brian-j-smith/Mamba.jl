@@ -262,6 +262,7 @@ module Mamba
     dic,
     draw,
     gelmandiag,
+    gettune,
     gewekediag,
     gradlogpdf,
     gradlogpdf!,
@@ -292,7 +293,6 @@ module Mamba
     setsamplers!,
     simulate!,
     summarystats,
-    tune,
     unlist,
     update!
 
