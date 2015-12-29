@@ -63,6 +63,55 @@ function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
 end
 
 
+function simulate!(m::Model, block::Integer=0)
+  m.iter += 1
+  isoneblock = block != 0
+  blocks = isoneblock ? block : 1:length(m.samplers)
+  for b in blocks
+    sampler = m.samplers[b]
+    value = sampler.eval(m, b)
+    if value != nothing
+      m[sampler.params] = value
+      update!(m, b)
+    end
+  end
+  m.iter -= isoneblock
+  m
+end
+
+
+function tune(m::Model, block::Integer=0)
+  if block == 0
+    n = length(m.samplers)
+    values = Array(Any, n)
+    for i in 1:n
+      values[i] = m.samplers[i].tune
+    end
+  else
+    values = m.samplers[block].tune
+  end
+  values
+end
+
+
+function unlist(m::Model, block::Integer=0, transform::Bool=false)
+  unlist(m, keys(m, :block, block), transform)
+end
+
+function unlist(m::Model, monitoronly::Bool)
+  f = function(key)
+    node = m[key]
+    lvalue = unlist(node)
+    monitoronly ? lvalue[node.monitor] : lvalue
+  end
+  vcat(map(f, keys(m, :dependent))...)
+end
+
+function unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
+  vcat(map(key -> unlist(m[key], transform), nodekeys)...)
+end
+
+
 function relist{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                          transform::Bool=false)
   relist(m, x, keys(m, :block, block), transform)
@@ -101,57 +150,8 @@ function relist!{T<:Real}(m::Model, x::AbstractArray{T}, nodekey::Symbol,
 end
 
 
-function simulate!(m::Model, block::Integer=0)
-  m.iter += 1
-  isoneblock = block != 0
-  blocks = isoneblock ? block : 1:length(m.samplers)
-  for b in blocks
-    sampler = m.samplers[b]
-    value = sampler.eval(m, b)
-    if value != nothing
-      m[sampler.params] = value
-      update!(m, b)
-    end
-  end
-  m.iter -= isoneblock
-  m
-end
-
-
-function tune(m::Model, block::Integer=0)
-  if block != 0
-    values = m.samplers[block].tune
-  else
-    n = length(m.samplers)
-    values = Array(Any, n)
-    for i in 1:n
-      values[i] = m.samplers[i].tune
-    end
-  end
-  values
-end
-
-
-function unlist(m::Model, block::Integer=0, transform::Bool=false)
-  unlist(m, keys(m, :block, block), transform)
-end
-
-function unlist(m::Model, monitoronly::Bool)
-  f = function(key)
-    node = m[key]
-    lvalue = unlist(node)
-    monitoronly ? lvalue[node.monitor] : lvalue
-  end
-  vcat(map(f, keys(m, :dependent))...)
-end
-
-function unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
-  vcat(map(key -> unlist(m[key], transform), nodekeys)...)
-end
-
-
 function update!(m::Model, block::Integer=0)
-  nodekeys = block != 0 ? m.samplers[block].targets : keys(m, :dependent)
+  nodekeys = block == 0 ? keys(m, :dependent) : m.samplers[block].targets
   update!(m, nodekeys)
 end
 
