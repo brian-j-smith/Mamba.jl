@@ -14,6 +14,24 @@ function gettune(m::Model, block::Integer=0)
 end
 
 
+function settune!(m::Model, tune, block::Integer=0)
+  block == 0 ? settune0!(m, tune) : m.samplers[block].tune = tune
+end
+
+function settune0!(m::Model, tune::Vector{Any})
+  nsamplers = length(m.samplers)
+  ntune = length(tune)
+  nsamplers == ntune ||
+    throw(DimensionMismatch(
+      "tried to assign $ntune tune elements to $nsamplers samplers"
+    ))
+
+  for i in 1:nsamplers
+    m.samplers[i].tune = tune[i]
+  end
+end
+
+
 function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
                     dtype::Symbol=:forward)
   x0 = unlist(m, block, transform)

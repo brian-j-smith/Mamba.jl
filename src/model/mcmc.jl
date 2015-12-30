@@ -37,7 +37,7 @@ end
 function mcmc_master!(m::Model, window::UnitRange{Int}, burnin::Integer,
                       thin::Integer, chains::AbstractArray{Int}, verbose::Bool)
   states = m.states
-  m.states = []
+  m.states = ModelState[]
 
   N = length(window)
   K = length(chains)
@@ -54,7 +54,7 @@ function mcmc_master!(m::Model, window::UnitRange{Int}, burnin::Integer,
 
   sims  = Chains[results[k][1] for k in 1:K]
   model = results[1][2]
-  model.states = Vector{Float64}[results[k][3] for k in sortperm(chains)]
+  model.states = ModelState[results[k][3] for k in sortperm(chains)]
 
   ModelChains(cat(3, sims...), model)
 end
@@ -64,7 +64,8 @@ function mcmc_worker!(args::Vector)
   m, state, window, burnin, thin, meter = args
 
   m.iter = first(window) - 1
-  relist!(m, state)
+  relist!(m, state.value)
+  settune!(m, state.tune)
 
   pnames = names(m, true)
   sim = Chains(last(window), length(pnames), start=burnin + thin, thin=thin,
@@ -79,5 +80,5 @@ function mcmc_worker!(args::Vector)
     next!(meter)
   end
 
-  (sim, m, unlist(m))
+  (sim, m, ModelState(unlist(m), gettune(m)))
 end

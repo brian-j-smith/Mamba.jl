@@ -140,12 +140,17 @@ module Mamba
   end
 
 
-  #################### Model Type ####################
+  #################### Model Types ####################
+
+  type ModelState
+    value::Vector{Float64}
+    tune::Vector{Any}
+  end
 
   type Model
     nodes::Dict{Symbol, Any}
     samplers::Vector{Sampler}
-    states::Vector{Vector{Float64}}
+    states::Vector{ModelState}
     iter::Int
     burnin::Int
     hasinputs::Bool

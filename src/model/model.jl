@@ -12,7 +12,7 @@ function Model(; iter::Integer=0, burnin::Integer=0,
     node.symbol = key
     nodedict[key] = node
   end
-  m = Model(nodedict, Sampler[], Vector{Float64}[], iter, burnin, false, false)
+  m = Model(nodedict, Sampler[], ModelState[], iter, burnin, false, false)
   g = graph(m)
   dependents = keys(m, :dependent)
   for v in vertices(g)

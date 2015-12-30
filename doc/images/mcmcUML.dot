@@ -32,9 +32,11 @@ graph MCMC {
 
     ScalarVariate [label = "{ScalarVariate|+ value : Float64\l}", pos="275, 665"]
 
-    Model [label = "{Model|+ nodes : Dict\{Symbol, Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{Vector\{Float64\}\}\l+ iter : Int\l+ burnin : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275, 305"]
+    Model [label = "{Model|+ nodes : Dict\{Symbol, Any\}\l+ samplers : Vector\{Sampler\}\l+ states::Vector\{ModelState\}\l+ iter : Int\l+ burnin : Int\l+ hasinputs : Bool\l+ hasinits : Bool\l}", pos="275, 305"]
 
-    Sampler [label = "{Sampler\{T\}|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : T\l+ targets : Vector\{Symbol\}\l}", pos="495, 305"]
+    Sampler [label = "{Sampler\{T\}|+ params : Vector\{Symbol\}\l+ eval : Function\l+ tune : T\l+ targets : Vector\{Symbol\}\l}", pos="495, 340"]
+    
+    ModelState [label = "{ModelState|+ value : Vector\{Float64\}\l+ tune : Vector\{Any\}\l}", pos="495, 265"]
 
     AbstractChains  [label = "{AbstractChains|+ value : Array\{Float64, 3\}\l+ range : Range\{Int\}\l+ names : Vector\{String\}\l+ chains : Vector\{Int\}\l}", pos="75, 340"]
 
@@ -61,6 +63,7 @@ graph MCMC {
     Model -- Sampler [arrowtail = odiamond, headlabel = "0..*", labeldistance = 1.0, labelangle = -30]
     Model -- AbstractLogical [arrowtail = odiamond, headlabel = "0..*", labeldistance = 1.0, labelangle = -105]
     Model -- AbstractStochastic [arrowtail = odiamond, headlabel = "0..*", labeldistance = 2.5, labelangle = -15]
+    Model -- ModelState [arrowtail = odiamond, headlabel = "1..*"]
     ModelChains -- Model [arrowtail = odiamond, headlabel = "1"]
 
 }

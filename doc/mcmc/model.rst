@@ -17,7 +17,7 @@ Fields
 
 * ``nodes::Dict{Symbol, Any}`` : all input, logical, and stochastic model nodes.
 * ``samplers::Vector{Sampler}`` : sampling functions for updating blocks of stochastic nodes.
-* ``states::Vector{Vector{Float64}}`` : states of chains at the end of an MCMC run in a possible series of runs.
+* ``states::Vector{ModelState}`` : states of chains at the end of an MCMC run in a possible series of runs, where ``ModelState`` has fields ``value::Vector{Float64}`` and ``tune::Vector{Any}`` to store the last values of sampled nodes and block-sampler tuning parameters, respectively.
 * ``iter::Int`` : current MCMC draw from the target distribution.
 * ``burnin::Int`` : number of initial draws to discard as a burn-in sequence to allow for convergence.
 * ``hasinputs::Bool`` : whether values have been assigned to input nodes.

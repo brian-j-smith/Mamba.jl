@@ -19,10 +19,10 @@ end
 
 function setinits!(m::Model, inits::Vector{Dict{Symbol, Any}})
   n = length(inits)
-  m.states = Array(Vector{Float64}, n)
+  m.states = Array(ModelState, n)
   for i in n:-1:1
     setinits!(m, inits[i])
-    m.states[i] = unlist(m)
+    m.states[i] = ModelState(unlist(m), deepcopy(gettune(m)))
   end
   m
 end
