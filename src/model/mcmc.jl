@@ -18,8 +18,6 @@ end
 function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol, Any}},
               iters::Integer; burnin::Integer=0, thin::Integer=1,
               chains::Integer=1, verbose::Bool=true)
-  @everywhere using Mamba
-
   iters > burnin ||
     throw(ArgumentError("burnin is greater than or equal to iters"))
   length(inits) >= chains ||

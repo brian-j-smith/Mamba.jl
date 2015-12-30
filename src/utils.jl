@@ -92,5 +92,10 @@ end
 ## a call to pmap.
 
 function pmap2(f::Function, lsts::AbstractArray)
-  nprocs() > 1 ? pmap(f, lsts) : map(f, lsts)
+  if nprocs() > 1
+    @everywhere using Mamba
+    pmap(f, lsts)
+  else
+    map(f, lsts)
+  end
 end
