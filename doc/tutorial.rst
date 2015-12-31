@@ -521,6 +521,20 @@ Additionally, sampler output can be subsetted to perform posterior inference on 
     beta[2]  0.18846617 0.618849048 0.79323126 0.9619767 1.4502109
 
 
+.. _section-Line-FileIO:
+
+File I/O
+^^^^^^^^
+
+For cases in which it is desirable to store sampler output in external files for processing in future **julia** sessions, read and write methods are provided.
+
+.. code-block:: julia
+
+    ## Write to and Read from an External File
+    write("sim1.jls", sim1)
+    sim1 = read("sim1.jls", ModelChains)
+
+
 Restarting the Sampler
 ^^^^^^^^^^^^^^^^^^^^^^
 

@@ -150,6 +150,25 @@ Indexing and Concatenation
 File I/O
 ^^^^^^^^
 
+.. function:: read(name::AbstractString, ::Type{T<:AbstractChains})
+              write(name::AbstractString, c::AbstractChains)
+
+    Read a chain from or write one to an external file.
+
+    **Arguments**
+
+        * ``name`` : file to read or write.  Recommended convention is for the file name to be specified with a ``.jls`` extension.
+        * ``T`` : chain type to read.
+        * ``c`` : chain to write.
+
+    **Value**
+
+        An ``AbstractChains`` subtype read from an external file, or a written external file containing a subtype.
+
+    **Example**
+
+        See the :ref:`section-Line-FileIO` section of the tutorial.
+
 .. function:: readcoda(output::AbstractString, index::AbstractString)
 
     Read MCMC sampler output generated in the CODA format by OpenBUGS :cite:`spiegelhalter:2014:OUM`.  The function only retains those sampler iterations at which all model parameters were monitored.

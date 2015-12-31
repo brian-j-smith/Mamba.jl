@@ -137,6 +137,11 @@ sim = sim1[1000:5000, ["beta[1]", "beta[2]"], :]
 describe(sim)
 
 
+## Write to and Read from an External File
+write("sim1.jls", sim1)
+sim1 = read("sim1.jls", ModelChains)
+
+
 ## Restart the Sampler
 sim = mcmc(sim1, 5000)
 describe(sim)
