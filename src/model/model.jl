@@ -190,6 +190,8 @@ function keys_target0(m::Model)
   intersect(keys(m, :dependent), values)
 end
 
+keys_target(m::Model, nodekey::Symbol) = m[nodekey].targets
+
 function keys_target(m::Model, nodekeys::Vector{Symbol})
   values = Symbol[]
   for key in nodekeys
