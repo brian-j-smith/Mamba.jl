@@ -42,15 +42,15 @@ typealias NUTSVariate SamplerVariate{NUTSTune}
 
 function NUTS(params::ElementOrVector{Symbol}; dtype::Symbol=:forward,
               target::Real=0.6)
-  epsilon = NaN
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)
+    tune = v.tune
     if model.iter == 1
       fx = x -> logpdfgrad(model, x, block, dtype)
-      epsilon = nutsepsilon(v, fx)
+      tune.epsilon = nutsepsilon(v, fx)
     end
     fx = x -> logpdfgrad!(model, x, block, dtype)
-    nuts!(v, epsilon, fx, adapt=model.iter <= model.burnin, target=target)
+    nuts!(v, tune.epsilon, fx, adapt=model.iter <= model.burnin, target=target)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, NUTSTune())
