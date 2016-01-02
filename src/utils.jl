@@ -87,9 +87,7 @@ end
 ## pmap2 is a partial work-around for the pmap issue in julia 0.4.0 of worker
 ## node errors being blocked.  In single-processor mode, pmap2 calls map
 ## instead to avoid the error handling issue.  In multi-processor model, pmap is
-## called and will apply its error processing.  If and when the pmap issue is
-## resolved in a future version of julia, calls to pmap2 should be reverted to
-## a call to pmap.
+## called and will apply its error processing.
 
 function pmap2(f::Function, lsts::AbstractArray)
   if nprocs() > 1

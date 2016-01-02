@@ -84,9 +84,8 @@ function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
   targets = keys(m, :target, block)
   m[params] = relist(m, x, params, transform)
   lp = logpdf(m, setdiff(params, targets), transform)
-  state = start(targets)
-  while !done(targets, state) && isfinite(lp)
-    key, state = next(targets, state)
+  for key in targets
+    isfinite(lp) || break
     node = m[key]
     update!(node, m)
     lp += key in params ? logpdf(node, transform) : logpdf(node)
