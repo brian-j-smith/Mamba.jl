@@ -14,7 +14,7 @@ data = Dict(
 )
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant and Gradient Vector
-fx = function(x::DenseVector)
+logfgrad = function(x::DenseVector)
   b0 = x[1]
   b1 = x[2]
   logs2 = x[3]
@@ -41,8 +41,8 @@ epsilon = 0.1
 L = 50
 SigmaF = cholfact(eye(3))
 for i in 1:n
-  hmc!(theta1, epsilon, L, fx)
-  hmc!(theta2, epsilon, L, SigmaF, fx)
+  hmc!(theta1, epsilon, L, logfgrad)
+  hmc!(theta2, epsilon, L, SigmaF, logfgrad)
   sim1[i, :, 1] = [theta1[1:2]; exp(theta1[3])]
   sim2[i, :, 1] = [theta2[1:2]; exp(theta2[3])]
 end

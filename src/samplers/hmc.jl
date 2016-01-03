@@ -26,20 +26,21 @@ function HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)
-    fx = x -> logpdfgrad!(model, x, block, dtype)
-    hmc!(v, epsilon, L, fx)
+    f = x -> logpdfgrad!(model, x, block, dtype)
+    hmc!(v, epsilon, L, f)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, HMCTune())
 end
+
 
 function HMC{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
                       L::Integer, Sigma::Matrix{T}; dtype::Symbol=:forward)
   SigmaF = cholfact(Sigma)
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block, true)
-    fx = x -> logpdfgrad!(model, x, block, dtype)
-    hmc!(v, epsilon, L, SigmaF, fx)
+    f = x -> logpdfgrad!(model, x, block, dtype)
+    hmc!(v, epsilon, L, SigmaF, f)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, HMCTune())
@@ -48,9 +49,9 @@ end
 
 #################### Sampling Functions ####################
 
-function hmc!(v::HMCVariate, epsilon::Real, L::Integer, fx::Function)
+function hmc!(v::HMCVariate, epsilon::Real, L::Integer, logfgrad::Function)
   x1 = v[:]
-  logf0, grad0 = logf1, grad1 = fx(x1)
+  logf0, grad0 = logf1, grad1 = logfgrad(x1)
 
   ## Momentum variables
   p0 = p1 = randn(length(v))
@@ -63,7 +64,7 @@ function hmc!(v::HMCVariate, epsilon::Real, L::Integer, fx::Function)
     ## Make a full step for the position
     x1 += epsilon * p1
 
-    logf1, grad1 = fx(x1)
+    logf1, grad1 = logfgrad(x1)
 
     ## Make a full step for the momentum
     p1 += epsilon * grad1
@@ -88,13 +89,14 @@ function hmc!(v::HMCVariate, epsilon::Real, L::Integer, fx::Function)
   v
 end
 
+
 function hmc!(v::HMCVariate, epsilon::Real, L::Integer,
-              SigmaF::Cholesky{Float64}, fx::Function)
+              SigmaF::Cholesky{Float64}, logfgrad::Function)
   S = SigmaF[:L]
   Sinv = inv(S)
 
   x1 = v[:]
-  logf0, grad0 = logf1, grad1 = fx(x1)
+  logf0, grad0 = logf1, grad1 = logfgrad(x1)
 
   ## Momentum variables
   p0 = p1 = S * randn(length(v))
@@ -107,7 +109,7 @@ function hmc!(v::HMCVariate, epsilon::Real, L::Integer,
     ## Make a full step for the position
     x1 += epsilon * p1
 
-    logf1, grad1 = fx(x1)
+    logf1, grad1 = logfgrad(x1)
 
     ## Make a full step for the momentum
     p1 += epsilon * grad1

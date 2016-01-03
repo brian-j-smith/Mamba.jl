@@ -37,9 +37,9 @@ Model-Based Constructors
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: hmc!(v::HMCVariate, epsilon::Real, L::Integer, fx::Function)
+.. function:: hmc!(v::HMCVariate, epsilon::Real, L::Integer, logfgrad::Function)
               hmc!(v::HMCVariate, epsilon::Real, L::Integer, \
-                   SigmaF::Cholesky{Float64}, fx::Function)
+                   SigmaF::Cholesky{Float64}, logfgrad::Function)
 
     Simulate one draw from a target distribution using the HMC sampler.  Parameters are assumed to be continuous and unconstrained.
 
@@ -49,7 +49,7 @@ Stand-Alone Functions
         * ``epsilon`` : step size.
         * ``L`` : number of steps to take in the Leapfrog algorithm.
         * ``SigmaF`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.  If omitted, the identity matrix is assumed.
-        * ``fx`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
+        * ``logfgrad`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 

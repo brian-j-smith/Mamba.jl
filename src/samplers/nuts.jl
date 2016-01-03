@@ -46,11 +46,11 @@ function NUTS(params::ElementOrVector{Symbol}; dtype::Symbol=:forward,
     v = SamplerVariate(model, block, true)
     tune = v.tune
     if model.iter == 1
-      fx = x -> logpdfgrad(model, x, block, dtype)
-      tune.epsilon = nutsepsilon(v, fx)
+      f = x -> logpdfgrad(model, x, block, dtype)
+      tune.epsilon = nutsepsilon(v, f)
     end
-    fx = x -> logpdfgrad!(model, x, block, dtype)
-    nuts!(v, tune.epsilon, fx, adapt=model.iter <= model.burnin, target=target)
+    f = x -> logpdfgrad!(model, x, block, dtype)
+    nuts!(v, tune.epsilon, f, adapt=model.iter <= model.burnin, target=target)
     relist(model, v, block, true)
   end
   Sampler(params, samplerfx, NUTSTune())
@@ -59,23 +59,25 @@ end
 
 #################### Sampling Functions ####################
 
-function nutsepsilon(v::NUTSVariate, fx::Function)
+function nutsepsilon(v::NUTSVariate, logfgrad::Function)
   n = length(v)
-  _, r0, grad0, logf0 = leapfrog(v.value, randn(n), zeros(n), 0.0, fx)
+  _, r0, logf0, grad0 = leapfrog(v.value, randn(n), zeros(n), 0.0, logfgrad)
   epsilon = 1.0
-  _, rprime, gradprime, logfprime = leapfrog(v.value, r0, grad0, epsilon, fx)
+  _, rprime, logfprime, gradprime = leapfrog(v.value, r0, grad0, epsilon,
+                                             logfgrad)
   prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
   pm = 2 * (prob > 0.5) - 1
   while prob^pm > 0.5^pm
     epsilon *= 2.0^pm
-    _, rprime, _, logfprime = leapfrog(v.value, r0, grad0, epsilon, fx)
+    _, rprime, logfprime, _ = leapfrog(v.value, r0, grad0, epsilon, logfgrad)
     prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
   end
   epsilon
 end
 
-function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
-               target::Real=0.6)
+
+function nuts!(v::NUTSVariate, epsilon::Real, logfgrad::Function;
+               adapt::Bool=false, target::Real=0.6)
   tune = v.tune
 
   if adapt
@@ -87,7 +89,7 @@ function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
       tune.target = target
     end
     tune.m += 1
-    nuts_sub!(v, tune.epsilon, fx)
+    nuts_sub!(v, tune.epsilon, logfgrad)
     p = 1.0 / (tune.m + tune.t0)
     tune.Hbar = (1.0 - p) * tune.Hbar +
                 p * (tune.target - tune.alpha / tune.nalpha)
@@ -97,15 +99,16 @@ function nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false,
                           (1.0 - p) * log(tune.epsilonbar))
   else
     tune.epsilon = tune.adapt ? tune.epsilonbar : epsilon
-    nuts_sub!(v, tune.epsilon, fx)
+    nuts_sub!(v, tune.epsilon, logfgrad)
   end
 
   v
 end
 
-function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
+
+function nuts_sub!(v::NUTSVariate, epsilon::Real, logfgrad::Function)
   n = length(v)
-  x, r, grad, logf = leapfrog(v.value, randn(n), zeros(n), 0.0, fx)
+  x, r, logf, grad = leapfrog(v.value, randn(n), zeros(n), 0.0, logfgrad)
   logp0 = logf - 0.5 * dot(r)
   logu0 = logp0 + log(rand())
   xminus = xplus = x
@@ -117,11 +120,13 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   while s
     pm = 2 * (rand() > 0.5) - 1
     if pm == -1
-      xminus, rminus, gradminus, _, _, _, xprime, nprime, sprime, alpha, nalpha =
-        buildtree(xminus, rminus, gradminus, pm, j, epsilon, fx, logp0, logu0)
+      xminus, rminus, gradminus, _, _, _, xprime, nprime, sprime, alpha,
+        nalpha = buildtree(xminus, rminus, gradminus, pm, j, epsilon, logfgrad,
+                           logp0, logu0)
     else
       _, _, _, xplus, rplus, gradplus, xprime, nprime, sprime, alpha, nalpha =
-        buildtree(xplus, rplus, gradplus, pm, j, epsilon, fx, logp0, logu0)
+        buildtree(xplus, rplus, gradplus, pm, j, epsilon, logfgrad, logp0,
+                  logu0)
     end
     if sprime && rand() < nprime / n
       v[:] = xprime
@@ -134,19 +139,22 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, fx::Function)
   v
 end
 
+
 function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
-                  epsilon::Real, fx::Function)
+                  epsilon::Real, logfgrad::Function)
   r += (0.5 * epsilon) * grad
   x += epsilon * r
-  logf, grad = fx(x)
+  logf, grad = logfgrad(x)
   r += (0.5 * epsilon) * grad
-  x, r, grad, logf
+  x, r, logf, grad
 end
 
+
 function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
-                   epsilon::Real, fx::Function, logp0::Real, logu0::Real)
+                   epsilon::Real, logfgrad::Function, logp0::Real, logu0::Real)
   if j == 0
-    xprime, rprime, gradprime, logfprime = leapfrog(x, r, grad, pm * epsilon, fx)
+    xprime, rprime, logfprime, gradprime = leapfrog(x, r, grad, pm * epsilon,
+                                                    logfgrad)
     logpprime = logfprime - 0.5 * dot(rprime)
     nprime = Int(logu0 < logpprime)
     sprime = logu0 < logpprime + 1000.0
@@ -157,17 +165,19 @@ function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
     nalphaprime = 1
   else
     xminus, rminus, gradminus, xplus, rplus, gradplus, xprime, nprime, sprime,
-      alphaprime, nalphaprime =
-        buildtree(x, r, grad, pm, j - 1, epsilon, fx, logp0, logu0)
+      alphaprime, nalphaprime = buildtree(x, r, grad, pm, j - 1, epsilon,
+                                          logfgrad, logp0, logu0)
     if sprime
       if pm == -1
         xminus, rminus, gradminus, _, _, _, xprime2, nprime2, sprime2,
-          alphaprime2, nalphaprime2 =
-            buildtree(xminus, rminus, gradminus, pm, j - 1, epsilon, fx, logp0, logu0)
+          alphaprime2, nalphaprime2 = buildtree(xminus, rminus, gradminus, pm,
+                                                j - 1, epsilon, logfgrad, logp0,
+                                                logu0)
       else
         _, _, _, xplus, rplus, gradplus, xprime2, nprime2, sprime2,
-          alphaprime2, nalphaprime2 =
-            buildtree(xplus, rplus, gradplus, pm, j - 1, epsilon, fx, logp0, logu0)
+          alphaprime2, nalphaprime2 = buildtree(xplus, rplus, gradplus, pm,
+                                                j - 1, epsilon, logfgrad, logp0,
+                                                logu0)
       end
       if rand() < nprime2 / (nprime + nprime2)
         xprime = xprime2
@@ -181,6 +191,7 @@ function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
   xminus, rminus, gradminus, xplus, rplus, gradplus, xprime, nprime, sprime,
     alphaprime, nalphaprime
 end
+
 
 function nouturn(xminus, xplus, rminus, rplus)
   xdiff = xplus - xminus

@@ -37,9 +37,9 @@ Model-Based Constructors
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: mala!(v::MALAVariate, scale::Real, fx::Function)
+.. function:: mala!(v::MALAVariate, scale::Real, logfgrad::Function)
               mala!(v::MALAVariate, scale::Real, SigmaF::Cholesky{Float64}, \
-                    fx::Function)
+                    logfgrad::Function)
 
     Simulate one draw from a target distribution using the MALA sampler.  Parameters are assumed to be continuous and unconstrained.
 
@@ -48,7 +48,7 @@ Stand-Alone Functions
         * ``v`` : current state of parameters to be simulated.
         * ``scale`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
         * ``SigmaF`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.  If omitted, the identity matrix is assumed.
-        * ``fx`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
+        * ``logfgrad`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 

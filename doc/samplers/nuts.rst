@@ -34,21 +34,21 @@ Model-Based Constructor
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: nutsepsilon(v::NUTSVariate, fx::Function)
+.. function:: nutsepsilon(v::NUTSVariate, logfgrad::Function)
 
     Generate an initial value for the step size parameter of the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 
     **Arguments**
 
         * ``v`` : the current state of parameters to be simulated.
-        * ``fx`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
+        * ``logfgrad`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 
         A numeric step size value.
 
-.. function:: nuts!(v::NUTSVariate, epsilon::Real, fx::Function; adapt::Bool=false, \
-                    target::Real=0.6)
+.. function:: nuts!(v::NUTSVariate, epsilon::Real, logfgrad::Function; \
+                    adapt::Bool=false, target::Real=0.6)
 
     Simulate one draw from a target distribution using the No-U-Turn sampler.  Parameters are assumed to be continuous and unconstrained.
 
@@ -56,7 +56,7 @@ Stand-Alone Functions
 
         * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
         * ``epsilon`` : the NUTS algorithm step size parameter.
-        * ``fx`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
+        * ``logfgrad`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
         * ``adapt`` : whether to adaptively update the ``epsilon`` step size parameter.
         * ``target`` : target acceptance rate for the algorithm.
 

@@ -14,7 +14,7 @@ data = Dict(
 )
 
 ## Log-transformed Posterior(b0, b1, log(s2)) + Constant and Gradient Vector
-fx = function(x::DenseVector)
+logfgrad = function(x::DenseVector)
   b0 = x[1]
   b1 = x[2]
   logs2 = x[3]
@@ -35,9 +35,9 @@ n = 5000
 burnin = 1000
 sim = Chains(n, 3, start = (burnin + 1), names = ["b0", "b1", "s2"])
 theta = NUTSVariate([0.0, 0.0, 0.0])
-epsilon = nutsepsilon(theta, fx)
+epsilon = nutsepsilon(theta, logfgrad)
 for i in 1:n
-  nuts!(theta, epsilon, fx, adapt = (i <= burnin))
+  nuts!(theta, epsilon, logfgrad, adapt = (i <= burnin))
   if i > burnin
     sim[i, :, 1] = [theta[1:2]; exp(theta[3])]
   end
