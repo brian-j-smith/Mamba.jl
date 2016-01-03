@@ -51,7 +51,7 @@ end
 function gradlogpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
                               transform::Bool=false; dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
-  gradient(f, x, dtype)
+  gradient(f, convert(Array{T}, x), dtype)
 end
 
 

@@ -6,7 +6,9 @@ Base.convert(::Type{Bool}, v::ScalarVariate) = convert(Bool, v.value)
 Base.convert{T<:Integer}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
 Base.convert{T<:AbstractFloat}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
 
-Base.convert{T<:Real, N}(::Union{Type{AbstractArray{T, N}}, Type{Array{T, N}}},
+Base.convert(::Type{Matrix}, v::MatrixVariate) = v.value
+Base.convert(::Type{Vector}, v::VectorVariate) = v.value
+Base.convert{T<:Real, N}(::Union{Type{Array{T}}, Type{Array{T, N}}},
                          v::ArrayVariate{N}) = convert(Array{T, N}, v.value)
 
 Base.unsafe_convert{T<:Real}(::Type{Ptr{T}}, v::ArrayVariate) = pointer(v.value)

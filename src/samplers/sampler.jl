@@ -73,7 +73,7 @@ end
 asvec(x::Union{Number, Symbol}) = [x]
 asvec(x::Vector) = x
 
-function logpdfgrad{T<:Real}(m::Model, x::Vector{T}, block::Integer,
+function logpdfgrad{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer,
                              dtype::Symbol)
   logf = logpdf(m, x, block, true)
   grad = isfinite(logf) ?
@@ -82,7 +82,7 @@ function logpdfgrad{T<:Real}(m::Model, x::Vector{T}, block::Integer,
   logf, grad
 end
 
-function logpdfgrad!{T<:Real}(m::Model, x::Vector{T}, block::Integer,
+function logpdfgrad!{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer,
                               dtype::Symbol)
   logf = logpdf!(m, x, block, true)
   grad = isfinite(logf) ?
