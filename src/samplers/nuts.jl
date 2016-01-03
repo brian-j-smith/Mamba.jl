@@ -150,7 +150,8 @@ function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
 end
 
 
-function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
+function buildtree(x::Vector{Float64}, r::Vector{Float64},
+                   grad::Vector{Float64}, pm::Integer, j::Integer,
                    epsilon::Real, logfgrad::Function, logp0::Real, logu0::Real)
   if j == 0
     xprime, rprime, logfprime, gradprime = leapfrog(x, r, grad, pm * epsilon,
@@ -193,7 +194,8 @@ function buildtree(x::Vector, r::Vector, grad::Vector, pm::Integer, j::Integer,
 end
 
 
-function nouturn(xminus, xplus, rminus, rplus)
+function nouturn(xminus::Vector{Float64}, xplus::Vector{Float64},
+                 rminus::Vector{Float64}, rplus::Vector{Float64})
   xdiff = xplus - xminus
   dot(xdiff, rminus) >= 0 && dot(xdiff, rplus) >= 0
 end
