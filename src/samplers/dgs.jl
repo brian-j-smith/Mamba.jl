@@ -53,6 +53,7 @@ function DGS(params::ElementOrVector{Symbol})
   Sampler(params, samplerfx, DGSTune())
 end
 
+
 function DGS_sub!(d::UnivariateDistribution, sim::Function, logf::Function)
   sim(1, d, v -> logf(d, v, 1))
 end
@@ -73,12 +74,11 @@ end
 #################### Sampling Functions ####################
 
 function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T}, logf::Function)
-  n = size(support, 1)
+  n = size(support, 2)
   probs = Array(Float64, n)
   psum = 0.0
   for i in 1:n
-    x = vec(support[i, :])
-    value = exp(logf(x))
+    value = exp(logf(support[:, i]))
     probs[i] = value
     psum += value
   end
@@ -87,27 +87,30 @@ function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T}, logf::Function)
   else
     probs[:] = 1 / n
   end
-  v[:] = support[rand(Categorical(probs)), :]
+  v[:] = support[:, rand(Categorical(probs))]
   v.tune.support = support
   v.tune.probs = probs
   v
 end
+
 
 function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T},
                        probs::Vector{Float64})
-  size(support, 1) == length(probs) ||
-    throw(ArgumentError("numbers of support rows and probs differ"))
+  size(support, 2) == length(probs) ||
+    throw(ArgumentError("numbers of support columns and probs differ"))
 
-  v[:] = support[rand(Categorical(probs)), :]
+  v[:] = support[:, rand(Categorical(probs))]
   v.tune.support = support
   v.tune.probs = probs
   v
 end
 
+
 function dgs!(v::DGSVariate, d::DGSUnivariateDistribution, logf::Function)
   S = support(d)
-  dgs!(v, reshape(S, length(S), 1), logf)
+  dgs!(v, S', logf)
 end
+
 
 function dgs!(v::DGSVariate, d::Distribution, logf::Function)
   throw(ArgumentError("unsupported distribution $(typeof(d))"))

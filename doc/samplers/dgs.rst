@@ -37,9 +37,9 @@ Stand-Alone Functions
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``support`` : matrix whose rows contain the vector coordinates in the parameter space from which to simulate values.
+        * ``support`` : matrix whose columns contain the vector coordinates in the parameter space from which to simulate values.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
-        * ``probs`` : sampling probabilities for the rows of ``support``.
+        * ``probs`` : sampling probabilities for the columns of ``support``.
 
     **Value**
 
@@ -92,5 +92,5 @@ Declaration
 Fields
 ``````
 
-* ``support::Matrix{Real}`` : matrix whose rows contain the vector coordinates in the parameter space from which to simulate values.
-* ``probs::Vector{Float64}`` : sampling probabilities for the rows of ``support``.
+* ``support::Matrix{Real}`` : matrix whose columns contain the vector coordinates in the parameter space from which to simulate values.
+* ``probs::Vector{Float64}`` : sampling probabilities for the columns of ``support``.
