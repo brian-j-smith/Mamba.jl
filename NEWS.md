@@ -2,6 +2,13 @@
 
 ## Version Updates
 
+### 0.8.1
+* Added ``AbstractChains`` read and write methods.
+* Fixed restarting of multiple chains in the case of samplers with adaptively tuned parameters.
+* Renamed ``Model`` method ``tune()`` to ``gettune()``.
+* Simplified user-defined distributions examples.
+* Optimized performance of DGS, MISS, and SliceSimplex samplers and simulation engine.
+
 ### 0.8.0
 * Simplified sampler interfaces.
 * Implemented an approximate Bayesian computation (ABC) sampler.
