@@ -98,4 +98,4 @@ Declaration
 Fields
 ``````
 
-* ``scale`` : value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
+* ``scale::Float64`` : value ``0 < scale <= 1`` by which to scale the standard simplex to define an initial space from which to simulate values.
