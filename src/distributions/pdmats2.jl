@@ -144,6 +144,7 @@ module PDMats2
     m, n = minmax(size(x)...)
     Int(m * (m + 1) / 2) + (n - m) * m
   end
-  isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) = j >= i
+  isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) =
+    j >= i
 
 end

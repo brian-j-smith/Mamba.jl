@@ -46,6 +46,7 @@ function SliceSimplex(params::ElementOrVector{Symbol}; scale::Real=1.0)
   Sampler(params, samplerfx, SliceSimplexTune())
 end
 
+
 function SliceSimplex_sub!(d::MultivariateDistribution, sim::Function,
                            logf::Function)
   inds = 1:length(d)
@@ -91,11 +92,13 @@ function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
   v
 end
 
+
 function makefirstsimplex(x::AbstractVector{Float64}, scale::Real)
   vertices = eye(length(x))
   vertices[:, 2:end] += (1.0 - scale) * (vertices[:, 1] .- vertices[:, 2:end])
   vertices .+ x .- vertices * rand(Dirichlet(ones(x)))
 end
+
 
 function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
                        cx::AbstractVector{Float64}, cc::AbstractVector{Float64},

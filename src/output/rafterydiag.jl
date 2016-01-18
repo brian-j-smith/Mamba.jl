@@ -46,8 +46,8 @@ function rafterydiag{T<:Real}(x::Vector{T}; q::Real=0.025, r::Real=0.005,
   [kthin, burnin, total, nmin, total / nmin]
 end
 
-function rafterydiag(c::AbstractChains; q::Real=0.025, r::Real=0.005, s::Real=0.95,
-                     eps::Real=0.001)
+function rafterydiag(c::AbstractChains; q::Real=0.025, r::Real=0.005,
+                     s::Real=0.95, eps::Real=0.001)
   _, p, m = size(c.value)
   vals = Array(Float64, p, 5, m)
   for j in 1:p, k in 1:m

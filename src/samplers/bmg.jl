@@ -58,10 +58,12 @@ function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
   else
     y = v[:]
     y[idx] = theta
-    qy = mapreduce(i -> y[i] == 1.0 ? log(probs[i]) : log(1.0 - probs[i]), +, idx)
+    qy = mapreduce(i -> y[i] == 1.0 ? log(probs[i]) : log(1.0 - probs[i]), +,
+                   idx)
 
     pbernoulli!(y, probs)
-    qx = mapreduce(i -> x[i] == 1.0 ? log(probs[i]) : log(1.0 - probs[i]), +, idx)
+    qx = mapreduce(i -> x[i] == 1.0 ? log(probs[i]) : log(1.0 - probs[i]), +,
+                   idx)
 
     if rand() < exp((logf(y) - qy) - (logf(x) - qx))
       v[idx] = theta

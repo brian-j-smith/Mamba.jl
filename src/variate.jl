@@ -4,7 +4,8 @@
 
 Base.convert(::Type{Bool}, v::ScalarVariate) = convert(Bool, v.value)
 Base.convert{T<:Integer}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
-Base.convert{T<:AbstractFloat}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
+Base.convert{T<:AbstractFloat}(::Type{T}, v::ScalarVariate) =
+  convert(T, v.value)
 
 Base.convert(::Type{Matrix}, v::MatrixVariate) = v.value
 Base.convert(::Type{Vector}, v::VectorVariate) = v.value
@@ -54,7 +55,8 @@ function Base.setindex!{T<:Real}(v::ScalarVariate, x::Vector{T},
   end
 end
 
-Base.setindex!(v::ArrayVariate, x, inds::Int...) = setindex!(v.value, x, inds...)
+Base.setindex!(v::ArrayVariate, x, inds::Int...) =
+  setindex!(v.value, x, inds...)
 
 
 #################### I/O ####################

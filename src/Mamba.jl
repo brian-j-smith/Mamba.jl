@@ -27,7 +27,8 @@ module Mamba
          Hypergeometric, NegativeBinomial, NoncentralHypergeometric, Pareto,
          PoissonBinomial, Skellam,
          ## MultivariateDistribution Types
-         Dirichlet, Multinomial, MvNormal, MvNormalCanon, MvTDist, VonMisesFisher,
+         Dirichlet, Multinomial, MvNormal, MvNormalCanon, MvTDist,
+         VonMisesFisher,
          ## MatrixDistribution Types
          InverseWishart, Wishart,
          ## Methods

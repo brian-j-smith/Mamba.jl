@@ -28,6 +28,7 @@ function BMC3(params::ElementOrVector{Symbol}; k::Integer=1)
   Sampler(params, samplerfx, BMC3Tune())
 end
 
+
 function BMC3(params::ElementOrVector{Symbol}, indexset::Vector{Vector{Int}})
   samplerfx = function(model::Model, block::Integer)
     v = SamplerVariate(model, block)
@@ -47,10 +48,12 @@ function bmc3!(v::BMC3Variate, logf::Function; k::Integer=1)
   bmc3_sub!(v, randperm(n)[1:k], logf)
 end
 
+
 function bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
   v.tune.indexset = indexset
   bmc3_sub!(v, indexset[rand(1:length(indexset))], logf)
 end
+
 
 function bmc3_sub!(v::BMC3Variate, idx::Vector{Int}, logf::Function)
   x = v[:]

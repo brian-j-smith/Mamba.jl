@@ -20,7 +20,8 @@ type ChainProgress
   threshold::Float64
   t0::Float64
 
-  function ChainProgress(frame::ChainProgressFrame, chain::Integer, iters::Integer)
+  function ChainProgress(frame::ChainProgressFrame, chain::Integer,
+                         iters::Integer)
     new(frame, chain, iters, 0, max(1, min(10, round(Int, 0.01 * iters))),
         0.0, time())
   end
