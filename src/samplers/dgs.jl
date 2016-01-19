@@ -33,14 +33,15 @@ function DGS(params::ElementOrVector{Symbol})
       node = model[key]
       x = unlist(node)
 
-      sim = function(i::Integer, d::UnivariateDistribution, logf::Function)
+      sim = function(i::Integer, d::DGSUnivariateDistribution, logf::Function)
         v = SamplerVariate([x[i]], s, model.iter)
-        dgs!(v, d, logf)
+        dgs!(v, support(d)', logf)
         x[i] = v[1]
         relist!(model, x, key)
       end
 
-      logf = function(d::UnivariateDistribution, v::AbstractVector, i::Integer)
+      logf = function(d::DGSUnivariateDistribution, v::AbstractVector,
+                      i::Integer)
         x[i] = value = v[1]
         relist!(model, x, key)
         logpdf(d, value) + logpdf(model, node.targets)
@@ -103,15 +104,4 @@ function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T},
   v.tune.support = support
   v.tune.probs = probs
   v
-end
-
-
-function dgs!(v::DGSVariate, d::DGSUnivariateDistribution, logf::Function)
-  S = support(d)
-  dgs!(v, S', logf)
-end
-
-
-function dgs!(v::DGSVariate, d::Distribution, logf::Function)
-  throw(ArgumentError("unsupported distribution $(typeof(d))"))
 end
