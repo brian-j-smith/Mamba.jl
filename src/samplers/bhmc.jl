@@ -42,6 +42,8 @@ end
 
 function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
   tune = v.tune
+  tune.traveltime = traveltime
+
   flag = false
   nearzero = 1e4 * eps()
   j = 0
@@ -78,8 +80,8 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
     end
 
     totaltime += movetime
-    if totaltime >= traveltime
-      movetime -= totaltime - traveltime
+    if totaltime >= tune.traveltime
+      movetime -= totaltime - tune.traveltime
       flag = true
     else
       tune.wallhits += 1
