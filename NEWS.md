@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.8.2
+* Modified ``dgs!()`` to require parameter support in Matrix columns instead of rows to improve performance.
+
 ### 0.8.1
 * Added ``AbstractChains`` read and write methods.
 * Fixed restarting of multiple chains in the case of samplers with adaptively tuned parameters.
