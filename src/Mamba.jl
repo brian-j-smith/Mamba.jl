@@ -211,6 +211,8 @@ module Mamba
   include("output/stats.jl")
   include("output/plot.jl")
 
+  include("samplers/sampler.jl")
+
   include("samplers/abc.jl")
   include("samplers/amm.jl")
   include("samplers/amwg.jl")
@@ -225,8 +227,6 @@ module Mamba
   include("samplers/rwm.jl")
   include("samplers/slice.jl")
   include("samplers/slicesimplex.jl")
-
-  include("samplers/sampler.jl")
 
 
   #################### Exports ####################

@@ -15,6 +15,8 @@ end
 
 typealias BMC3Variate SamplerVariate{BMC3Tune}
 
+@validatebinary BMC3Variate
+
 
 #################### Sampler Constructor ####################
 

@@ -15,6 +15,8 @@ end
 
 typealias SliceSimplexVariate SamplerVariate{SliceSimplexTune}
 
+@validatesimplex SliceSimplexVariate
+
 
 #################### Sampler Constructor ####################
 

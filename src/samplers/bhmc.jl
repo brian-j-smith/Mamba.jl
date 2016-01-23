@@ -24,6 +24,8 @@ end
 
 typealias BHMCVariate SamplerVariate{BHMCTune}
 
+@validatebinary BHMCVariate
+
 
 #################### Sampler Constructor ####################
 

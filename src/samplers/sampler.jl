@@ -36,15 +36,24 @@ end
 
 validate(v::SamplerVariate) = v
 
-function validate(v::Union{BHMCVariate, BMC3Variate, BMGVariate})
-  all(insupport(Bernoulli, v)) ||
-    throw(ArgumentError("variate is not a binary vector"))
-  v
+macro validatebinary(V)
+  esc(quote
+        function validate(v::$V)
+          all(insupport(Bernoulli, v)) ||
+            throw(ArgumentError("variate is not a binary vector"))
+          v
+        end
+      end)
 end
 
-function validate(v::SliceSimplexVariate)
-  isprobvec(v) || throw(ArgumentError("variate is not a probability vector"))
-  v
+macro validatesimplex(V)
+  esc(quote
+        function validate(v::$V)
+          isprobvec(v) ||
+            throw(ArgumentError("variate is not a probability vector"))
+          v
+        end
+      end)
 end
 
 

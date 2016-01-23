@@ -9,6 +9,8 @@ end
 
 typealias BMGVariate SamplerVariate{BMGTune}
 
+@validatebinary BMGVariate
+
 
 #################### Sampler Constructor ####################
 
