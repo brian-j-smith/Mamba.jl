@@ -3,7 +3,17 @@
 const samplerfxargs = [(:model, :Model), (:block, :Integer)]
 
 
-#################### Constructors ####################
+#################### Types and Constructors ####################
+
+type SamplingBlock
+  model::Model
+  index::Int
+  transform::Bool
+
+  SamplingBlock(model::Model, index::Integer=0, transform::Bool=false) =
+    new(model, index, transform)
+end
+
 
 Sampler(param::Symbol, args...) = Sampler([param], args...)
 
@@ -16,8 +26,10 @@ function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U}, tune::T)
   SamplerVariate{T}(x, tune)
 end
 
-function SamplerVariate(m::Model, block::Integer, transform::Bool=false)
-  SamplerVariate(unlist(m, block, transform), m.samplers[block], m.iter)
+function SamplerVariate(block::SamplingBlock, pargs...; kargs...)
+  m = block.model
+  SamplerVariate(unlist(block), m.samplers[block.index], m.iter, pargs...;
+                 kargs...)
 end
 
 function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
@@ -78,6 +90,33 @@ function Base.showall(io::IO, s::Sampler)
 end
 
 
+#################### Simulation Methods ####################
+
+function gradlogpdf!{T<:Real}(block::SamplingBlock, x::AbstractArray{T},
+                              dtype::Symbol=:forward)
+  gradlogpdf!(block.model, x, block.index, block.transform, dtype=dtype)
+end
+
+function logpdf!{T<:Real}(block::SamplingBlock, x::AbstractArray{T})
+  logpdf!(block.model, x, block.index, block.transform)
+end
+
+function logpdfgrad!{T<:Real}(block::SamplingBlock, x::AbstractVector{T},
+                              dtype::Symbol)
+  grad = gradlogpdf!(block, x, dtype)
+  logf = logpdf!(block, x)
+  (logf, ifelse(isfinite(grad), grad, 0.0))
+end
+
+function unlist(block::SamplingBlock)
+  unlist(block.model, block.index, block.transform)
+end
+
+function relist{T<:Real}(block::SamplingBlock, x::AbstractArray{T})
+  relist(block.model, x, block.index, block.transform)
+end
+
+
 #################### Auxiliary Functions ####################
 
 asvec(x::Union{Number, Symbol}) = [x]
@@ -99,4 +138,10 @@ function logpdfgrad!{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer,
            gradlogpdf!(m, x, block, true, dtype=dtype) :
            zeros(length(x))
   logf, grad
+
+
+#################### Legacy Sampler Code ####################
+
+function SamplerVariate(m::Model, block::Integer, transform::Bool=false)
+  SamplerVariate(unlist(m, block, transform), m.samplers[block], m.iter)
 end
