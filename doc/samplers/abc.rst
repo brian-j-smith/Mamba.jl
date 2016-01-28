@@ -15,7 +15,7 @@ Sampler Constructor
                   epsilon::Real; kernel::KernelDensityType=SymUniform, \
                   dist::Function=(Tsim, Tobs) -> sqrt(sumabs2(Tsim - Tobs)), \
                   proposal::SymDistributionType=Normal, maxdraw::Integer=1, \
-                  nsim::Integer=1, args...)
+                  nsim::Integer=1, mode::Symbol=:monotone, args...)
 
     Construct a ``Sampler`` object for ABC sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
@@ -30,6 +30,7 @@ Sampler Constructor
         * ``proposal`` : symmetric distribution of type ``Biweight``, ``Cosine``, ``Epanechnikov``, ``Normal``, ``SymTriangularDist``, ``SymUniform``, or ``Triweight`` to be centered around current parameter values and used to generate proposal draws.  Specified ``scale`` determines the standard deviations of Normal proposals and widths of the others.
         * ``maxdraw`` : maximum number of unaccepted candidates to draw in each call of the sampler.  Draws are generated until one is accepted or the maximum is reached.  Larger values increase acceptance rates at the expense of longer runtimes.
         * ``nsim`` : number of data sets to simulate in deciding whether to accept a candidate draw.  Larger values lead to closer approximations of the target distribution at the expense of longer runtimes.
+        * ``mode`` : How internal tolerance is handled. Options are ``:monotone``, ``:stochastic``, or ``:fixed``. ``:monotone`` adaptively tunes the tolerance at each iteration to decrease monotonically to target. ``:stochastic`` will sample the tolerance from exponential distribution with mean equal to target tolerance. ``:fixed`` will use a fixed tolerance at each iteration. 
         * ``args...`` : additional keyword arguments to be passed to the ``dist`` function.
 
     **Value**
