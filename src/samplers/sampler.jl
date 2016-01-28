@@ -21,12 +21,13 @@ function SamplerVariate(m::Model, block::Integer, transform::Bool=false)
 end
 
 function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
-                                                 s::Sampler{T}, iter::Integer)
+                                                 s::Sampler{T}, iter::Integer,
+                                                 pargs...; kargs...)
   if iter == 1
-    v = SamplerVariate{T}(x)
+    v = SamplerVariate{T}(x, pargs...; kargs...)
     s.tune = v.tune
   else
-    v = SamplerVariate{T}(x, s.tune)
+    v = SamplerVariate(x, s.tune)
   end
   v
 end

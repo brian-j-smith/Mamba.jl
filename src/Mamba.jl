@@ -134,9 +134,9 @@ module Mamba
       validate(v)
     end
 
-    function SamplerVariate{U<:Real}(x::AbstractVector{U})
+    function SamplerVariate{U<:Real}(x::AbstractVector{U}, pargs...; kargs...)
       value = convert(Vector{Float64}, x)
-      SamplerVariate{T}(value, T(value))
+      SamplerVariate{T}(value, T(value, pargs...; kargs...))
     end
   end
 
