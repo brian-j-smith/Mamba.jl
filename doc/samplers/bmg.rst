@@ -92,3 +92,8 @@ Declaration
 ```````````
 
 ``type BMGTune <: SamplerTune``
+
+Fields
+``````
+
+* ``k::Int`` : number of parameters to select at random for simultaneous updating in each call of the sampler.

@@ -2,72 +2,68 @@
 
 #################### Types and Constructors ####################
 
-type SliceTune <: SamplerTune
-  width::Union{Real, Vector}
+typealias SliceForm Union{Univariate, Multivariate}
 
-  function SliceTune(value::Vector{Float64}=Float64[])
-    new(
-      NaN
-    )
+type SliceTune{F<:SliceForm} <: SamplerTune
+  logf::Nullable{Function}
+  width::Union{Float64, Vector{Float64}}
+
+  SliceTune() = new()
+
+  SliceTune{T<:Real}(x::Vector, width::ElementOrVector{T}) =
+    SliceTune{F}(x, width, Nullable{Function}())
+
+  SliceTune{T<:Real}(x::Vector, width::ElementOrVector{T}, logf::Function) =
+    SliceTune{F}(x, width, Nullable{Function}(logf))
+
+  SliceTune(x::Vector, width::Real, logf::Nullable{Function}) =
+    new(logf, Float64(width))
+
+  function SliceTune{T<:Real}(x::Vector, width::Vector{T},
+                              logf::Nullable{Function})
+    new(logf, convert(Vector{Float64}, width))
   end
 end
 
 
-typealias SliceVariate SamplerVariate{SliceTune}
+typealias SliceUnivariate SamplerVariate{SliceTune{Univariate}}
+typealias SliceMultivariate SamplerVariate{SliceTune{Multivariate}}
+
+validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}) =
+  validate(v, v.tune.width)
+
+validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}, width::Float64) = v
+
+function validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}, width::Vector)
+  n = length(v)
+  length(width) == n ||
+    throw(ArgumentError("length(width) differs from variate length $n"))
+  v
+end
 
 
 #################### Sampler Constructor ####################
 
-function Slice{T<:Real}(params::ElementOrVector{Symbol},
-                        width::ElementOrVector{T}, stype::Symbol=:multivar;
-                        transform::Bool=false)
+function Slice{T<:Real, F<:SliceForm}(params::ElementOrVector{Symbol},
+                                      width::ElementOrVector{T},
+                                      ::Type{F}=Multivariate;
+                                      transform::Bool=false)
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block, transform)
-    f = x -> logpdf!(model, x, block, transform)
-    slice!(v, width, f, stype)
-    relist(model, v, block, transform)
+    block = SamplingBlock(model, block, transform)
+    v = SamplerVariate(block, width)
+    sample!(v, x -> logpdf!(block, x))
+    relist(block, v)
   end
-  Sampler(params, samplerfx, SliceTune())
+  Sampler(params, samplerfx, SliceTune{F}())
 end
 
 
 #################### Sampling Functions ####################
 
-function slice!{T<:Real}(v::SliceVariate, width::ElementOrVector{T},
-                         logf::Function, stype::Symbol=:multivar)
-  v.tune.width = width
-  stype == :multivar ? slice_multi!(v, logf) :
-  stype == :univar   ? slice_uni!(v, logf) :
-    throw(ArgumentError("unsupported slice sampler type $stype"))
-end
+sample!(v::Union{SliceUnivariate, SliceMultivariate}) = sample!(v, v.tune.logf)
 
 
-function slice_multi!(v::SliceVariate, logf::Function)
-  p0 = logf(v.value) + log(rand())
-
-  n = length(v)
-  lower = v - v.tune.width .* rand(n)
-  upper = lower + v.tune.width
-
-  x = v.tune.width .* rand(n) + lower
-  while logf(x) < p0
-    for i in 1:n
-      value = x[i]
-      if value < v[i]
-        lower[i] = value
-      else
-        upper[i] = value
-      end
-      x[i] = rand(Uniform(lower[i], upper[i]))
-    end
-  end
-  v[:] = x
-
-  v
-end
-
-
-function slice_uni!(v::SliceVariate, logf::Function)
+function sample!(v::SliceUnivariate, logf::Function)
   logf0 = logf(v.value)
 
   n = length(v)
@@ -92,5 +88,58 @@ function slice_uni!(v::SliceVariate, logf::Function)
     end
   end
 
+  v
+end
+
+
+function sample!(v::SliceMultivariate, logf::Function)
+  p0 = logf(v.value) + log(rand())
+
+  n = length(v)
+  lower = v - v.tune.width .* rand(n)
+  upper = lower + v.tune.width
+
+  x = v.tune.width .* rand(n) + lower
+  while logf(x) < p0
+    for i in 1:n
+      value = x[i]
+      if value < v[i]
+        lower[i] = value
+      else
+        upper[i] = value
+      end
+      x[i] = rand(Uniform(lower[i], upper[i]))
+    end
+  end
+  v[:] = x
+
+  v
+end
+
+
+#################### Legacy Sampler Code ####################
+
+function Slice{T<:Real}(params::ElementOrVector{Symbol},
+                        width::ElementOrVector{T}, stype::Symbol=:multivar;
+                        transform::Bool=false)
+  F = stype == :univar   ? Univariate :
+      stype == :multivar ? Multivariate :
+        throw(ArgumentError("unsupported slice sampler type $stype"))
+  Slice(params, width, F, transform=transform)
+end
+
+
+SliceVariate{T<:Real}(x::AbstractVector{T}) =
+  SamplerVariate{SliceTune{SliceForm}}(x, NaN)
+
+
+function slice!{T<:Real}(v::SamplerVariate{SliceTune{SliceForm}},
+                         width::ElementOrVector{T}, logf::Function,
+                         stype::Symbol=:multivar)
+  v.tune.width = width
+  S = stype == :univar   ? Univariate :
+      stype == :multivar ? Multivariate :
+        throw(ArgumentError("unsupported slice sampler type $stype"))
+  sample!(SamplerVariate{SliceTune{S}}(v, width), logf)
   v
 end

@@ -3,38 +3,41 @@
 #################### Types ####################
 
 type BHMCTune <: SamplerTune
+  logf::Nullable{Function}
   traveltime::Float64
   position::Vector{Float64}
   velocity::Vector{Float64}
   wallhits::Int
   wallcrosses::Int
 
-  function BHMCTune(value::Vector{Float64}=Float64[])
-    n = length(value)
-    new(
-      NaN,
-      rand(Normal(0, 1), n),
-      rand(Normal(0, 1), n),
-      0,
-      0
-    )
+  BHMCTune() = new()
+
+  function BHMCTune(x::Vector, traveltime::Real, logf::Nullable{Function})
+    n = length(x)
+    new(logf, traveltime, randn(n), randn(n), 0, 0)
   end
 end
+
+BHMCTune(x::Vector, traveltime::Real) =
+  BHMCTune(x, traveltime, Nullable{Function}())
+
+BHMCTune(x::Vector, traveltime::Real, logf::Function) =
+  BHMCTune(x, traveltime, Nullable{Function}(logf))
 
 
 typealias BHMCVariate SamplerVariate{BHMCTune}
 
-@validatebinary BHMCVariate
+validate(v::BHMCVariate) = validatebinary(v)
 
 
 #################### Sampler Constructor ####################
 
 function BHMC(params::ElementOrVector{Symbol}, traveltime::Real)
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block)
-    f = x -> logpdf!(model, x, block)
-    bhmc!(v, traveltime, f)
-    relist(model, v, block)
+    block = SamplingBlock(model, block)
+    v = SamplerVariate(block, traveltime)
+    sample!(v, x -> logpdf!(block, x))
+    relist(block, v)
   end
   Sampler(params, samplerfx, BHMCTune())
 end
@@ -42,10 +45,10 @@ end
 
 #################### Sampling Functions ####################
 
-function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
-  tune = v.tune
-  tune.traveltime = traveltime
+sample!(v::BHMCVariate) = sample!(v, v.tune.logf)
 
+function sample!(v::BHMCVariate, logf::Function)
+  tune = v.tune
   flag = false
   nearzero = 1e4 * eps()
   j = 0
@@ -76,7 +79,7 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
     ## time till particle j hits or crosses wall
     movetime, j = findmin(walltime)
     if movetime == 0.0
-      error("walking length zero!")
+      error("walking length zero")
     elseif movetime == Inf
       movetime = pi
     end
@@ -116,4 +119,15 @@ function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
   ## convert from (-/+1) to (0/1)
   v[:] = (sign(tune.position) + ones(n)) / 2.0
   v
+end
+
+
+#################### Legacy Sampler Code ####################
+
+BHMCTune(x) = BHMCTune(x, NaN)
+
+
+function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
+  v.tune.traveltime = traveltime
+  sample!(v, logf)
 end

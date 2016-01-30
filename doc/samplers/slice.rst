@@ -27,7 +27,7 @@ Model-Based Constructor
 
     **Value**
 
-        Returns a ``Sampler{SliceTune}`` type object.
+        Returns a ``Sampler{SliceTune{Univariate}}`` or ``Sampler{SliceTune{Multivariate}}`` type object if sampling univariately or multivariately, respectively.
 
     **Example**
 
@@ -36,7 +36,8 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: slice!(v::SliceVariate, width::ElementOrVector{T<:Real}, \
+.. function:: slice!(v::SamplerVariate{SliceTune{F<:SliceForm}}, \
+                     width::ElementOrVector{T<:Real}, \
                      logf::Function, stype::Symbol=:multivar)
 
     Simulate one draw from a target distribution using a shrinkage slice sampler.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
@@ -72,19 +73,18 @@ SliceVariate Type
 Declaration
 ```````````
 
-``typealias SliceVariate SamplerVariate{SliceTune}``
+``type SamplerVariate{SliceTune{F<:SliceForm}}``
 
 Fields
 ``````
 
 * ``value::Vector{Float64}`` : simulated values.
-* ``tune::SliceTune`` : tuning parameters for the sampling algorithm.
+* ``tune::SliceTune{F}`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
 .. function:: SliceVariate(x::AbstractVector{T<:Real})
-              SliceVariate(x::AbstractVector{T<:Real}, tune::SliceTune)
 
     Construct a ``SliceVariate`` object that stores simulated values and tuning parameters for slice sampling.
 
@@ -95,8 +95,9 @@ Constructors
 
     **Value**
 
-        Returns a ``SliceVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``SamplerVariate{SliceTune{SliceForm}}`` type object with fields set to the values supplied to argument ``x``.
 
+.. index:: Sampler Types; SliceForm
 .. index:: Sampler Types; SliceTune
 
 SliceTune Type
@@ -105,9 +106,12 @@ SliceTune Type
 Declaration
 ```````````
 
-``type SliceTune <: SamplerTune``
+.. code-block:: julia
+
+    typealias SliceForm Union{Univariate, Multivariate}
+    type SliceTune{F<:SliceForm} <: SamplerTune
 
 Fields
 ``````
 
-* ``width::Union{Real, Vector}`` : initial widths defining hyperrectangles from which to simulate values.
+* ``width::Union{Float64, Vector{Float64}}`` : initial widths defining hyperrectangles from which to simulate values.

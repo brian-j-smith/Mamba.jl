@@ -111,4 +111,4 @@ Fields
 ``````
 
 * ``scale::Float64`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
-* ``SigmaF::Cholesky{Float64}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.
+* ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.

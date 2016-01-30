@@ -3,45 +3,63 @@
 #################### Types and Constructors ####################
 
 type HMCTune <: SamplerTune
+  logfgrad::Nullable{Function}
   epsilon::Float64
   L::Int
-  SigmaF::Cholesky{Float64}
+  SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
 
-  function HMCTune(value::Vector{Float64}=Float64[])
-    new(
-      NaN,
-      0,
-      Cholesky(Array(Float64, 0, 0), :U)
-    )
+  HMCTune() = new()
+
+  HMCTune(x::Vector, epsilon::Real, L::Integer) =
+    new(Nullable{Function}(), epsilon, L, I)
+
+  HMCTune(x::Vector, epsilon::Real, L::Integer, logfgrad::Function) =
+    new(Nullable{Function}(logfgrad), epsilon, L, I)
+
+  function HMCTune{T<:Real}(x::Vector, epsilon::Real, L::Integer,
+                            Sigma::Matrix{T})
+    new(Nullable{Function}(), epsilon, L, cholfact(Sigma)[:L])
+  end
+
+  function HMCTune{T<:Real}(x::Vector, epsilon::Real, L::Integer,
+                            Sigma::Matrix{T}, logfgrad::Function)
+    new(Nullable{Function}(logfgrad), epsilon, L, cholfact(Sigma)[:L])
   end
 end
 
 
 typealias HMCVariate SamplerVariate{HMCTune}
 
+validate(v::HMCVariate) = validate(v, v.tune.SigmaL)
+
+validate(v::HMCVariate, SigmaL::UniformScaling) = v
+
+function validate(v::HMCVariate, SigmaL::LowerTriangular)
+  n = length(v)
+  size(SigmaL, 1) == n ||
+    throw(ArgumentError("Sigma dimension differs from variate length $n"))
+  v
+end
+
 
 #################### Sampler Constructor ####################
 
 function HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer;
              dtype::Symbol=:forward)
-  samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block, true)
-    f = x -> logpdfgrad!(model, x, block, dtype)
-    hmc!(v, epsilon, L, f)
-    relist(model, v, block, true)
-  end
-  Sampler(params, samplerfx, HMCTune())
+  HMCSampler(params, dtype, epsilon, L)
 end
-
 
 function HMC{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
                       L::Integer, Sigma::Matrix{T}; dtype::Symbol=:forward)
-  SigmaF = cholfact(Sigma)
+  HMCSampler(params, dtype, epsilon, L, Sigma)
+end
+
+function HMCSampler(params, dtype, pargs...)
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block, true)
-    f = x -> logpdfgrad!(model, x, block, dtype)
-    hmc!(v, epsilon, L, SigmaF, f)
-    relist(model, v, block, true)
+    block = SamplingBlock(model, block, true)
+    v = SamplerVariate(block, pargs...)
+    sample!(v, x -> logpdfgrad!(block, x, dtype))
+    relist(block, v)
   end
   Sampler(params, samplerfx, HMCTune())
 end
@@ -49,88 +67,67 @@ end
 
 #################### Sampling Functions ####################
 
-function hmc!(v::HMCVariate, epsilon::Real, L::Integer, logfgrad::Function)
+sample!(v::HMCVariate) = sample!(v, v.tune.logfgrad)
+
+function sample!(v::HMCVariate, logfgrad::Function)
+  tune = v.tune
+
   x1 = v[:]
   logf0, grad0 = logf1, grad1 = logfgrad(x1)
 
   ## Momentum variables
-  p0 = p1 = randn(length(v))
+  p0 = p1 = tune.SigmaL * randn(length(v))
 
   ## Make a half step for a momentum at the beginning
-  p1 += 0.5 * epsilon * grad0
+  p1 += 0.5 * tune.epsilon * grad0
 
   ## Alternate full steps for position and momentum
-  for i in 1:L
+  for i in 1:tune.L
     ## Make a full step for the position
-    x1 += epsilon * p1
+    x1 += tune.epsilon * p1
 
     logf1, grad1 = logfgrad(x1)
 
     ## Make a full step for the momentum
-    p1 += epsilon * grad1
+    p1 += tune.epsilon * grad1
   end
 
   ## Make a half step for momentum at the end
-  p1 -= 0.5 * epsilon * grad1
+  p1 -= 0.5 * tune.epsilon * grad1
 
   ## Negate momentum at end of trajectory to make the proposal symmetric
   p1 *= -1.0
 
   ## Evaluate potential and kinetic energies at start and end of trajectory
-  Kp0 = 0.5 * sumabs2(p0)
-  Kp1 = 0.5 * sumabs2(p1)
+  SigmaLinv = inv(tune.SigmaL)
+  Kp0 = 0.5 * sumabs2(SigmaLinv * p0)
+  Kp1 = 0.5 * sumabs2(SigmaLinv * p1)
 
   if rand() < exp((logf1 - Kp1) - (logf0 - Kp0))
     v[:] = x1
   end
-  v.tune.epsilon = epsilon
-  v.tune.L = L
 
   v
 end
 
 
-function hmc!(v::HMCVariate, epsilon::Real, L::Integer,
-              SigmaF::Cholesky{Float64}, logfgrad::Function)
-  S = SigmaF[:L]
-  Sinv = inv(S)
+#################### Legacy Sampler Code ####################
 
-  x1 = v[:]
-  logf0, grad0 = logf1, grad1 = logfgrad(x1)
+HMCTune(x) = HMCTune(x, NaN, 0)
 
-  ## Momentum variables
-  p0 = p1 = S * randn(length(v))
 
-  ## Make a half step for a momentum at the beginning
-  p1 += 0.5 * epsilon * grad0
-
-  ## Alternate full steps for position and momentum
-  for i in 1:L
-    ## Make a full step for the position
-    x1 += epsilon * p1
-
-    logf1, grad1 = logfgrad(x1)
-
-    ## Make a full step for the momentum
-    p1 += epsilon * grad1
-  end
-
-  ## Make a half step for momentum at the end
-  p1 -= 0.5 * epsilon * grad1
-
-  ## Negate momentum at end of trajectory to make the proposal symmetric
-  p1 *= -1.0
-
-  ## Evaluate potential and kinetic energies at start and end of trajectory
-  Kp0 = 0.5 * sumabs2(Sinv * p0)
-  Kp1 = 0.5 * sumabs2(Sinv * p1)
-
-  if rand() < exp((logf1 - Kp1) - (logf0 - Kp0))
-    v[:] = x1
-  end
+function hmc!(v::HMCVariate, epsilon::Real, L::Integer, logfgrad::Function)
   v.tune.epsilon = epsilon
   v.tune.L = L
-  v.tune.SigmaF = SigmaF
+  v.tune.SigmaL = I
+  sample!(v, logfgrad)
+end
 
-  v
+
+function hmc!(v::HMCVariate, epsilon::Real, L::Integer,
+              SigmaF::Cholesky{Float64}, logfgrad::Function)
+  v.tune.epsilon = epsilon
+  v.tune.L = L
+  v.tune.SigmaL = SigmaF[:L]
+  sample!(v, logfgrad)
 end

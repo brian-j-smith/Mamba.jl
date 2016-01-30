@@ -12,8 +12,9 @@ module Mamba
   import Distributions:
          ## Generic Types
          Continuous, ContinuousUnivariateDistribution, Distribution,
-         MatrixDistribution, MultivariateDistribution, PDiagMat, PDMat, ScalMat,
-         Truncated, UnivariateDistribution, ValueSupport,
+         MatrixDistribution, Multivariate, MultivariateDistribution, PDiagMat,
+         PDMat, ScalMat, Truncated, Univariate, UnivariateDistribution,
+         ValueSupport,
          ## ContinuousUnivariateDistribution Types
          Arcsine, Beta, BetaPrime, Biweight, Cauchy, Chi, Chisq, Cosine,
          Epanechnikov, Erlang, Exponential, FDist, Frechet, Gamma, Gumbel,
@@ -303,44 +304,20 @@ module Mamba
 
   export
     ABC,
-    amm!,
-    AMM,
-    AMMVariate,
-    amwg!,
-    AMWG,
-    AMWGVariate,
-    bhmc!,
-    BHMC,
-    BHMCVariate,
-    bmc3!,
-    BMC3,
-    BMC3Variate,
-    bmg!,
-    BMG,
-    BMGVariate,
-    dgs!,
-    DGS,
-    DGSVariate,
-    hmc!,
-    HMC,
-    HMCVariate,
-    mala!,
-    MALA,
-    MALAVariate,
+    AMM, AMMVariate,
+    AMWG, AMWGVariate,
+    BHMC, BHMCVariate,
+    BMC3, BMC3Variate,
+    BMG, BMGVariate,
+    DiscreteVariate,
+    DGS, DGSVariate,
+    HMC, HMCVariate,
+    MALA, MALAVariate,
     MISS,
-    nuts!,
-    nutsepsilon,
-    NUTS,
-    NUTSVariate,
-    rwm!,
-    RWM,
-    RWMVariate,
-    slice!,
-    Slice,
-    SliceVariate,
-    slicesimplex!,
-    SliceSimplex,
-    SliceSimplexVariate
+    NUTS, NUTSVariate,
+    RWM, RWMVariate,
+    Slice, SliceMultivariate, SliceUnivariate,
+    SliceSimplex, SliceSimplexVariate
 
   export
     cm,
@@ -348,6 +325,12 @@ module Mamba
     mm,
     pt,
     px
+
+
+    #################### Legacy Sampler Code ####################
+
+    export amm!, amwg!, bhmc!, bmc3!, bmg!, dgs!, hmc!, mala!, nuts!,
+           nutsepsilon, rwm!, slice!, SliceVariate, slicesimplex!
 
 
   #################### Deprecated ####################

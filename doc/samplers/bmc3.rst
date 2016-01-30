@@ -98,4 +98,5 @@ Declaration
 Fields
 ``````
 
+* ``k::Int`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
 * ``indexset::Vector{Vector{Int}}`` : candidate set of indices of the parameters whose states are to be changed simultaneously.

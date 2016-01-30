@@ -3,23 +3,38 @@
 #################### Types ####################
 
 type BMGTune <: SamplerTune
-  BMGTune(value::Vector{Float64}=Float64[]) = new()
+  logf::Nullable{Function}
+  k::Int
+
+  BMGTune() = new()
+
+  BMGTune(x::Vector, logf::Nullable{Function}; k::Integer=1) = new(logf, k)
 end
+
+BMGTune(x::Vector; args...) =
+  BMGTune(x, Nullable{Function}(); args...)
+
+BMGTune(x::Vector, logf::Function; args...) =
+  BMGTune(x, Nullable{Function}(logf); args...)
 
 
 typealias BMGVariate SamplerVariate{BMGTune}
 
-@validatebinary BMGVariate
+function validate(v::BMGVariate)
+  n = length(v)
+  v.tune.k <= n || throw(ArgumentError("k exceeds variate length $n"))
+  validatebinary(v)
+end
 
 
 #################### Sampler Constructor ####################
 
-function BMG(params::ElementOrVector{Symbol}; k::Integer=1)
+function BMG(params::ElementOrVector{Symbol}; args...)
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block)
-    f = x -> logpdf!(model, x, block)
-    bmg!(v, f, k=k)
-    relist(model, v, block)
+    block = SamplingBlock(model, block)
+    v = SamplerVariate(block; args...)
+    sample!(v, x -> logpdf!(block, x))
+    relist(block, v)
   end
   Sampler(params, samplerfx, BMGTune())
 end
@@ -27,12 +42,12 @@ end
 
 #################### Sampling Functions ####################
 
-function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
-  n = length(v)
-  k <= n || throw(ArgumentError("k is greater than length(v)"))
+sample!(v::BMGVariate) = sample!(v, v.tune.logf)
 
-  probs = Array(Float64, n)
-  idx = randperm(n)[1:k]
+function sample!(v::BMGVariate, logf::Function)
+  n = length(v)
+  probs = Vector{Float64}(n)
+  idx = randperm(n)[1:v.tune.k]
 
   pbernoulli! = function(x, probs)
     for i in idx
@@ -73,4 +88,13 @@ function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
   end
 
   v
+end
+
+
+#################### Legacy Sampler Code ####################
+
+function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
+  k <= length(v) || throw(ArgumentError("k is greater than length(v)"))
+  v.tune.k = k
+  sample!(v, logf)
 end

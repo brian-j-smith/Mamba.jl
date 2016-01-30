@@ -5,6 +5,8 @@ const samplerfxargs = [(:model, :Model), (:block, :Integer)]
 
 #################### Types and Constructors ####################
 
+type NullFunction end
+
 type SamplingBlock
   model::Model
   index::Int
@@ -45,31 +47,6 @@ function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
 end
 
 
-#################### Variate Validators ####################
-
-validate(v::SamplerVariate) = v
-
-macro validatebinary(V)
-  esc(quote
-        function validate(v::$V)
-          all(insupport(Bernoulli, v)) ||
-            throw(ArgumentError("variate is not a binary vector"))
-          v
-        end
-      end)
-end
-
-macro validatesimplex(V)
-  esc(quote
-        function validate(v::$V)
-          isprobvec(v) ||
-            throw(ArgumentError("variate is not a probability vector"))
-          v
-        end
-      end)
-end
-
-
 #################### Base Methods ####################
 
 function Base.show(io::IO, s::Sampler)
@@ -87,6 +64,31 @@ function Base.showall(io::IO, s::Sampler)
   show(io, s.tune)
   print(io, "\n\nTarget Nodes:\n")
   show(io, s.targets)
+end
+
+
+#################### Variate Validators ####################
+
+validate(v::SamplerVariate) = v
+
+function validatebinary(v::SamplerVariate)
+  all(insupport(Bernoulli, v)) ||
+    throw(ArgumentError("variate is not a binary vector"))
+  v
+end
+
+function validatesimplex(v::SamplerVariate)
+  isprobvec(v) || throw(ArgumentError("variate is not a probability vector"))
+  v
+end
+
+
+#################### sample! Generics ####################
+
+function sample!(v::SamplerVariate, density::Nullable; args...)
+  isnull(density) && error("must specify a target density in $(typeof(v))",
+                           " constructor or sample! method")
+  sample!(v, get(density); args...)
 end
 
 

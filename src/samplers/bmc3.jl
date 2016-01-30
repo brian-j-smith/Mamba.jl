@@ -3,40 +3,40 @@
 #################### Types and Constructors ####################
 
 type BMC3Tune <: SamplerTune
+  logf::Nullable{Function}
+  k::Int
   indexset::Vector{Vector{Int}}
 
-  function BMC3Tune(value::Vector{Float64}=Float64[])
-    new(
-      Vector{Vector{Int}}[]
-    )
-  end
+  BMC3Tune() = new()
+
+  BMC3Tune(x::Vector, logf::Nullable{Function}; k::Integer=1) =
+    new(logf, k, Vector{Vector{Int}}())
 end
+
+BMC3Tune(x::Vector; args...) =
+   BMC3Tune(x, Nullable{Function}(); args...)
+
+BMC3Tune(x::Vector, logf::Function; args...) =
+   BMC3Tune(x, Nullable{Function}(logf); args...)
 
 
 typealias BMC3Variate SamplerVariate{BMC3Tune}
 
-@validatebinary BMC3Variate
+function validate(v::BMC3Variate)
+  n = length(v)
+  v.tune.k <= n || throw(ArgumentError("k exceeds variate length $n"))
+  validatebinary(v)
+end
 
 
 #################### Sampler Constructor ####################
 
-function BMC3(params::ElementOrVector{Symbol}; k::Integer=1)
+function BMC3(params::ElementOrVector{Symbol}; args...)
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block)
-    f = x -> logpdf!(model, x, block)
-    bmc3!(v, f, k=k)
-    relist(model, v, block)
-  end
-  Sampler(params, samplerfx, BMC3Tune())
-end
-
-
-function BMC3(params::ElementOrVector{Symbol}, indexset::Vector{Vector{Int}})
-  samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block)
-    f = x -> logpdf!(model, x, block)
-    bmc3!(v, indexset, f)
-    relist(model, v, block)
+    block = SamplingBlock(model, block)
+    v = SamplerVariate(block; args...)
+    sample!(v, x -> logpdf!(block, x))
+    relist(block, v)
   end
   Sampler(params, samplerfx, BMC3Tune())
 end
@@ -44,21 +44,41 @@ end
 
 #################### Sampling Functions ####################
 
-function bmc3!(v::BMC3Variate, logf::Function; k::Integer=1)
-  n = length(v)
-  k <= n || throw(ArgumentError("k is greater than length(v)"))
-  bmc3_sub!(v, randperm(n)[1:k], logf)
+sample!(v::BMC3Variate) = sample!(v, v.tune.logf)
+
+function sample!(v::BMC3Variate, logf::Function)
+  x = v[:]
+  idx = randperm(length(v))[1:v.tune.k]
+  x[idx] = 1.0 - v[idx]
+  if rand() < exp(logf(x) - logf(v.value))
+    v[:] = x
+  end
+  v
 end
 
+
+#################### Legacy Sampler Code ####################
+
+function BMC3(params::ElementOrVector{Symbol}, indexset::Vector{Vector{Int}})
+  samplerfx = function(model::Model, block::Integer)
+    block = SamplingBlock(model, block)
+    v = SamplerVariate(block, 0)
+    bmc3!(v, indexset, x -> logpdf!(block, x))
+    relist(block, v)
+  end
+  Sampler(params, samplerfx, BMC3Tune())
+end
+
+
+function bmc3!(v::BMC3Variate, logf::Function; k::Integer=1)
+  v.tune.k = k
+  sample!(v, logf)
+end
 
 function bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
   v.tune.indexset = indexset
-  bmc3_sub!(v, indexset[rand(1:length(indexset))], logf)
-end
-
-
-function bmc3_sub!(v::BMC3Variate, idx::Vector{Int}, logf::Function)
   x = v[:]
+  idx = rand(v.tune.indexset)
   x[idx] = 1.0 - v[idx]
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x

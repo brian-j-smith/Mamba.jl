@@ -105,5 +105,5 @@ Declaration
 Fields
 ``````
 
-* ``scale::Union{Real, Vector}`` : scaling for the proposal distribution.
+* ``scale::Union{Float64, Vector{Float64}}`` : scaling for the proposal distribution.
 * ``proposal::SymDistributionType`` : proposal distribution.

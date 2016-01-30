@@ -3,47 +3,59 @@
 #################### Types and Constructors ####################
 
 type AMWGTune <: SamplerTune
+  logf::Nullable{Function}
   adapt::Bool
   accept::Vector{Int}
   batchsize::Int
   m::Int
   sigma::Vector{Float64}
-  target::Real
+  target::Float64
 
-  function AMWGTune(value::Vector{Float64}=Float64[])
-    new(
-      false,
-      zeros(Int, length(value)),
-      50,
-      0,
-      Array(Float64, 0),
-      0.44
-    )
+  AMWGTune() = new()
+
+  function AMWGTune{T<:Real}(x::Vector, sigma::Vector{T},
+                             logf::Nullable{Function}; batchsize::Integer=50,
+                             target::Real=0.44)
+    new(logf, false, zeros(Int, length(x)), batchsize, 0, copy(sigma), target)
   end
 end
 
+AMWGTune{T<:Real}(x::Vector, sigma::ElementOrVector{T}; args...) =
+  AMWGTune(x, sigma, Nullable{Function}(); args...)
+
+function AMWGTune{T<:Real}(x::Vector, sigma::ElementOrVector{T}, logf::Function;
+                           args...)
+  AMWGTune(x, sigma, Nullable{Function}(logf); args...)
+end
+
+AMWGTune(x::Vector, sigma::Real, logf::Nullable{Function}; args...) =
+  AMWGTune(x, fill(sigma, length(x)), logf; args...)
+
 
 typealias AMWGVariate SamplerVariate{AMWGTune}
+
+function validate(v::AMWGVariate)
+  n = length(v)
+  length(v.tune.sigma) == n ||
+    throw(ArgumentError("length(sigma) differs from variate length $n"))
+  v
+end
 
 
 #################### Sampler Constructor ####################
 
 function AMWG{T<:Real}(params::ElementOrVector{Symbol},
-                       sigma::ElementOrVector{T}; adapt::Symbol=:all,
-                       batchsize::Integer=50, target::Real=0.44)
+                       sigma::ElementOrVector{T}; adapt::Symbol=:all, args...)
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block, true)
-    if model.iter == 1 && isa(sigma, Real)
-      sigma = fill(sigma, length(v))
-    end
-    f = x -> logpdf!(model, x, block, true)
+    block = SamplingBlock(model, block, true)
+    v = SamplerVariate(block, sigma; args...)
     isadapt = adapt == :burnin ? model.iter <= model.burnin :
               adapt == :all ? true : false
-    amwg!(v, sigma, f, adapt=isadapt, batchsize=batchsize, target=target)
-    relist(model, v, block, true)
+    sample!(v, x -> logpdf!(block, x), adapt=isadapt)
+    relist(block, v)
   end
   Sampler(params, samplerfx, AMWGTune())
 end
@@ -51,20 +63,12 @@ end
 
 #################### Sampling Functions ####################
 
-function amwg!{T<:Real}(v::AMWGVariate, sigma::Vector{T}, logf::Function;
-                        adapt::Bool=true, batchsize::Integer=50,
-                        target::Real=0.44)
-  tune = v.tune
+sample!(v::AMWGVariate; args...) = sample!(v, v.tune.logf; args...)
 
+function sample!(v::AMWGVariate, logf::Function; adapt::Bool=true)
+  tune = v.tune
+  setadapt!(v, adapt)
   if adapt
-    if !tune.adapt
-      tune.adapt = true
-      tune.accept[:] = 0
-      tune.batchsize = batchsize
-      tune.m = 0
-      tune.sigma = copy(sigma)
-      tune.target = target
-    end
     tune.m += 1
     amwg_sub!(v, logf)
     if tune.m % tune.batchsize == 0
@@ -75,12 +79,19 @@ function amwg!{T<:Real}(v::AMWGVariate, sigma::Vector{T}, logf::Function;
       end
     end
   else
-    if !tune.adapt
-      tune.sigma = sigma
-    end
     amwg_sub!(v, logf)
   end
+  v
+end
 
+
+function setadapt!(v::AMWGVariate, adapt::Bool)
+  tune = v.tune
+  if adapt && !tune.adapt
+    tune.accept[:] = 0
+    tune.m = 0
+  end
+  tune.adapt = adapt
   v
 end
 
@@ -101,4 +112,21 @@ function amwg_sub!(v::AMWGVariate, logf::Function)
     end
   end
   v
+end
+
+
+#################### Legacy Sampler Code ####################
+
+AMWGTune(x::Vector) = AMWGTune(x, NaN)
+
+
+function amwg!{T<:Real}(v::AMWGVariate, sigma::Vector{T}, logf::Function;
+                        adapt::Bool=true, batchsize::Integer=50,
+                        target::Real=0.44)
+  if v.tune.m == 0
+    v.tune.sigma = adapt ? copy(sigma) : sigma
+  end
+  v.tune.batchsize = batchsize
+  v.tune.target = target
+  sample!(v, logf, adapt=adapt)
 end

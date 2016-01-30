@@ -3,24 +3,33 @@
 #################### Types and Constructors ####################
 
 type SliceSimplexTune <: SamplerTune
+  logf::Nullable{Function}
   scale::Float64
 
-  function SliceSimplexTune(value::Vector{Float64}=Float64[])
-    new(
-      NaN
-    )
-  end
+  SliceSimplexTune() = new()
+
+  SliceSimplexTune(x::Vector, logf::Nullable{Function}; scale::Real=1.0) =
+    new(logf, scale)
 end
+
+SliceSimplexTune(x::Vector; args...) =
+  SliceSimplexTune(x, Nullable{Function}(); args...)
+
+SliceSimplexTune(x::Vector, logf::Function; args...) =
+  SliceSimplexTune(x, Nullable{Function}(logf); args...)
 
 
 typealias SliceSimplexVariate SamplerVariate{SliceSimplexTune}
 
-@validatesimplex SliceSimplexVariate
+function validate(v::SliceSimplexVariate)
+  0 < v.tune.scale <= 1 || throw(ArgumentError("scale is not in (0, 1]"))
+  validatesimplex(v)
+end
 
 
 #################### Sampler Constructor ####################
 
-function SliceSimplex(params::ElementOrVector{Symbol}; scale::Real=1.0)
+function SliceSimplex(params::ElementOrVector{Symbol}; args...)
   params = asvec(params)
   samplerfx = function(model::Model, block::Integer)
     s = model.samplers[block]
@@ -30,8 +39,8 @@ function SliceSimplex(params::ElementOrVector{Symbol}; scale::Real=1.0)
       x = unlist(node)
 
       sim = function(inds::Range, logf::Function)
-        v = SamplerVariate(x[inds], s, model.iter)
-        slicesimplex!(v, logf, scale=scale)
+        v = SamplerVariate(x[inds], s, model.iter; args...)
+        sample!(v, logf)
       end
 
       logf = function(d::MultivariateDistribution, v::AbstractVector,
@@ -72,13 +81,13 @@ end
 
 #################### Sampling Functions ####################
 
-function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
-  0 < scale <= 1 || throw(ArgumentError("scale is not in (0, 1]"))
+sample!(v::SliceSimplexVariate) = sample!(v, v.tune.logf)
 
+function sample!(v::SliceSimplexVariate, logf::Function)
   p0 = logf(v.value) + log(rand())
   d = Dirichlet(ones(v))
 
-  vertices = makefirstsimplex(v, scale)
+  vertices = makefirstsimplex(v, v.tune.scale)
   vb = vertices \ v
   xb = rand(d)
   x = vertices * xb
@@ -89,7 +98,6 @@ function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
     x = vertices * xb
   end
   v[:] = x
-  v.tune.scale = scale
 
   v
 end
@@ -111,4 +119,13 @@ function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
     bc = vertices \ cc
   end
   vertices
+end
+
+
+#################### Legacy Sampler Code ####################
+
+function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
+  0 < scale <= 1 || throw(ArgumentError("scale is not in (0, 1]"))
+  v.tune.scale = scale
+  sample!(v, logf)
 end

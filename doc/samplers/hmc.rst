@@ -112,4 +112,4 @@ Fields
 
 * ``epsilon::Float64`` : step size.
 * ``L::Int`` : number of steps to take in the Leapfrog algorithm.
-* ``SigmaF::Cholesky{Float64}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.
+* ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.

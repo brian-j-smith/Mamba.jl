@@ -3,6 +3,7 @@
 #################### Types and Constructors ####################
 
 type NUTSTune <: SamplerTune
+  logfgrad::Nullable{Function}
   adapt::Bool
   alpha::Float64
   epsilon::Float64
@@ -16,23 +17,26 @@ type NUTSTune <: SamplerTune
   t0::Float64
   target::Float64
 
-  function NUTSTune(value::Vector{Float64}=Float64[])
-    new(
-      false,
-      0.0,
-      NaN,
-      1.0,
-      0.05,
-      0.0,
-      0.75,
-      0,
-      NaN,
-      0,
-      10.0,
-      0.44
-    )
+  NUTSTune() = new()
+
+  function NUTSTune(x::Vector, epsilon::Real, logfgrad::Nullable{Function};
+                    target::Real=0.6)
+    new(logfgrad, false, 0.0, epsilon, 1.0, 0.05, 0.0, 0.75, 0, NaN, 0, 10.0,
+        target)
   end
 end
+
+NUTSTune(x::Vector{Float64}, logfgrad::Function, ::NullFunction; args...) =
+  NUTSTune(x, nutsepsilon(x, logfgrad); args...)
+
+NUTSTune(x::Vector{Float64}, logfgrad::Function; args...) =
+  NUTSTune(x, nutsepsilon(x, logfgrad), logfgrad; args...)
+
+NUTSTune(x::Vector, epsilon::Real; args...) =
+  NUTSTune(x, epsilon, Nullable{Function}(); args...)
+
+NUTSTune(x::Vector, epsilon::Real, logfgrad::Function; args...) =
+  NUTSTune(x, epsilon, Nullable{Function}(logfgrad); args...)
 
 
 typealias NUTSVariate SamplerVariate{NUTSTune}
@@ -40,18 +44,13 @@ typealias NUTSVariate SamplerVariate{NUTSTune}
 
 #################### Sampler Constructor ####################
 
-function NUTS(params::ElementOrVector{Symbol}; dtype::Symbol=:forward,
-              target::Real=0.6)
+function NUTS(params::ElementOrVector{Symbol}; dtype::Symbol=:forward, args...)
   samplerfx = function(model::Model, block::Integer)
-    v = SamplerVariate(model, block, true)
-    tune = v.tune
-    if model.iter == 1
-      f = x -> logpdfgrad(model, x, block, dtype)
-      tune.epsilon = nutsepsilon(v, f)
-    end
-    f = x -> logpdfgrad!(model, x, block, dtype)
-    nuts!(v, tune.epsilon, f, adapt=model.iter <= model.burnin, target=target)
-    relist(model, v, block, true)
+    block = SamplingBlock(model, block, true)
+    f = x -> logpdfgrad!(block, x, dtype)
+    v = SamplerVariate(block, f, NullFunction(); args...)
+    sample!(v, f, adapt=model.iter <= model.burnin)
+    relist(block, v)
   end
   Sampler(params, samplerfx, NUTSTune())
 end
@@ -59,35 +58,12 @@ end
 
 #################### Sampling Functions ####################
 
-function nutsepsilon(v::NUTSVariate, logfgrad::Function)
-  n = length(v)
-  _, r0, logf0, grad0 = leapfrog(v.value, randn(n), zeros(n), 0.0, logfgrad)
-  epsilon = 1.0
-  _, rprime, logfprime, gradprime = leapfrog(v.value, r0, grad0, epsilon,
-                                             logfgrad)
-  prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
-  pm = 2 * (prob > 0.5) - 1
-  while prob^pm > 0.5^pm
-    epsilon *= 2.0^pm
-    _, rprime, logfprime, _ = leapfrog(v.value, r0, grad0, epsilon, logfgrad)
-    prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
-  end
-  epsilon
-end
+sample!(v::NUTSVariate; args...) = sample!(v, v.tune.logfgrad; args...)
 
-
-function nuts!(v::NUTSVariate, epsilon::Real, logfgrad::Function;
-               adapt::Bool=false, target::Real=0.6)
+function sample!(v::NUTSVariate, logfgrad::Function; adapt::Bool=false)
   tune = v.tune
-
-  if adapt
-    if !tune.adapt
-      tune.adapt = true
-      tune.epsilon = epsilon
-      tune.m = 0
-      tune.mu = log(10.0 * epsilon)
-      tune.target = target
-    end
+  setadapt!(v, adapt)
+  if tune.adapt
     tune.m += 1
     nuts_sub!(v, tune.epsilon, logfgrad)
     p = 1.0 / (tune.m + tune.t0)
@@ -98,10 +74,20 @@ function nuts!(v::NUTSVariate, epsilon::Real, logfgrad::Function;
     tune.epsilonbar = exp(p * log(tune.epsilon) +
                           (1.0 - p) * log(tune.epsilonbar))
   else
-    tune.epsilon = tune.adapt ? tune.epsilonbar : epsilon
+    if (tune.m > 0) tune.epsilon = tune.epsilonbar end
     nuts_sub!(v, tune.epsilon, logfgrad)
   end
+  v
+end
 
+
+function setadapt!(v::NUTSVariate, adapt::Bool)
+  tune = v.tune
+  if adapt && !tune.adapt
+    tune.m = 0
+    tune.mu = log(10.0 * tune.epsilon)
+  end
+  tune.adapt = adapt
   v
 end
 
@@ -198,4 +184,39 @@ function nouturn(xminus::Vector{Float64}, xplus::Vector{Float64},
                  rminus::Vector{Float64}, rplus::Vector{Float64})
   xdiff = xplus - xminus
   dot(xdiff, rminus) >= 0 && dot(xdiff, rplus) >= 0
+end
+
+
+#################### Auxilliary Functions ####################
+
+function nutsepsilon(x::Vector{Float64}, logfgrad::Function)
+  n = length(x)
+  _, r0, logf0, grad0 = leapfrog(x, randn(n), zeros(n), 0.0, logfgrad)
+  epsilon = 1.0
+  _, rprime, logfprime, gradprime = leapfrog(x, r0, grad0, epsilon, logfgrad)
+  prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
+  pm = 2 * (prob > 0.5) - 1
+  while prob^pm > 0.5^pm
+    epsilon *= 2.0^pm
+    _, rprime, logfprime, _ = leapfrog(x, r0, grad0, epsilon, logfgrad)
+    prob = exp(logfprime - logf0 - 0.5 * (dot(rprime) - dot(r0)))
+  end
+  epsilon
+end
+
+
+#################### Legacy Sampler Code ####################
+
+NUTSTune(x) = NUTSTune(x, NaN)
+
+
+nutsepsilon(v::NUTSVariate, logfgrad::Function) = nutsepsilon(v.value, logfgrad)
+
+function nuts!(v::NUTSVariate, epsilon::Real, logfgrad::Function;
+               adapt::Bool=false, target::Real=0.6)
+  if v.tune.m == 0
+    v.tune.epsilon = epsilon
+  end
+  v.tune.target = target
+  sample!(v, logfgrad, adapt=adapt)
 end

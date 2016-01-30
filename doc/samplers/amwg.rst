@@ -112,7 +112,7 @@ Declaration
 Fields
 ``````
 
-* ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
+* ``adapt::Bool`` : whether the proposal distribution is being adaptively tuned.
 * ``accept::Vector{Int}`` : number of accepted candidate draws generated for each element of the parameter vector during adaptive updating.
 * ``batchsize::Int`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
 * ``m::Int`` : number of adaptive update iterations that have been performed.

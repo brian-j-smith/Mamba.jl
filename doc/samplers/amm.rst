@@ -107,11 +107,11 @@ Declaration
 Fields
 ``````
 
-* ``adapt::Bool`` : whether the proposal distribution has been adaptively tuned.
-* ``beta::Real`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaF``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.  Fixed at ``beta = 0.05``.
+* ``adapt::Bool`` : whether the proposal distribution is being adaptively tuned.
+* ``beta::Real`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaL``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.  Fixed at ``beta = 0.05``.
 * ``m::Int`` : number of adaptive update iterations that have been performed.
 * ``Mv::Vector{Float64}`` : running mean of draws ``v`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
-* ``Mvv::Vector{Float64}`` : running mean of ``v * v'`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
-* ``scale::Real`` : fixed value ``2.38^2`` in the factor (``scale / length(v)``) by which the adaptively updated covariance matrix is scaled---adopted from Gelman, Roberts, and Gilks :cite:`gelman:1996:EMJ`.
-* ``SigmaF::Cholesky{Float64}`` : factorization of the non-adaptive covariance matrix.
-* ``SigmaLm::Matrix{Float64}`` : lower-triangular factorization of the adaptively tuned covariance matrix.
+* ``Mvv::Matrix{Float64}`` : running mean of ``v * v'`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
+* ``scale::Real`` : fixed value ``2.38`` in the factor (``scale^2 / length(v)``) by which the adaptively updated covariance matrix is scaled---adopted from Gelman, Roberts, and Gilks :cite:`gelman:1996:EMJ`.
+* ``SigmaL::LowerTriangular{Float64}`` : Cholesky factorization of the non-adaptive covariance matrix.
+* ``SigmaLm::Matrix{Float64}`` : pivoted factorization of the adaptively tuned covariance matrix.
