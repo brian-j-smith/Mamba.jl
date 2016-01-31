@@ -124,23 +124,6 @@ end
 asvec(x::Union{Number, Symbol}) = [x]
 asvec(x::Vector) = x
 
-function logpdfgrad{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer,
-                             dtype::Symbol)
-  logf = logpdf(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf(m, x, block, true, dtype=dtype) :
-           zeros(x)
-  logf, grad
-end
-
-function logpdfgrad!{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer,
-                              dtype::Symbol)
-  logf = logpdf!(m, x, block, true)
-  grad = isfinite(logf) ?
-           gradlogpdf!(m, x, block, true, dtype=dtype) :
-           zeros(length(x))
-  logf, grad
-
 
 #################### Legacy Sampler Code ####################
 
