@@ -33,7 +33,7 @@ module Mamba
          InverseWishart, Wishart,
          ## Methods
          dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
-         minimum, quantile, rand, support
+         minimum, pdf, quantile, rand, support
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
@@ -260,7 +260,6 @@ module Mamba
     SymUniform
 
   export
-    @modelexpr,
     autocor,
     changerate,
     cor,
