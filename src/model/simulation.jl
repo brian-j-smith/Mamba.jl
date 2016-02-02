@@ -94,7 +94,7 @@ function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
 end
 
 
-function simulate!(m::Model, block::Integer=0)
+function sample!(m::Model, block::Integer=0)
   m.iter += 1
   isoneblock = block != 0
   blocks = isoneblock ? block : 1:length(m.samplers)

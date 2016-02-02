@@ -292,18 +292,18 @@ Parameter Block Operations
 
         The resulting numeric value of summed log-densities.  Method ``logpdf!()`` additionally updates model ``m`` with supplied values ``x``.
 
-.. function:: simulate!(m::Model, block::Integer=0)
+.. function:: sample!(m::Model, block::Integer=0)
 
-    Simulate one MCMC draw from a specified model.
+    Generate one MCMC sample of values for a specified model.
 
     **Argument:**
 
         * ``m`` : model specification.
-        * ``block`` : block for which to simulate an MCMC draw (default: all blocks).
+        * ``block`` : block for which to sample values (default: all blocks).
 
     **Value**
 
-        Returns the model updated with the MCMC draw and, in the case of ``block=0``, the ``iter`` field incremented by 1.
+        Returns the model updated with the MCMC sample and, in the case of ``block=0``, the ``iter`` field incremented by 1.
 
     **Example**
 

@@ -17,3 +17,10 @@ end
 export tune
 
 @deprecate tune gettune
+
+
+## Deprecated at 0.9.0
+
+export simulate!
+
+@deprecate simulate! sample!

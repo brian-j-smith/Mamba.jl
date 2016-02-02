@@ -71,7 +71,7 @@ function mcmc_worker!(args::Vector)
 
   reset!(meter)
   for i in window
-    simulate!(m)
+    sample!(m)
     if i > burnin && (i - burnin) % thin == 0
       sim[i, :, 1] = unlist(m, true)
     end

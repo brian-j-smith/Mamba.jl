@@ -179,6 +179,6 @@ logpdf(model, 1)                    # Log-density sum for block 1
 logpdf(model, 2)                    # Block 2
 logpdf(model)                       # All blocks
 
-simulate!(model, 1)                 # Simulate draws for block 1
-simulate!(model, 2)                 # Block 2
-simulate!(model)                    # All blocks
+sample!(model, 1)                  # Sample values for block 1
+sample!(model, 2)                  # Block 2
+sample!(model)                     # All blocks
