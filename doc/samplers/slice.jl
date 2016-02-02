@@ -29,12 +29,12 @@ end
 n = 5000
 sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
 sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
-theta1 = SliceVariate([0.0, 0.0, 0.0])
-theta2 = SliceVariate([0.0, 0.0, 0.0])
 width = [1.0, 1.0, 2.0]
+theta1 = SliceUnivariate([0.0, 0.0, 0.0], width, logf)
+theta2 = SliceMultivariate([0.0, 0.0, 0.0], width, logf)
 for i in 1:n
-  slice!(theta1, width, logf, :multivar)
-  slice!(theta2, width, logf, :univar)
+  sample!(theta1)
+  sample!(theta2)
   sim1[i, :, 1] = [theta1[1:2]; exp(theta1[3])]
   sim2[i, :, 1] = [theta2[1:2]; exp(theta2[3])]
 end

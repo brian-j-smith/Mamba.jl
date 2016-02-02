@@ -30,15 +30,13 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
+.. function:: sample!(v::BHMCVariate)
 
-    Simulate one draw from a target distribution using the BHMC sampler.  Parameters are assumed to have binary numerical values (0 or 1).
+    Draw one sample from a target distribution using the BHMC sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``traveltime`` : length of time over which particle paths are simulated.  It is recommended that supplied values be of the form :math:`(n + \frac{1}{2}) \pi`, where optimal choices of :math:`n \in \mathbb{Z}^+` are expected to grow with the parameter space dimensionality.
-        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
 
@@ -68,22 +66,22 @@ Fields
 * ``value::Vector{Float64}`` : simulated values.
 * ``tune::BHMCTune`` : tuning parameters for the sampling algorithm.
 
-Constructors
-````````````
+Constructor
+```````````
 
-.. function:: BHMCVariate(x::AbstractVector{T<:Real})
-              BHMCVariate(x::AbstractVector{T<:Real}, tune::BHMCTune)
+.. function:: BHMCVariate(x::AbstractVector{T<:Real}, traveltime::Real, logf::Function)
 
     Construct a ``BHMCVariate`` object that stores simulated values and tuning parameters for BHMC sampling.
 
     **Arguments**
 
-        * ``x`` : simulated values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
+        * ``x`` : initial values.
+        * ``traveltime`` : length of time over which particle paths are simulated.  It is recommended that supplied values be of the form :math:`(n + \frac{1}{2}) \pi`, where optimal choices of :math:`n \in \mathbb{Z}^+` are expected to grow with the parameter space dimensionality.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
 
     **Value**
 
-        Returns a ``BHMCVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``BHMCVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
 .. index:: Sampler Types; BHMCTune
 
@@ -97,6 +95,8 @@ Declaration
 
 Fields
 ``````
+
+* ``logf::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density, or null if not supplied.
 * ``traveltime::Float64`` : length of time over which particle paths are simulated.
 * ``position::Vector{Float64}`` : initial particle positions.
 * ``velocity::Vector{Float64}`` : initial particle velocites.

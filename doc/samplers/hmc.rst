@@ -34,22 +34,16 @@ Model-Based Constructors
 
         See the :ref:`Dyes <example-Dyes>` and other :ref:`section-Examples`.
 
-Stand-Alone Functions
-^^^^^^^^^^^^^^^^^^^^^
+Stand-Alone Function
+^^^^^^^^^^^^^^^^^^^^
 
-.. function:: hmc!(v::HMCVariate, epsilon::Real, L::Integer, logfgrad::Function)
-              hmc!(v::HMCVariate, epsilon::Real, L::Integer, \
-                   SigmaF::Cholesky{Float64}, logfgrad::Function)
+.. function:: sample!(v::HMCVariate)
 
-    Simulate one draw from a target distribution using the HMC sampler.  Parameters are assumed to be continuous and unconstrained.
+    Draw one sample from a target distribution using the HMC sampler.  Parameters are assumed to be continuous and unconstrained.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``epsilon`` : step size.
-        * ``L`` : number of steps to take in the Leapfrog algorithm.
-        * ``SigmaF`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.  If omitted, the identity matrix is assumed.
-        * ``logfgrad`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 
@@ -83,19 +77,24 @@ Fields
 Constructors
 ````````````
 
-.. function:: HMCVariate(x::AbstractVector{T<:Real})
-              HMCVariate(x::AbstractVector{T<:Real}, tune::HMCTune)
+.. function:: HMCVariate(x::AbstractVector{T<:Real}, epsilon::Real, L::Integer, \
+                         logfgrad::Function)
+              HMCVariate(x::AbstractVector{T<:Real}, epsilon::Real, L::Integer, \
+                         Sigma::Matrix{U<:Real}, logfgrad::Function)
 
-    Construct a ``HMCVariate`` object that stores simulated values and tuning parameters for HMC sampling.
+    Construct an ``HMCVariate`` object that stores simulated values and tuning parameters for HMC sampling.
 
     **Arguments**
 
-        * ``x`` : simulated values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
+        * ``x`` : initial values.
+        * ``epsilon`` : step size.
+        * ``L`` : number of steps to take in the Leapfrog algorithm.
+        * ``Sigma`` : covariance matrix for the multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.  If omitted, the identity matrix is assumed.
+        * ``logfgrad`` : function that takes a single ``DenseVector`` argument at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 
-        Returns a ``HMCVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns an ``HMCVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
 .. index:: Sampler Types; HMCTune
 
@@ -110,6 +109,7 @@ Declaration
 Fields
 ``````
 
+* ``logfgrad::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density and gradient vector, or null if not supplied.
 * ``epsilon::Float64`` : step size.
 * ``L::Int`` : number of steps to take in the Leapfrog algorithm.
 * ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.

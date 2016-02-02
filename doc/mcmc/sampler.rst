@@ -77,14 +77,14 @@ Fields
 ^^^^^^
 
 * ``value::Vector{Float64}`` : simulated values.
-* ``tune::T`` : tuning parameters.  Type ``T`` is assumed to have a constructor ``T(value::Vector{Float64})`` that can be called with the ``value`` field of the variate to instantiate the parameters.
+* ``tune::T`` : tuning parameters.
 
 Constructors
 ^^^^^^^^^^^^
 
 .. function:: SamplerVariate(x::AbstractVector{U<:Real}, tune::SamplerTune)
               SamplerVariate{T<:SamplerTune}(x::AbstractVector{U<:Real}, tune::T)
-              SamplerVariate{T<:SamplerTune}(x::AbstractVector{U<:Real})
+              SamplerVariate{T<:SamplerTune}(x::AbstractVector{U<:Real}, pargs...; kargs...)
 
     Construct a ``SamplerVariate`` object for storing simulated values and tuning parameters.
 
@@ -93,21 +93,8 @@ Constructors
         * ``x`` : simulated values.
         * ``tune`` : tuning parameters.  If not specified, the tuning parameter constructor is called with the ``value`` field of the variate to instantiate the parameters.
         * ``T`` : explicit tuning parameter type for the variate.  If not specified, the type is inferred from the ``tune`` argument.
+        * ``pargs...``, ``kargs...`` : variable positional and keyword arguments that are passed, along with the ``value`` field of the variate, to the tuning parameter constructor as ``T(value, pargs...; kargs...)``.  Accordingly, the arguments that this version of the ``SamplerVariate{T}`` constructor accepts are defined by the ``T`` constructors implemented for it.
 
     **Value**
 
-    Returns a ``SamplerVariate{T}`` type object with fields containing the values supplied to arguments ``x`` and ``tune``.
-
-.. function:: SamplerVariate(m::Model, block::Integer, transform::Bool=false)
-
-    Construct a ``SamplerVariate`` object for a model-based sampler.
-
-    **Arguments**
-
-        * ``m`` : model containing nodes to be sampled.
-        * ``block`` : index to a sampling block of type ``Sampler{T<:SamplerTune}`` that contains simulated values and tuning parameters with which to construct the variate.
-        * ``transform`` : whether to apply a link transformation to the simulated values in the construction.
-
-    **Value**
-
-    Returns a ``SamplerVariate{T}`` type object with fields containing the node values and tuning parameters from the specified sampling block.
+    Returns a ``SamplerVariate{T}`` type object with fields set to the supplied ``x`` and tuning parameter values.

@@ -11,9 +11,9 @@ Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: AMM(params::ElementOrVector{Symbol}, Sigma::Matrix{T<:Real}; \
-                  adapt::Symbol=:all)
+                  adapt::Symbol=:all, args...)
 
-    Construct a ``Sampler`` object for adaptive mixture Metropolis sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+    Construct a ``Sampler`` object for AMM sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
@@ -23,6 +23,7 @@ Model-Based Constructor
             * ``:all`` : adapt proposal during all iterations.
             * ``:burnin`` : adapt proposal during burn-in iterations.
             * ``:none`` : no adaptation (multivariate Metropolis sampling with fixed proposal).
+        * ``args...`` : additional keyword arguments to be passed to the ``AMMVariate`` constructor.
 
     **Value**
 
@@ -35,16 +36,13 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function; \
-                   adapt::Bool=true)
+.. function:: sample!(v::AMMVariate; adapt::Bool=true)
 
-    Simulate one draw from a target distribution using an adaptive mixture Metropolis sampler.  Parameters are assumed to be continuous and unconstrained.
+    Draw one sample from a target distribution using the AMM sampler.  Parameters are assumed to be continuous and unconstrained.
 
     **Arguments**
 
-        * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
-        * ``SigmaF`` : Cholesky factorization of the covariance matrix for the non-adaptive multivariate normal proposal distribution.
-        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function will contain the ``tune`` field returned by the previous call.
         * ``adapt`` : whether to adaptively update the proposal distribution.
 
     **Value**
@@ -76,22 +74,25 @@ Fields
 * ``value::Vector{Float64}`` : simulated values.
 * ``tune::AMMTune`` : tuning parameters for the sampling algorithm.
 
-Constructors
-````````````
+Constructor
+```````````
 
-.. function:: AMMVariate(x::AbstractVector{T<:Real})
-              AMMVariate(x::AbstractVector{T<:Real}, tune::AMMTune)
+.. function:: AMMVariate(x::AbstractVector{T<:Real}, Sigma::Matrix{U<:Real}, logf::Function; \
+                         beta::Real=0.05, scale::Real=2.38)
 
-    Construct a ``AMMVariate`` object that stores simulated values and tuning parameters for adaptive mixture Metropolis sampling.
+    Construct an ``AMMVariate`` object that stores simulated values and tuning parameters for AMM sampling.
 
     **Arguments**
 
-        * ``x`` : simulated values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
+        * ``x`` : initial values.
+        * ``Sigma`` : covariance matrix for the non-adaptive multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``beta`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaL``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.
+        * ``scale`` : factor (``scale^2 / length(x)``) by which the adaptively updated covariance matrix is scaled---default value adopted from Gelman, Roberts, and Gilks :cite:`gelman:1996:EMJ`.
 
     **Value**
 
-        Returns a ``AMMVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns an ``AMMVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
 
 .. index:: Sampler Types; AMMTune
@@ -107,11 +108,12 @@ Declaration
 Fields
 ``````
 
+* ``logf::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density, or null if not supplied.
 * ``adapt::Bool`` : whether the proposal distribution is being adaptively tuned.
-* ``beta::Real`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaL``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.  Fixed at ``beta = 0.05``.
+* ``beta::Float64`` : proportion of weight given to draws from the non-adaptive proposal with covariance factorization ``SigmaL``, relative to draws from the adaptively tuned proposal with covariance factorization ``SigmaLm``, during adaptive updating.
 * ``m::Int`` : number of adaptive update iterations that have been performed.
 * ``Mv::Vector{Float64}`` : running mean of draws ``v`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
 * ``Mvv::Matrix{Float64}`` : running mean of ``v * v'`` during adaptive updating.  Used in the calculation of ``SigmaLm``.
-* ``scale::Real`` : fixed value ``2.38`` in the factor (``scale^2 / length(v)``) by which the adaptively updated covariance matrix is scaled---adopted from Gelman, Roberts, and Gilks :cite:`gelman:1996:EMJ`.
+* ``scale::Float64`` : factor (``scale^2 / length(v)``) by which the adaptively updated covariance matrix is scaled.
 * ``SigmaL::LowerTriangular{Float64}`` : Cholesky factorization of the non-adaptive covariance matrix.
 * ``SigmaLm::Matrix{Float64}`` : pivoted factorization of the adaptively tuned covariance matrix.

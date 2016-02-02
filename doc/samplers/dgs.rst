@@ -20,7 +20,7 @@ Model-Based Constructor
 
     **Value**
 
-        Returns a ``Sampler{DGSTune}`` type object.
+        Returns a ``Sampler{DSTune{Function}}`` type object.
 
     **Example**
 
@@ -29,17 +29,14 @@ Model-Based Constructor
 Stand-Alone Functions
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: dgs!(v::DGSVariate, support::Matrix{T<:Real}, logf::Function)
-              dgs!(v::DGSVariate, support::Matrix{T<:Real}, probs::Vector{Float64})
+.. function:: sample!(v::DGSVariate)
+              sample!(v::DiscreteVariate)
 
-    Simulate one draw directly from a target probability mass function.  Parameters are assumed to have discrete and finite support.
+    Draw one sample directly from a target probability mass function.  Parameters are assumed to have discrete and finite support.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``support`` : matrix whose columns contain the vector coordinates in the parameter space from which to simulate values.
-        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
-        * ``probs`` : sampling probabilities for the columns of ``support``.
 
     **Value**
 
@@ -47,50 +44,61 @@ Stand-Alone Functions
 
 
 .. index:: Sampler Types; DGSVariate
+.. index:: Sampler Types; DiscreteVariate
 
-DGSVariate Type
-^^^^^^^^^^^^^^^
+Discrete Variate Types
+^^^^^^^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``typealias DGSVariate SamplerVariate{DGSTune}``
+.. code-block:: julia
+
+    typealias DGSVariate SamplerVariate{DSTune{Function}}
+    typealias DiscreteVariate SamplerVariate{DSTune{Vector{Float64}}}
 
 Fields
 ``````
 
 * ``value::Vector{Float64}`` : simulated values.
-* ``tune::DGSTune`` : tuning parameters for the sampling algorithm.
+* ``tune::DSTune{F<:DSForm}`` : tuning parameters for the sampling algorithm.
 
 Constructors
 ````````````
 
-.. function:: DGSVariate(x::AbstractVector{T<:Real})
-              DGSVariate(x::AbstractVector{T<:Real}, tune::DGSTune)
+.. function:: DGSVariate(x::AbstractVector{T<:Real}, support::Matrix{U<:Real}, \
+                         mass::Function)
+              DiscreteVariate(x::AbstractVector{T<:Real}, support::Matrix{U<:Real}, \
+                              mass::Vector{Float64})
 
-    Construct a ``DGSVariate`` object that stores simulated values and tuning parameters for DGS sampling.
+    Construct an object that stores simulated values and tuning parameters for discrete sampling.
 
     **Arguments**
 
-        * ``x`` : simulated values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
+        * ``x`` : initial values.
+        * ``support`` : matrix whose columns contain the vector coordinates in the parameter space from which to simulate values.
+        * ``mass`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the density (up to a normalizing constant), or a vector of sampling probabilities for the parameter space.
 
     **Value**
 
-        Returns a ``DGSVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``DGSVariate`` or ``DiscreteVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
-.. index:: Sampler Types; DGSTune
+.. index:: Sampler Types; DSForm
+.. index:: Sampler Types; DSTune
 
-DGSTune Type
-^^^^^^^^^^^^^^
+DSTune Type
+^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type DGSTune <: SamplerTune``
+.. code-block:: julia
+
+    typealias DSForm Union{Function, Vector{Float64}}
+    type DSTune{F<:DSForm} <: SamplerTune
 
 Fields
 ``````
 
+* ``mass::Nullable{F}`` : density mass function or vector supplied to the constructor, or null if not supplied.
 * ``support::Matrix{Real}`` : matrix whose columns contain the vector coordinates in the parameter space from which to simulate values.
-* ``probs::Vector{Float64}`` : sampling probabilities for the columns of ``support``.

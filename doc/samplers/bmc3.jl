@@ -21,9 +21,9 @@ end
 ## MCMC Simulation with Binary MCMC Model Composition
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = BMC3Variate(zeros(p))
+gamma = BMC3Variate(zeros(p), logf)
 for i in 1:t
-  bmc3!(gamma, logf)
+  sample!(gamma)
   sim[i, :, 1] = gamma
 end
 describe(sim)

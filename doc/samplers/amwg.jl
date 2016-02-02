@@ -28,10 +28,9 @@ end
 n = 5000
 burnin = 1000
 sim = Chains(n, 3, names = ["b0", "b1", "s2"])
-theta = AMWGVariate([0.0, 0.0, 0.0])
-sigma = ones(3)
+theta = AMWGVariate([0.0, 0.0, 0.0], 1.0, logf)
 for i in 1:n
-  amwg!(theta, sigma, logf, adapt = (i <= burnin))
+  sample!(theta, adapt = (i <= burnin))
   sim[i, :, 1] = [theta[1:2]; exp(theta[3])]
 end
 describe(sim)

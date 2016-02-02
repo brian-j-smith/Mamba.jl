@@ -32,11 +32,11 @@ logf_logs2(x) = logf([beta; x])
 n = 10000
 burnin = 1000
 sim = Chains(n, 3, names = ["b0", "b1", "s2"])
-beta = AMWGVariate([0.0, 0.0])
-logs2 = SliceVariate([0.0])
+beta = AMWGVariate([0.0, 0.0], 1.0, logf_beta)
+logs2 = SliceMultivariate([0.0], 5.0, logf_logs2)
 for i in 1:n
-  amwg!(beta, [1.0, 1.0], logf_beta, adapt = (i <= burnin))
-  slice!(logs2, [5.0], logf_logs2)
+  sample!(beta, adapt = (i <= burnin))
+  sample!(logs2)
   sim[i, :, 1] = [beta; exp(logs2)]
 end
 describe(sim)

@@ -35,13 +35,13 @@ end
 n = 5000
 sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
 sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
-theta1 = MALAVariate([0.0, 0.0, 0.0])
-theta2 = MALAVariate([0.0, 0.0, 0.0])
 scale = 0.1
-SigmaF = cholfact(eye(3))
+Sigma = eye(3)
+theta1 = MALAVariate([0.0, 0.0, 0.0], scale, logfgrad)
+theta2 = MALAVariate([0.0, 0.0, 0.0], scale, Sigma, logfgrad)
 for i in 1:n
-  mala!(theta1, scale, logfgrad)
-  mala!(theta2, scale, SigmaF, logfgrad)
+  sample!(theta1)
+  sample!(theta2)
   sim1[i, :, 1] = [theta1[1:2]; exp(theta1[3])]
   sim2[i, :, 1] = [theta2[1:2]; exp(theta2[3])]
 end

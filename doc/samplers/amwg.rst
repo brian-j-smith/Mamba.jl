@@ -11,10 +11,9 @@ Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: AMWG(params::ElementOrVector{Symbol}, \
-                       sigma::ElementOrVector{T<:Real}; adapt::Symbol=:all, \
-                       batchsize::Integer=50, target::Real=0.44)
+                   sigma::ElementOrVector{T<:Real}; adapt::Symbol=:all, args...)
 
-    Construct a ``Sampler`` object for adaptive Metropolis-within-Gibbs sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
+    Construct a ``Sampler`` object for AMWG sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
     **Arguments**
 
@@ -24,8 +23,7 @@ Model-Based Constructor
             * ``:all`` : adapt proposals during all iterations.
             * ``:burnin`` : adapt proposals during burn-in iterations.
             * ``:none`` : no adaptation (Metropolis-within-Gibbs sampling with fixed proposals).
-        * ``batchsize`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
-        * ``target`` : target acceptance rate for the algorithm.
+        * ``args...`` : additional keyword arguments to be passed to the ``AMWGVariate`` constructor.
 
     **Value**
 
@@ -38,19 +36,14 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: amwg!(v::AMWGVariate, sigma::Vector{T<:Real}, logf::Function; \
-                    adapt::Bool=true, batchsize::Integer=50, target::Real=0.44)
+.. function:: sample!(v::AMWGVariate; adapt::Bool=true)
 
-    Simulate one draw from a target distribution using an adaptive Metropolis-within-Gibbs sampler.  Parameters are assumed to be continuous and unconstrained.
+    Draw one sample from a target distribution using the AMWG sampler.  Parameters are assumed to be continuous and unconstrained.
 
     **Arguments**
 
-        * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function should contain the ``tune`` field returned by the previous call.
-        * ``sigma`` : vector of the same length as ``v``, defining initial standard deviations for univariate normal proposal distributions.
-        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``v`` : current state of parameters to be simulated.  When running the sampler in adaptive mode, the ``v`` argument in a successive call to the function will contain the ``tune`` field returned by the previous call.
         * ``adapt`` : whether to adaptively update the proposal distribution.
-        * ``batchsize`` : number of samples that must be newly accumulated before applying an adaptive update to the proposal distributions.
-        * ``target`` : target acceptance rate for the adaptive algorithm.
 
     **Value**
 
@@ -81,22 +74,26 @@ Fields
 * ``value::Vector{Float64}`` : simulated values.
 * ``tune::AMWGTune`` : tuning parameters for the sampling algorithm.
 
-Constructors
-````````````
+Constructor
+```````````
 
-.. function:: AMWGVariate(x::AbstractVector{T<:Real})
-              AMWGVariate(x::AbstractVector{T<:Real}, tune::AMWGTune)
+.. function:: AMWGVariate(x::AbstractVector{T<:Real}, \
+                          sigma::ElementOrVector{U<:Real}, logf::Function; \
+                          batchsize::Integer=50, target::Real=0.44)
 
-    Construct a ``AMWGVariate`` object that stores simulated values and tuning parameters for adaptive Metropolis-within-Gibbs sampling.
+    Construct an ``AMWGVariate`` object that stores simulated values and tuning parameters for AMWG sampling.
 
     **Arguments**
 
-        * ``x`` : simulated values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
+        * ``x`` : initial values.
+        * ``sigma`` : scaling value or vector of the same length as the combined elements of nodes ``params``, defining initial standard deviations for univariate normal proposal distributions.  Standard deviations are relative to the unconstrained parameter space, where candidate draws are generated.
+        * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
+        * ``batchsize`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
+        * ``target`` : target acceptance rate for the algorithm.
 
     **Value**
 
-        Returns a ``AMWGVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns an ``AMWGVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
 
 .. index:: Sampler Types; AMWGTune
@@ -112,9 +109,10 @@ Declaration
 Fields
 ``````
 
+* ``logf::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density, or null if not supplied.
 * ``adapt::Bool`` : whether the proposal distribution is being adaptively tuned.
 * ``accept::Vector{Int}`` : number of accepted candidate draws generated for each element of the parameter vector during adaptive updating.
 * ``batchsize::Int`` : number of samples that must be accumulated before applying an adaptive update to the proposal distributions.
 * ``m::Int`` : number of adaptive update iterations that have been performed.
-* ``sigma::Vector{Float64}`` : updated values of the proposal standard deviations if ``adapt = true``, and the user-defined values otherwise.
-* ``target::Real`` : target acceptance rate for the adaptive algorithm.
+* ``sigma::Vector{Float64}`` : updated values of the proposal standard deviations if ``m > 0``, and user-supplied values otherwise.
+* ``target::Float64`` : target acceptance rate for the adaptive algorithm.

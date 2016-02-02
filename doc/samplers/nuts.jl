@@ -34,10 +34,9 @@ end
 n = 5000
 burnin = 1000
 sim = Chains(n, 3, start = (burnin + 1), names = ["b0", "b1", "s2"])
-theta = NUTSVariate([0.0, 0.0, 0.0])
-epsilon = nutsepsilon(theta, logfgrad)
+theta = NUTSVariate([0.0, 0.0, 0.0], logfgrad)
 for i in 1:n
-  nuts!(theta, epsilon, logfgrad, adapt = (i <= burnin))
+  sample!(theta, adapt = (i <= burnin))
   if i > burnin
     sim[i, :, 1] = [theta[1:2]; exp(theta[3])]
   end

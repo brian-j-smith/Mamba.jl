@@ -5,7 +5,7 @@
 Metropolis-Adjusted Langevin Algorithm (MALA)
 ---------------------------------------------
 
-Implementation of the Metropolis-Adjusted Langevin Algorithm (MALA) of Roberts and Tweedie :cite:`roberts:1996:MALA` and Roberts and Stramer :cite:`roberts:2002:LD`.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.  MALA is related to Hamiltonian Monte Carlo as described thoroughly by Girolami and Calderhead :cite:`girolami:2011:RMHMC`.
+Implementation of the Metropolis-Adjusted Langevin Algorithm of Roberts and Tweedie :cite:`roberts:1996:MALA` and Roberts and Stramer :cite:`roberts:2002:LD`.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.  MALA is related to Hamiltonian Monte Carlo as described thoroughly by Girolami and Calderhead :cite:`girolami:2011:RMHMC`.
 
 Model-Based Constructors
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -34,21 +34,16 @@ Model-Based Constructors
 
         See the :ref:`Dyes <example-Dyes>` and other :ref:`section-Examples`.
 
-Stand-Alone Functions
-^^^^^^^^^^^^^^^^^^^^^
+Stand-Alone Function
+^^^^^^^^^^^^^^^^^^^^
 
-.. function:: mala!(v::MALAVariate, scale::Real, logfgrad::Function)
-              mala!(v::MALAVariate, scale::Real, SigmaF::Cholesky{Float64}, \
-                    logfgrad::Function)
+.. function:: sample!(v::MALAVariate)
 
-    Simulate one draw from a target distribution using the MALA sampler.  Parameters are assumed to be continuous and unconstrained.
+    Draw one sample from a target distribution using the MALA sampler.  Parameters are assumed to be continuous and unconstrained.
 
     **Arguments**
 
         * ``v`` : current state of parameters to be simulated.
-        * ``scale`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
-        * ``SigmaF`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.  If omitted, the identity matrix is assumed.
-        * ``logfgrad`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 
@@ -83,19 +78,22 @@ Fields
 Constructors
 ````````````
 
-.. function:: MALAVariate(x::AbstractVector{T<:Real})
-              MALAVariate(x::AbstractVector{T<:Real}, tune::MALATune)
+.. function:: MALAVariate(x::AbstractVector{T<:Real}, scale::Real, logfgrad::Function)
+              MALAVariate(x::AbstractVector{T<:Real}, scale::Real, \
+                          Sigma::Matrix{U<:Real}, logfgrad::Function)
 
     Construct a ``MALAVariate`` object that stores simulated values and tuning parameters for MALA sampling.
 
     **Arguments**
 
-        * ``x`` : simulated values.
-        * ``tune`` : tuning parameters for the sampling algorithm.  If not supplied, parameters are set to their defaults.
+        * ``x`` : initial values.
+        * ``scale`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
+        * ``Sigma`` : covariance matrix for the multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.  If omitted, the identity matrix is assumed.
+        * ``logfgrad`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
     **Value**
 
-        Returns a ``MALAVariate`` type object with fields set to the values supplied to arguments ``x`` and ``tune``.
+        Returns a ``MALAVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
 .. index:: Sampler Types; MALATune
 
@@ -110,5 +108,6 @@ Declaration
 Fields
 ``````
 
+* ``logfgrad::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density and gradient vector, or null if not supplied.
 * ``scale::Float64`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
 * ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.

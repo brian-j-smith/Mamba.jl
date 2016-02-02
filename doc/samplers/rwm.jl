@@ -28,10 +28,10 @@ end
 n = 5000
 burnin = 1000
 sim = Chains(n, 3, names = ["b0", "b1", "s2"])
-theta = RWMVariate([0.0, 0.0, 0.0])
-scale = [0.5, 0.25, 1.0]
+theta = RWMVariate([0.0, 0.0, 0.0], [0.5, 0.25, 1.0], logf,
+                   proposal = SymUniform)
 for i in 1:n
-  rwm!(theta, scale, logf, proposal=SymUniform)
+  sample!(theta)
   sim[i, :, 1] = [theta[1:2]; exp(theta[3])]
 end
 describe(sim)

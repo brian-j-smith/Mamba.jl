@@ -21,9 +21,9 @@ end
 ## MCMC Simulation with Binary Hamiltonian Monte Carlo Sampling
 t = 10000
 sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = BHMCVariate(zeros(p))
+gamma = BHMCVariate(zeros(p), (2 * p + 0.5) * pi, logf)
 for i in 1:t
-  bhmc!(gamma, (2 * p + 0.5) * pi, logf)
+  sample!(gamma)
   sim[i, :, 1] = gamma
 end
 describe(sim)
