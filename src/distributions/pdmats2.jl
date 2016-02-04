@@ -114,9 +114,9 @@ module PDMats2
     vn = [fill(v, n)...;]
 
     len = mapreduce(splength, +, vn)
-    I = Array(Int, len)
-    J = Array(Int, len)
-    V = Array(Float64, len)
+    I = Array{Int}(len)
+    J = Array{Int}(len)
+    V = Array{Float64}(len)
 
     k = 1
     offset = 0

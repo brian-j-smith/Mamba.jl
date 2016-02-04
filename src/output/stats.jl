@@ -20,7 +20,7 @@ function changerate(c::AbstractChains)
   n, p, m = size(c.value)
   r = zeros(Float64, p, 1, 1)
   r_mv = 0.0
-  delta = Array(Bool, p)
+  delta = Array{Bool}(p)
   for k in 1:m
     prev = c.value[1, :, k]
     for i in 2:n

@@ -31,7 +31,7 @@ function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, Symbol}})
   all(T -> T == :Any, ftypes[nodeinds]) ||
     throw(ArgumentError("model node arguments are not all of type Any"))
 
-  modelargs = Array(Any, n)
+  modelargs = Array{Any}(n)
   for i in nodeinds
     modelargs[i] = Expr(:ref, :model, QuoteNode(fkeys[i]))
   end

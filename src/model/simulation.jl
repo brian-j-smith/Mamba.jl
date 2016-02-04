@@ -3,7 +3,7 @@
 function gettune(m::Model, block::Integer=0)
   if block == 0
     n = length(m.samplers)
-    values = Array(Any, n)
+    values = Array{Any}(n)
     for i in 1:n
       values[i] = m.samplers[i].tune
     end

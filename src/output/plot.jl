@@ -23,7 +23,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
   ps = length(p)                 ## number of plots
   np = ceil(Int, ps / pp)        ## number of pages
 
-  mat = Array(Context, pp)
+  mat = Array{Context}(pp)
   for page in 1:np
     if ask && page > 1 && !addextension
       println("Press ENTER to draw next plot")
@@ -57,7 +57,7 @@ end
 function plot(c::AbstractChains, ptype::Vector{Symbol}=[:trace, :density];
               legend::Bool=false, args...)
   n = length(ptype)
-  p = Array(Plot, n, size(c, 2))
+  p = Array{Plot}(n, size(c, 2))
   for i in 1:n
     showlegend = legend && i == n
     p[i, :] = plot(c, ptype[i]; legend=showlegend, args...)
@@ -83,7 +83,7 @@ function autocorplot(c::AbstractChains;
                      maxlag::Integer=round(Int, 10 * log10(length(c.range))),
                      legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
-  plots = Array(Plot, nvars)
+  plots = Array{Plot}(nvars)
   pos = legend ? :right : :none
   lags = 0:maxlag
   ac = autocor(c, lags=collect(lags))
@@ -103,7 +103,7 @@ end
 function barplot(c::AbstractChains; legend::Bool=false,
                  position::Symbol=:stack, na...)
   nrows, nvars, nchains = size(c.value)
-  plots = Array(Plot, nvars)
+  plots = Array{Plot}(nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
     S = unique(c.value[:, i, :])
@@ -162,10 +162,10 @@ end
 function densityplot(c::AbstractChains; legend::Bool=false,
                      trim::Tuple{Real, Real}=(0.025, 0.975), na...)
   nrows, nvars, nchains = size(c.value)
-  plots = Array(Plot, nvars)
+  plots = Array{Plot}(nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
-    val = Array(Vector{Float64}, nchains)
+    val = Array{Vector{Float64}}(nchains)
     for j in 1:nchains
       qs = quantile(c.value[:, i, j], [trim[1], trim[2]])
       val[j] = c.value[qs[1] .<= c.value[:, i, j] .<= qs[2], i, j]
@@ -182,7 +182,7 @@ end
 
 function meanplot(c::AbstractChains; legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
-  plots = Array(Plot, nvars)
+  plots = Array{Plot}(nvars)
   pos = legend ? :right : :none
   val = cummean(c.value)
   for i in 1:nvars
@@ -200,7 +200,7 @@ end
 
 function mixeddensityplot(c::AbstractChains;
                           barbounds::Tuple{Real, Real}=(0, Inf), args...)
-  plots = Array(Plot, size(c, 2))
+  plots = Array{Plot}(size(c, 2))
   discrete = indiscretesupport(c, barbounds)
   plots[discrete] = plot(c[:, discrete, :], :bar; args...)
   plots[!discrete] = plot(c[:, !discrete, :], :density; args...)
@@ -209,7 +209,7 @@ end
 
 function traceplot(c::AbstractChains; legend::Bool=false, na...)
   nrows, nvars, nchains = size(c.value)
-  plots = Array(Plot, nvars)
+  plots = Array{Plot}(nvars)
   pos = legend ? :right : :none
   for i in 1:nvars
     plots[i] = plot(y=vec(c.value[:, i, :]),

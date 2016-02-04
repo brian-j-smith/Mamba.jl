@@ -29,7 +29,7 @@ end
 function heideldiag(c::AbstractChains; alpha::Real=0.05, eps::Real=0.1,
                     etype=:imse, args...)
   _, p, m = size(c.value)
-  vals = Array(Float64, p, 6, m)
+  vals = Array{Float64}(p, 6, m)
   for j in 1:p, k in 1:m
     vals[j, :, k] = heideldiag(c.value[:, j, k], alpha=alpha, eps=eps,
                                etype=etype, start=start(c.range); args...)

@@ -24,8 +24,8 @@ inhalers = Dict{Symbol, Any}(
   :Ncut => 3
 )
 
-inhalers[:group] = Array(Int, inhalers[:N])
-inhalers[:response] = Array(Int, inhalers[:N], inhalers[:T])
+inhalers[:group] = Array{Int}(inhalers[:N])
+inhalers[:response] = Array{Int}(inhalers[:N], inhalers[:T])
 
 i = 1
 for k in 1:inhalers[:Npattern], g in 1:inhalers[:G]

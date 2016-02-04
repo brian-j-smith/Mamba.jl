@@ -5,7 +5,7 @@
 function Chains{T<:AbstractString}(iters::Integer, params::Integer;
                start::Integer=1, thin::Integer=1, chains::Integer=1,
                names::Vector{T}=AbstractString[])
-  value = Array(Float64, length(start:thin:iters), params, chains)
+  value = Array{Float64}(length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names)
 end
@@ -197,7 +197,7 @@ Base.last(c::AbstractChains) = last(c.range)
 
 function combine(c::AbstractChains)
   n, p, m = size(c.value)
-  value = Array(Float64, n * m, p)
+  value = Array{Float64}(n * m, p)
   for j in 1:p
     idx = 1
     for i in 1:n, k in 1:m
@@ -220,7 +220,7 @@ end
 function indiscretesupport(c::AbstractChains,
                            bounds::Tuple{Real, Real}=(0, Inf))
   nrows, nvars, nchains = size(c.value)
-  result = Array(Bool, nvars * (nrows > 0))
+  result = Array{Bool}(nvars * (nrows > 0))
   for i in 1:nvars
     result[i] = true
     for j in 1:nrows, k in 1:nchains

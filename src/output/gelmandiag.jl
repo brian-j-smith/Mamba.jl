@@ -31,7 +31,7 @@ function gelmandiag(c::AbstractChains; alpha::Real=0.05, mpsrf::Bool=false,
   B_df = m - 1
   W_df = 2.0 * w.^2 ./ var_w
 
-  psrf = Array(Float64, p, 2)
+  psrf = Array{Float64}(p, 2)
   R_fixed = (n - 1) / n
   R_random_scale = (m + 1) / (m * n)
   q = 1.0 - alpha / 2.0

@@ -77,7 +77,7 @@ function rand_sub(D::Array{UnivariateDistribution}, miss::MISSTune)
 end
 
 function rand_sub(D::Array{MultivariateDistribution}, miss::MISSTune)
-  X = Array(Float64, miss.dims)
+  X = Array{Float64}(miss.dims)
   for i in miss.distrinds
     d = D[i]
     X[ind2sub(D, i)..., 1:length(d)] = rand(d)

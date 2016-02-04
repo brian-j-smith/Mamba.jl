@@ -18,8 +18,8 @@ leuk = Dict{Symbol, Any}(
 leuk[:N] = N = length(leuk[:t_obs])
 leuk[:T] = T = length(leuk[:t]) - 1
 
-leuk[:Y] = Array(Int, N, T)
-leuk[:dN] = Array(Int, N, T)
+leuk[:Y] = Array{Int}(N, T)
+leuk[:dN] = Array{Int}(N, T)
 for i in 1:N
   for j in 1:T
     leuk[:dN][i, j] = leuk[:fail][i] * (leuk[:t_obs][i] == leuk[:t][j])
