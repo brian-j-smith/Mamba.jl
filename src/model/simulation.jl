@@ -40,7 +40,7 @@ function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
   value
 end
 
-function gradlogpdf{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
+function gradlogpdf{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer=0,
                              transform::Bool=false; dtype::Symbol=:forward)
   x0 = unlist(m, block)
   value = gradlogpdf!(m, x, block, transform, dtype=dtype)
@@ -48,10 +48,10 @@ function gradlogpdf{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
   value
 end
 
-function gradlogpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
+function gradlogpdf!{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer=0,
                               transform::Bool=false; dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
-  gradient(f, convert(Array{T}, x), dtype)
+  gradient(f, convert(Vector{T}, x), dtype)
 end
 
 

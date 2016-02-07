@@ -246,9 +246,9 @@ Parameter Block Operations
 
 .. function:: gradlogpdf(m::Model, block::Integer=0, transform::Bool=false; \
                          dtype::Symbol=:forward)
-              gradlogpdf(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
+              gradlogpdf(m::Model, x::AbstractVector{T<:Real}, block::Integer=0, \
                          transform::Bool=false; dtype::Symbol=:forward)
-              gradlogpdf!(m::Model, x::AbstractArray{T<:Real}, block::Integer=0, \
+              gradlogpdf!(m::Model, x::AbstractVector{T<:Real}, block::Integer=0, \
                           transform::Bool=false; dtype::Symbol=:forward)
 
     Compute the gradient of log-densities for stochastic nodes.
