@@ -3,19 +3,16 @@
 .. _example-gk:
 
 GK: Approximate Bayesian Computation
---------------------------------------
+------------------------------------
 
-Approximate Bayesian Computation (ABC) is often useful when the likelihood is costly to compute. The generalized GK distribution :cite:`rayner:2002:GK`  is a distribution defined by the inverse of its cumulative distribution function. It is therefore easy to sample from, but difficult to obtain analytical likeihood functions. These properties make the GK distribution well suited for ABC. The following is a simulation study that mirrors `allingham:2009:ABCGK`.
+Approximate Bayesian Computation (ABC) is often useful when the likelihood is costly to compute.  The generalized GK distribution :cite:`rayner:2002:GK` is a distribution defined by the inverse of its cumulative distribution function.  It is therefore easy to sample from, but difficult to obtain analytical likelihood functions.  These properties make the GK distribution well suited for ABC.  The following is a simulation study that mirrors :cite:`allingham:2009:ABCGK`.
 
 Model
 ^^^^^
 .. math::
 
-    x_{i} &\sim \text{GK}\left(A, B, g, k\right) \quad\quad i=1,\ldots,10000 \\
-    A &\sim \text{Uniform}(0, 10) \\
-    B &\sim \text{Uniform}(0, 10) \\
-    g &\sim \text{Uniform}(0, 10) \\
-    k &\sim \text{Uniform}(0, 10)
+    x_{i} &\sim \text{GK}\left(A, B, g, k\right) \quad\quad i=1, \ldots, 1000 \\
+    A, B, g, k &\sim \text{Uniform}(0, 10)
 
 Analysis Program
 ^^^^^^^^^^^^^^^^
@@ -27,21 +24,22 @@ Results
 ^^^^^^^
 
 .. code-block:: julia
-    Iterations = 4001:15000
+
+    Iterations = 2501:10000
     Thinning interval = 1
     Chains = 1,2,3
-    Samples per chain = 11000
+    Samples per chain = 7500
 
     Empirical Posterior Estimates:
-          Mean         SD        Naive SE       MCSE        ESS   
-     k 0.48221758 0.061956076 0.00034105698 0.0021518021  829.0165
-     A 2.87330714 0.114382460 0.00062965472 0.0023599697 2349.1243
-     B 0.99777598 0.104611155 0.00057586545 0.0035817717  853.0219
-     g 5.65630699 2.580219260 0.01420363956 0.0791397180 1062.9779
+         Mean         SD        Naive SE       MCSE        ESS
+    k 0.35177956 0.114186840 0.00076124560 0.0070749476 260.48676
+    A 3.00044501 0.056131349 0.00037420899 0.0021176913 702.56362
+    B 1.05879179 0.104464188 0.00069642792 0.0059092212 312.51753
+    g 2.04113191 0.317411213 0.00211607476 0.0134387307 557.86361
 
-     Quantiles:
-          2.5%      25.0%      50.0%     75.0%     97.5%  
-     k 0.35557416 0.4420227 0.48229997 0.5235059 0.6029042
-     A 2.66385620 2.7956063 2.86717760 2.9436771 3.1158983
-     B 0.80773524 0.9256279 0.99225590 1.0625602 1.2221914
-     g 1.53996630 3.3474209 5.62664473 7.9560817 9.8046807
+    Quantiles:
+         2.5%       25.0%      50.0%      75.0%     97.5%
+    k 0.14224981 0.27641846 0.33980515 0.41834851 0.6208537
+    A 2.88887160 2.96200257 3.00069478 3.03852346 3.1088669
+    B 0.84952558 0.99167335 1.06172076 1.12769693 1.2681306
+    g 1.56703473 1.81345003 1.99234172 2.21926781 2.8253217
