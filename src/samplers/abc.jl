@@ -5,7 +5,8 @@
 type ABCTune
   datakeys::Vector{Symbol}
   Tsim::Vector{Vector{Float64}}
-  epsilon::Vector{Float64}
+  mean_eps::Vector{Float64}
+  curr_eps::Vector{Float64}
 
   function ABCTune()
     new(
@@ -24,7 +25,8 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
                       epsilon::Real; kernel::KernelDensityType=SymUniform,
                       dist::Function=(Tsim, Tobs) -> sqrt(sumabs2(Tsim - Tobs)),
                       proposal::SymDistributionType=Normal, maxdraw::Integer=1,
-                      nsim::Integer=1, args...)
+                      nsim::Integer=1, randeps::Bool=false, ratio::Float64=1.0,
+                      args...)
 
   params = asvec(params)
   kernelpdf = (epsilon, d) -> pdf(kernel(0.0, epsilon), d)
@@ -37,6 +39,9 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
     theta0 = unlist(model, block, true)
     logprior0 = logpdf(model, params, true)
     pi_epsilon0 = 0.0
+
+    pi_error0 = 1.0
+    pi_error1 = 1.0
 
     ## initialize tuning parameters
     local Tobs
@@ -57,28 +62,39 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
       Tobs = summarizenodes(obsdata)
 
       tune.Tsim = Array(Vector{Float64}, nsim)
-      tune.epsilon = Array(Float64, nsim)
+      tune.mean_eps = Array(Float64, nsim)
+      tune.curr_eps = Array(Float64, nsim)
       for i in 1:nsim
         ## simulated data summary statistics for current parameter values
         tune.Tsim[i] = summarizenodes(simdata)
         d = dist(tune.Tsim[i], Tobs; args...)
 
         ## starting tolerance
-        tune.epsilon[i] = max(epsilon, d)
+        tune.mean_eps[i] = max(epsilon, d)
+        if randeps
+          tune.curr_eps[i] = tune.mean_eps[i] * randexp()
+          pi_error0 = pdf(Exponential(tune.mean_eps[i]), tune.curr_eps[i])
+        else
+          tune.curr_eps[i] = tune.mean_eps[i]
+        end
 
         ## kernel density evaluation
-        pi_epsilon0 += kernelpdf(tune.epsilon[i], d)
+        pi_epsilon0 += kernelpdf(tune.curr_eps[i], d) * pi_error0
       end
     else
       Tobs = summarizenodes(obsdata)
       for i in 1:nsim
         d = dist(tune.Tsim[i], Tobs; args...)
-        pi_epsilon0 += kernelpdf(tune.epsilon[i], d)
+        if randeps
+          pi_error0 = pdf(Exponential(tune.mean_eps[i]), tune.curr_eps[i])
+        end
+        pi_epsilon0 += kernelpdf(tune.curr_eps[i], d) * pi_error0
       end
     end
 
     Tsim1 = similar(tune.Tsim)
-    epsilon1 = similar(tune.epsilon)
+    curr_eps1 = similar(tune.curr_eps)
+    mean_eps1 = similar(tune.mean_eps)
 
     for k in 1:maxdraw
       ## candidate draw and prior density value
@@ -94,17 +110,25 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
         d = dist(Tsim1[i], Tobs; args...)
 
         ## monotonically decrease tolerance to target
-        epsilon1[i] = max(epsilon, min(d, tune.epsilon[i]))
+        mean_eps1[i] = max(epsilon, ratio * min(d, tune.mean_eps[i]) + 
+                                   (1 - ratio) * tune.mean_eps[i])
+        if randeps
+          curr_eps1[i] = mean_eps1[i] * randexp()
+          pi_error1 = pdf(Exponential(mean_eps1[i]), curr_eps1[i])
+        else
+          curr_eps1[i] = mean_eps1[i]
+        end
 
         ## kernel density evaluation
-        pi_epsilon1 += kernelpdf(epsilon1[i], d)
+        pi_epsilon1 += kernelpdf(curr_eps1[i], d) * pi_error1
       end
 
       ## accept/reject the candidate draw
       if rand() < pi_epsilon1 / pi_epsilon0 * exp(logprior1 - logprior0)
         theta0 = theta1
         tune.Tsim = Tsim1
-        tune.epsilon = epsilon1
+        tune.curr_eps = curr_eps1
+        tune.mean_eps = mean_eps1
         break
       end
     end

@@ -15,7 +15,8 @@ Sampler Constructor
                   epsilon::Real; kernel::KernelDensityType=SymUniform, \
                   dist::Function=(Tsim, Tobs) -> sqrt(sumabs2(Tsim - Tobs)), \
                   proposal::SymDistributionType=Normal, maxdraw::Integer=1, \
-                  nsim::Integer=1, args...)
+                  nsim::Integer=1, randeps::Bool=false, ratio::Float64=1.0, \
+                  args...)
 
     Construct a ``Sampler`` object for ABC sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
 
@@ -30,6 +31,8 @@ Sampler Constructor
         * ``proposal`` : symmetric distribution of type ``Biweight``, ``Cosine``, ``Epanechnikov``, ``Normal``, ``SymTriangularDist``, ``SymUniform``, or ``Triweight`` to be centered around current parameter values and used to generate proposal draws.  Specified ``scale`` determines the standard deviations of Normal proposals and widths of the others.
         * ``maxdraw`` : maximum number of unaccepted candidates to draw in each call of the sampler.  Draws are generated until one is accepted or the maximum is reached.  Larger values increase acceptance rates at the expense of longer runtimes.
         * ``nsim`` : number of data sets to simulate in deciding whether to accept a candidate draw.  Larger values lead to closer approximations of the target distribution at the expense of longer runtimes.
+        * ``randeps`` : Whether to perturb internal tolerance by random exponential variable. 
+        * ``ratio`` : Internal tolerance is monotonically decreased by convex combination of previous tolerance and distance between vectors of observed and simulated data summary statics, with weight ``ratio`` given the distance. 
         * ``args...`` : additional keyword arguments to be passed to the ``dist`` function.
 
     **Value**
@@ -56,3 +59,5 @@ Fields
 * ``datakeys::Vector{Symbol}`` : stochastic "data" nodes in the full conditional distribution for parameters to be updated and nodes at which summary statistics are computed separately in the sampling algorithm.
 * ``Tsim::Vector{Vector{Float64}}`` : simulated data summary statistics for the ``nsim`` data sets.
 * ``epsilon::Vector{Float64}`` : adaptively tuned tolerances for the data sets.
+* ``mean_eps::Vector{Float64}`` : mean of adaptively tuned tolerances for the data sets (if ``randeps`` is true). 
+* ``curr_eps::Vector{Float64}`` : adaptively tuned tolerances for the data sets.

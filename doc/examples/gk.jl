@@ -79,8 +79,8 @@ scale2 = 0.5
 stats = x -> quantile(x, [0.1, 0.25, 0.5, 0.75, 0.9])
 epsilon = 0.1
 
-scheme = [ABC([:A, :B, :k], scale1, stats, epsilon, maxdraw=50),
-          ABC(:g, scale2, stats, epsilon, maxdraw=50)]
+scheme = [ABC([:A, :B, :k], scale1, stats, epsilon, maxdraw=50, ratio = 0.75, randeps = true),
+          ABC(:g, scale2, stats, epsilon, maxdraw=50, ratio = 0.75, randeps = true)]
 setsamplers!(model, scheme)
 
 sim = mcmc(model, allingham, inits, 10000, burnin=2500, chains=3)
