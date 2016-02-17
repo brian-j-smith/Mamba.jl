@@ -7,8 +7,8 @@ Approximate Bayesian Computation (ABC)
 
 Approximate Bayesian Computation in the framework of MCMC (also known as Likelihood-Free MCMC) as proposed by :cite:`marjoram:2003:abc` for simulating autocorrelated draws from a posterior distribution without evaluating its likelihood.  Also see :cite:`sisson:2011:ABC` for a thorough review of Likelihood-Free MCMC.
 
-Sampler Constructor
-^^^^^^^^^^^^^^^^^^^
+Model-Based Constructor
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. function:: ABC(params::ElementOrVector{Symbol}, \
                   scale::ElementOrVector{T<:Real}, summary::Function, \
