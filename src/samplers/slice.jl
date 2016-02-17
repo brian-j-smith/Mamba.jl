@@ -127,19 +127,3 @@ function Slice{T<:Real}(params::ElementOrVector{Symbol},
         throw(ArgumentError("unsupported slice sampler type $stype"))
   Slice(params, width, F, transform=transform)
 end
-
-
-SliceVariate{T<:Real}(x::AbstractVector{T}) =
-  SamplerVariate{SliceTune{SliceForm}}(x, NaN)
-
-
-function slice!{T<:Real}(v::SamplerVariate{SliceTune{SliceForm}},
-                         width::ElementOrVector{T}, logf::Function,
-                         stype::Symbol=:multivar)
-  v.tune.width = width
-  S = stype == :univar   ? Univariate :
-      stype == :multivar ? Multivariate :
-        throw(ArgumentError("unsupported slice sampler type $stype"))
-  sample!(SamplerVariate{SliceTune{S}}(v, width), logf)
-  v
-end

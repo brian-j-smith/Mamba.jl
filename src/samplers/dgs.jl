@@ -15,7 +15,14 @@ type DSTune{F<:DSForm} <: SamplerTune
 
   DSTune() = new()
 
-  DSTune(x::Vector) = DGSTune{F}(x, Matrix{Float64}(length(x), 0))
+  function DSTune(x::Vector)
+    Base.depwarn(
+      "DGSVariate(x) is deprecated, use DGSVariate(x, support, mass)" *
+      " or DiscreteVariate(x, support, mass) instead.",
+      :DGSVariate
+    )
+    DSTune{F}(x, Matrix{Float64}(length(x), 0))
+  end
 
   DSTune{T<:Real}(x::Vector, support::Matrix{T}) =
     new(Nullable{F}(), support)
@@ -132,18 +139,4 @@ function sample!(v::DiscreteVariate, mass::Vector{Float64})
   validate(v, v.tune.support, mass)
   v[:] = v.tune.support[:, rand(Categorical(mass))]
   v
-end
-
-
-#################### Legacy Sampler Code ####################
-
-function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T}, logf::Function)
-  v.tune.support = support
-  sample!(v, x -> exp(logf(x)))
-end
-
-function dgs!{T<:Real}(v::DGSVariate, support::Matrix{T},
-                       probs::Vector{Float64})
-  v.tune.support = support
-  sample!(v, probs)
 end

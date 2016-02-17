@@ -113,20 +113,3 @@ function amwg_sub!(v::AMWGVariate, logf::Function)
   end
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-AMWGTune(x::Vector) = AMWGTune(x, NaN)
-
-
-function amwg!{T<:Real}(v::AMWGVariate, sigma::Vector{T}, logf::Function;
-                        adapt::Bool=true, batchsize::Integer=50,
-                        target::Real=0.44)
-  if v.tune.m == 0
-    v.tune.sigma = adapt ? copy(sigma) : sigma
-  end
-  v.tune.batchsize = batchsize
-  v.tune.target = target
-  sample!(v, logf, adapt=adapt)
-end

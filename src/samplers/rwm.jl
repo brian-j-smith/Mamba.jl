@@ -69,16 +69,3 @@ function sample!(v::RWMVariate, logf::Function)
   end
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-RWMTune(x) = RWMTune(x, NaN)
-
-
-function rwm!{T<:Real}(v::RWMVariate, scale::ElementOrVector{T},
-                       logf::Function; proposal::SymDistributionType=Normal)
-  v.tune.scale = scale
-  v.tune.proposal = proposal
-  sample!(v, logf)
-end

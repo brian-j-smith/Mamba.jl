@@ -55,33 +55,3 @@ function sample!(v::BMC3Variate, logf::Function)
   end
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-function BMC3(params::ElementOrVector{Symbol}, indexset::Vector{Vector{Int}})
-  samplerfx = function(model::Model, block::Integer)
-    block = SamplingBlock(model, block)
-    v = SamplerVariate(block, 0)
-    bmc3!(v, indexset, x -> logpdf!(block, x))
-    relist(block, v)
-  end
-  Sampler(params, samplerfx, BMC3Tune())
-end
-
-
-function bmc3!(v::BMC3Variate, logf::Function; k::Integer=1)
-  v.tune.k = k
-  sample!(v, logf)
-end
-
-function bmc3!(v::BMC3Variate, indexset::Vector{Vector{Int}}, logf::Function)
-  v.tune.indexset = indexset
-  x = v[:]
-  idx = rand(v.tune.indexset)
-  x[idx] = 1.0 - v[idx]
-  if rand() < exp(logf(x) - logf(v.value))
-    v[:] = x
-  end
-  v
-end

@@ -120,12 +120,3 @@ function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
   end
   vertices
 end
-
-
-#################### Legacy Sampler Code ####################
-
-function slicesimplex!(v::SliceSimplexVariate, logf::Function; scale::Real=1.0)
-  0 < scale <= 1 || throw(ArgumentError("scale is not in (0, 1]"))
-  v.tune.scale = scale
-  sample!(v, logf)
-end

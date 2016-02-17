@@ -85,23 +85,3 @@ function sample!(v::MALAVariate, logfgrad::Function)
 
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-MALATune(x) = MALATune(x, NaN)
-
-
-function mala!(v::MALAVariate, scale::Real, logfgrad::Function)
-  v.tune.scale = scale
-  v.tune.SigmaL = I
-  sample!(v, logfgrad)
-end
-
-
-function mala!(v::MALAVariate, scale::Real, SigmaF::Cholesky{Float64},
-               logfgrad::Function)
-  v.tune.scale = scale
-  v.tune.SigmaL = SigmaF[:L]
-  sample!(v, logfgrad)
-end

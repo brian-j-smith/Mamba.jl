@@ -327,12 +327,6 @@ module Mamba
     px
 
 
-    #################### Legacy Sampler Code ####################
-
-    export amm!, amwg!, bhmc!, bmc3!, bmg!, dgs!, hmc!, mala!, nuts!,
-           nutsepsilon, rwm!, slice!, SliceVariate, slicesimplex!
-
-
   #################### Deprecated ####################
 
   include("deprecated.jl")

@@ -89,12 +89,3 @@ function sample!(v::BMGVariate, logf::Function)
 
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-function bmg!(v::BMGVariate, logf::Function; k::Integer=1)
-  k <= length(v) || throw(ArgumentError("k is greater than length(v)"))
-  v.tune.k = k
-  sample!(v, logf)
-end

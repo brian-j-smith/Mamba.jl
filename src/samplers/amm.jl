@@ -106,20 +106,3 @@ function setadapt!(v::AMMVariate, adapt::Bool)
   tune.adapt = adapt
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-function AMMTune(x::Vector)
-  n = length(x)
-  AMMTune(x, fill(NaN, n, n))
-end
-
-
-function amm!(v::AMMVariate, SigmaF::Cholesky{Float64}, logf::Function;
-              adapt::Bool=true)
-  if v.tune.m == 0
-    v.tune.SigmaL = SigmaF[:L]
-  end
-  sample!(v, logf, adapt=adapt)
-end

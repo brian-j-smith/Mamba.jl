@@ -207,16 +207,6 @@ end
 
 #################### Legacy Sampler Code ####################
 
-NUTSTune(x) = NUTSTune(x, NaN)
-
+export nutsepsilon
 
 nutsepsilon(v::NUTSVariate, logfgrad::Function) = nutsepsilon(v.value, logfgrad)
-
-function nuts!(v::NUTSVariate, epsilon::Real, logfgrad::Function;
-               adapt::Bool=false, target::Real=0.6)
-  if v.tune.m == 0
-    v.tune.epsilon = epsilon
-  end
-  v.tune.target = target
-  sample!(v, logfgrad, adapt=adapt)
-end

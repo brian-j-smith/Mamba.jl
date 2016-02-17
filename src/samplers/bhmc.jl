@@ -120,14 +120,3 @@ function sample!(v::BHMCVariate, logf::Function)
   v[:] = (sign(tune.position) + ones(n)) / 2.0
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-BHMCTune(x) = BHMCTune(x, NaN)
-
-
-function bhmc!(v::BHMCVariate, traveltime::Real, logf::Function)
-  v.tune.traveltime = traveltime
-  sample!(v, logf)
-end

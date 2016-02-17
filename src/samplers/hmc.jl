@@ -109,25 +109,3 @@ function sample!(v::HMCVariate, logfgrad::Function)
 
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-HMCTune(x) = HMCTune(x, NaN, 0)
-
-
-function hmc!(v::HMCVariate, epsilon::Real, L::Integer, logfgrad::Function)
-  v.tune.epsilon = epsilon
-  v.tune.L = L
-  v.tune.SigmaL = I
-  sample!(v, logfgrad)
-end
-
-
-function hmc!(v::HMCVariate, epsilon::Real, L::Integer,
-              SigmaF::Cholesky{Float64}, logfgrad::Function)
-  v.tune.epsilon = epsilon
-  v.tune.L = L
-  v.tune.SigmaL = SigmaF[:L]
-  sample!(v, logfgrad)
-end
