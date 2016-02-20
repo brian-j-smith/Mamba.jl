@@ -68,7 +68,7 @@ sample!(v::AMWGVariate; args...) = sample!(v, v.tune.logf; args...)
 function sample!(v::AMWGVariate, logf::Function; adapt::Bool=true)
   tune = v.tune
   setadapt!(v, adapt)
-  if adapt
+  if tune.adapt
     tune.m += 1
     amwg_sub!(v, logf)
     if tune.m % tune.batchsize == 0

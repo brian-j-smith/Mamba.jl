@@ -58,7 +58,7 @@ New known, unknown, or unnormalized univariate distributions can be created and 
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
-    #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
+    #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import any of its methods (indicated below) that are extended.
 
     #. Declare the new distribution subtype, say ``D``, within the block.  Any constructors explicitly defined for the subtype should accept un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments.  Implementing constructors in this way ensures that they will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 
@@ -147,7 +147,7 @@ New known, unknown, or unnormalized multivariate distributions can be created an
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
-    #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import the package's methods (indicated below) to be extended.
+    #. The *Distributions* package contains types and method definitions for new distributions.  Load the package and import any of its methods (indicated below) that are extended.
 
     #. Declare the new distribution subtype, say ``D``, within the block.  Any constructors explicitly defined for the subtype should accept un-typed or abstract-type (``Real``, ``AbstractArray``, or ``DenseArray``) arguments.  Implementing constructors in this way ensures that they will be callable with the *Mamba* ``Stochastic`` and ``Logical`` types.
 

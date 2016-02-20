@@ -2,7 +2,8 @@ using Mamba
 
 @everywhere extensions = quote
   using Distributions
-  import Distributions: quantile
+  import Distributions: location, scale, skewness, kurtosis, minimum, maximum,
+         quantile
 
   immutable GK <: ContinuousUnivariateDistribution
     A::Float64
@@ -13,7 +14,7 @@ using Mamba
 
     function GK(A::Real, B::Real, g::Real, k::Real, c::Real)
       ## check args
-      0.0 <= c < 1.0 || throw(Argumenterror("c must be 0 <= c < 1"))
+      0.0 <= c < 1.0 || throw(ArgumentError("c must be in [0, 1)"))
 
       ## create distribution
       new(A, B, g, k, c)
