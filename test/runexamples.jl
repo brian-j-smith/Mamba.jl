@@ -28,6 +28,7 @@ const openbugstests = [
 ]
 
 const contributedtests = [
+  "gk",
   "line_abc",
   "line_amwg_slice",
   "pollution"
