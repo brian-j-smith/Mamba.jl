@@ -74,13 +74,14 @@ inits = [
                     :k => rand())
 ]
 
-scale1 = 0.05
-scale2 = 0.5
+sigma1 = 0.05
+sigma2 = 0.5
 stats = x -> quantile(x, [0.1, 0.25, 0.5, 0.75, 0.9])
 epsilon = 0.1
 
-scheme = [ABC([:A, :B, :k], scale1, stats, epsilon, maxdraw=50, ratio = 0.75, randeps = true),
-          ABC(:g, scale2, stats, epsilon, maxdraw=50, ratio = 0.75, randeps = true)]
+scheme = [ABC([:A, :B, :k],
+              sigma1, stats, epsilon, maxdraw=50, decay=0.75, randeps=true),
+          ABC(:g, sigma2, stats, epsilon, maxdraw=50, decay=0.75)]
 setsamplers!(model, scheme)
 
 sim = mcmc(model, allingham, inits, 10000, burnin=2500, chains=3)
