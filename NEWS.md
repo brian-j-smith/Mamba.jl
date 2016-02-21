@@ -2,6 +2,26 @@
 
 ## Version Updates
 
+### 0.9.0
+* Extended ABC sampler to allow specification of a decay rate for monotonically decreasing tolerances (``epsilon``) and perturbations of tolerance by random exponential variates.
+* Added GK distribution example for ABC sampling.
+* Revised stand-alone sampler interfaces (see documentation for full details).
+    * Deprecated sampling functions ``amm!()``, ``amwg!()``, ``bhmc!()``, ``bmc3!()``, ``bmg!()``, ``dgs!()``, ``hmc!()``, ``mala!()``, ``nuts!()``, ``rwm!()``, ``slice!()``, and ``slicesimplex!()``; and replaced them with ``sample!()``.
+    * Moved specifications of tuning parameters and target densities from sampling functions to ``SamplerVariate`` constructors.
+    * Added target density fields to tuning parameter types.
+    * Changed the following tuning parameter types/fields.
+        * ``AMMTune.beta::Real`` -> ``Float64``
+        * ``AMMTune.scale::Real`` -> ``Float64`` and redefined to be on the parameter scale instead of the covariance scale.
+        * ``AMWGTune.target::Real`` -> ``Float64``
+        * ``AMMTune.SigmaF::Cholesky{Float64}`` -> ``SigmaL::LowerTriangular{Float64}``
+        * ``DGSTune`` -> ``DSTune``
+        * ``HMCTune.SigmaF::Cholesky{Float64}`` -> ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}``
+        * ``MALATune.SigmaF::Cholesky{Float64}`` -> ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}``
+        * ``RWMTune.scale::Union{Real, Vector}`` -> ``Union{Float64, Vector{Float64}}``
+        * ``SliceTune.width::Union{Real, Vector}`` -> ``Union{Float64, Vector{Float64}}``
+* Renamed ``Model`` method ``simulate!()`` to ``sample!()``.
+* Removed 0.7 deprecates.
+
 ### 0.8.2
 * Modified ``dgs!()`` to require parameter support in Matrix columns instead of rows to improve performance.
 
