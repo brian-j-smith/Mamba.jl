@@ -16,6 +16,7 @@
         * ``AMMTune.SigmaF::Cholesky{Float64}`` -> ``SigmaL::LowerTriangular{Float64}``
         * ``DGSTune`` -> ``DSTune``
         * ``HMCTune.SigmaF::Cholesky{Float64}`` -> ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}``
+        * ``MALATune.scale::Float64`` -> ``epsilon::Float64``
         * ``MALATune.SigmaF::Cholesky{Float64}`` -> ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}``
         * ``RWMTune.scale::Union{Real, Vector}`` -> ``Union{Float64, Vector{Float64}}``
         * ``SliceTune.width::Union{Real, Vector}`` -> ``Union{Float64, Vector{Float64}}``

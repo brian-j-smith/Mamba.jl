@@ -171,15 +171,15 @@ end
 
 function MALATune(x)
   depwarn2("MALAVariate(x)",
-           "MALAVariate(x, scale, logfgrad) or" *
-           " MALAVariate(x, scale, Sigma, logfgrad)",
+           "MALAVariate(x, epsilon, logfgrad) or" *
+           " MALAVariate(x, epsilon, Sigma, logfgrad)",
            :MALAVariate)
   MALATune(x, NaN)
 end
 
 function mala!(v::MALAVariate, scale::Real, logfgrad::Function)
   depwarnsample("mala!")
-  v.tune.scale = scale
+  v.tune.epsilon = scale
   v.tune.SigmaL = I
   sample!(v, logfgrad)
 end
@@ -187,7 +187,7 @@ end
 function mala!(v::MALAVariate, scale::Real, SigmaF::Cholesky{Float64},
                logfgrad::Function)
   depwarnsample("mala!")
-  v.tune.scale = scale
+  v.tune.epsilon = scale
   v.tune.SigmaL = SigmaF[:L]
   sample!(v, logfgrad)
 end

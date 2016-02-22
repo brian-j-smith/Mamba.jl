@@ -4,22 +4,22 @@
 
 type MALATune <: SamplerTune
   logfgrad::Nullable{Function}
-  scale::Float64
+  epsilon::Float64
   SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
 
   MALATune() = new()
 
-  MALATune(x::Vector, scale::Real) = new(Nullable{Function}(), scale, I)
+  MALATune(x::Vector, epsilon::Real) = new(Nullable{Function}(), epsilon, I)
 
-  MALATune(x::Vector, scale::Real, logfgrad::Function) =
-    new(Nullable{Function}(logfgrad), scale, I)
+  MALATune(x::Vector, epsilon::Real, logfgrad::Function) =
+    new(Nullable{Function}(logfgrad), epsilon, I)
 
-  MALATune{T<:Real}(x::Vector, scale::Real, Sigma::Matrix{T}) =
-    new(Nullable{Function}(), scale, cholfact(Sigma)[:L])
+  MALATune{T<:Real}(x::Vector, epsilon::Real, Sigma::Matrix{T}) =
+    new(Nullable{Function}(), epsilon, cholfact(Sigma)[:L])
 
-  function MALATune{T<:Real}(x::Vector, scale::Real, Sigma::Matrix{T},
+  function MALATune{T<:Real}(x::Vector, epsilon::Real, Sigma::Matrix{T},
                              logfgrad::Function)
-    new(Nullable{Function}(logfgrad), scale, cholfact(Sigma)[:L])
+    new(Nullable{Function}(logfgrad), epsilon, cholfact(Sigma)[:L])
   end
 end
 
@@ -40,14 +40,14 @@ end
 
 #################### Sampler Constructor ####################
 
-function MALA(params::ElementOrVector{Symbol}, scale::Real;
+function MALA(params::ElementOrVector{Symbol}, epsilon::Real;
               dtype::Symbol=:forward)
-  MALASampler(params, dtype, scale)
+  MALASampler(params, dtype, epsilon)
 end
 
-function MALA{T<:Real}(params::ElementOrVector{Symbol}, scale::Real,
+function MALA{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
                        Sigma::Matrix{T}; dtype::Symbol=:forward)
-  MALASampler(params, dtype, scale, Sigma)
+  MALASampler(params, dtype, epsilon, Sigma)
 end
 
 function MALASampler(params, dtype, pargs...)
@@ -68,7 +68,7 @@ sample!(v::MALAVariate) = sample!(v, v.tune.logfgrad)
 function sample!(v::MALAVariate, logfgrad::Function)
   tune = v.tune
 
-  L = sqrt(tune.scale) * tune.SigmaL
+  L = sqrt(tune.epsilon) * tune.SigmaL
   Linv = inv(L)
   M2 = 0.5 * L * L'
 

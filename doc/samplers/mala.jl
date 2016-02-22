@@ -35,10 +35,10 @@ end
 n = 5000
 sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
 sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
-sigma = 0.1
-R = eye(3)
-theta1 = MALAVariate([0.0, 0.0, 0.0], sigma, logfgrad)
-theta2 = MALAVariate([0.0, 0.0, 0.0], sigma, R, logfgrad)
+epsilon = 0.1
+Sigma = eye(3)
+theta1 = MALAVariate([0.0, 0.0, 0.0], epsilon, logfgrad)
+theta2 = MALAVariate([0.0, 0.0, 0.0], epsilon, Sigma, logfgrad)
 for i in 1:n
   sample!(theta1)
   sample!(theta2)

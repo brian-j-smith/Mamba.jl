@@ -10,9 +10,9 @@ Implementation of the Metropolis-Adjusted Langevin Algorithm of Roberts and Twee
 Model-Based Constructors
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: MALA(params::ElementOrVector{Symbol}, scale::Real; \
+.. function:: MALA(params::ElementOrVector{Symbol}, epsilon::Real; \
                    dtype::Symbol=:forward)
-              MALA(params::ElementOrVector{Symbol}, scale::Real, \
+              MALA(params::ElementOrVector{Symbol}, epsilon::Real, \
                    Sigma::Matrix{T<:Real}; dtype::Symbol=:forward)
 
     Construct a ``Sampler`` object for MALA sampling.  Parameters are assumed to be continuous, but may be constrained or unconstrained.
@@ -20,7 +20,7 @@ Model-Based Constructors
     **Arguments**
 
         * ``params`` : stochastic node(s) to be updated with the sampler.  Constrained parameters are mapped to unconstrained space according to transformations defined by the :ref:`section-Stochastic` ``unlist()`` function.
-        * ``scale`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
+        * ``epsilon`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
         * ``Sigma`` : covariance matrix for the multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.  If omitted, the identity matrix is assumed.
         * ``dtype`` : type of differentiation for gradient calculations. Options are
             * ``:central`` : central differencing.
@@ -78,8 +78,8 @@ Fields
 Constructors
 ````````````
 
-.. function:: MALAVariate(x::AbstractVector{T<:Real}, scale::Real, logfgrad::Function)
-              MALAVariate(x::AbstractVector{T<:Real}, scale::Real, \
+.. function:: MALAVariate(x::AbstractVector{T<:Real}, epsilon::Real, logfgrad::Function)
+              MALAVariate(x::AbstractVector{T<:Real}, epsilon::Real, \
                           Sigma::Matrix{U<:Real}, logfgrad::Function)
 
     Construct a ``MALAVariate`` object that stores simulated values and tuning parameters for MALA sampling.
@@ -87,7 +87,7 @@ Constructors
     **Arguments**
 
         * ``x`` : initial values.
-        * ``scale`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
+        * ``epsilon`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
         * ``Sigma`` : covariance matrix for the multivariate normal proposal distribution.  The covariance matrix is relative to the unconstrained parameter space, where candidate draws are generated.  If omitted, the identity matrix is assumed.
         * ``logfgrad`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant) and gradient vector, and returns the respective results as a tuple.
 
@@ -109,5 +109,5 @@ Fields
 ``````
 
 * ``logfgrad::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density and gradient vector, or null if not supplied.
-* ``scale::Float64`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
+* ``epsilon::Float64`` : factor by which the drift and covariance matrix of the proposal distribution are scaled.
 * ``SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}`` : Cholesky factorization of the covariance matrix for the multivariate normal proposal distribution.
