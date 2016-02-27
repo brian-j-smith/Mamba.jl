@@ -1,24 +1,20 @@
 #################### Model Simulation ####################
 
-function gettune(m::Model, block::Integer=0)
-  if block == 0
-    n = length(m.samplers)
-    values = Array{Any}(n)
-    for i in 1:n
-      values[i] = m.samplers[i].tune
-    end
-  else
-    values = m.samplers[block].tune
-  end
-  values
+function gettune(m::Model, block::Integer)
+  block == 0 && return gettune(m)
+  m.samplers[block].tune
 end
 
-
-function settune!(m::Model, tune, block::Integer=0)
-  block == 0 ? settune0!(m, tune) : m.samplers[block].tune = tune
+function gettune(m::Model)
+  Any[gettune(m, i) for i in 1:length(m.samplers)]
 end
 
-function settune0!(m::Model, tune::Vector{Any})
+function settune!(m::Model, tune, block::Integer)
+  block == 0 && return settune!(m, tune)
+  m.samplers[block].tune = tune
+end
+
+function settune!(m::Model, tune::Vector{Any})
   nsamplers = length(m.samplers)
   ntune = length(tune)
   nsamplers == ntune ||
@@ -27,7 +23,7 @@ function settune0!(m::Model, tune::Vector{Any})
     ))
 
   for i in 1:nsamplers
-    m.samplers[i].tune = tune[i]
+    settune!(m, tune[i], i)
   end
 end
 
