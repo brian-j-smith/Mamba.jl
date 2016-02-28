@@ -116,14 +116,15 @@ module Mamba
 
   #################### Sampler Types ####################
 
-  abstract SamplerTune
-
-  type Sampler{T<:SamplerTune}
+  type Sampler{T}
     params::Vector{Symbol}
     eval::Function
     tune::T
     targets::Vector{Symbol}
   end
+
+
+  abstract SamplerTune
 
   type SamplerVariate{T<:SamplerTune} <: VectorVariate
     value::Vector{Float64}

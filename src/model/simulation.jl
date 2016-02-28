@@ -8,11 +8,11 @@ function gettune(m::Model)
   [gettune(m, i) for i in 1:length(m.samplers)]
 end
 
-function settune!(m::Model, tune::SamplerTune, block::Integer)
+function settune!(m::Model, tune, block::Integer)
   m.samplers[block].tune = tune
 end
 
-function settune!(m::Model, tune::Vector{SamplerTune})
+function settune!(m::Model, tune::Vector{Any})
   nsamplers = length(m.samplers)
   ntune = length(tune)
   nsamplers == ntune ||
@@ -21,7 +21,7 @@ function settune!(m::Model, tune::Vector{SamplerTune})
     ))
 
   for i in 1:nsamplers
-    settune!(m, i, tune)
+    settune!(m, tune[i], i)
   end
 end
 
