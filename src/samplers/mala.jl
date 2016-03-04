@@ -40,17 +40,16 @@ end
 
 #################### Sampler Constructor ####################
 
-function MALA(params::ElementOrVector{Symbol}, epsilon::Real;
-              dtype::Symbol=:forward)
-  MALASampler(params, dtype, epsilon)
+function MALA(params::ElementOrVector{Symbol}, epsilon::Real; args...)
+  MALASampler(params, epsilon; args...)
 end
 
 function MALA{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
-                       Sigma::Matrix{T}; dtype::Symbol=:forward)
-  MALASampler(params, dtype, epsilon, Sigma)
+                       Sigma::Matrix{T}; args...)
+  MALASampler(params, epsilon, Sigma; args...)
 end
 
-function MALASampler(params, dtype, pargs...)
+function MALASampler(params, pargs...; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block, true)
     v = SamplerVariate(block, pargs...)

@@ -45,16 +45,16 @@ end
 #################### Sampler Constructor ####################
 
 function HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer;
-             dtype::Symbol=:forward)
-  HMCSampler(params, dtype, epsilon, L)
+             args...)
+  HMCSampler(params, epsilon, L; args...)
 end
 
 function HMC{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
-                      L::Integer, Sigma::Matrix{T}; dtype::Symbol=:forward)
-  HMCSampler(params, dtype, epsilon, L, Sigma)
+                      L::Integer, Sigma::Matrix{T}; args...)
+  HMCSampler(params, epsilon, L, Sigma; args...)
 end
 
-function HMCSampler(params, dtype, pargs...)
+function HMCSampler(params, pargs...; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block, true)
     v = SamplerVariate(block, pargs...)
