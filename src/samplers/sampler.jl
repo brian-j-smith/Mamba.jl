@@ -30,13 +30,14 @@ end
 
 function SamplerVariate(block::SamplingBlock, pargs...; kargs...)
   m = block.model
-  SamplerVariate(unlist(block), m.samplers[block.index], pargs...; kargs...)
+  SamplerVariate(unlist(block), m.samplers[block.index], m.iter, pargs...;
+                 kargs...)
 end
 
 function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
-                                                 s::Sampler{T},
+                                                 s::Sampler{T}, iter::Integer,
                                                  pargs...; kargs...)
-  if any(map(f -> !isdefined(s.tune, f), fieldnames(s.tune)))
+  if iter == 1
     v = SamplerVariate{T}(x, pargs...; kargs...)
     s.tune = v.tune
   else
