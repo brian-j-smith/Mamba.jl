@@ -1,6 +1,7 @@
 #################### Model Simulation ####################
 
 function gettune(m::Model, block::Integer)
+  block == 0 && return gettune(m)
   m.samplers[block].tune
 end
 
@@ -9,6 +10,7 @@ function gettune(m::Model)
 end
 
 function settune!(m::Model, tune, block::Integer)
+  block == 0 && return settune!(m, tune)
   m.samplers[block].tune = tune
 end
 
