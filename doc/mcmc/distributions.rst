@@ -16,7 +16,7 @@ Univariate Distributions
 Distributions Package Univariate Types
 ``````````````````````````````````````
 
-The following `univariate types <http://distributionsjl.readthedocs.org/en/latest/univariate.html>`_ from the *Distributions* package are supported.
+The following `univariate types <http://distributionsjl.readthedocs.io/en/latest/univariate.html>`_ from the *Distributions* package are supported.
 
 .. code-block:: julia
 
@@ -54,7 +54,7 @@ A Flat distribution is supplied with the degenerate probability density function
 User-Defined Univariate Distributions
 `````````````````````````````````````
 
-New known, unknown, or unnormalized univariate distributions can be created and added to *Mamba* as subtypes of the *Distributions* package ``ContinuousUnivariateDistribution`` or ``DiscreteUnivariateDistribution`` types.  *Mamba* requires only a partial implementation of the method functions described in the `full instructions for creating univariate distributions <http://distributionsjl.readthedocs.org/en/latest/extends.html#create-a-univariate-distribution>`_.  The specific workflow is given below.
+New known, unknown, or unnormalized univariate distributions can be created and added to *Mamba* as subtypes of the *Distributions* package ``ContinuousUnivariateDistribution`` or ``DiscreteUnivariateDistribution`` types.  *Mamba* requires only a partial implementation of the method functions described in the `full instructions for creating univariate distributions <http://distributionsjl.readthedocs.io/en/latest/extends.html#create-a-univariate-distribution>`_.  The specific workflow is given below.
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
@@ -99,7 +99,7 @@ Multivariate Distributions
 Distributions Package Multivariate Types
 ````````````````````````````````````````
 
-The following `multivariate types <http://distributionsjl.readthedocs.org/en/latest/multivariate.html>`_ from the *Distributions*  package are supported.
+The following `multivariate types <http://distributionsjl.readthedocs.io/en/latest/multivariate.html>`_ from the *Distributions*  package are supported.
 
 .. code-block:: julia
 
@@ -143,7 +143,7 @@ where
 User-Defined Multivariate Distributions
 ```````````````````````````````````````
 
-New known, unknown, or unnormalized multivariate distributions can be created and added to *Mamba* as subtypes of the *Distributions* package ``ContinuousMultivariateDistribution`` or ``DiscreteMultivariateDistribution`` types.  *Mamba* requires only a partial implementation of the method functions described in the `full instructions for creating multivariate distributions <http://distributionsjl.readthedocs.org/en/latest/extends.html#create-a-multivariate-distribution>`_.  The specific workflow is given below.
+New known, unknown, or unnormalized multivariate distributions can be created and added to *Mamba* as subtypes of the *Distributions* package ``ContinuousMultivariateDistribution`` or ``DiscreteMultivariateDistribution`` types.  *Mamba* requires only a partial implementation of the method functions described in the `full instructions for creating multivariate distributions <http://distributionsjl.readthedocs.io/en/latest/extends.html#create-a-multivariate-distribution>`_.  The specific workflow is given below.
 
     #. Create a ``quote`` block for the new distribution.  Assign the block a variable name, say ``extensions``, preceded by the ``@everywhere`` macro to ensure compatibility when **julia** is run in multi-processor mode.
 
@@ -188,7 +188,7 @@ Matrix-Variate Distributions
 Distributions Package Matrix-Variate Types
 ``````````````````````````````````````````
 
-The following `matrix-variate <http://distributionsjl.readthedocs.org/en/latest/matrix.html>`_ types from the *Distributions*  package are supported.
+The following `matrix-variate <http://distributionsjl.readthedocs.io/en/latest/matrix.html>`_ types from the *Distributions*  package are supported.
 
 .. code-block:: julia
 

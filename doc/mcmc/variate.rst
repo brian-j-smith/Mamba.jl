@@ -40,7 +40,7 @@ Field
 
 Methods
 ^^^^^^^
-Methods for ``ScalarVariate`` and ``ArrayVariate`` include `mathematical operators <http://julia.readthedocs.org/en/latest/stdlib/math/#mathematical-operators>`_, `mathematical functions <http://julia.readthedocs.org/en/latest/stdlib/math/#mathematical-functions>`_, and `statistics <http://julia.readthedocs.org/en/latest/stdlib/math/#statistics>`_ defined in the base **julia** language for parent types ``Real`` and ``DenseArray``.  In addition, the following functions are provided.
+Methods for ``ScalarVariate`` and ``ArrayVariate`` include `mathematical operators <http://docs.julialang.org/en/latest/stdlib/math/#mathematical-operators>`_, `mathematical functions <http://docs.julialang.org/en/latest/stdlib/math/#mathematical-functions>`_, and `statistics <http://docs.julialang.org/en/latest/stdlib/math/#statistics>`_ defined in the base **julia** language for parent types ``Real`` and ``DenseArray``.  In addition, the following functions are provided.
 
 =============== ================
 Function        Description

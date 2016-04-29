@@ -148,7 +148,7 @@ Display
 
     **Value**
 
-        Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.org/en/latest/index.html>`_ package.
+        Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.io/en/latest/index.html>`_ package.
 
 .. function:: graph2dot(m::Model)
 
