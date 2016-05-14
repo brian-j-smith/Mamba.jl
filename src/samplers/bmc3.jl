@@ -9,8 +9,9 @@ type BMC3Tune <: SamplerTune
 
   BMC3Tune() = new()
 
-  BMC3Tune(x::Vector, logf::Nullable{Function}; k::Integer=1) =
-    new(logf, k, Vector{Vector{Int}}())
+  BMC3Tune(x::Vector, logf::Nullable{Function}; k::Integer=1, 
+           indexset::Vector{Vector{Int}} = Vector{Vector{Int}}()) =
+    new(logf, k, indexset)
 end
 
 BMC3Tune(x::Vector; args...) =
@@ -48,7 +49,12 @@ sample!(v::BMC3Variate) = sample!(v, v.tune.logf)
 
 function sample!(v::BMC3Variate, logf::Function)
   x = v[:]
-  idx = randperm(length(v))[1:v.tune.k]
+  idx = Int64[]
+  if length(v.tune.indexset) > 0
+    idx = rand(v.tune.indexset)
+  else
+    idx = randperm(length(v))[1:v.tune.k]
+  end
   x[idx] = 1.0 - v[idx]
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x
