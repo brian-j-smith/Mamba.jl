@@ -11,6 +11,7 @@ const samplertests = [
   "bmc3",
   "bmg",
   "hmc",
+  "ias",
   "mala",
   "nuts",
   "rwm",
