@@ -164,3 +164,9 @@ scheme4 = [DGS(:gamma); scheme0]
 setsamplers!(model, scheme4)
 sim4 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim4)
+
+## Individual Adaptation Sampling
+scheme5 = [BIA(:gamma); scheme0]
+setsamplers!(model, scheme5)
+sim5 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
+describe(sim5)
