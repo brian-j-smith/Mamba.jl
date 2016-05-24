@@ -4,7 +4,8 @@
 
 #################### Categorical ####################
 
-Categorical(p::AbstractVector) = Categorical(convert(Vector{Float64}, p))
+Categorical{T<:Real}(p::AbstractVector{T}) =
+  Categorical(convert(Vector{Float64}, p))
 
 
 ######################################################################
@@ -13,74 +14,70 @@ Categorical(p::AbstractVector) = Categorical(convert(Vector{Float64}, p))
 
 #################### Dirichlet ####################
 
-Dirichlet(alpha::AbstractVector) =
+Dirichlet{T<:Real}(alpha::AbstractVector{T}) =
   Dirichlet(convert(Vector{Float64}, alpha))
 
 
 #################### Multinomial ####################
 
-Multinomial(n::Real, p::AbstractVector) =
+Multinomial{T<:Real}(n::Real, p::AbstractVector{T}) =
   Multinomial(convert(Int, n), convert(Vector{Float64}, p))
 
 
 #################### MvNormal ####################
 
-MvNormal(μ::AbstractVector, Σ::AbstractMatrix) =
+MvNormal{T<:Real, U<:Real}(μ::AbstractVector{T}, Σ::AbstractMatrix{U}) =
   MvNormal(convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
 
-MvNormal(μ::AbstractVector, σ::AbstractVector) =
+MvNormal{T<:Real, U<:Real}(μ::AbstractVector{T}, σ::AbstractVector{U}) =
   MvNormal(convert(Vector{Float64}, μ), convert(Vector{Float64}, σ))
 
-MvNormal(μ::AbstractVector, σ::Real) =
+MvNormal{T<:Real}(μ::AbstractVector{T}, σ::Real) =
   MvNormal(convert(Vector{Float64}, μ), convert(Float64, σ))
 
-MvNormal(Σ::AbstractMatrix) =
+MvNormal{T<:Real}(Σ::AbstractMatrix{T}) =
   MvNormal(convert(Matrix{Float64}, Σ))
 
-MvNormal(σ::AbstractVector) =
+MvNormal{T<:Real}(σ::AbstractVector{T}) =
   MvNormal(convert(Vector{Float64}, σ))
 
 
 #################### MvNormalCanon ####################
 
-MvNormalCanon(h::AbstractVector, J::AbstractMatrix) =
+MvNormalCanon{T<:Real, U<:AbstractMatrix}(h::AbstractVector{T}, J::U) =
   MvNormalCanon(convert(Vector{Float64}, h), convert(Matrix{Float64}, J))
 
-MvNormalCanon(h::AbstractVector, prec::AbstractVector) =
+MvNormalCanon{T<:Real, U<:AbstractVector}(h::AbstractVector{T}, prec::U) =
   MvNormalCanon(convert(Vector{Float64}, h), convert(Vector{Float64}, prec))
 
-MvNormalCanon(h::AbstractVector, prec::Real) =
+MvNormalCanon{T<:Real, U<:Real}(h::AbstractVector{T}, prec::U) =
   MvNormalCanon(convert(Vector{Float64}, h), convert(Float64, prec))
 
-MvNormalCanon(J::AbstractMatrix) =
+MvNormalCanon{T<:Real}(J::AbstractMatrix{T}) =
   MvNormalCanon(convert(Matrix{Float64}, J))
 
-MvNormalCanon(prec::AbstractVector) =
+MvNormalCanon{T<:Real}(prec::AbstractVector{T}) =
   MvNormalCanon(convert(Vector{Float64}, prec))
 
-MvNormalCanon(d::Real, prec::Real) =
+MvNormalCanon{T<:Real}(d::Real, prec::T) =
   MvNormalCanon(convert(Int, d), convert(Float64, prec))
-
 
 #################### MvTDist ####################
 
-MvTDist(df::Real, μ::AbstractVector, C::PDMat) =
+MvTDist{T<:Real}(df::Real, μ::AbstractVector{T}, C::PDMat) =
   MvTDist(convert(Float64, df), convert(Vector{Float64}, μ), C)
 
-MvTDist(df::Real, C::PDMat) =
-  MvTDist(convert(Float64, df), C)
-
-MvTDist(df::Real, μ::AbstractVector, Σ::AbstractMatrix) =
+MvTDist{T<:Real, U<:Real}(df::Real, μ::AbstractVector{T}, Σ::AbstractMatrix{U}) =
   MvTDist(convert(Float64, df), convert(Vector{Float64}, μ),
           convert(Matrix{Float64}, Σ))
 
-MvTDist(df::Real, Σ::AbstractMatrix) =
+MvTDist{T<:Real}(df::Real, Σ::AbstractMatrix{T}) =
   MvTDist(convert(Float64, df), convert(Matrix{Float64}, Σ))
 
 
 #################### VonMisesFisher ####################
 
-VonMisesFisher(μ::AbstractVector, κ::Real) =
+VonMisesFisher{T<:Real}(μ::AbstractVector{T}, κ::Real) =
   VonMisesFisher(convert(Vector{Float64}, μ), convert(Float64, κ))
 
 
@@ -90,11 +87,11 @@ VonMisesFisher(μ::AbstractVector, κ::Real) =
 
 #################### InverseWishart ####################
 
-InverseWishart(df::Real, Ψ::AbstractMatrix) =
+InverseWishart{T<:Real}(df::Real, Ψ::AbstractMatrix{T}) =
   InverseWishart(convert(Float64, df), convert(Matrix{Float64}, Ψ))
 
 
 #################### Wishart ####################
 
-Wishart(df::Real, S::AbstractMatrix) =
+Wishart{T<:Real}(df::Real, S::AbstractMatrix{T}) =
   Wishart(convert(Float64, df), convert(Matrix{Float64}, S))
