@@ -1,34 +1,34 @@
 .. index:: Sampling Functions; Individual Adaptation Sampler
 
-.. _section-IAS:
+.. _section-BIA:
 
-Binary MCMC Model Composition (IAS)
+Binary MCMC Model Composition (BIA)
 ------------------------------------
 
-Implementation of the binary-state Individual adaptation sampler of Griffin, et al. :cite:`griffin:2014:IAS` which adjusts a general proposal to the data. The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the binary-state Individual adaptation sampler of Griffin, et al. :cite:`griffin:2014:BIA` which adjusts a general proposal to the data. The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: IAS(params::ElementOrVector{Symbol}; args...)
+.. function:: BIA(params::ElementOrVector{Symbol}; args...)
 
-    Construct a ``Sampler`` object for IAS sampling.  Parameters are assumed to have binary numerical values (0 or 1).
+    Construct a ``Sampler`` object for BIA sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``params`` : stochastic node(s) to be updated with the sampler.
-        * ``args...`` : additional keyword arguments to be passed to the ``IASVariate`` constructor.
+        * ``args...`` : additional keyword arguments to be passed to the ``BIAVariate`` constructor.
 
     **Value**
 
-        Returns a ``Sampler{IASTune}`` type object.
+        Returns a ``Sampler{BIATune}`` type object.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: sample!(v::IASVariate)
+.. function:: sample!(v::BIAVariate)
 
-    Draw one sample from a target distribution using the IAS sampler.  Parameters are assumed to have binary numerical values (0 or 1).
+    Draw one sample from a target distribution using the BIA sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
@@ -42,32 +42,32 @@ Stand-Alone Function
 
     **Example**
 
-        .. literalinclude:: ias.jl
+        .. literalinclude:: bia.jl
             :language: julia
 
 
-.. index:: Sampler Types; IASVariate
+.. index:: Sampler Types; BIAVariate
 
-IASVariate Type
+BIAVariate Type
 ^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``typealias IASVariate SamplerVariate{IASTune}``
+``typealias BIAVariate SamplerVariate{BIATune}``
 
 Fields
 ``````
 
 * ``value::Vector{Float64}`` : simulated values.
-* ``tune::IASTune`` : tuning parameters for the sampling algorithm.
+* ``tune::BIATune`` : tuning parameters for the sampling algorithm.
 
 Constructor
 ```````````
 
-.. function:: IASVariate(x::AbstractVector{T<:Real}, logf::Function; k::Integer=1)
+.. function:: BIAVariate(x::AbstractVector{T<:Real}, logf::Function; k::Integer=1)
 
-    Construct a ``IASVariate`` object that stores simulated values and tuning parameters for IAS sampling.
+    Construct a ``BIAVariate`` object that stores simulated values and tuning parameters for BIA sampling.
 
     **Arguments**
 
@@ -81,17 +81,17 @@ Constructor
 
     **Value**
 
-        Returns a ``IASVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
+        Returns a ``BIAVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
-.. index:: Sampler Types; IASTune
+.. index:: Sampler Types; BIATune
 
-IASTune Type
+BIATune Type
 ^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``type IASTune <: SamplerTune``
+``type BIATune <: SamplerTune``
 
 Fields
 ``````

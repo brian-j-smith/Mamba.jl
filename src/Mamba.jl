@@ -222,7 +222,7 @@ module Mamba
   include("samplers/bmg.jl")
   include("samplers/dgs.jl")
   include("samplers/hmc.jl")
-  include("samplers/ias.jl")
+  include("samplers/bia.jl")
   include("samplers/mala.jl")
   include("samplers/miss.jl")
   include("samplers/nuts.jl")
@@ -313,7 +313,7 @@ module Mamba
     DiscreteVariate,
     DGS, DGSVariate,
     HMC, HMCVariate,
-    IAS, IASVariate,
+    BIA, BIAVariate,
     MALA, MALAVariate,
     MISS,
     NUTS, NUTSVariate,

@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type IASTune <: SamplerTune
+type BIATune <: SamplerTune
   logf::Nullable{Function}
   A::Vector{Float64}
   D::Vector{Float64}
@@ -13,9 +13,9 @@ type IASTune <: SamplerTune
 
   iter::Integer
 
-  IASTune() = new()
+  BIATune() = new()
 
-  function IASTune(x::Vector, logf::Nullable{Function}; 
+  function BIATune(x::Vector, logf::Nullable{Function}; 
           A::Vector{Float64} = [1/length(x) for j in 1:length(x)],
           D::Vector{Float64} = [1/length(x) for j in 1:length(x)],
           epsilon::Float64 = 0.01 / length(x), lambda::Float64 = 0.55,
@@ -25,16 +25,16 @@ type IASTune <: SamplerTune
   end
 end
 
-IASTune(x::Vector; args...) =
-   IASTune(x, Nullable{Function}(); args...)
+BIATune(x::Vector; args...) =
+   BIATune(x, Nullable{Function}(); args...)
 
-IASTune(x::Vector, logf::Function; args...) =
-   IASTune(x, Nullable{Function}(logf); args...)
+BIATune(x::Vector, logf::Function; args...) =
+   BIATune(x, Nullable{Function}(logf); args...)
 
 
-typealias IASVariate SamplerVariate{IASTune}
+typealias BIAVariate SamplerVariate{BIATune}
 
-function validate(v::IASVariate)
+function validate(v::BIAVariate)
   n = length(v)
   0.0 < v.tune.epsilon < 0.5 || throw(ArgumentError("epsilon must be 0.0 < epsilon < 0.5"))
   0.5 < v.tune.lambda <= 1.0 || throw(ArgumentError("lambda must be 0.5 < lambda <= 1.0"))
@@ -45,22 +45,22 @@ end
 
 #################### Sampler Constructor ####################
 
-function IAS(params::ElementOrVector{Symbol}; args...)
+function BIA(params::ElementOrVector{Symbol}; args...)
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block)
     v = SamplerVariate(block; args...)
     sample!(v, x -> logpdf!(block, x))
     relist(block, v)
   end
-  Sampler(params, samplerfx, IASTune())
+  Sampler(params, samplerfx, BIATune())
 end
 
 
 #################### Sampling Functions ####################
 
-sample!(v::IASVariate) = sample!(v, v.tune.logf)
+sample!(v::BIAVariate) = sample!(v, v.tune.logf)
 
-function sample!(v::IASVariate, logf::Function)
+function sample!(v::BIAVariate, logf::Function)
   v.tune.iter += 1
   A_new = similar(v.tune.A)
   D_new = similar(v.tune.D)
