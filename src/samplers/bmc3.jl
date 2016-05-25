@@ -5,12 +5,10 @@
 type BMC3Tune <: SamplerTune
   logf::Nullable{Function}
   k::Int
-  indexset::Vector{Vector{Int}}
 
   BMC3Tune() = new()
 
-  BMC3Tune(x::Vector, logf::Nullable{Function}; k::Integer=1) =
-    new(logf, k, Vector{Vector{Int}}())
+  BMC3Tune(x::Vector, logf::Nullable{Function}; k::Integer=1) = new(logf, k)
 end
 
 BMC3Tune(x::Vector; args...) =

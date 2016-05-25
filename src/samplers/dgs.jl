@@ -15,15 +15,6 @@ type DSTune{F<:DSForm} <: SamplerTune
 
   DSTune() = new()
 
-  function DSTune(x::Vector)
-    Base.depwarn(
-      "DGSVariate(x) is deprecated, use DGSVariate(x, support, mass)" *
-      " or DiscreteVariate(x, support, mass) instead.",
-      :DGSVariate
-    )
-    DSTune{F}(x, Matrix{Float64}(length(x), 0))
-  end
-
   DSTune{T<:Real}(x::Vector, support::Matrix{T}) =
     new(Nullable{F}(), support)
 
