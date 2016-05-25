@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.9.1
+* Removed 0.8.1 and 0.9.0 deprecates.
+* Updates for Distributions 0.9.0 package compatibility to fix ambiguous new definition warnings and StackOverflowError.
+* Updated documentation links to new readthedocs.io subdomains.
+
 ### 0.9.0
 * Extended ABC sampler to allow specification of a decay rate for monotonically decreasing tolerances (``epsilon``) and perturbations of tolerance by random exponential variates.
 * Added GK distribution example for ABC sampling.
