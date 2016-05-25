@@ -123,10 +123,3 @@ end
 
 asvec(x::Union{Number, Symbol}) = [x]
 asvec(x::Vector) = x
-
-
-#################### Legacy Sampler Code ####################
-
-function SamplerVariate(m::Model, block::Integer, transform::Bool=false)
-  SamplerVariate(unlist(m, block, transform), m.samplers[block], m.iter)
-end

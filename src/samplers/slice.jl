@@ -115,15 +115,3 @@ function sample!(v::SliceMultivariate, logf::Function)
 
   v
 end
-
-
-#################### Legacy Sampler Code ####################
-
-function Slice{T<:Real}(params::ElementOrVector{Symbol},
-                        width::ElementOrVector{T}, stype::Symbol=:multivar;
-                        transform::Bool=false)
-  F = stype == :univar   ? Univariate :
-      stype == :multivar ? Multivariate :
-        throw(ArgumentError("unsupported slice sampler type $stype"))
-  Slice(params, width, F, transform=transform)
-end

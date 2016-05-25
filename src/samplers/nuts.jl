@@ -203,10 +203,3 @@ function nutsepsilon(x::Vector{Float64}, logfgrad::Function)
   end
   epsilon
 end
-
-
-#################### Legacy Sampler Code ####################
-
-export nutsepsilon
-
-nutsepsilon(v::NUTSVariate, logfgrad::Function) = nutsepsilon(v.value, logfgrad)
