@@ -41,7 +41,7 @@ module Mamba
          out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
   import Showoff: showoff
   import StatsBase: autocor, autocov, countmap, counts, describe, predict,
-         quantile, sem, summarystats
+         quantile, sem, summarystats, wsample
 
   include("distributions/pdmats2.jl")
   importall .PDMats2
