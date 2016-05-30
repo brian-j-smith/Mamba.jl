@@ -1,11 +1,11 @@
-.. index:: Sampling Functions; Individual Adaptation Sampler
+.. index:: Sampling Functions; Binary Individual Adaptation
 
 .. _section-BIA:
 
-Binary MCMC Model Composition (BIA)
-------------------------------------
+Binary Individual Adaptation (BIA)
+----------------------------------
 
-Implementation of the binary-state Individual adaptation sampler of Griffin, et al. :cite:`griffin:2014:BIA` which adjusts a general proposal to the data. The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of the binary-state Individual Adaptation sampler of Griffin, et al. :cite:`griffin:2014:BIA` which adjusts a general proposal to the data. The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -23,6 +23,10 @@ Model-Based Constructor
 
         Returns a ``Sampler{BIATune}`` type object.
 
+    **Example**
+
+        See the :ref:`Pollution <example-Pollution>` and other :ref:`section-Examples`.
+
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -38,7 +42,7 @@ Stand-Alone Function
 
         Returns ``v`` updated with simulated values and associated tuning parameters.
 
-    .. _example-bmc3:
+    .. _example-bia:
 
     **Example**
 
@@ -49,7 +53,7 @@ Stand-Alone Function
 .. index:: Sampler Types; BIAVariate
 
 BIAVariate Type
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
@@ -65,7 +69,11 @@ Fields
 Constructor
 ```````````
 
-.. function:: BIAVariate(x::AbstractVector{T<:Real}, logf::Function; k::Integer=1)
+.. function:: BIAVariate(x::AbstractVector{T<:Real}, logf::Function; \\
+                         A::Vector{Float64} = ones(x) / length(x), \\
+                         D::Vector{Float64} = ones(x) / length(x), \\
+                         epsilon::Real = 0.01 / length(x), decay::Real = 0.55, \\
+                         target::Real = 0.45)
 
     Construct a ``BIAVariate`` object that stores simulated values and tuning parameters for BIA sampling.
 
@@ -73,11 +81,11 @@ Constructor
 
         * ``x`` : initial values.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
-        * ``A`` : Vector of probabilities to switch from 0 to 1 (i.e. added).
-        * ``D`` : Vector of probabilities to switch from 1 to 0 (i.e. deleted).
-        * ``epsilon`` : minimum that ``A`` and ``D`` can take on. Must be 0 < epsilon < 0.5.
-        * ``lambda`` : Rate of decay of the adaptation. Must be 0.5 < lambda <= 1.0.
-        * ``tau`` : Target mutation rate. Must be 0.0 < tau < 1.0.
+        * ``A`` : vector of probabilities to switch the elements of ``x`` from 0 to 1 (i.e. added).
+        * ``D`` : vector of probabilities to switch elements from 1 to 0 (i.e. deleted).
+        * ``epsilon`` : range ``(epsilon, 1 - epsilon)`` for the elements of ``A`` and ``D``, where ``0 < epsilon < 0.5``.
+        * ``decay`` : rate of decay of the adaptation, where ``0.5 < decay <= 1.0``.
+        * ``target`` : target mutation rate, where ``0.0 < target < 1.0``.
 
     **Value**
 
@@ -97,8 +105,9 @@ Fields
 ``````
 
 * ``logf::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density, or null if not supplied.
-* ``A`` : Vector of probabilities to switch from 0 to 1 (i.e. added).
-* ``D`` : Vector of probabilities to switch from 1 to 0 (i.e. deleted).
-* ``epsilon`` : minimum that ``A`` and ``D`` can take on. Must be 0 < epsilon < 0.5.
-* ``lambda`` : Rate of decay of the adaptation. Must be 0.5 < lambda <= 1.0.
-* ``tau`` : Target mutation rate. Must be 0.0 < tau < 1.0.
+* ``A::Vector{Float64}`` : vector of probabilities to switch from 0 to 1.
+* ``D::Vector{Float64}`` : vector of probabilities to switch from 1 to 0.
+* ``epsilon::Float64`` : range ``(epsilon, 1 - epsilon)`` for the elements of ``A`` and ``D``.
+* ``decay::Float64`` : rate of decay of the adaptation.
+* ``target::Float64`` : target mutation rate.
+* ``iter::Int`` : iteration number for adaptive updating.

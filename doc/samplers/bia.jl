@@ -27,6 +27,3 @@ for i in 1:t
   sim[i, :, 1] = gamma
 end
 describe(sim)
-
-p = plot(sim, [:trace, :mixeddensity])
-draw(p, filename = "biaplot")

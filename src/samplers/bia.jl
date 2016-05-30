@@ -1,4 +1,4 @@
-##################### Individual Adaptation ####################
+##################### Binary Individual Adaptation ####################
 
 #################### Types and Constructors ####################
 
@@ -8,20 +8,19 @@ type BIATune <: SamplerTune
   D::Vector{Float64}
 
   epsilon::Float64
-  lambda::Float64
-  tau::Float64
+  decay::Float64
+  target::Float64
 
-  iter::Integer
+  iter::Int
 
   BIATune() = new()
 
-  function BIATune(x::Vector, logf::Nullable{Function}; 
-          A::Vector{Float64} = [1/length(x) for j in 1:length(x)],
-          D::Vector{Float64} = [1/length(x) for j in 1:length(x)],
-          epsilon::Float64 = 0.01 / length(x), lambda::Float64 = 0.55,
-          tau::Float64 = 0.45)
-
-    new(logf, A, D, epsilon, lambda, tau, 0)
+  function BIATune(x::Vector, logf::Nullable{Function};
+                   A::Vector{Float64} = ones(x) / length(x),
+                   D::Vector{Float64} = ones(x) / length(x),
+                   epsilon::Real = 0.01 / length(x), decay::Real = 0.55,
+                   target::Real = 0.45)
+    new(logf, A, D, epsilon, decay, target, 0)
   end
 end
 
@@ -36,9 +35,17 @@ typealias BIAVariate SamplerVariate{BIATune}
 
 function validate(v::BIAVariate)
   n = length(v)
-  0.0 < v.tune.epsilon < 0.5 || throw(ArgumentError("epsilon must be 0.0 < epsilon < 0.5"))
-  0.5 < v.tune.lambda <= 1.0 || throw(ArgumentError("lambda must be 0.5 < lambda <= 1.0"))
-  0.0 < v.tune.tau < 1.0 || throw(ArgumentError("tau must be 0.0 < tau < 1.0"))
+  epsilon = v.tune.epsilon
+  0.0 < epsilon < 0.5 ||
+    throw(ArgumentError("epsilon is not in (0, 0.5)"))
+  length(v.tune.A) == n && all(epsilon .< v.tune.A .< 1 - epsilon) ||
+    throw(ArgumentError("A must contain $n probabilities in ($epsilon, $(1 - epsilon))"))
+  length(v.tune.D) == n && all(epsilon .< v.tune.D .< 1 - epsilon) ||
+    throw(ArgumentError("D must contain $n probabilities in ($epsilon, $(1 - epsilon))"))
+  0.5 < v.tune.decay <= 1.0 ||
+    throw(ArgumentError("decay is not in (0.5, 1]"))
+  0.0 < v.tune.target < 1.0 ||
+    throw(ArgumentError("target is not in (0, 1)"))
   validatebinary(v)
 end
 
@@ -61,71 +68,52 @@ end
 sample!(v::BIAVariate) = sample!(v, v.tune.logf)
 
 function sample!(v::BIAVariate, logf::Function)
-  v.tune.iter += 1
-  A_new = similar(v.tune.A)
-  D_new = similar(v.tune.D)
+  tune = v.tune
+  tune.iter += 1
+
+  p = length(v)
 
   ## proposal
   x = v[:]
-  p = length(x)
-  log_q_num = 0.0
-  log_q_den = 0.0 
+  added = zeros(Int8, p)
+  deleted = zeros(Int8, p)
+  q_ratio = 1.0
   for j in 1:p
-    if v.value[j] == 0
-      if rand() < v.tune.A[j]
-        x[j] = 1
-        log_q_den += log(v.tune.A[j])
-        log_q_num += log(v.tune.D[j])
-      else
-        log_q_den += log(1 - v.tune.A[j])
-        log_q_num += log(1 - v.tune.A[j])
+    if v.value[j] == 0.0
+      if rand() < tune.A[j]
+        x[j] = 1.0
+        added[j] = 1
+        q_ratio *= tune.D[j] / tune.A[j]
       end
     else
-      if rand() < v.tune.D[j]
-        x[j] = 0
-        log_q_den += log(v.tune.D[j])
-        log_q_num += log(v.tune.A[j])
-      else
-        log_q_den += log(1 - v.tune.D[j])
-        log_q_num += log(1 - v.tune.D[j])
+      if rand() < tune.D[j]
+        x[j] = 0.0
+        deleted[j] = 1
+        q_ratio *= tune.A[j] / tune.D[j]
       end
     end
   end
 
   ## M-H acceptance probability
-  alpha_p = exp(logf(x) - logf(v.value))
-  alpha = min(1, exp( alpha_p + (log_q_num - log_q_den)))
+  alpha = min(1.0, exp(logf(x) - logf(v.value)) * q_ratio)
 
   ## Adapt tuning parameters
   for j in 1:p
-    added = 0.0
-    deleted = 0.0
-
-    if x[j] != v.value[j]
-      if v.value[j] == 0
-        added = 1.0
-      else
-        deleted=1.0
-      end
-    end
-
     ## new A[j]
-    C = log((v.tune.A[j] - v.tune.epsilon) / (1 - v.tune.A[j] - v.tune.epsilon)) + 
-        v.tune.iter ^ (-v.tune.lambda) * added * (alpha - v.tune.tau)
-    A_new[j] = (exp(C) - v.tune.epsilon * exp(C) + v.tune.epsilon) / (1 + exp(C))
-    
+    C = log((tune.A[j] - tune.epsilon) / (1.0 - tune.A[j] - tune.epsilon)) +
+        tune.iter^(-tune.decay) * added[j] * (alpha - tune.target)
+    tune.A[j] = (exp(C) * (1.0 - tune.epsilon) + tune.epsilon) / (1.0 + exp(C))
+
     ## new D[j]
-    C = log((v.tune.D[j] - v.tune.epsilon) / (1 - v.tune.D[j] - v.tune.epsilon)) + 
-        v.tune.iter ^ (-v.tune.lambda) * deleted * (alpha - v.tune.tau)
-    D_new[j] = (exp(C) - v.tune.epsilon * exp(C) + v.tune.epsilon) / (1 + exp(C))
+    C = log((tune.D[j] - tune.epsilon) / (1.0 - tune.D[j] - tune.epsilon)) +
+        tune.iter^(-tune.decay) * deleted[j] * (alpha - tune.target)
+    tune.D[j] = (exp(C) * (1.0 - tune.epsilon) + tune.epsilon) / (1.0 + exp(C))
   end
 
   ## Accept or reject proposal
   if rand() < alpha
-    v[:] = x 
+    v[:] = x
   end
 
-  v.tune.A[:] = A_new
-  v.tune.D[:] = D_new
   v
 end
