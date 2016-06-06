@@ -47,7 +47,7 @@ sample!(v::BMGVariate) = sample!(v, v.tune.logf)
 function sample!(v::BMGVariate, logf::Function)
   n = length(v)
   probs = Vector{Float64}(n)
-  idx = randperm(n)[1:v.tune.k]
+  idx = sample(1:n, v.tune.k, replace=false)
 
   pbernoulli! = function(x, probs)
     for i in idx
