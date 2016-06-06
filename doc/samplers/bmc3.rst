@@ -23,6 +23,10 @@ Model-Based Constructor
 
         Returns a ``Sampler{BMC3Tune{typeof(k)}}`` type object.
 
+    **Example**
+
+        See the :ref:`Pollution <example-Pollution>` and other :ref:`section-Examples`.
+
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
