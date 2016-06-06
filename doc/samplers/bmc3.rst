@@ -10,23 +10,23 @@ Implementation of the binary-state MCMC Model Composition of Madigan and York :c
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMC3(params::ElementOrVector{Symbol}; args...)
+.. function:: BMC3(params::ElementOrVector{Symbol}; k::BMC3Form=1)
 
     Construct a ``Sampler`` object for BMC3 sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``params`` : stochastic node(s) to be updated with the sampler.
-        * ``args...`` : additional keyword arguments to be passed to the ``BMC3Variate`` constructor.
+        * ``k`` : number of parameters or vector of parameter indices to select at random for simultaneous updating in each call of the sampler.
 
     **Value**
 
-        Returns a ``Sampler{BMC3Tune}`` type object.
+        Returns a ``Sampler{BMC3Tune{typeof(k)}}`` type object.
 
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: sample!(v::BMC3Variate)
+.. function:: sample!(v::SamplerVariate{BMC3Tune{F<:BMC3Form}})
 
     Draw one sample from a target distribution using the BMC3 sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
@@ -48,37 +48,38 @@ Stand-Alone Function
 
 .. index:: Sampler Types; BMC3Variate
 
-BMC3Variate Type
-^^^^^^^^^^^^^^^^
+BMC3 Variate Type
+^^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``typealias BMC3Variate SamplerVariate{BMC3Tune}``
+``SamplerVariate{BMC3Tune{F<:BMC3Form}}``
 
 Fields
 ``````
 
 * ``value::Vector{Float64}`` : simulated values.
-* ``tune::BMC3Tune`` : tuning parameters for the sampling algorithm.
+* ``tune::BMC3Tune{F}`` : tuning parameters for the sampling algorithm.
 
 Constructor
 ```````````
 
-.. function:: BMC3Variate(x::AbstractVector{T<:Real}, logf::Function; k::Integer=1)
+.. function:: BMC3Variate(x::AbstractVector{T<:Real}, logf::Function; k::BMC3Form=1)
 
-    Construct a ``BMC3Variate`` object that stores simulated values and tuning parameters for BMC3 sampling.
+    Construct a ``SamplerVariate`` object that stores simulated values and tuning parameters for BMC3 sampling.
 
     **Arguments**
 
         * ``x`` : initial values.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
-        * ``k`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
+        * ``k`` : number of parameters or vector of parameter indices to select at random for simultaneous updating in each call of the sampler.
 
     **Value**
 
-        Returns a ``BMC3Variate`` type object with fields set to the supplied ``x`` and tuning parameter values.
+        Returns a ``SamplerVariate{BMC3Tune{typeof(k)}}`` type object with fields set to the supplied ``x`` and tuning parameter values.
 
+.. index:: Sampler Types; BMC3Form
 .. index:: Sampler Types; BMC3Tune
 
 BMC3Tune Type
@@ -87,10 +88,13 @@ BMC3Tune Type
 Declaration
 ```````````
 
-``type BMC3Tune <: SamplerTune``
+.. code-block:: julia
+
+    typealias BMC3Form Union{Int, Vector{Vector{Int}}}
+    type BMC3Tune{F<:BMC3Form} <: SamplerTune
 
 Fields
 ``````
 
 * ``logf::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density, or null if not supplied.
-* ``k::Int`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
+* ``k::F`` : number of parameters or vector of parameter indices to select at random for simultaneous updating in each call of the sampler.

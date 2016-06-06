@@ -20,13 +20,18 @@ end
 
 ## MCMC Simulation with Binary MCMC Model Composition
 t = 10000
-sim = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
-gamma = BMC3Variate(zeros(p), logf)
+sim1 = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
+sim2 = Chains(t, p, names = map(i -> "gamma[$i]", 1:p))
+gamma1 = BMC3Variate(zeros(p), logf)
+gamma2 = BMC3Variate(zeros(p), logf, k=Vector{Int}[[i] for i in 1:p])
 for i in 1:t
-  sample!(gamma)
-  sim[i, :, 1] = gamma
+  sample!(gamma1)
+  sample!(gamma2)
+  sim1[i, :, 1] = gamma1
+  sim2[i, :, 1] = gamma2
 end
-describe(sim)
+describe(sim1)
+describe(sim2)
 
-p = plot(sim, [:trace, :mixeddensity])
+p = plot(sim1, [:trace, :mixeddensity])
 draw(p, filename = "bmc3plot")
