@@ -37,13 +37,6 @@ function reset!(p::ChainProgress)
   p
 end
 
-function reset!(p::ChainProgress)
-  p.counter = 0
-  p.threshold = 0.0
-  p.t0 = time()
-  p
-end
-
 function next!(p::ChainProgress)
   p.counter += 1
   if p.counter / p.iters >= p.threshold && p.counter >= p.runin
