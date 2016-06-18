@@ -1,53 +1,63 @@
-############ Binary Metropolised Gibbs Sampler ##############
+#################### Binary Metropolised Gibbs Sampler ####################
 
-#################### Types ####################
+#################### Types and Constructors ####################
 
-type BMGTune <: SamplerTune
+typealias BMGForm Union{Int, Vector{Vector{Int}}}
+
+type BMGTune{F<:BMGForm} <: SamplerTune
   logf::Nullable{Function}
-  k::Int
+  k::F
 
   BMGTune() = new()
 
-  BMGTune(x::Vector, logf::Nullable{Function}; k::Integer=1) = new(logf, k)
+  BMGTune(x::Vector, k::F) = new(Nullable{Function}(), k)
+
+  BMGTune(x::Vector, k::F, logf::Function) = new(Nullable{Function}(logf), k)
 end
 
-BMGTune(x::Vector; args...) =
-  BMGTune(x, Nullable{Function}(); args...)
 
-BMGTune(x::Vector, logf::Function; args...) =
-  BMGTune(x, Nullable{Function}(logf); args...)
+typealias BMGIntVariate SamplerVariate{BMGTune{Int}}
+typealias BMGVecVariate SamplerVariate{BMGTune{Vector{Vector{Int}}}}
+
+BMGVariate{F<:BMGForm}(x::Vector, logf::Function; k::F=1) =
+  SamplerVariate{BMGTune{F}}(x, k, logf)
 
 
-typealias BMGVariate SamplerVariate{BMGTune}
-
-function validate(v::BMGVariate)
+function validate(v::BMGIntVariate)
   n = length(v)
   v.tune.k <= n || throw(ArgumentError("k exceeds variate length $n"))
+  validatebinary(v)
+end
+
+function validate(v::BMGVecVariate)
+  n = length(v)
+  mapreduce(maximum, max, v.tune.k) <= n ||
+    throw(ArgumentError("indices in k exceed variate length $n"))
   validatebinary(v)
 end
 
 
 #################### Sampler Constructor ####################
 
-function BMG(params::ElementOrVector{Symbol}; args...)
+function BMG{F<:BMGForm}(params::ElementOrVector{Symbol}; k::F=1)
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block)
-    v = SamplerVariate(block; args...)
+    v = SamplerVariate(block, k)
     sample!(v, x -> logpdf!(block, x))
     relist(block, v)
   end
-  Sampler(params, samplerfx, BMGTune())
+  Sampler(params, samplerfx, BMGTune{F}())
 end
 
 
 #################### Sampling Functions ####################
 
-sample!(v::BMGVariate) = sample!(v, v.tune.logf)
+sample!{F<:BMGForm}(v::SamplerVariate{BMGTune{F}}) = sample!(v, v.tune.logf)
 
-function sample!(v::BMGVariate, logf::Function)
+function sample!{F<:BMGForm}(v::SamplerVariate{BMGTune{F}}, logf::Function)
   n = length(v)
   probs = Vector{Float64}(n)
-  idx = sample(1:n, v.tune.k, replace=false)
+  idx = randind(v)
 
   pbernoulli! = function(x, probs)
     for i in idx
@@ -89,3 +99,6 @@ function sample!(v::BMGVariate, logf::Function)
 
   v
 end
+
+randind(v::BMGIntVariate) = sample(1:length(v), v.tune.k, replace=false)
+randind(v::BMGVecVariate) = sample(v.tune.k)

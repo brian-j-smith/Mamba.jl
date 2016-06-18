@@ -10,18 +10,18 @@ Implementation of the binary-state Metropolised Gibbs sampler described by Schaf
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. function:: BMG(params::ElementOrVector{Symbol}; args...)
+.. function:: BMG(params::ElementOrVector{Symbol}; k::BMGForm=1)
 
     Construct a ``Sampler`` object for BMG sampling.  Parameters are assumed to have binary numerical values (0 or 1).
 
     **Arguments**
 
         * ``params`` : stochastic node(s) to be updated with the sampler.
-        * ``args...`` : additional keyword arguments to be passed to the ``BMGVariate`` constructor.
+        * ``k`` : number of parameters or vector of parameter indices to select at random for simultaneous updating in each call of the sampler.
 
     **Value**
 
-        Returns a ``Sampler{BMGTune}`` type object.
+        Returns a ``Sampler{BMGTune{typeof(k)}}`` type object.
 
     **Example**
 
@@ -30,7 +30,7 @@ Model-Based Constructor
 Stand-Alone Function
 ^^^^^^^^^^^^^^^^^^^^
 
-.. function:: sample!(v::BMGVariate)
+.. function:: sample!(v::SamplerVariate{BMGTune{F<:BMGForm}})
 
     Draw one sample from a target distribution using the BMG sampler.  Parameters are assumed to have binary numerical values (0 or 1).
 
@@ -52,36 +52,39 @@ Stand-Alone Function
 
 .. index:: Sampler Types; BMGVariate
 
-BMGVariate Type
+BMG Variate Type
 ^^^^^^^^^^^^^^^^
 
 Declaration
 ```````````
 
-``typealias BMGVariate SamplerVariate{BMGTune}``
+``SamplerVariate{BMGTune{F<:BMGForm}}``
 
 Fields
 ``````
 
 * ``value::Vector{Float64}`` : simulated values.
-* ``tune::BMGTune`` : tuning parameters for the sampling algorithm.
+* ``tune::BMGTune{F}`` : tuning parameters for the sampling algorithm.
 
 Constructor
 ```````````
 
-.. function:: BMGVariate(x::AbstractVector{T<:Real}, logf::Function; k::Integer=1)
+.. function:: BMGVariate(x::AbstractVector{T<:Real}, logf::Function; k::BMGForm=1)
 
-    Construct a ``BMGVariate`` object that stores simulated values and tuning parameters for BMG sampling.
+    Construct a ``SamplerVariate`` object that stores simulated values and tuning parameters for BMG sampling.
 
     **Arguments**
 
         * ``x`` : initial values.
         * ``logf`` : function that takes a single ``DenseVector`` argument of parameter values at which to compute the log-transformed density (up to a normalizing constant).
-        * ``k`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
+        * ``k`` : number of parameters or vector of parameter indices to select at random for simultaneous updating in each call of the sampler.
 
     **Value**
 
-        Returns a ``BMGVariate`` type object with fields set to the supplied ``x`` and tuning parameter values.
+        Returns a ``SamplerVariate{BMGTune{typeof(k)}}`` type object with fields set to the supplied ``x`` and tuning parameter values.
+
+.. index:: Sampler Types; BMGForm
+.. index:: Sampler Types; BMGTune
 
 BMGTune Type
 ^^^^^^^^^^^^^
@@ -89,10 +92,13 @@ BMGTune Type
 Declaration
 ```````````
 
-``type BMGTune <: SamplerTune``
+.. code-block:: julia
+
+    typealias BMGForm Union{Int, Vector{Vector{Int}}}
+    type BMGTune{F<:BMGForm} <: SamplerTune
 
 Fields
 ``````
 
 * ``logf::Nullable{Function}`` : function supplied to the constructor to compute the log-transformed density, or null if not supplied.
-* ``k::Int`` : number of parameters to select at random for simultaneous updating in each call of the sampler.
+* ``k::F`` : number of parameters or vector of parameter indices to select at random for simultaneous updating in each call of the sampler.
