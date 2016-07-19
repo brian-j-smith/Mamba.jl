@@ -100,8 +100,11 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
     for k in 1:maxdraw
       ## candidate draw and prior density value
       theta1 = theta0 + scale .* rand(proposal(0.0, 1.0), length(theta0))
-      relist!(model, theta1, block, true)
       logprior1 = logpdf(model, params, true)
+      if logprior1 == -Inf
+        continue
+      end
+      relist!(model, theta1, block, true)
 
       ## tolerances and kernel density
       pi_epsilon1 = 0.0
