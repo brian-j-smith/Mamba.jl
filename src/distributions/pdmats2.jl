@@ -13,7 +13,7 @@ module PDMats2
 
   #################### Types and Constructors ####################
 
-  type PBDiagMat <: AbstractPDMat
+  type PBDiagMat <: AbstractPDMat{Float64}
     dim::Int
     mat::SparseMatrixCSC{Float64, Int}
     chol::Vector{Cholesky{Float64}}
