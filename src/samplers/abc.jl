@@ -100,7 +100,8 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
     for k in 1:maxdraw
       ## candidate draw and prior density value
       theta1 = theta0 + scale .* rand(proposal(0.0, 1.0), length(theta0))
-      logprior1 = logpdf(model, params, true)
+      logprior1 = mapreduce(keyval -> logpdf(model[keyval[1]], keyval[2]), +,
+                            relist(model, theta1, block, true))
       if logprior1 == -Inf
         continue
       end
