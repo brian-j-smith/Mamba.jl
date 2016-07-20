@@ -2,6 +2,13 @@
 
 ## Version Updates
 
+### 0.9.2
+* Removed 0.9.1 deprecates.
+* Added logic to ABC sampler to skip distributional evaluations if candidate draws are not in the prior distribution support.
+* Updates for Distributions 0.10.0 package compatibility to fix MvNormal TypeError.
+* Added vector indexing to BMC3 and BMG samplers.
+* Implemented Binary Individual Adaptation (BIA) sampler.
+
 ### 0.9.1
 * Removed 0.8.1 and 0.9.0 deprecates.
 * Updates for Distributions 0.9.0 package compatibility to fix ambiguous new definition warnings and StackOverflowError.
