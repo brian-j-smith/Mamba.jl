@@ -1,6 +1,6 @@
 #################### Dependent ####################
 
-const depfxargs = [(:model, :Model)]
+const depfxargs = [(:model, Mamba.Model)]
 
 
 #################### Base Methods ####################
@@ -15,7 +15,7 @@ end
 function Base.showall(io::IO, d::AbstractDependent)
   show(io, d)
   print(io, "\nFunction:\n")
-  show(io, d.eval.code)
+  show(io, "text/plain", first(code_typed(d.eval)))
   print(io, "\n\nSource Nodes:\n")
   show(io, d.sources)
   print(io, "\n\nTarget Nodes:\n")
@@ -124,7 +124,7 @@ function Base.showall(io::IO, s::AbstractStochastic)
   print(io, "\n\nDistribution:\n")
   show(io, s.distr)
   print(io, "\nFunction:\n")
-  show(io, s.eval.code)
+  show(io, "text/plain", first(code_typed(s.eval)))
   print(io, "\n\nSource Nodes:\n")
   show(io, s.sources)
   print(io, "\n\nTarget Nodes:\n")
