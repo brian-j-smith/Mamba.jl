@@ -47,7 +47,8 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
         mat[j] = context()
       end
     end
-    result = byrow ? reshape(mat, ncol, nrow)' : reshape(mat, nrow, ncol)
+    result = byrow ? permutedims(reshape(mat, ncol, nrow), [2, 1]) :
+                     reshape(mat, nrow, ncol)
 
     draw(img, gridstack(result))
   end
