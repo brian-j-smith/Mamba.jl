@@ -73,7 +73,7 @@ function graph2dot(m::Model)
      end
   end
   write(io, "}\n")
-  bytestring(io)
+  String(io)
 end
 
 
