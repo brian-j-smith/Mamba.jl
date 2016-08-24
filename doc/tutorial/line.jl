@@ -29,7 +29,7 @@ Gibbs_beta = Sampler([:beta],
     begin
       beta_mean = mean(beta.distr)
       beta_invcov = invcov(beta.distr)
-      Sigma = inv(xmat' * xmat / s2 + beta_invcov)
+      Sigma = inv(Symmetric(xmat' * xmat / s2 + beta_invcov))
       mu = Sigma * (xmat' * y / s2 + beta_invcov * beta_mean)
       rand(MvNormal(mu, Sigma))
     end

@@ -84,7 +84,7 @@ function sample!(v::AMMVariate, logf::Function; adapt::Bool=true)
     tune.Mv = p * tune.Mv + (1.0 - p) * v
     tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
     Sigma = (tune.scale^2 / n / p) * (tune.Mvv - tune.Mv * tune.Mv')
-    F = cholfact(Sigma, :U, Val{true})
+    F = cholfact(Hermitian(Sigma), Val{true})
     if rank(F) == n
       tune.SigmaLm = F[:P] * F[:L]
     end
