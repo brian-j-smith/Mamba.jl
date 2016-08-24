@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+### 0.10.0
+* Initial release for julia 0.5.
+* Branched off of *Mamba* 0.9.2.
+
 ### 0.9.2
 * Removed 0.9.1 deprecates.
 * Added logic to ABC sampler to skip distributional evaluations if candidate draws are not in the prior distribution support.
