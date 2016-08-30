@@ -1,5 +1,7 @@
 # Mamba: Markov chain Monte Carlo (MCMC) for Bayesian analysis in julia
 
+[![Join the chat at https://gitter.im/brian-j-smith/Mamba.jl](https://badges.gitter.im/brian-j-smith/Mamba.jl.svg)](https://gitter.im/brian-j-smith/Mamba.jl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **julia 0.4:** [![Docs](https://readthedocs.org/projects/mambajl/badge/?version=release-0.9)](http://mambajl.readthedocs.io/en/release-0.9/)
 [![Mamba](http://pkg.julialang.org/badges/Mamba_0.4.svg)](http://pkg.julialang.org/?pkg=Mamba&ver=0.4)
 [![Build Status](https://travis-ci.org/brian-j-smith/Mamba.jl.svg?branch=release-0.9)](https://travis-ci.org/brian-j-smith/Mamba.jl)  
