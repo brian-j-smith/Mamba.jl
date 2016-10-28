@@ -38,25 +38,25 @@ end
 function graph2dot(m::Model)
   g = graph(m)
   io = IOBuffer()
-  write(io, "digraph MambaModel {\n")
+  write(io, "digraph Mamba.Model {\n")
   deps = keys(m, :dependent)
   for v in vertices(g)
-    attr = Dict{AbstractString, AbstractString}()
+    attr = Tuple{AbstractString, AbstractString}[]
     if v.key in deps
       node = m[v.key]
       if isa(node, AbstractLogical)
-        attr["shape"] = "diamond"
+        push!(attr, ("shape", "diamond"))
       elseif isa(node, AbstractStochastic)
-        attr["shape"] = "ellipse"
+        push!(attr, ("shape", "ellipse"))
       end
       if isempty(node.monitor)
-        attr["style"] = "filled"
-        attr["fillcolor"] = "gray85"
+        push!(attr, ("style", "filled"),
+                    ("fillcolor", "gray85"))
       end
     else
-      attr["shape"] = "box"
-      attr["style"] = "filled"
-      attr["fillcolor"] = "gray85"
+      push!(attr, ("shape", "box"),
+                  ("style", "filled"),
+                  ("fillcolor", "gray85"))
     end
     write(io, "\t\"")
     write(io, v.key)
@@ -73,7 +73,7 @@ function graph2dot(m::Model)
      end
   end
   write(io, "}\n")
-  bytestring(io)
+  String(io)
 end
 
 

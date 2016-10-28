@@ -91,18 +91,18 @@ end
 #################### Mathematical Operators ####################
 
 const BinaryScalarMethods = [
-  :(Base.(:(+))),
-  :(Base.(:(-))),
-  :(Base.(:(*))),
-  :(Base.(:(/))),
-  :(Base.(:(\))),
-  :(Base.(:(^))),
-  :(Base.(:(==))),
-  :(Base.(:(!=))),
-  :(Base.(:(<))),
-  :(Base.(:(<=))),
-  :(Base.(:(>))),
-  :(Base.(:(>=))),
+  :(Base.:+),
+  :(Base.:-),
+  :(Base.:*),
+  :(Base.:/),
+  :(Base.:\),
+  :(Base.:^),
+  :(Base.:(==)),
+  :(Base.:(!=)),
+  :(Base.:<),
+  :(Base.:(<=)),
+  :(Base.:>),
+  :(Base.:(>=)),
   :(Base.cld),
   :(Base.div),
   :(Base.divrem),
@@ -128,8 +128,8 @@ for op in RoundScalarMethods
 end
 
 const UnaryScalarMethods = [
-  :(Base.(:+)),
-  :(Base.(:-)),
+  :(Base.:+),
+  :(Base.:-),
   :(Base.abs),
   :(Base.isfinite),
   :(Base.isinf),

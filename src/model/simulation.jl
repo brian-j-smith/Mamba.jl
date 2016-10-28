@@ -136,7 +136,7 @@ function relist{T<:Real}(m::Model, x::AbstractArray{T},
   N = length(x)
   offset = 0
   for key in nodekeys
-    value, n = relistlength(m[key], sub(x, (offset + 1):N), transform)
+    value, n = relistlength(m[key], view(x, (offset + 1):N), transform)
     values[key] = value
     offset += n
   end

@@ -47,7 +47,8 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
         mat[j] = context()
       end
     end
-    result = byrow ? reshape(mat, ncol, nrow)' : reshape(mat, nrow, ncol)
+    result = byrow ? permutedims(reshape(mat, ncol, nrow), [2, 1]) :
+                     reshape(mat, nrow, ncol)
 
     draw(img, gridstack(result))
   end
@@ -90,7 +91,7 @@ function autocorplot(c::AbstractChains;
   for i in 1:nvars
     plots[i] = plot(y=vec(ac.value[i, :, :]),
                     x=repeat(collect(lags * step(c)), outer=[nchains]),
-                    Geom.line,
+                    Geom.line(),
                     color=repeat(c.chains, inner=[length(lags)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Lag", orientation=:horizontal),
@@ -149,7 +150,7 @@ function contourplot(c::AbstractChains; bins::Integer=100, na...)
       for k in 1:n
         density[idx[k], idy[k]] += 1.0 / n
       end
-      p = plot(x=mx, y=my, z=density, Geom.contour,
+      p = plot(x=mx, y=my, z=density, Geom.contour(),
                Guide.colorkey("Density"),
                Guide.xlabel(c.names[i], orientation=:horizontal),
                Guide.ylabel(c.names[j], orientation=:vertical))
@@ -170,7 +171,7 @@ function densityplot(c::AbstractChains; legend::Bool=false,
       qs = quantile(c.value[:, i, j], [trim[1], trim[2]])
       val[j] = c.value[qs[1] .<= c.value[:, i, j] .<= qs[2], i, j]
     end
-    plots[i] = plot(x=[val...;], Geom.density,
+    plots[i] = plot(x=[val...;], Geom.density(),
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
@@ -188,7 +189,7 @@ function meanplot(c::AbstractChains; legend::Bool=false, na...)
   for i in 1:nvars
     plots[i] = plot(y=vec(val[:, i, :]),
                     x=repeat(collect(c.range), outer=[nchains]),
-                    Geom.line,
+                    Geom.line(),
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Iteration", orientation=:horizontal),
@@ -214,7 +215,7 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
   for i in 1:nvars
     plots[i] = plot(y=vec(c.value[:, i, :]),
                     x=repeat(collect(c.range), outer=[nchains]),
-                    Geom.line,
+                    Geom.line(),
                     color=repeat(c.chains, inner=[length(c.range)]),
                     Scale.color_discrete(), Guide.colorkey("Chain"),
                     Guide.xlabel("Iteration", orientation=:horizontal),

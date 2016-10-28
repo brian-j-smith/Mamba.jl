@@ -1,10 +1,10 @@
 #################### Model Expression Operators ####################
 
-function modelfx(literalargs::Vector{Tuple{Symbol, Symbol}}, f::Function)
+function modelfx(literalargs::Vector{Tuple{Symbol, DataType}}, f::Function)
   modelfxsrc(literalargs, f)[1]
 end
 
-function modelfxsrc(literalargs::Vector{Tuple{Symbol, Symbol}}, f::Function)
+function modelfxsrc(literalargs::Vector{Tuple{Symbol, DataType}}, f::Function)
   args = Expr(:tuple, map(arg -> Expr(:(::), arg[1], arg[2]), literalargs)...)
   expr, src = modelexprsrc(f, literalargs)
   fx = eval(Expr(:function, args, expr))
@@ -12,12 +12,11 @@ function modelfxsrc(literalargs::Vector{Tuple{Symbol, Symbol}}, f::Function)
 end
 
 
-function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, Symbol}})
-  ast = ccall(:jl_uncompress_ast, Any, (Any, Any), f.code, f.code.ast)
-  fargs = ast.args[1]
-  n = length(fargs)
-  fkeys = Symbol[arg.args[1] for arg in fargs]
-  ftypes = Symbol[arg.args[2] for arg in fargs]
+function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, DataType}})
+  li = first(code_typed(f))
+  fkeys = Symbol[li.slotnames[i] for i in 2:li.nargs]
+  ftypes = DataType[li.slottypes[i] for i in 2:li.nargs]
+  n = length(fkeys)
 
   literalinds = Int[]
   for (key, T) in literalargs
@@ -28,7 +27,7 @@ function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, Symbol}})
   end
   nodeinds = setdiff(1:n, literalinds)
 
-  all(T -> T == :Any, ftypes[nodeinds]) ||
+  all(T -> T == Any, ftypes[nodeinds]) ||
     throw(ArgumentError("model node arguments are not all of type Any"))
 
   modelargs = Array{Any}(n)
@@ -86,11 +85,11 @@ end
 
 ## pmap2 is a partial work-around for the pmap issue in julia 0.4.0 of worker
 ## node errors being blocked.  In single-processor mode, pmap2 calls map
-## instead to avoid the error handling issue.  In multi-processor model, pmap is
+## instead to avoid the error handling issue.  In multi-processor mode, pmap is
 ## called and will apply its error processing.
 
 function pmap2(f::Function, lsts::AbstractArray)
-  if nprocs() > 1
+  if (nprocs() > 1) & (VERSION < v"0.5-")
     @everywhere using Mamba
     pmap(f, lsts)
   else
