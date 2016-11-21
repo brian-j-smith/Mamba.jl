@@ -1,5 +1,21 @@
 #################### Model Graph ####################
 
+function ModelGraph(m::Model)
+  allkeys = keys(m, :all)
+  g = DiGraph(length(allkeys))
+  lookup = Dict(allkeys[i] => i for i in 1:length(allkeys))
+  for key in keys(m)
+    node = m[key]
+    if isa(node, AbstractDependent)
+      for src in node.sources
+        add_edge!(g, lookup[src], lookup[key])
+      end
+    end
+  end
+  ModelGraph(g, allkeys)
+end
+
+
 #################### Display ####################
 
 function draw(m::Model; filename::AbstractString="")
@@ -16,34 +32,18 @@ function draw(m::Model; filename::AbstractString="")
   end
 end
 
-function graph(m::Model)
-  g = graph(KeyVertex{Symbol}[], Edge{KeyVertex{Symbol}}[])
-  lookup = Dict{Symbol, Int}()
-  for key in keys(m, :all)
-    lookup[key] = length(lookup) + 1
-    add_vertex!(g, KeyVertex(lookup[key], key))
-  end
-  V = vertices(g)
-  for key in keys(m)
-    node = m[key]
-    if isa(node, AbstractDependent)
-      for src in node.sources
-        add_edge!(g, V[lookup[src]], V[lookup[key]])
-      end
-    end
-  end
-  g
-end
+graph(m::Model) = ModelGraph(m)
 
 function graph2dot(m::Model)
-  g = graph(m)
+  dag = ModelGraph(m)
   io = IOBuffer()
   write(io, "digraph MambaModel {\n")
   deps = keys(m, :dependent)
-  for v in vertices(g)
+  for v in vertices(dag.graph)
     attr = Tuple{AbstractString, AbstractString}[]
-    if v.key in deps
-      node = m[v.key]
+    vkey = dag.keys[v]
+    if vkey in deps
+      node = m[vkey]
       if isa(node, AbstractLogical)
         push!(attr, ("shape", "diamond"))
       elseif isa(node, AbstractStochastic)
@@ -59,16 +59,15 @@ function graph2dot(m::Model)
                   ("fillcolor", "gray85"))
     end
     write(io, "\t\"")
-    write(io, v.key)
+    write(io, vkey)
     write(io, "\" [")
     write(io, join(map(x -> "$(x[1])=\"$(x[2])\"", attr), ", "))
     write(io, "];\n")
-    for e in out_edges(v, g)
-      t = target(e, g)
+    for t in out_neighbors(dag.graph, v)
       write(io, "\t\t\"")
-      write(io, v.key)
+      write(io, vkey)
       write(io, "\" -> \"")
-      write(io, t.key)
+      write(io, dag.keys[t])
       write(io, "\";\n")
      end
   end
@@ -79,10 +78,11 @@ end
 
 #################### Auxiliary Functions ####################
 
-function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
+function any_stochastic(dag::ModelGraph, v::Int, m::Model)
   found = false
-  for v in out_neighbors(v, g)
-    if isa(m[v.key], AbstractStochastic) || any_stochastic(v, g, m)
+  for t in out_neighbors(dag.graph, v)
+    tkey = dag.keys[t]
+    if isa(m[tkey], AbstractStochastic) || any_stochastic(dag, t, m)
       found = true
       break
     end
@@ -90,23 +90,19 @@ function any_stochastic(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model)
   found
 end
 
-function gettargets(v::KeyVertex{Symbol}, g::AbstractGraph, m::Model,
-                    terminal::Vector{Symbol}=keys(m, :stochastic))
+function gettargets(dag::ModelGraph, v::Int, terminalkeys::Vector{Symbol})
   values = Symbol[]
-  for v in out_neighbors(v, g)
-    push!(values, v.key)
-    if !(v.key in terminal)
-      values = union(values, gettargets(v, g, m, terminal))
+  for t in out_neighbors(dag.graph, v)
+    tkey = dag.keys[t]
+    push!(values, tkey)
+    if !(tkey in terminalkeys)
+      values = union(values, gettargets(dag, t, terminalkeys))
     end
   end
   values
 end
 
-function tsort{T}(g::AbstractGraph{KeyVertex{T}, Edge{KeyVertex{T}}})
-  V = topological_sort_by_dfs(g)
-  map(v -> v.key, V)
-end
-
 function tsort(m::Model)
-  tsort(graph(m))
+  dag = ModelGraph(m)
+  dag.keys[topological_sort_by_dfs(dag.graph)]
 end

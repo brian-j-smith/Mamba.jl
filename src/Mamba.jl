@@ -37,8 +37,8 @@ module Mamba
          minimum, pdf, quantile, rand, sample!, support
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
-  import Graphs: AbstractGraph, add_edge!, add_vertex!, Edge, KeyVertex, graph,
-         out_edges, out_neighbors, target, topological_sort_by_dfs, vertices
+  import LightGraphs: DiGraph, add_edge!, out_neighbors,
+         topological_sort_by_dfs, vertices
   import Showoff: showoff
   import StatsBase: autocor, autocov, countmap, counts, describe, predict,
          quantile, sample, sem, summarystats
@@ -143,6 +143,11 @@ module Mamba
 
 
   #################### Model Types ####################
+
+  type ModelGraph
+    graph::DiGraph
+    keys::Vector{Symbol}
+  end
 
   type ModelState
     value::Vector{Float64}

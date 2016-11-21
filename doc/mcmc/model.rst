@@ -148,7 +148,7 @@ Display
 
     **Value**
 
-        Returns a ``GenericGraph`` type object as defined in the `Graphs <http://graphsjl-docs.readthedocs.io/en/latest/index.html>`_ package.
+        Returns a ``ModelGraph`` type object with field ``graph`` containing a ``DiGraph`` representation of indices, as defined in the `LightGraphs <http://juliagraphs.github.io/LightGraphs.jl/latest/>`_ package, to a vector of node symbols in field ``keys``.
 
 .. function:: graph2dot(m::Model)
 

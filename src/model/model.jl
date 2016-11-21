@@ -13,11 +13,14 @@ function Model(; iter::Integer=0, burnin::Integer=0,
     nodedict[key] = node
   end
   m = Model(nodedict, Sampler[], ModelState[], iter, burnin, false, false)
-  g = graph(m)
-  dependents = keys(m, :dependent)
-  for v in vertices(g)
-    if v.key in dependents
-      m[v.key].targets = intersect(dependents, gettargets(v, g, m))
+  dag = ModelGraph(m)
+  dependentkeys = keys(m, :dependent)
+  terminalkeys = keys(m, :stochastic)
+  for v in vertices(dag.graph)
+    vkey = dag.keys[v]
+    if vkey in dependentkeys
+      m[vkey].targets = intersect(dependentkeys,
+                                  gettargets(dag, v, terminalkeys))
     end
   end
   setsamplers!(m, samplers)
@@ -113,7 +116,7 @@ function keys_dependent(m::Model)
       push!(values, key)
     end
   end
-  intersect(tsort(graph(m)), values)
+  intersect(tsort(m), values)
 end
 
 function keys_independent(m::Model)
@@ -149,10 +152,11 @@ end
 
 function keys_output(m::Model)
   values = Symbol[]
-  g = graph(m)
-  for v in vertices(g)
-    if isa(m[v.key], AbstractStochastic) && !any_stochastic(v, g, m)
-      push!(values, v.key)
+  dag = ModelGraph(m)
+  for v in vertices(dag.graph)
+    vkey = dag.keys[v]
+    if isa(m[vkey], AbstractStochastic) && !any_stochastic(dag, v, m)
+      push!(values, vkey)
     end
   end
   values
