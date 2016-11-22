@@ -38,7 +38,7 @@ end
 function graph2dot(m::Model)
   g = graph(m)
   io = IOBuffer()
-  write(io, "digraph Mamba.Model {\n")
+  write(io, "digraph MambaModel {\n")
   deps = keys(m, :dependent)
   for v in vertices(g)
     attr = Tuple{AbstractString, AbstractString}[]
