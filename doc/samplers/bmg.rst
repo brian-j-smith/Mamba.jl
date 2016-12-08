@@ -5,7 +5,7 @@
 Binary Metropolised Gibbs (BMG)
 -------------------------------
 
-Implementation of the binary-state Metropolised Gibbs sampler described by Schafer :cite:`schafer:2012:DIS,schafer:2013:SMCB` in which components are drawn sequentially from full conditional marginal distributions and accepted together in a single Metropolis-Hastings step.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
+Implementation of a binary-state Metropolised Gibbs sampler in which components are drawn sequentially from full conditional marginal distributions and accepted together in a single Metropolis-Hastings step.  The sampler simulates autocorrelated draws from a distribution that can be specified up to a constant of proportionality.
 
 Model-Based Constructor
 ^^^^^^^^^^^^^^^^^^^^^^^
