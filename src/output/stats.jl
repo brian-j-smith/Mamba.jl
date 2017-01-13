@@ -92,3 +92,4 @@ function summarystats(c::AbstractChains; etype=:bm, args...)
   stats = [vals  min((vals[:, 2] ./ vals[:, 4]).^2, size(c.value, 1))]
   ChainSummary(stats, c.names, labels, header(c))
 end
+
