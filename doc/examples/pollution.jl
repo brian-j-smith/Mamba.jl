@@ -146,27 +146,32 @@ scheme1 = [BHMC(:gamma, (2 * p + 0.5) * pi); scheme0]
 setsamplers!(model, scheme1)
 sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim1)
+discretediag(sim1[:, :gamma, :]) |> showall
 
 ## Binary MCMC Model Composition
 scheme3 = [BMC3(:gamma); scheme0]
 setsamplers!(model, scheme3)
 sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim3)
+discretediag(sim3[:, :gamma, :]) |> showall
 
 ## Binary Metropolised Gibbs Sampling
 scheme2 = [BMG(:gamma); scheme0]
 setsamplers!(model, scheme2)
 sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
 describe(sim2)
+discretediag(sim2[:, :gamma, :]) |> showall
 
 ## Discrete Gibbs Sampling
 scheme4 = [DGS(:gamma); scheme0]
 setsamplers!(model, scheme4)
 sim4 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim4)
+discretediag(sim4[:, :gamma, :]) |> showall
 
 ## Individual Adaptation Sampling
 scheme5 = [BIA(:gamma); scheme0]
 setsamplers!(model, scheme5)
 sim5 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim5)
+discretediag(sim5[:, :gamma, :]) |> showall
