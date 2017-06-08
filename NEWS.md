@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+### 0.10.1
+* Replace Graphs package dependency with LightGraphs..
+
 ### 0.10.0
 * Initial release for julia 0.5.
 * Branched off of *Mamba* 0.9.2.
