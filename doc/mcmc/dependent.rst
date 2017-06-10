@@ -13,7 +13,7 @@ Since parameter values in the ``AbstractDependent`` structure are stored as a sc
 Declaration
 ^^^^^^^^^^^
 
-``typealias AbstractDependent Union{AbstractLogical, AbstractStochastic}``
+``const AbstractDependent = Union{AbstractLogical, AbstractStochastic}``
 
 Fields
 ^^^^^^
@@ -108,7 +108,7 @@ Declarations
 
     type ScalarLogical <: ScalarVariate
     type ArrayLogical{N} <: ArrayVariate{N}
-    typealias AbstractLogical Union{ScalarLogical, ArrayLogical}
+    const AbstractLogical = Union{ScalarLogical, ArrayLogical}
 
 
 Fields
@@ -195,7 +195,7 @@ Declarations
 
     type ScalarStochastic <: ScalarVariate
     type ArrayStochastic{N} <: ArrayVariate{N}
-    typealias AbstractStochastic Union{ScalarStochastic, ArrayStochastic}
+    const AbstractStochastic = Union{ScalarStochastic, ArrayStochastic}
 
 
 Fields
@@ -216,9 +216,9 @@ The ``DistributionStruct`` alias defines the types of distribution structures su
 
 .. code-block:: julia
 
-    typealias DistributionStruct Union{Distribution,
-                                       Array{UnivariateDistribution},
-                                       Array{MultivariateDistribution}}
+    const DistributionStruct = Union{Distribution,
+                                     Array{UnivariateDistribution},
+                                     Array{MultivariateDistribution}}
 
 Constructors
 ^^^^^^^^^^^^

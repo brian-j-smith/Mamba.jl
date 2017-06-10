@@ -30,7 +30,7 @@ AMMTune{T<:Real}(x::Vector, Sigma::Matrix{T}, logf::Function; args...) =
   AMMTune(x, Sigma, Nullable{Function}(logf); args...)
 
 
-typealias AMMVariate SamplerVariate{AMMTune}
+const AMMVariate = SamplerVariate{AMMTune}
 
 function validate(v::AMMVariate)
   n = length(v)

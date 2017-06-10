@@ -1,6 +1,6 @@
 #################### TransformDistribution ####################
 
-typealias TransformDistribution{T<:ContinuousUnivariateDistribution}
+const TransformDistribution{T<:ContinuousUnivariateDistribution} =
   Union{T, Truncated{T}}
 
 function link(d::TransformDistribution, x::Real)
@@ -50,7 +50,7 @@ end
 
 #################### RealDistribution ####################
 
-typealias RealDistribution
+const RealDistribution =
           Union{Cauchy, Gumbel, Laplace, Logistic, NoncentralT, Normal,
                 NormalCanon, TDist}
 
@@ -63,7 +63,7 @@ logpdf(d::RealDistribution, x::Real, transform::Bool) = logpdf(d, x)
 
 #################### PositiveDistribution ####################
 
-typealias PositiveDistribution
+const PositiveDistribution =
           Union{BetaPrime, Chi, Chisq, Erlang, Exponential, FDist, Frechet,
                 Gamma, InverseGamma, InverseGaussian, Kolmogorov, LogNormal,
                 NoncentralChisq, NoncentralF, Rayleigh, Weibull}
@@ -80,7 +80,7 @@ end
 
 #################### UnitDistribution ####################
 
-typealias UnitDistribution
+const UnitDistribution =
           Union{Beta, KSOneSided, NoncentralBeta}
 
 link(d::UnitDistribution, x::Real) = logit(x)

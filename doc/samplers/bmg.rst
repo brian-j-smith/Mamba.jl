@@ -94,7 +94,7 @@ Declaration
 
 .. code-block:: julia
 
-    typealias BMGForm Union{Int, Vector{Vector{Int}}}
+    const BMGForm = Union{Int, Vector{Vector{Int}}}
     type BMGTune{F<:BMGForm} <: SamplerTune
 
 Fields

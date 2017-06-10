@@ -66,7 +66,7 @@ AMMVariate Type
 Declaration
 ```````````
 
-``typealias AMMVariate SamplerVariate{AMMTune}``
+``const AMMVariate = SamplerVariate{AMMTune}``
 
 Fields
 ``````

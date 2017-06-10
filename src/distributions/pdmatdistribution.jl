@@ -1,6 +1,6 @@
 #################### PDMatDistribution ####################
 
-typealias PDMatDistribution Union{InverseWishart, Wishart}
+const PDMatDistribution = Union{InverseWishart, Wishart}
 
 function unlist(d::PDMatDistribution, X::AbstractArray)
   n = dim(d)

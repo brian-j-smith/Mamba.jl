@@ -67,7 +67,7 @@ MALAVariate Type
 Declaration
 ```````````
 
-``typealias MALAVariate SamplerVariate{MALATune}``
+``const MALAVariate = SamplerVariate{MALATune}``
 
 Fields
 ``````

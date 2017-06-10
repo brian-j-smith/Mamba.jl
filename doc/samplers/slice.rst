@@ -71,8 +71,8 @@ Declaration
 
 .. code-block:: julia
 
-    typealias SliceUnivariate SamplerVariate{SliceTune{Univariate}}
-    typealias SliceMultivariate SamplerVariate{SliceTune{Multivariate}}
+    const SliceUnivariate = SamplerVariate{SliceTune{Univariate}}
+    const SliceMultivariate = SamplerVariate{SliceTune{Multivariate}}
 
 Fields
 ``````
@@ -111,7 +111,7 @@ Declaration
 
 .. code-block:: julia
 
-    typealias SliceForm Union{Univariate, Multivariate}
+    const SliceForm = Union{Univariate, Multivariate}
     type SliceTune{F<:SliceForm} <: SamplerTune
 
 Fields

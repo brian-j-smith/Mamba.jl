@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-typealias SliceForm Union{Univariate, Multivariate}
+const SliceForm = Union{Univariate, Multivariate}
 
 type SliceTune{F<:SliceForm} <: SamplerTune
   logf::Nullable{Function}
@@ -26,8 +26,8 @@ type SliceTune{F<:SliceForm} <: SamplerTune
 end
 
 
-typealias SliceUnivariate SamplerVariate{SliceTune{Univariate}}
-typealias SliceMultivariate SamplerVariate{SliceTune{Multivariate}}
+const SliceUnivariate = SamplerVariate{SliceTune{Univariate}}
+const SliceMultivariate = SamplerVariate{SliceTune{Multivariate}}
 
 validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}) =
   validate(v, v.tune.width)

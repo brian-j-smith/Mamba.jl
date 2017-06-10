@@ -28,7 +28,7 @@ type HMCTune <: SamplerTune
 end
 
 
-typealias HMCVariate SamplerVariate{HMCTune}
+const HMCVariate = SamplerVariate{HMCTune}
 
 validate(v::HMCVariate) = validate(v, v.tune.SigmaL)
 
