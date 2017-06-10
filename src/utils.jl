@@ -93,7 +93,7 @@ end
 
 function pmap2(f::Function, lsts::AbstractArray)
   if (nprocs() > 1) & (VERSION < v"0.5-")
-    @everywhere using Mamba
+    @everywhere importall Mamba
     pmap(f, lsts)
   else
     map(f, lsts)
