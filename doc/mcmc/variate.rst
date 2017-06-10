@@ -16,8 +16,8 @@ Declarations
 ^^^^^^^^^^^^^
 .. code-block:: julia
 
-    abstract ScalarVariate <: Real
-    abstract ArrayVariate{N} <: DenseArray{Float64, N}
+    abstract type ScalarVariate <: Real
+    abstract type ArrayVariate{N} <: DenseArray{Float64, N}
 
     const AbstractVariate = Union{ScalarVariate, ArrayVariate}
     const VectorVariate = ArrayVariate{1}

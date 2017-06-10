@@ -54,8 +54,8 @@ module Mamba
 
   #################### Variate Types ####################
 
-  abstract ScalarVariate <: Real
-  abstract ArrayVariate{N} <: DenseArray{Float64, N}
+  abstract type ScalarVariate <: Real end
+  abstract type ArrayVariate{N} <: DenseArray{Float64, N} end
 
   const AbstractVariate = Union{ScalarVariate, ArrayVariate}
   const VectorVariate = ArrayVariate{1}
@@ -124,7 +124,7 @@ module Mamba
   end
 
 
-  abstract SamplerTune
+  abstract type SamplerTune end
 
   type SamplerVariate{T<:SamplerTune} <: VectorVariate
     value::Vector{Float64}
@@ -167,7 +167,7 @@ module Mamba
 
   #################### Chains Type ####################
 
-  abstract AbstractChains
+  abstract type AbstractChains end
 
   immutable Chains <: AbstractChains
     value::Array{Float64, 3}
