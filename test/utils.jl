@@ -1,6 +1,6 @@
 macro runtest(dir, prefix)
   quote
-    fname = $dir * $prefix * ".jl"
+    fname = $(esc(dir)) * $(esc(prefix)) * ".jl"
     print("\n>>> Testing $fname\n\n")
     include(fname)
   end
