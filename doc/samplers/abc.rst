@@ -13,7 +13,7 @@ Model-Based Constructor
 .. function:: ABC(params::ElementOrVector{Symbol}, \
                   scale::ElementOrVector{T<:Real}, summary::Function, \
                   epsilon::Real; kernel::KernelDensityType=SymUniform, \
-                  dist::Function=(Tsim, Tobs) -> sqrt(sumabs2(Tsim - Tobs)), \
+                  dist::Function=(Tsim, Tobs) -> sqrt(sum(abs2, Tsim - Tobs)), \
                   proposal::SymDistributionType=Normal, maxdraw::Integer=1, \
                   nsim::Integer=1, decay::Real=1.0, randeps::Bool=false, \
                   args...)

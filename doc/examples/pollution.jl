@@ -113,7 +113,7 @@ Gibbs_sigma2 = Sampler([:sigma2],
   (mu, sigma2, y) ->
     begin
       a = length(y) / 2.0 + shape(sigma2.distr)
-      b = sumabs2(y - mu) / 2.0 + scale(sigma2.distr)
+      b = sum(abs2, y - mu) / 2.0 + scale(sigma2.distr)
       rand(InverseGamma(a, b))
     end
 )

@@ -75,8 +75,8 @@ function sample!(v::MALAVariate, logfgrad::Function)
   y = v + M2 * grad0 + L * randn(length(v))
   logf1, grad1 = logfgrad(y)
 
-  q0 = -0.5 * sumabs2(Linv * (v - y - M2 * grad1))
-  q1 = -0.5 * sumabs2(Linv * (y - v - M2 * grad0))
+  q0 = -0.5 * sum(abs2, Linv * (v - y - M2 * grad1))
+  q1 = -0.5 * sum(abs2, Linv * (y - v - M2 * grad0))
 
   if rand() < exp((logf1 - q1) - (logf0 - q0))
     v[:] = y

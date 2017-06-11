@@ -56,5 +56,5 @@ function gelmandiag(c::AbstractChains; alpha::Real=0.05, mpsrf::Bool=false,
   end
 
   hdr = header(c) * "\nGelman, Rubin, and Brooks Diagnostic:"
-  ChainSummary(round(psrf, 3), psrf_names, psrf_labels, hdr)
+  ChainSummary(round.(psrf, 3), psrf_names, psrf_labels, hdr)
 end

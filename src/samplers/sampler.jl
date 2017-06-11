@@ -107,7 +107,7 @@ function logpdfgrad!{T<:Real}(block::SamplingBlock, x::AbstractVector{T},
                               dtype::Symbol)
   grad = gradlogpdf!(block, x, dtype)
   logf = logpdf!(block, x)
-  (logf, ifelse(isfinite(grad), grad, 0.0))
+  (logf, ifelse.(isfinite.(grad), grad, 0.0))
 end
 
 function unlist(block::SamplingBlock)

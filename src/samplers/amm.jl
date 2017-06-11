@@ -18,8 +18,8 @@ type AMMTune <: SamplerTune
   function AMMTune{T<:Real}(x::Vector, Sigma::Matrix{T},
                             logf::Nullable{Function}; beta::Real=0.05,
                             scale::Real=2.38)
-    new(logf, false, beta, 0, Vector{Float64}(), Matrix{Float64}(), scale,
-        cholfact(Sigma)[:L], Matrix{Float64}())
+    new(logf, false, beta, 0, Vector{Float64}(), Matrix{Float64}(0, 0), scale,
+        cholfact(Sigma)[:L], Matrix{Float64}(0, 0))
   end
 end
 

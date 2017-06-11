@@ -100,8 +100,8 @@ function sample!(v::HMCVariate, logfgrad::Function)
 
   ## Evaluate potential and kinetic energies at start and end of trajectory
   SigmaLinv = inv(tune.SigmaL)
-  Kp0 = 0.5 * sumabs2(SigmaLinv * p0)
-  Kp1 = 0.5 * sumabs2(SigmaLinv * p1)
+  Kp0 = 0.5 * sum(abs2, SigmaLinv * p0)
+  Kp1 = 0.5 * sum(abs2, SigmaLinv * p1)
 
   if rand() < exp((logf1 - Kp1) - (logf0 - Kp0))
     v[:] = x1

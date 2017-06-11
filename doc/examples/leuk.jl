@@ -58,7 +58,7 @@ model = Model(
   ),
 
   S0 = Logical(1,
-    dL0 -> exp(-cumsum(dL0)),
+    dL0 -> exp.(-cumsum(dL0)),
     false
   ),
 

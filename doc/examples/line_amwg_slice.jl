@@ -19,7 +19,7 @@ logf = function(x::DenseVector)
    b1 = x[2]
    logs2 = x[3]
    (-0.5 * length(data[:y]) - 0.001) * logs2 -
-     (0.5 * sumabs2(data[:y] - b0 - b1 * data[:x]) + 0.001) / exp(logs2) -
+     (0.5 * sum(abs2, data[:y] - b0 - b1 * data[:x]) + 0.001) / exp(logs2) -
      0.5 * b0^2 / 1000 - 0.5 * b1^2 / 1000
 end
 
@@ -37,6 +37,6 @@ logs2 = SliceMultivariate([0.0], 5.0, logf_logs2)
 for i in 1:n
   sample!(beta, adapt = (i <= burnin))
   sample!(logs2)
-  sim[i, :, 1] = [beta; exp(logs2)]
+  sim[i, :, 1] = [beta; exp.(logs2)]
 end
 describe(sim)
