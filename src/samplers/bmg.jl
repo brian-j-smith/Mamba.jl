@@ -8,11 +8,12 @@ type BMGTune{F<:BMGForm} <: SamplerTune
   logf::Nullable{Function}
   k::F
 
-  BMGTune() = new()
+  BMGTune{F}() where F<:BMGForm = new()
 
-  BMGTune(x::Vector, k::F) = new(Nullable{Function}(), k)
+  BMGTune{F}(x::Vector, k::F) where F<:BMGForm = new(Nullable{Function}(), k)
 
-  BMGTune(x::Vector, k::F, logf::Function) = new(Nullable{Function}(logf), k)
+  BMGTune{F}(x::Vector, k::F, logf::Function) where F<:BMGForm =
+    new(Nullable{Function}(logf), k)
 end
 
 

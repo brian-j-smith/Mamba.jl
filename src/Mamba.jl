@@ -130,12 +130,12 @@ module Mamba
     value::Vector{Float64}
     tune::T
 
-    function SamplerVariate{U<:Real}(x::AbstractVector{U}, tune::T)
+    function SamplerVariate{T}(x::AbstractVector, tune::T) where T<:SamplerTune
       v = new(x, tune)
       validate(v)
     end
 
-    function SamplerVariate{U<:Real}(x::AbstractVector{U}, pargs...; kargs...)
+    function SamplerVariate{T}(x::AbstractVector, pargs...; kargs...) where T<:SamplerTune
       value = convert(Vector{Float64}, x)
       SamplerVariate{T}(value, T(value, pargs...; kargs...))
     end

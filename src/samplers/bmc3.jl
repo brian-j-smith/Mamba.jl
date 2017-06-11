@@ -8,11 +8,12 @@ type BMC3Tune{F<:BMC3Form} <: SamplerTune
   logf::Nullable{Function}
   k::F
 
-  BMC3Tune() = new()
+  BMC3Tune{F}() where F<:BMC3Form = new()
 
-  BMC3Tune(x::Vector, k::F) = new(Nullable{Function}(), k)
+  BMC3Tune{F}(x::Vector, k::F) where F<:BMC3Form = new(Nullable{Function}(), k)
 
-  BMC3Tune(x::Vector, k::F, logf::Function) = new(Nullable{Function}(logf), k)
+  BMC3Tune{F}(x::Vector, k::F, logf::Function) where F<:BMC3Form =
+    new(Nullable{Function}(logf), k)
 end
 
 

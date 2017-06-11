@@ -13,13 +13,13 @@ type DSTune{F<:DSForm} <: SamplerTune
   mass::Nullable{F}
   support::Matrix{Real}
 
-  DSTune() = new()
+  DSTune{F}() where F<:DSForm = new()
 
-  DSTune{T<:Real}(x::Vector, support::Matrix{T}) =
-    new(Nullable{F}(), support)
+  DSTune{F}(x::Vector, support::AbstractMatrix) where F<:DSForm =
+    new(Nullable{Function}(), support)
 
-  DSTune{T<:Real}(x::Vector, support::Matrix{T}, mass::F) =
-    new(Nullable{F}(mass), support)
+  DSTune{F}(x::Vector, support::AbstractMatrix, mass::Function) where
+    F<:DSForm = new(Nullable{F}(mass), support)
 end
 
 
