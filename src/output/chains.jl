@@ -234,6 +234,23 @@ function indiscretesupport(c::AbstractChains,
   result
 end
 
+function inbinarysupport(c::AbstractChains)
+  nrows, nvars, nchains = size(c.value)
+  result = Array{Bool}(nvars * (nrows > 0))
+  for i in 1:nvars
+    result[i] = true
+    result_dict = Set()
+    for j in 1:nrows, k in 1:nchains
+      push!(result_dict, c.value[j, i, k])
+      if length(result_dict) > 2
+        result[i] = false
+        break
+      end
+    end
+  end
+  result
+end
+
 function link(c::AbstractChains)
   cc = copy(c.value)
   for j in 1:length(c.names)
