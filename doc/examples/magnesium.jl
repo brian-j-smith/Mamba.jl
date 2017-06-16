@@ -56,7 +56,7 @@ model = Model(
   ),
 
   OR = Logical(1,
-    mu -> exp(mu)
+    mu -> exp.(mu)
   ),
 
   tau = Logical(1,

@@ -19,7 +19,7 @@ SliceSimplexTune(x::Vector, logf::Function; args...) =
   SliceSimplexTune(x, Nullable{Function}(logf); args...)
 
 
-typealias SliceSimplexVariate SamplerVariate{SliceSimplexTune}
+const SliceSimplexVariate = SamplerVariate{SliceSimplexTune}
 
 function validate(v::SliceSimplexVariate)
   0 < v.tune.scale <= 1 || throw(ArgumentError("scale is not in (0, 1]"))

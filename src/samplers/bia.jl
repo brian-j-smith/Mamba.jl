@@ -31,7 +31,7 @@ BIATune(x::Vector, logf::Function; args...) =
    BIATune(x, Nullable{Function}(logf); args...)
 
 
-typealias BIAVariate SamplerVariate{BIATune}
+const BIAVariate = SamplerVariate{BIATune}
 
 function validate(v::BIAVariate)
   n = length(v)

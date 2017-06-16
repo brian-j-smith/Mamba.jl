@@ -2,22 +2,23 @@
 
 #################### Types and Constructors ####################
 
-typealias BMGForm Union{Int, Vector{Vector{Int}}}
+const BMGForm = Union{Int, Vector{Vector{Int}}}
 
 type BMGTune{F<:BMGForm} <: SamplerTune
   logf::Nullable{Function}
   k::F
 
-  BMGTune() = new()
+  BMGTune{F}() where F<:BMGForm = new()
 
-  BMGTune(x::Vector, k::F) = new(Nullable{Function}(), k)
+  BMGTune{F}(x::Vector, k::F) where F<:BMGForm = new(Nullable{Function}(), k)
 
-  BMGTune(x::Vector, k::F, logf::Function) = new(Nullable{Function}(logf), k)
+  BMGTune{F}(x::Vector, k::F, logf::Function) where F<:BMGForm =
+    new(Nullable{Function}(logf), k)
 end
 
 
-typealias BMGIntVariate SamplerVariate{BMGTune{Int}}
-typealias BMGVecVariate SamplerVariate{BMGTune{Vector{Vector{Int}}}}
+const BMGIntVariate = SamplerVariate{BMGTune{Int}}
+const BMGVecVariate = SamplerVariate{BMGTune{Vector{Vector{Int}}}}
 
 BMGVariate{F<:BMGForm}(x::Vector, logf::Function; k::F=1) =
   SamplerVariate{BMGTune{F}}(x, k, logf)

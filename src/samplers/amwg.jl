@@ -32,7 +32,7 @@ AMWGTune(x::Vector, sigma::Real, logf::Nullable{Function}; args...) =
   AMWGTune(x, fill(sigma, length(x)), logf; args...)
 
 
-typealias AMWGVariate SamplerVariate{AMWGTune}
+const AMWGVariate = SamplerVariate{AMWGTune}
 
 function validate(v::AMWGVariate)
   n = length(v)

@@ -16,12 +16,12 @@ Declarations
 ^^^^^^^^^^^^^
 .. code-block:: julia
 
-    abstract ScalarVariate <: Real
-    abstract ArrayVariate{N} <: DenseArray{Float64, N}
+    abstract type ScalarVariate <: Real
+    abstract type ArrayVariate{N} <: DenseArray{Float64, N}
 
-    typealias AbstractVariate Union{ScalarVariate, ArrayVariate}
-    typealias VectorVariate ArrayVariate{1}
-    typealias MatrixVariate ArrayVariate{2}
+    const AbstractVariate = Union{ScalarVariate, ArrayVariate}
+    const VectorVariate = ArrayVariate{1}
+    const MatrixVariate = ArrayVariate{2}
 
 Type Hierarchy
 ^^^^^^^^^^^^^^

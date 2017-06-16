@@ -12,12 +12,12 @@ Base.convert(::Type{Vector}, v::VectorVariate) = v.value
 Base.convert{T<:Real, N}(::Union{Type{Array{T}}, Type{Array{T, N}}},
                          v::ArrayVariate{N}) = convert(Array{T, N}, v.value)
 
-Base.unsafe_convert{T<:Real}(::Type{Ptr{T}}, v::ArrayVariate) = pointer(v.value)
+Base.unsafe_convert(::Type{Ptr{Float64}}, v::ArrayVariate) = pointer(v.value)
 
 
 macro promote_scalarvariate(V)
   quote
-    Base.promote_rule{T<:Real}(::Type{$V}, ::Type{T}) = Float64
+    Base.promote_rule{T<:Real}(::Type{$(esc(V))}, ::Type{T}) = Float64
   end
 end
 

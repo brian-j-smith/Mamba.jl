@@ -96,12 +96,12 @@ module PDMats2
     length(r) == n || throw(ArgumentError("incompatible array length"))
     wx = whiten(a, x)
     for j = 1:n
-      r[j] = sumabs2(wx[:, j])
+      r[j] = sum(abs2, wx[:, j])
     end
     r
   end
 
-  invquad(a::PBDiagMat, x::Vector{Float64}) = sumabs2(whiten(a, x))
+  invquad(a::PBDiagMat, x::Vector{Float64}) = sum(abs2, whiten(a, x))
 
 
   #################### Auxiliary Functions ####################

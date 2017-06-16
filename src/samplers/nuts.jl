@@ -39,7 +39,7 @@ NUTSTune(x::Vector, epsilon::Real, logfgrad::Function; args...) =
   NUTSTune(x, epsilon, Nullable{Function}(logfgrad); args...)
 
 
-typealias NUTSVariate SamplerVariate{NUTSTune}
+const NUTSVariate = SamplerVariate{NUTSTune}
 
 
 #################### Sampler Constructor ####################

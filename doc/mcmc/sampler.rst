@@ -70,7 +70,7 @@ Declaration
 
 .. code-block:: julia
 
-    abstract SamplerTune
+    abstract type SamplerTune
     type SamplerVariate{T<:SamplerTune} <: VectorVariate
 
 Fields

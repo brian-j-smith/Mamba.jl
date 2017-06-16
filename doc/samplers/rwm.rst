@@ -61,7 +61,7 @@ RWMVariate Type
 Declaration
 ```````````
 
-``typealias RWMVariate SamplerVariate{RWMTune}``
+``const RWMVariate = SamplerVariate{RWMTune}``
 
 Fields
 ``````

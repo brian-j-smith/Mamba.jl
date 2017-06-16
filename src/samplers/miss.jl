@@ -17,7 +17,7 @@ function MISSTune(d::Distribution, v)
 end
 
 function MISSTune(D::Array{UnivariateDistribution}, v::Array)
-  inds = find(isnan(v))
+  inds = find(isnan.(v))
   MISSTune(dims(D), inds, inds)
 end
 

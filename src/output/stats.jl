@@ -34,7 +34,7 @@ function changerate(c::AbstractChains)
       r_mv += any(delta)
     end
   end
-  vals = round([r; r_mv] / (m * (n - 1)), 3)
+  vals = round.([r; r_mv] / (m * (n - 1)), 3)
   ChainSummary(vals, [c.names; "Multivariate"], ["Change Rate"], header(c))
 end
 
@@ -89,6 +89,6 @@ function summarystats(c::AbstractChains; etype=:bm, args...)
     mapslices(x -> f(x), c.value, [1, 3]),
     [2, 1, 3]
   )
-  stats = [vals  min((vals[:, 2] ./ vals[:, 4]).^2, size(c.value, 1))]
+  stats = [vals  min.((vals[:, 2] ./ vals[:, 4]).^2, size(c.value, 1))]
   ChainSummary(stats, c.names, labels, header(c))
 end

@@ -2,29 +2,29 @@
 
 #################### Types and Constructors ####################
 
-typealias DGSUnivariateDistribution
+const DGSUnivariateDistribution =
           Union{Bernoulli, Binomial, Categorical, DiscreteUniform,
                 Hypergeometric, NoncentralHypergeometric}
 
 
-typealias DSForm Union{Function, Vector{Float64}}
+const DSForm = Union{Function, Vector{Float64}}
 
 type DSTune{F<:DSForm} <: SamplerTune
   mass::Nullable{F}
   support::Matrix{Real}
 
-  DSTune() = new()
+  DSTune{F}() where F<:DSForm = new()
 
-  DSTune{T<:Real}(x::Vector, support::Matrix{T}) =
-    new(Nullable{F}(), support)
+  DSTune{F}(x::Vector, support::AbstractMatrix) where F<:DSForm =
+    new(Nullable{Function}(), support)
 
-  DSTune{T<:Real}(x::Vector, support::Matrix{T}, mass::F) =
-    new(Nullable{F}(mass), support)
+  DSTune{F}(x::Vector, support::AbstractMatrix, mass::Function) where
+    F<:DSForm = new(Nullable{F}(mass), support)
 end
 
 
-typealias DGSVariate SamplerVariate{DSTune{Function}}
-typealias DiscreteVariate SamplerVariate{DSTune{Vector{Float64}}}
+const DGSVariate = SamplerVariate{DSTune{Function}}
+const DiscreteVariate = SamplerVariate{DSTune{Vector{Float64}}}
 
 validate(v::DGSVariate) = validate(v, v.tune.support)
 

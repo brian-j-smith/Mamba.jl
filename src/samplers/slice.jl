@@ -2,32 +2,30 @@
 
 #################### Types and Constructors ####################
 
-typealias SliceForm Union{Univariate, Multivariate}
+const SliceForm = Union{Univariate, Multivariate}
 
 type SliceTune{F<:SliceForm} <: SamplerTune
   logf::Nullable{Function}
   width::Union{Float64, Vector{Float64}}
 
-  SliceTune() = new()
+  SliceTune{F}() where F<:SliceForm = new()
 
-  SliceTune{T<:Real}(x::Vector, width::ElementOrVector{T}) =
+  SliceTune{F}(x::Vector, width) where F<:SliceForm =
     SliceTune{F}(x, width, Nullable{Function}())
 
-  SliceTune{T<:Real}(x::Vector, width::ElementOrVector{T}, logf::Function) =
+  SliceTune{F}(x::Vector, width, logf::Function) where F<:SliceForm =
     SliceTune{F}(x, width, Nullable{Function}(logf))
 
-  SliceTune(x::Vector, width::Real, logf::Nullable{Function}) =
-    new(logf, Float64(width))
+  SliceTune{F}(x::Vector, width::Real, logf::Nullable{Function}) where
+    F<:SliceForm = new(logf, Float64(width))
 
-  function SliceTune{T<:Real}(x::Vector, width::Vector{T},
-                              logf::Nullable{Function})
-    new(logf, convert(Vector{Float64}, width))
-  end
+  SliceTune{F}(x::Vector, width::Vector, logf::Nullable{Function}) where
+    F<:SliceForm = new(logf, convert(Vector{Float64}, width))
 end
 
 
-typealias SliceUnivariate SamplerVariate{SliceTune{Univariate}}
-typealias SliceMultivariate SamplerVariate{SliceTune{Multivariate}}
+const SliceUnivariate = SamplerVariate{SliceTune{Univariate}}
+const SliceMultivariate = SamplerVariate{SliceTune{Multivariate}}
 
 validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}) =
   validate(v, v.tune.width)
