@@ -25,7 +25,7 @@ BHMCTune(x::Vector, traveltime::Real, logf::Function) =
   BHMCTune(x, traveltime, Nullable{Function}(logf))
 
 
-typealias BHMCVariate SamplerVariate{BHMCTune}
+const BHMCVariate = SamplerVariate{BHMCTune}
 
 validate(v::BHMCVariate) = validatebinary(v)
 
@@ -55,12 +55,12 @@ function sample!(v::BHMCVariate, logf::Function)
   totaltime = 0.0                     ## time the particle already moved
 
   n = length(v)                       ## length of binary vector
-  S = sign(tune.position)
+  S = sign.(tune.position)
 
   while true
     a = tune.velocity[:]
     b = tune.position[:]
-    phi = atan2(b, a)
+    phi = atan2.(b, a)
 
     ## time to hit or cross wall
     walltime = -phi
@@ -117,6 +117,6 @@ function sample!(v::BHMCVariate, logf::Function)
   end
 
   ## convert from (-/+1) to (0/1)
-  v[:] = (sign(tune.position) + ones(n)) / 2.0
+  v[:] = (sign.(tune.position) + ones(n)) / 2.0
   v
 end

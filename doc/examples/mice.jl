@@ -44,7 +44,7 @@ model = Model(
   ),
 
   median = Logical(1,
-    (beta, r) -> exp(-beta / r) * log(2)^(1 / r)
+    (beta, r) -> exp.(-beta / r) * log(2)^(1 / r)
   ),
 
   veh_control = Logical(

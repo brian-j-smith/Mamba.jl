@@ -34,7 +34,7 @@ function changerate(c::AbstractChains)
       r_mv += any(delta)
     end
   end
-  vals = round([r; r_mv] / (m * (n - 1)), 3)
+  vals = round.([r; r_mv] / (m * (n - 1)), 3)
   ChainSummary(vals, [c.names; "Multivariate"], ["Change Rate"], header(c))
 end
 
@@ -89,6 +89,7 @@ function summarystats(c::AbstractChains; etype=:bm, args...)
   stats = zeros(Float64, p, 5)
 
   labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]
+
   for j in 1:p
     if binary_flag[j]
       phat = mean(c.value[:,j,:])
@@ -109,5 +110,6 @@ function summarystats(c::AbstractChains; etype=:bm, args...)
       stats[j,5] = min((stats[j, 2] ./ stats[j, 4]).^2, n)
     end
   end
+
   ChainSummary(stats, c.names, labels, header(c))
 end

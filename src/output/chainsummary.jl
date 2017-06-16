@@ -55,7 +55,7 @@ function Base.show(io::IO, s::ChainSummary)
   cnwid = map(length, s.colnames)
   ## s.value as right alignable strings
   charv = mapslices(showoff, s.value, 1)
-  colwid = 1 + max(cnwid, vec(maximum(map(length, charv), [1, 3])))
+  colwid = 1 + max.(cnwid, vec(maximum(map(length, charv), [1, 3])))
   m, n, f = size(charv)
   for k in 1:f
     ## write the column headers centered on the column widths

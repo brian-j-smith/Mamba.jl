@@ -66,7 +66,7 @@ HMCVariate Type
 Declaration
 ```````````
 
-``typealias HMCVariate SamplerVariate{HMCTune}``
+``const HMCVariate = SamplerVariate{HMCTune}``
 
 Fields
 ``````

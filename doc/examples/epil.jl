@@ -81,9 +81,9 @@ epil = Dict{Symbol, Any}(
 epil[:N] = size(epil[:y], 1)
 epil[:T] = size(epil[:y], 2)
 
-epil[:logBase4] = log(epil[:Base] / 4)
+epil[:logBase4] = log.(epil[:Base] / 4)
 epil[:BT] = epil[:logBase4] .* epil[:Trt]
-epil[:logAge] = log(epil[:Age])
+epil[:logAge] = log.(epil[:Age])
 map(key -> epil[Symbol(string(key, "bar"))] = mean(epil[key]),
     [:logBase4, :Trt, :BT, :logAge, :V4])
 

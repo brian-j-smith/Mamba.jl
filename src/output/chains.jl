@@ -63,7 +63,7 @@ end
 
 macro mapiters(iters, c)
   quote
-    ($iters - first($c)) / step($c) + 1.0
+    ($(esc(iters)) - first($(esc(c)))) / step($(esc(c))) + 1.0
   end
 end
 

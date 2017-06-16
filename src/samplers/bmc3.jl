@@ -2,22 +2,23 @@
 
 #################### Types and Constructors ####################
 
-typealias BMC3Form Union{Int, Vector{Vector{Int}}}
+const BMC3Form = Union{Int, Vector{Vector{Int}}}
 
 type BMC3Tune{F<:BMC3Form} <: SamplerTune
   logf::Nullable{Function}
   k::F
 
-  BMC3Tune() = new()
+  BMC3Tune{F}() where F<:BMC3Form = new()
 
-  BMC3Tune(x::Vector, k::F) = new(Nullable{Function}(), k)
+  BMC3Tune{F}(x::Vector, k::F) where F<:BMC3Form = new(Nullable{Function}(), k)
 
-  BMC3Tune(x::Vector, k::F, logf::Function) = new(Nullable{Function}(logf), k)
+  BMC3Tune{F}(x::Vector, k::F, logf::Function) where F<:BMC3Form =
+    new(Nullable{Function}(logf), k)
 end
 
 
-typealias BMC3IntVariate SamplerVariate{BMC3Tune{Int}}
-typealias BMC3VecVariate SamplerVariate{BMC3Tune{Vector{Vector{Int}}}}
+const BMC3IntVariate = SamplerVariate{BMC3Tune{Int}}
+const BMC3VecVariate = SamplerVariate{BMC3Tune{Vector{Vector{Int}}}}
 
 BMC3Variate{F<:BMC3Form}(x::Vector, logf::Function; k::F=1) =
   SamplerVariate{BMC3Tune{F}}(x, k, logf)

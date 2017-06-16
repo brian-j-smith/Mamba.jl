@@ -19,12 +19,12 @@
 
   ## Logical indicating whether x is in the support
   function insupport{T<:Real}(d::NewMultivarDist, x::AbstractVector{T})
-    length(d) == length(x) && all(isfinite(x))
+    length(d) == length(x) && all(isfinite.(x))
   end
 
   ## Normalized or unnormalized log-density value
   function _logpdf{T<:Real}(d::NewMultivarDist, x::AbstractVector{T})
-    -length(x) * log(d.sigma) - 0.5 * sumabs2(x - d.mu) / d.sigma^2
+    -length(x) * log(d.sigma) - 0.5 * sum(abs2, x - d.mu) / d.sigma^2
   end
 
 end

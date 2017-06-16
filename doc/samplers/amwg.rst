@@ -66,7 +66,7 @@ AMWGVariate Type
 Declaration
 ```````````
 
-``typealias AMWGVariate SamplerVariate{AMWGTune}``
+``const AMWGVariate = SamplerVariate{AMWGTune}``
 
 Fields
 ``````

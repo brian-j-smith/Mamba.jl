@@ -15,7 +15,7 @@ end
 
 #################### BDiagNormal Distribution ####################
 
-typealias BDiagNormal MvNormal{Float64, PBDiagMat, Vector{Float64}}
+const BDiagNormal = MvNormal{Float64, PBDiagMat, Vector{Float64}}
 
 function BDiagNormal(μ::Vector{Float64}, Σ::Matrix{Float64})
   n = div(length(μ), size(Σ, 1))
@@ -48,8 +48,8 @@ end
 
 #################### Type Aliases ####################
 
-typealias SymDistributionType
+const SymDistributionType =
           Union{Type{Biweight}, Type{Cosine}, Type{Epanechnikov}, Type{Normal},
                 Type{SymTriangularDist}, Type{Triweight}, Type{SymUniform}}
 
-typealias KernelDensityType SymDistributionType
+const KernelDensityType = SymDistributionType

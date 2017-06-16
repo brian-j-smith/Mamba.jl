@@ -54,8 +54,8 @@ Declaration
 
 .. code-block:: julia
 
-    typealias DGSVariate SamplerVariate{DSTune{Function}}
-    typealias DiscreteVariate SamplerVariate{DSTune{Vector{Float64}}}
+    const DGSVariate = SamplerVariate{DSTune{Function}}
+    const DiscreteVariate = SamplerVariate{DSTune{Vector{Float64}}}
 
 Fields
 ``````
@@ -94,7 +94,7 @@ Declaration
 
 .. code-block:: julia
 
-    typealias DSForm Union{Function, Vector{Float64}}
+    const DSForm = Union{Function, Vector{Float64}}
     type DSTune{F<:DSForm} <: SamplerTune
 
 Fields

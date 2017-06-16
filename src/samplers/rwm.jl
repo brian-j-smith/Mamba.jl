@@ -30,7 +30,7 @@ function RWMTune{T<:Real}(x::Vector, scale::ElementOrVector{T}, logf::Function;
 end
 
 
-typealias RWMVariate SamplerVariate{RWMTune}
+const RWMVariate = SamplerVariate{RWMTune}
 
 validate(v::RWMVariate) = validate(v, v.tune.scale)
 

@@ -15,7 +15,7 @@ Declarations
 
 .. code-block:: julia
 
-    abstract AbstractChains
+    abstract type AbstractChains
     immutable Chains <: AbstractChains
     immutable ModelChains <: AbstractChains
 
