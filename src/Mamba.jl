@@ -270,10 +270,10 @@ module Mamba
   export
     autocor,
     changerate,
-    discretediag,
     cor,
     describe,
     dic,
+    discretediag,
     draw,
     gelmandiag,
     gettune,
