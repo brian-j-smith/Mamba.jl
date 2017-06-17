@@ -208,6 +208,8 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
     +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
     | Diagnostic                                            | Statistic | Parameters   | Chains | Stationarity | Estimation |
     +=======================================================+===========+==============+========+==============+============+
+    | :ref:`Discrete <section-DiscreteDiag>`                | Mean      | Univariate   | 2+     | Yes          | No         |
+    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
     | :ref:`Gelman, Rubin, and Brooks <section-GelmanDiag>` | Mean      | Univariate   | 2+     | Yes          | No         |
     +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
     |                                                       |           | Multivariate | 2+     | Yes          | No         |
@@ -218,8 +220,6 @@ Several established convergence diagnostics are supplied by *Mamba*.  The diagno
     +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
     | :ref:`Raftery and Lewis <section-RafteryDiag>`        | Quantile  | Univariate   | 1      | Yes          | Yes        |
     +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
-    | :ref:`Discrete <section-DiscreteDiag>`                | Mean      | Univariate   | 2+     | Yes          | No         |
-    +-------------------------------------------------------+-----------+--------------+--------+--------------+------------+
 
 .. index:: Convergence Diagnostics; Discrete
 
@@ -229,7 +229,7 @@ Discrete Diagnostic
 ```````````````````
 
 .. function:: discretediag(c::AbstractChains; frac::Real=0.3, method::Symbol=:weiss, \
-                         n_sims::Int=1000, start_iter::Int=100, step_size::Int=10000)
+                           n_sims::Int=1000)
 
     Compute the convergence diagnostic for a discrete variable.  Several options are available by choosing `method` to be one of `:hangartner, :weiss, :DARBOOT, MCBOOT, :billinsgley, :billingsleyBOOT`. The first four are based off of Pearson's chi-square test of homogeneity. The diagnostic tests whether the proportion of the categories of the discrete variable are similar in each chain. The last two methods test whether the transition probabilities between each category are similar between each chain. Along with a between chain assessment of convergence, a within-chain assessment is carried out by comparing a specified fraction (`frac`), or window, of the beginning of a chain to the specified fraction of the end of the chain.  For within-chain assessment, users should ensure that there is sufficient separation between the windows to assume that their samples are independent.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
 
