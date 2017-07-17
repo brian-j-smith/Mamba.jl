@@ -205,7 +205,7 @@ function simulate_MC(N::Int, P::Matrix{Float64})
 end
 
 function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol, 
-                           n_sims::Int, start_iter::Int, step_size::Int)
+                           nsim::Int, start_iter::Int, step_size::Int)
 
   ## number of iterations, number of chains
   n, d = size(X)
@@ -275,8 +275,8 @@ function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol,
         end
       elseif method == :DARBOOT
         stat = t * sum(chi_stat)
-        bstats = zeros(Float64, n_sims)
-        for b in 1:n_sims
+        bstats = zeros(Float64, nsim)
+        for b in 1:nsim
           Y = hcat([simulate_NDARMA(t, 1, 0, phat, [phia, 1-phia]) 
                 for j in 1:d]...)
           s = hangartner_inner(Y, m)[1]
@@ -286,8 +286,8 @@ function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol,
         df0 = mean(bstats[idx])
         pval = sum(stat .<= bstats[idx])/length(idx)
       elseif method == :MCBOOT
-        bstats = zeros(Float64, n_sims)
-        for b in 1:n_sims
+        bstats = zeros(Float64, nsim)
+        for b in 1:nsim
           Y = hcat([simulate_MC(t, mP) for j in 1:d]...)
           s = hangartner_inner(Y, m)[1]
           bstats[b] = s 
@@ -303,8 +303,8 @@ function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol,
         end
       elseif method == :billingsleyBOOT
         stat = hot_stat
-        bstats = zeros(Float64, n_sims)
-        for b in 1:n_sims
+        bstats = zeros(Float64, nsim)
+        for b in 1:nsim
           Y = hcat([simulate_MC(t, mP) for j in 1:d]...)
           (s,sd) = bd_inner(Y, m)[1:2]
           bstats[b] = s/sd
@@ -323,7 +323,7 @@ function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol,
 end
 
 function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol, 
-                       n_sims::Int, start_iter::Int, step_size::Int)
+                       nsim::Int, start_iter::Int, step_size::Int)
 
   num_iters, num_vars, num_chains = size(c.value)
 
@@ -337,7 +337,7 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
   X = zeros(Int64, num_iters, num_chains)
   for j in 1:length(V)
     X = convert(Array{Int64, 2}, c.value[:,V[j],:])
-    result = diag_all(X, method, n_sims, start_iter, step_size)
+    result = diag_all(X, method, nsim, start_iter, step_size)
     plot_vals_stat[:,j] = result[1, :] ./ result[2, :]
     plot_vals_pval[:,j] = result[3, :]
     vals[1:3, j] = result[:, end] 
@@ -358,7 +358,7 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
       Y = [x1[1:n_min] x2[(end - n_min + 1):end]]
 
       vals[(3 + 3 * (k - 1) + 1):(3 + 3 * (k - 1) + 3), j] = 
-        diag_all(Y, method, n_sims, n_min, step_size)[:, end]
+        diag_all(Y, method, nsim, n_min, step_size)[:, end]
     end
   end
   return (V, vals, plot_vals_stat, plot_vals_pval)
@@ -366,7 +366,7 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
 end
 
 function discretediagplot(c::AbstractChains; frac::Real=0.3, 
-                       method::Symbol=:weiss, n_sims::Int=1000,
+                       method::Symbol=:weiss, nsim::Int=1000,
                        start_iter::Int=100, step_size::Int=10000)
                    
   num_iters, num_vars, num_chains = size(c.value)
@@ -385,7 +385,7 @@ function discretediagplot(c::AbstractChains; frac::Real=0.3,
   end
 
   V, vals, plot_vals_stat, plot_vals_pval = 
-    discretediag_sub(c, frac, method, n_sims, start_iter, step_size)
+    discretediag_sub(c, frac, method, nsim, start_iter, step_size)
 
   p1 = plot(y=vcat([plot_vals_stat[:,j] for j in 1:length(V)]...),
             x=repeat(collect(c.range[start_iter:step_size:num_iters])/1000, outer=[length(V)]),
@@ -407,7 +407,7 @@ function discretediagplot(c::AbstractChains; frac::Real=0.3,
 end
 
 function discretediag(c::AbstractChains; frac::Real=0.3, 
-                   method::Symbol=:weiss, n_sims::Int=1000)
+                   method::Symbol=:weiss, nsim::Int=1000)
 
   num_iters, num_vars, num_chains = size(c.value)
 
@@ -419,7 +419,7 @@ function discretediag(c::AbstractChains; frac::Real=0.3,
     throw(ArgumentError("frac must be in (0,1)"))
   end
 
-  V, vals = discretediag_sub(c, frac, method, n_sims, size(c.value,1), size(c.value,1))[1:2]
+  V, vals = discretediag_sub(c, frac, method, nsim, size(c.value,1), size(c.value,1))[1:2]
 
   hdr = header(c) * "\nChisq Diagnostic:\nEnd Fractions = $frac\n" *
   "method = $method\n"

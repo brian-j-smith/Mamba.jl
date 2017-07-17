@@ -229,7 +229,7 @@ Discrete Diagnostic
 ```````````````````
 
 .. function:: discretediag(c::AbstractChains; frac::Real=0.3, method::Symbol=:weiss, \
-                           n_sims::Int=1000)
+                           nsim::Int=1000)
 
     Compute the convergence diagnostic for a discrete variable.  Several options are available by choosing `method` to be one of `:hangartner, :weiss, :DARBOOT, MCBOOT, :billinsgley, :billingsleyBOOT`. The first four are based off of Pearson's chi-square test of homogeneity. The diagnostic tests whether the proportion of the categories of the discrete variable are similar in each chain. The last two methods test whether the transition probabilities between each category are similar between each chain. Along with a between chain assessment of convergence, a within-chain assessment is carried out by comparing a specified fraction (`frac`), or window, of the beginning of a chain to the specified fraction of the end of the chain.  For within-chain assessment, users should ensure that there is sufficient separation between the windows to assume that their samples are independent.  A non-significant test p-value indicates convergence.  Significant p-values indicate non-convergence and the possible need to discard initial samples as a burn-in sequence or to simulate additional samples.
 
@@ -238,7 +238,7 @@ Discrete Diagnostic
         * ``c`` : sampler output on which to perform calculations.
         * ``frac`` : proportion of iterations to include in the first window.
         * ``method`` : Specify which method to use. One of :hangartner, :weiss, :DARBOOT, MCBOOT, :billinsgley, :billingsleyBOOT`.
-        * ``n_sims`` : For the bootstrap methods (`:DARBOOT`, `:MCBOOT`, and `:billingsleyBOOT`) the number of bootstrap simulations.
+        * ``nsim`` : For the bootstrap methods (`:DARBOOT`, `:MCBOOT`, and `:billingsleyBOOT`) the number of bootstrap simulations.
 
     **Value**
 
