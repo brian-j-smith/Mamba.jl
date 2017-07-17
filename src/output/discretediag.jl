@@ -147,7 +147,7 @@ function billingsley_sub(f::Array{Int64,3})
   P = f ./ mf
 
   # transition probabilities
-  mP = (mapslices(sum,f,3) ./ mapslices(sum,mf,3))[:,:]
+  mP = reshape((mapslices(sum,f,3) ./ mapslices(sum,mf,3)), Val{2})
 
   idx = find(A .* B)
   for j in idx
@@ -423,5 +423,5 @@ function discretediag(c::AbstractChains; frac::Real=0.3,
 
   hdr = header(c) * "\nChisq Diagnostic:\nEnd Fractions = $frac\n" *
   "method = $method\n"
-  ChainSummary(round(vals,3)', c.names[V], convert(Array{AbstractString, 1}, vcat([["stat", "df", "p-value"] for k in 1:(num_chains + 1)]...)), hdr)
+  ChainSummary(round.(vals,3)', c.names[V], convert(Array{AbstractString, 1}, vcat([["stat", "df", "p-value"] for k in 1:(num_chains + 1)]...)), hdr)
 end
