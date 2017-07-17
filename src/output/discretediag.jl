@@ -327,16 +327,14 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
 
   num_iters, num_vars, num_chains = size(c.value)
 
-  V = find(indiscretesupport(c))
-
-  vals = zeros(Float64, 3 * (num_chains + 1), length(V))
-  plot_vals_stat = zeros(length(start_iter:step_size:num_iters), length(V)) 
-  plot_vals_pval = zeros(length(start_iter:step_size:num_iters), length(V)) 
+  vals = zeros(Float64, 3 * (num_chains + 1), num_vars)
+  plot_vals_stat = zeros(length(start_iter:step_size:num_iters), num_vars) 
+  plot_vals_pval = zeros(length(start_iter:step_size:num_iters), num_vars) 
 
   ## Between-chain diagnostic
   X = zeros(Int64, num_iters, num_chains)
-  for j in 1:length(V)
-    X = convert(Array{Int64, 2}, c.value[:,V[j],:])
+  for j in 1:length(num_vars)
+    X = convert(Array{Int64, 2}, c.value[:,j,:])
     result = diag_all(X, method, nsim, start_iter, step_size)
     plot_vals_stat[:,j] = result[1, :] ./ result[2, :]
     plot_vals_pval[:,j] = result[3, :]
@@ -346,9 +344,9 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
   ## Within-chain diagnostic
   x = zeros(Int64, num_iters)
   Y = zeros(Int64, num_iters, 2)
-  for j in 1:length(V)
+  for j in 1:num_vars
     for k in 1:num_chains
-      x = convert(Array{Int64, 1}, c.value[:,V[j],k])
+      x = convert(Array{Int64, 1}, c.value[:,j,k])
 
       idx1 = 1:round(Int64, frac * num_iters)
       idx2 = round(Int64, num_iters - frac * num_iters + 1):num_iters
@@ -361,7 +359,7 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
         diag_all(Y, method, nsim, n_min, step_size)[:, end]
     end
   end
-  return (V, vals, plot_vals_stat, plot_vals_pval)
+  return (collect(1:nvars), vals, plot_vals_stat, plot_vals_pval)
    
 end
 
