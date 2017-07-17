@@ -359,7 +359,7 @@ function discretediag_sub(c::AbstractChains, frac::Real, method::Symbol,
         diag_all(Y, method, nsim, n_min, step_size)[:, end]
     end
   end
-  return (collect(1:nvars), vals, plot_vals_stat, plot_vals_pval)
+  return (collect(1:num_vars), vals, plot_vals_stat, plot_vals_pval)
    
 end
 
