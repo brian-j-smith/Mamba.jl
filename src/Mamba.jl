@@ -33,7 +33,7 @@ module Mamba
          ## MatrixDistribution Types
          InverseWishart, Wishart,
          ## Methods
-         dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
+         cdf, dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
          minimum, pdf, quantile, rand, sample!, support
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
@@ -206,6 +206,7 @@ module Mamba
 
   include("output/chains.jl")
   include("output/chainsummary.jl")
+  include("output/discretediag.jl")
   include("output/fileio.jl")
   include("output/gelmandiag.jl")
   include("output/gewekediag.jl")
@@ -272,6 +273,7 @@ module Mamba
     cor,
     describe,
     dic,
+    discretediag,
     draw,
     gelmandiag,
     gettune,
