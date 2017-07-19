@@ -1,4 +1,5 @@
 using Distributions
+using ForwardDiff
 
 module Mamba
 
@@ -55,7 +56,7 @@ module Mamba
   #################### Variate Types ####################
 
   abstract type ScalarVariate <: Real end
-  abstract type ArrayVariate{N} <: DenseArray{Float64, N} end
+  abstract type ArrayVariate{N} <: DenseArray{Real, N} end
 
   const AbstractVariate = Union{ScalarVariate, ArrayVariate}
   const VectorVariate = ArrayVariate{1}
@@ -72,7 +73,7 @@ module Mamba
   #################### Dependent Types ####################
 
   type ScalarLogical <: ScalarVariate
-    value::Float64
+    value::Real
     symbol::Symbol
     monitor::Vector{Int}
     eval::Function
@@ -81,7 +82,7 @@ module Mamba
   end
 
   type ArrayLogical{N} <: ArrayVariate{N}
-    value::Array{Float64, N}
+    value::Array{Real, N}
     symbol::Symbol
     monitor::Vector{Int}
     eval::Function
@@ -90,7 +91,7 @@ module Mamba
   end
 
   type ScalarStochastic <: ScalarVariate
-    value::Float64
+    value::Real
     symbol::Symbol
     monitor::Vector{Int}
     eval::Function
@@ -100,7 +101,7 @@ module Mamba
   end
 
   type ArrayStochastic{N} <: ArrayVariate{N}
-    value::Array{Float64, N}
+    value::Array{Real, N}
     symbol::Symbol
     monitor::Vector{Int}
     eval::Function
@@ -127,7 +128,7 @@ module Mamba
   abstract type SamplerTune end
 
   type SamplerVariate{T<:SamplerTune} <: VectorVariate
-    value::Vector{Float64}
+    value::Vector{Real}
     tune::T
 
     function SamplerVariate{T}(x::AbstractVector, tune::T) where T<:SamplerTune
@@ -136,7 +137,7 @@ module Mamba
     end
 
     function SamplerVariate{T}(x::AbstractVector, pargs...; kargs...) where T<:SamplerTune
-      value = convert(Vector{Float64}, x)
+      value = convert(Vector{Real}, x)
       SamplerVariate{T}(value, T(value, pargs...; kargs...))
     end
   end
@@ -150,7 +151,7 @@ module Mamba
   end
 
   type ModelState
-    value::Vector{Float64}
+    value::Vector{Real}
     tune::Vector{Any}
   end
 
@@ -170,14 +171,14 @@ module Mamba
   abstract type AbstractChains end
 
   immutable Chains <: AbstractChains
-    value::Array{Float64, 3}
+    value::Array{Real, 3}
     range::Range{Int}
     names::Vector{AbstractString}
     chains::Vector{Int}
   end
 
   immutable ModelChains <: AbstractChains
-    value::Array{Float64, 3}
+    value::Array{Real, 3}
     range::Range{Int}
     names::Vector{AbstractString}
     chains::Vector{Int}

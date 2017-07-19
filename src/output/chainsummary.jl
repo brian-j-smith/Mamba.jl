@@ -3,12 +3,12 @@
 #################### Types and Constructors ####################
 
 immutable ChainSummary
-  value::Array{Float64, 3}
+  value::Array{Real, 3}
   rownames::Vector{AbstractString}
   colnames::Vector{AbstractString}
   header::AbstractString
 
-  function ChainSummary(value::Array{Float64, 3},
+  function ChainSummary(value::Array{Real, 3},
                         rownames::Vector{AbstractString},
                         colnames::Vector{AbstractString},
                         header::AbstractString)
@@ -22,14 +22,14 @@ immutable ChainSummary
 end
 
 function ChainSummary{T<:AbstractString, U<:AbstractString}(
-                     value::Array{Float64, 3}, rownames::Vector{T},
+                     value::Array{Real, 3}, rownames::Vector{T},
                      colnames::Vector{U}, header::AbstractString)
   ChainSummary(copy(value), AbstractString[rownames...],
                AbstractString[colnames...], header)
 end
 
 function ChainSummary{T<:AbstractString, U<:AbstractString}(
-                     value::Matrix{Float64}, rownames::Vector{T},
+                     value::Matrix{Real}, rownames::Vector{T},
                      colnames::Vector{U}, header::AbstractString)
   dim = size(value)
   ChainSummary(reshape(value, dim[1], dim[2], 1), AbstractString[rownames...],

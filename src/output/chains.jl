@@ -5,7 +5,7 @@
 function Chains{T<:AbstractString}(iters::Integer, params::Integer;
                start::Integer=1, thin::Integer=1, chains::Integer=1,
                names::Vector{T}=AbstractString[])
-  value = Array{Float64}(length(start:thin:iters), params, chains)
+  value = Array{Real}(length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names)
 end
@@ -27,7 +27,7 @@ function Chains{T<:Real, U<:AbstractString, V<:Integer}(value::Array{T, 3};
     throw(DimensionMismatch("size(value, 3) and chains length differ"))
   end
 
-  v = convert(Array{Float64, 3}, value)
+  v = convert(Array{Real, 3}, value)
   Chains(v, range(start, thin, n), AbstractString[names...], Int[chains...])
 end
 
@@ -197,7 +197,7 @@ Base.last(c::AbstractChains) = last(c.range)
 
 function combine(c::AbstractChains)
   n, p, m = size(c.value)
-  value = Array{Float64}(n * m, p)
+  value = Array{Real}(n * m, p)
   for j in 1:p
     idx = 1
     for i in 1:n, k in 1:m
