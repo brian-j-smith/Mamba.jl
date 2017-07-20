@@ -26,10 +26,10 @@ type NUTSTune <: SamplerTune
   end
 end
 
-NUTSTune(x::Vector{Float64}, logfgrad::Function, ::NullFunction; args...) =
+NUTSTune(x::Vector{Real}, logfgrad::Function, ::NullFunction; args...) =
   NUTSTune(x, nutsepsilon(x, logfgrad); args...)
 
-NUTSTune(x::Vector{Float64}, logfgrad::Function; args...) =
+NUTSTune(x::Vector{Real}, logfgrad::Function; args...) =
   NUTSTune(x, nutsepsilon(x, logfgrad), logfgrad; args...)
 
 NUTSTune(x::Vector, epsilon::Real; args...) =
@@ -126,7 +126,7 @@ function nuts_sub!(v::NUTSVariate, epsilon::Real, logfgrad::Function)
 end
 
 
-function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
+function leapfrog(x::Vector{Real}, r::Vector{Real}, grad::Vector{Real},
                   epsilon::Real, logfgrad::Function)
   r += (0.5 * epsilon) * grad
   x += epsilon * r
@@ -136,8 +136,8 @@ function leapfrog(x::Vector{Float64}, r::Vector{Float64}, grad::Vector{Float64},
 end
 
 
-function buildtree(x::Vector{Float64}, r::Vector{Float64},
-                   grad::Vector{Float64}, pm::Integer, j::Integer,
+function buildtree(x::Vector{Real}, r::Vector{Real},
+                   grad::Vector{Real}, pm::Integer, j::Integer,
                    epsilon::Real, logfgrad::Function, logp0::Real, logu0::Real)
   if j == 0
     xprime, rprime, logfprime, gradprime = leapfrog(x, r, grad, pm * epsilon,
@@ -180,8 +180,8 @@ function buildtree(x::Vector{Float64}, r::Vector{Float64},
 end
 
 
-function nouturn(xminus::Vector{Float64}, xplus::Vector{Float64},
-                 rminus::Vector{Float64}, rplus::Vector{Float64})
+function nouturn(xminus::Vector{Real}, xplus::Vector{Real},
+                 rminus::Vector{Real}, rplus::Vector{Real})
   xdiff = xplus - xminus
   dot(xdiff, rminus) >= 0 && dot(xdiff, rplus) >= 0
 end
@@ -189,7 +189,7 @@ end
 
 #################### Auxilliary Functions ####################
 
-function nutsepsilon(x::Vector{Float64}, logfgrad::Function)
+function nutsepsilon(x::Vector{Real}, logfgrad::Function)
   n = length(x)
   _, r0, logf0, grad0 = leapfrog(x, randn(n), zeros(n), 0.0, logfgrad)
   epsilon = 1.0
