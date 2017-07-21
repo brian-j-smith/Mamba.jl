@@ -83,12 +83,33 @@ function quantile(c::AbstractChains; q::Vector=[0.025, 0.25, 0.5, 0.75, 0.975])
 end
 
 function summarystats(c::AbstractChains; etype=:bm, args...)
-  f = x -> [mean(x), std(x), sem(x), mcse(vec(x), etype; args...)]
+  discrete_flag = indiscretesupport(c)
+  binary_flag = inbinarysupport(c)
+  n, p, m = size(c.value)
+  stats = zeros(Float64, p, 5)
+
   labels = ["Mean", "SD", "Naive SE", "MCSE", "ESS"]
-  vals = permutedims(
-    mapslices(x -> f(x), c.value, [1, 3]),
-    [2, 1, 3]
-  )
-  stats = [vals  min.((vals[:, 2] ./ vals[:, 4]).^2, size(c.value, 1))]
+
+  for j in 1:p
+    if binary_flag[j]
+      phat = mean(c.value[:,j,:])
+      ca = weiss(c.value[:,j,:])[4]
+      ESS = n / ca
+      STD = sqrt(phat * (1 - phat))
+      SEM = STD / sqrt(n)
+      MCSE = STD / sqrt(ESS)
+      stats[j,:] = [phat, STD, SEM, MCSE, ESS]
+    elseif discrete_flag[j]
+      x = c.value[:,j,:]
+      ca = weiss(x)[4]
+      ESS = n / ca
+      stats[j,:] = [mean(x), std(x), sem(x), std(x) / sqrt(ESS), ESS]
+    else
+      x = c.value[:,j,:]
+      stats[j,:] = [mean(x), std(x), sem(x), mcse(vec(x), etype; args...), NaN] 
+      stats[j,5] = min((stats[j, 2] ./ stats[j, 4]).^2, n)
+    end
+  end
+
   ChainSummary(stats, c.names, labels, header(c))
 end
