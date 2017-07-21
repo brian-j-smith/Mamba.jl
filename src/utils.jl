@@ -7,7 +7,7 @@ end
 function modelfxsrc(literalargs::Vector{Tuple{Symbol, DataType}}, f::Function)
   args = Expr(:tuple, map(arg -> Expr(:(::), arg[1], arg[2]), literalargs)...)
   expr, src = modelexprsrc(f, literalargs)
-  fx = eval(Expr(:function, args, expr))
+  fx = eval(Main, Expr(:function, args, expr))
   (fx, src)
 end
 
@@ -92,7 +92,7 @@ end
 ## called and will apply its error processing.
 
 function pmap2(f::Function, lsts::AbstractArray)
-  if (nprocs() > 1) & (VERSION < v"0.5-")
+  if (nprocs() > 1)
     @everywhere importall Mamba
     pmap(f, lsts)
   else

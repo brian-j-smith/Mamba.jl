@@ -112,7 +112,7 @@ const BinaryScalarMethods = [
 ]
 
 for op in BinaryScalarMethods
-  @eval ($op)(x::ScalarVariate, y::ScalarVariate) = ($op)(x.value, y.value)
+  @eval Main ($op)(x::Mamba.ScalarVariate, y::Mamba.ScalarVariate) = ($op)(x.value, y.value)
 end
 
 const RoundScalarMethods = [
@@ -123,8 +123,8 @@ const RoundScalarMethods = [
 ]
 
 for op in RoundScalarMethods
-  @eval ($op)(x::ScalarVariate) = ($op)(x.value)
-  @eval ($op){T}(::Type{T}, x::ScalarVariate) = ($op)(T, x.value)
+  @eval Main ($op)(x::Mamba.ScalarVariate) = ($op)(x.value)
+  @eval Main ($op){T}(::Type{T}, x::Mamba.ScalarVariate) = ($op)(T, x.value)
 end
 
 const UnaryScalarMethods = [
@@ -142,5 +142,5 @@ const UnaryScalarMethods = [
 ]
 
 for op in UnaryScalarMethods
-  @eval ($op)(x::ScalarVariate) = ($op)(x.value)
+  @eval Main ($op)(x::Mamba.ScalarVariate) = ($op)(x.value)
 end
