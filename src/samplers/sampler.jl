@@ -110,6 +110,14 @@ function logpdfgrad!{T<:Real}(block::SamplingBlock, x::AbstractVector{T},
   (logf, ifelse.(isfinite.(grad), grad, 0.0))
 end
 
+function logpdfgradhess!{T<:Real}(block::SamplingBlock, x::AbstractVector{T})
+  hess = hesslogpdf!(block, x) ## TODO: does not exist
+  grad = gradlogpdf!(block, x, dtype)
+  logf = logpdf!(block, x)
+  (logf, ifelse.(isfinite.(grad), grad, 0.0), 
+   ifelse(isposdef(hess), hess, eye(length(x))))
+end
+
 function unlist(block::SamplingBlock)
   unlist(block.model, block.index, block.transform)
 end

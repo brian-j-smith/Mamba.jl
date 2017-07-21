@@ -234,6 +234,7 @@ module Mamba
   include("samplers/rwm.jl")
   include("samplers/slice.jl")
   include("samplers/slicesimplex.jl")
+  include("samplers/smmala.jl")
 
 
   #################### Exports ####################

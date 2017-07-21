@@ -16,7 +16,8 @@ const samplertests = [
   "nuts",
   "rwm",
   "slice",
-  "slicesimplex"
+  "slicesimplex",
+  "smmala"
 ]
 
 const mcmctests = [
