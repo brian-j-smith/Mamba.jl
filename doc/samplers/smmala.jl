@@ -79,12 +79,12 @@ end
 ## Metropolis-Adjusted Langevin Algorithm
 ## Without (1) and with (2) a user-specified proposal covariance matrix
 n = 5000
-sim1 = Chains(n, 3, names = ["b0", "b1"])
-sim2 = Chains(n, 3, names = ["b0", "b1"])
+sim1 = Chains(n, 2, names = ["b0", "b1"])
+sim2 = Chains(n, 2, names = ["b0", "b1"])
 epsilon = 0.1
 Sigma = eye(3)
-theta1 = MALAVariate([0.0, 0.0], epsilon, logfgradhess)
-theta2 = MALAVariate([0.0, 0.0], epsilon, Sigma, logfgradhess)
+theta1 = SMMALAVariate([0.0, 0.0], epsilon, logfgradhess)
+theta2 = SMMALAVariate([0.0, 0.0], epsilon, Sigma, logfgradhess)
 for i in 1:n
   sample!(theta1)
   sample!(theta2)
