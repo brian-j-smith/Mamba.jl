@@ -131,9 +131,6 @@ inits = [
        :beta => randn(p), :sigma2 => 1),
   Dict(:y => y, :alpha => 17, :gamma => rand(0:1, p),
        :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
-       :sigma2 => 1),
-  Dict(:y => y, :alpha => 17, :gamma => rand(0:1, p),
-       :beta => [15, -15, -10, 5, -10, -5, -10, 10, 40, -5, 0, 0, 0, 20, 5],
        :sigma2 => 1)
 ]
 
@@ -144,23 +141,23 @@ scheme0 = [Gibbs_alphabeta, Gibbs_sigma2]
 ## Binary Hamiltonian Monte Carlo
 scheme1 = [BHMC(:gamma, (2 * p + 0.5) * pi); scheme0]
 setsamplers!(model, scheme1)
-sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
+sim1 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim1)
 discretediag(sim1[:, :gamma, :]) |> showall
 
 ## Binary MCMC Model Composition
-scheme3 = [BMC3(:gamma); scheme0]
-setsamplers!(model, scheme3)
-sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
-describe(sim3)
-discretediag(sim3[:, :gamma, :]) |> showall
-
-## Binary Metropolised Gibbs Sampling
-scheme2 = [BMG(:gamma); scheme0]
+scheme2 = [BMC3(:gamma); scheme0]
 setsamplers!(model, scheme2)
-sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=4)
+sim2 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
 describe(sim2)
 discretediag(sim2[:, :gamma, :]) |> showall
+
+## Binary Metropolised Gibbs Sampling
+scheme3 = [BMG(:gamma); scheme0]
+setsamplers!(model, scheme3)
+sim3 = mcmc(model, pollution, inits, 10000, burnin=1000, thin=2, chains=3)
+describe(sim3)
+discretediag(sim3[:, :gamma, :]) |> showall
 
 ## Discrete Gibbs Sampling
 scheme4 = [DGS(:gamma); scheme0]
