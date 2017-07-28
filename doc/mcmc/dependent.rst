@@ -125,6 +125,7 @@ Constructors
 ^^^^^^^^^^^^
 
 .. function:: Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
+              Logical(f::Function, d::Integer, monitor::Union{Bool, Vector{Int}}=true)
               Logical(d::Integer, f::Function, monitor::Union{Bool, Vector{Int}}=true)
 
     Construct a ``Logical`` object that defines a logical model node.
@@ -224,6 +225,7 @@ Constructors
 ^^^^^^^^^^^^
 
 .. function:: Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
+              Stochastic(f::Function, d::Integer, monitor::Union{Bool, Vector{Int}}=true)
               Stochastic(d::Integer, f::Function, monitor::Union{Bool, Vector{Int}}=true)
 
     Construct a ``Stochastic`` object that defines a stochastic model node.

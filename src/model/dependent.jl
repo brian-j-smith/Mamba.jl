@@ -79,6 +79,8 @@ function Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
   setmonitor!(l, monitor)
 end
 
+Logical(f::Function, d::Integer, args...) = Logical(d, f, args...)
+
 function Logical(d::Integer, f::Function,
                  monitor::Union{Bool, Vector{Int}}=true)
   value = Array{Float64}(fill(0, d)...)
@@ -141,6 +143,8 @@ function Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
                        NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
+
+Stochastic(f::Function, d::Integer, args...) = Stochastic(d, f, args...)
 
 function Stochastic(d::Integer, f::Function,
                     monitor::Union{Bool, Vector{Int}}=true)
