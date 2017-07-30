@@ -2,6 +2,11 @@
 
 ## Version Updates
 
+### 0.11.1
+* Accept functions as first arguments to Logical and Stochastic constructors.
+* Enable MCMC parallelization.
+* Add discrete convergence diagnostic.
+
 ### 0.11.0
 * Initial release for julia 0.6.
 * Branched off of *Mamba* 0.10.1.
