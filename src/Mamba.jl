@@ -325,7 +325,8 @@ module Mamba
     NUTS, NUTSVariate,
     RWM, RWMVariate,
     Slice, SliceMultivariate, SliceUnivariate,
-    SliceSimplex, SliceSimplexVariate
+    SliceSimplex, SliceSimplexVariate,
+    SMMALA, SMMALAVariate
 
   export
     cm,
