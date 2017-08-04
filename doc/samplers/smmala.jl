@@ -82,7 +82,7 @@ n = 5000
 sim1 = Chains(n, 2, names = ["b0", "b1"])
 sim2 = Chains(n, 2, names = ["b0", "b1"])
 epsilon = 0.1
-Sigma = eye(3)
+Sigma = eye(2)
 theta1 = SMMALAVariate([0.0, 0.0], epsilon, logfgradhess)
 theta2 = SMMALAVariate([0.0, 0.0], epsilon, Sigma, logfgradhess)
 for i in 1:n
