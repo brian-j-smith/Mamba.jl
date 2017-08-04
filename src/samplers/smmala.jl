@@ -62,7 +62,7 @@ end
 
 #################### Sampling Functions ####################
 
-sample!(v::SMMALAVariate) = sample!(v, v.tune.logfgrad)
+sample!(v::SMMALAVariate) = sample!(v, v.tune.logfgradhess)
 
 function sample!(v::SMMALAVariate, logfgradhess::Function)
   tune = v.tune
