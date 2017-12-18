@@ -18,7 +18,7 @@ model = Model(
   ),
 
   p = Logical(1,
-    b -> invlogit(b)
+    b -> invlogit.(b)
   ),
 
   b = Stochastic(1,

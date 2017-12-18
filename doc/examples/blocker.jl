@@ -24,7 +24,7 @@ model = Model(
   rc = Stochastic(1,
     (mu, nc, N) ->
       begin
-        pc = invlogit(mu)
+        pc = invlogit.(mu)
         UnivariateDistribution[Binomial(nc[i], pc[i]) for i in 1:N]
       end,
     false
@@ -33,7 +33,7 @@ model = Model(
   rt = Stochastic(1,
     (mu, delta, nt, N) ->
       begin
-        pt = invlogit(mu + delta)
+        pt = invlogit.(mu + delta)
         UnivariateDistribution[Binomial(nt[i], pt[i]) for i in 1:N]
       end,
     false

@@ -49,7 +49,7 @@ model = Model(
   r0 = Stochastic(1,
     (mu, n0, K) ->
       begin
-        p = invlogit(mu)
+        p = invlogit.(mu)
         UnivariateDistribution[Binomial(n0[i], p[i]) for i in 1:K]
       end,
     false

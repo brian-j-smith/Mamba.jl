@@ -239,7 +239,7 @@ function link(c::AbstractChains)
   for j in 1:length(c.names)
     x = cc[:, j, :]
     if minimum(x) > 0.0
-      cc[:, j, :] = maximum(x) < 1.0 ? logit(x) : log.(x)
+      cc[:, j, :] = maximum(x) < 1.0 ? logit.(x) : log.(x)
     end
   end
   cc
