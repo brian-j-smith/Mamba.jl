@@ -287,7 +287,7 @@ Initial values for ``y`` are those in the observed response vector.  Likewise, t
 MCMC Engine
 ^^^^^^^^^^^
 
-MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are a ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  Results are retuned as ``Chains`` objects on which methods for posterior inference are defined.
+MCMC simulation of draws from the posterior distribution of a declared set of model nodes and sampling scheme is performed with the :func:`mcmc` function.  As shown below, the first three arguments are a ``Model`` object, a dictionary of values for input nodes, and a dictionary vector of initial values.  The number of draws to generate in each simulation run is given as the fourth argument.  The remaining arguments are named such that ``burnin`` is the number of initial values to discard to allow for convergence; ``thin`` defines the interval between draws to be retained in the output; and ``chains`` specifies the number of times to run the simulator.  Results are returned as ``Chains`` objects on which methods for posterior inference are defined.
 
 .. code-block:: julia
 
