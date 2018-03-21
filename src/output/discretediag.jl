@@ -393,7 +393,7 @@ function discretediagplot(c::AbstractChains; frac::Real=0.3,
             Geom.line, 
             Guide.xlabel("Iteration (thousands)", orientation=:horizontal),
             Guide.ylabel("stat/df",orientation=:vertical),
-            Scale.color_discrete(), Guide.colorkey("Variable"),
+            Scale.color_discrete(), Guide.colorkey(title="Variable"),
             color=repeat(c.names[V], 
                          inner=[length(start_iter:step_size:num_iters)]))
 
@@ -403,7 +403,7 @@ function discretediagplot(c::AbstractChains; frac::Real=0.3,
             Geom.line, 
             Guide.xlabel("Iteration (thousands)", orientation=:horizontal),
             Guide.ylabel("pval",orientation=:vertical),
-            Scale.color_discrete(), Guide.colorkey("Variable"),
+            Scale.color_discrete(), Guide.colorkey(title="Variable"),
             color=repeat(c.names[V], 
                          inner=[length(start_iter:step_size:num_iters)]))
 
