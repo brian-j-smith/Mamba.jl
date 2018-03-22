@@ -63,7 +63,7 @@ function graph2dot(m::Model)
     write(io, "\" [")
     write(io, join(map(x -> "$(x[1])=\"$(x[2])\"", attr), ", "))
     write(io, "];\n")
-    for t in out_neighbors(dag.graph, v)
+    for t in outneighbors(dag.graph, v)
       write(io, "\t\t\"")
       write(io, vkey)
       write(io, "\" -> \"")
@@ -80,7 +80,7 @@ end
 
 function any_stochastic(dag::ModelGraph, v::Int, m::Model)
   found = false
-  for t in out_neighbors(dag.graph, v)
+  for t in outneighbors(dag.graph, v)
     tkey = dag.keys[t]
     if isa(m[tkey], AbstractStochastic) || any_stochastic(dag, t, m)
       found = true
@@ -92,7 +92,7 @@ end
 
 function gettargets(dag::ModelGraph, v::Int, terminalkeys::Vector{Symbol})
   values = Symbol[]
-  for t in out_neighbors(dag.graph, v)
+  for t in outneighbors(dag.graph, v)
     tkey = dag.keys[t]
     push!(values, tkey)
     if !(tkey in terminalkeys)

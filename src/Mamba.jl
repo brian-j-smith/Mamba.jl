@@ -37,7 +37,7 @@ module Mamba
          minimum, pdf, quantile, rand, sample!, support
   import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
-  import LightGraphs: DiGraph, add_edge!, out_neighbors,
+  import LightGraphs: DiGraph, add_edge!, outneighbors,
          topological_sort_by_dfs, vertices
   import Showoff: showoff
   import StatsBase: autocor, autocov, countmap, counts, describe, predict,
