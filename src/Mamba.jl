@@ -1,3 +1,5 @@
+__precompile__(false)
+
 using Distributions
 
 module Mamba
