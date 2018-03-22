@@ -93,7 +93,7 @@ function autocorplot(c::AbstractChains;
                     x=repeat(collect(lags * step(c)), outer=[nchains]),
                     Geom.line(),
                     color=repeat(c.chains, inner=[length(lags)]),
-                    Scale.color_discrete(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey(title="Chain"),
                     Guide.xlabel("Lag", orientation=:horizontal),
                     Guide.ylabel("Autocorrelation", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
@@ -122,7 +122,7 @@ function barplot(c::AbstractChains; legend::Bool=false,
     ymax = maximum(position == :stack ? mapslices(sum, y, 2) : y)
     plots[i] = plot(x=vec(x), y=vec(y), Geom.bar(position=position),
                     color=repeat(c.chains, inner=[n]),
-                    Scale.color_discrete(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey(title="Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
                     Guide.ylabel("Density", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos),
@@ -151,7 +151,7 @@ function contourplot(c::AbstractChains; bins::Integer=100, na...)
         density[idx[k], idy[k]] += 1.0 / n
       end
       p = plot(x=mx, y=my, z=density, Geom.contour(),
-               Guide.colorkey("Density"),
+               Guide.colorkey(title="Density"),
                Guide.xlabel(c.names[i], orientation=:horizontal),
                Guide.ylabel(c.names[j], orientation=:vertical))
       push!(plots, p)
@@ -173,7 +173,7 @@ function densityplot(c::AbstractChains; legend::Bool=false,
     end
     plots[i] = plot(x=[val...;], Geom.density(),
                     color=repeat(c.chains, inner=[length(c.range)]),
-                    Scale.color_discrete(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey(title="Chain"),
                     Guide.xlabel("Value", orientation=:horizontal),
                     Guide.ylabel("Density", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
@@ -191,7 +191,7 @@ function meanplot(c::AbstractChains; legend::Bool=false, na...)
                     x=repeat(collect(c.range), outer=[nchains]),
                     Geom.line(),
                     color=repeat(c.chains, inner=[length(c.range)]),
-                    Scale.color_discrete(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey(title="Chain"),
                     Guide.xlabel("Iteration", orientation=:horizontal),
                     Guide.ylabel("Mean", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
@@ -217,7 +217,7 @@ function traceplot(c::AbstractChains; legend::Bool=false, na...)
                     x=repeat(collect(c.range), outer=[nchains]),
                     Geom.line(),
                     color=repeat(c.chains, inner=[length(c.range)]),
-                    Scale.color_discrete(), Guide.colorkey("Chain"),
+                    Scale.color_discrete(), Guide.colorkey(title="Chain"),
                     Guide.xlabel("Iteration", orientation=:horizontal),
                     Guide.ylabel("Value", orientation=:vertical),
                     Guide.title(c.names[i]), Theme(key_position=pos))
