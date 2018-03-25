@@ -2,6 +2,12 @@
 
 ## Version Updates
 
+## 0.11.2
+* Disable package precompilation.
+* Fix for deprecated ``out_neighbors`` function in the *LightGraphs* package.
+* Fix for ``colorkey`` syntax deprecated in the *Gadfly* package.
+* Deprecate vectorization of logit and invlogit methods in favor of dot-syntax.
+
 ### 0.11.1
 * Accept functions as first arguments to Logical and Stochastic constructors.
 * Enable MCMC parallelization.
