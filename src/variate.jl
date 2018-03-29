@@ -6,6 +6,8 @@ Base.convert(::Type{Bool}, v::ScalarVariate) = convert(Bool, v.value)
 Base.convert{T<:Integer}(::Type{T}, v::ScalarVariate) = convert(T, v.value)
 Base.convert{T<:AbstractFloat}(::Type{T}, v::ScalarVariate) =
   convert(T, v.value)
+Base.convert{T<:Real}(::Type{T}, v::ScalarVariate) =
+  convert(T, v.value)
 
 Base.convert(::Type{Matrix}, v::MatrixVariate) = v.value
 Base.convert(::Type{Vector}, v::VectorVariate) = v.value
@@ -17,7 +19,7 @@ Base.unsafe_convert(::Type{Ptr{Float64}}, v::ArrayVariate) = pointer(v.value)
 
 macro promote_scalarvariate(V)
   quote
-    Base.promote_rule{T<:Real}(::Type{$(esc(V))}, ::Type{T}) = Float64
+    Base.promote_rule{T<:Real}(::Type{$(esc(V))}, ::Type{T}) = Real#Float64
   end
 end
 
@@ -34,7 +36,7 @@ Base.stride(v::ArrayVariate, k::Int) = stride(v.value, k)
 Base.getindex(v::ScalarVariate, ind::Int) = v.value[ind]
 
 Base.getindex(v::ScalarVariate, inds::Union{Range{Int}, Vector{Int}}) =
-  Float64[v[i] for i in inds]
+  Real[v[i] for i in inds]
 
 Base.getindex(v::ArrayVariate, inds::Int...) = getindex(v.value, inds...)
 

@@ -73,7 +73,7 @@ logpdf(d::AbstractDependent, x, transform::Bool=false) = 0.0
 #################### Constructors ####################
 
 function Logical(f::Function, monitor::Union{Bool, Vector{Int}}=true)
-  value = Float64(NaN)
+  value = Real(NaN)
   fx, src = modelfxsrc(depfxargs, f)
   l = ScalarLogical(value, :nothing, Int[], fx, src, Symbol[])
   setmonitor!(l, monitor)
@@ -83,7 +83,7 @@ Logical(f::Function, d::Integer, args...) = Logical(d, f, args...)
 
 function Logical(d::Integer, f::Function,
                  monitor::Union{Bool, Vector{Int}}=true)
-  value = Array{Float64}(fill(0, d)...)
+  value = Array{Real}(fill(0, d)...)
   fx, src = modelfxsrc(depfxargs, f)
   l = ArrayLogical(value, :nothing, Int[], fx, src, Symbol[])
   setmonitor!(l, monitor)
@@ -137,7 +137,7 @@ end
 #################### Constructors ####################
 
 function Stochastic(f::Function, monitor::Union{Bool, Vector{Int}}=true)
-  value = Float64(NaN)
+  value = Real(NaN)
   fx, src = modelfxsrc(depfxargs, f)
   s = ScalarStochastic(value, :nothing, Int[], fx, src, Symbol[],
                        NullUnivariateDistribution())
@@ -148,7 +148,7 @@ Stochastic(f::Function, d::Integer, args...) = Stochastic(d, f, args...)
 
 function Stochastic(d::Integer, f::Function,
                     monitor::Union{Bool, Vector{Int}}=true)
-  value = Array{Float64}(fill(0, d)...)
+  value = Array{Real}(fill(0, d)...)
   fx, src = modelfxsrc(depfxargs, f)
   s = ArrayStochastic(value, :nothing, Int[], fx, src, Symbol[],
                       NullUnivariateDistribution())
@@ -159,7 +159,7 @@ end
 #################### Updating ####################
 
 function setinits!(s::ScalarStochastic, m::Model, x::Real)
-  s.value = convert(Float64, x)
+  s.value = convert(Real, x)
   s.distr = s.eval(m)
   setmonitor!(s, s.monitor)
 end

@@ -45,6 +45,11 @@ function mcmc_master!(m::Model, window::UnitRange{Int}, burnin::Integer,
     "MCMC Simulation of $N Iterations x $K Chain" * "s"^(K > 1), verbose
   )
 
+  #lsts = Array(Array{Any,1}, 6)
+  #for k in chains
+  #  lsts[k] = [deepcopy(m), states[k],  window, burnin, thin, ChainProgress(frame, k, N)]
+  #end
+
   lsts = [
     Any[m, states[k], window, burnin, thin, ChainProgress(frame, k, N)]
     for k in chains

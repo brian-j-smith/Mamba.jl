@@ -47,7 +47,8 @@ end
 function gradlogpdf!{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer=0,
                               transform::Bool=false; dtype::Symbol=:forward)
   f = x -> logpdf!(m, x, block, transform)
-  gradient(f, convert(Vector{T}, x), dtype)
+  #gradient(f, convert(Vector{T}, x), dtype)
+  ForwardDiff.gradient(f, x)
 end
 
 
