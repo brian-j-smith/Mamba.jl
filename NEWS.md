@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+### 0.12.0
+* Initial release for julia 0.7.
+* Branched off of *Mamba* 0.11.2.
+
 ## 0.11.2
 * Disable package precompilation.
 * Fix for deprecated ``out_neighbors`` function in the *LightGraphs* package.
