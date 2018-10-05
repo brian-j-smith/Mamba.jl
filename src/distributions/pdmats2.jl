@@ -6,8 +6,8 @@ module PDMats2
   using LinearAlgebra: Cholesky, UpperTriangular
   using PDMats: AbstractPDMat
 
-  import Base: +, *, /, \
-  import Base: diag, full, inv, logdet, size
+  import Base: +, *, /, \, size
+  import LinearAlgebra: diag, inv, full, logdet
   import PDMats: dim, invquad, invquad!, quad, quad!,
          whiten, whiten!, unwhiten, unwhiten!
 

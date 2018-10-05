@@ -24,7 +24,7 @@ end
 function MISSTune(D::Array{MultivariateDistribution}, v::Array)
   isvalueinds = falses(v)
   isdistrinds = falses(D)
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     n = length(D[sub])
     for i in 1:n
       if isnan(v[sub, i])

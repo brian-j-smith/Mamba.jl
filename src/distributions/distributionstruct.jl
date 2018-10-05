@@ -22,7 +22,7 @@ unlist_sub(D::Array{UnivariateDistribution}, X::AbstractArray) = vec(X)
 function unlist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   y = similar(X, length(X))
   offset = 0
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     n = length(D[sub])
     inds = 1:n
     y[offset + inds] = X[sub, inds]
@@ -69,7 +69,7 @@ function relistlength_sub(D::Array{MultivariateDistribution},
                           s::ArrayStochastic, X::AbstractArray)
   Y = similar(X, size(s))
   offset = 0
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     n = length(D[sub])
     inds = 1:n
     Y[sub, inds] = X[offset + inds]
@@ -97,7 +97,7 @@ end
 
 function link_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   Y = similar(X, Float64)
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     d = D[sub]
     inds = 1:length(d)
     Y[sub, inds] = link_sub(d, X[sub, inds])
@@ -122,7 +122,7 @@ end
 
 function invlink_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   Y = similar(X, Float64)
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     d = D[sub]
     inds = 1:length(d)
     Y[sub, inds] = invlink_sub(d, X[sub, inds])
@@ -160,7 +160,7 @@ end
 function logpdf_sub(D::Array{MultivariateDistribution}, X::AbstractArray,
                     transform::Bool)
   lp = 0.0
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     d = D[sub]
     lp += logpdf_sub(d, vec(X[sub, 1:length(d)]), transform)
   end
@@ -178,7 +178,7 @@ rand_sub(D::Array{UnivariateDistribution}, X::AbstractArray) = map(rand, D)
 
 function rand_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   Y = fill(NaN, size(X))
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     d = D[sub]
     Y[sub, 1:length(d)] = rand(d)
   end
