@@ -4,35 +4,35 @@
 
 const SliceForm = Union{Univariate, Multivariate}
 
-type SliceTune{F<:SliceForm} <: SamplerTune
-  logf::Nullable{Function}
+struct SliceTune{F<:SliceForm} <: SamplerTune
+  logf::Union{Function, Missing}
   width::Union{Float64, Vector{Float64}}
 
-  SliceTune{F}() where F<:SliceForm = new()
+  SliceTune{F}() where {F<:SliceForm} = new{F}()
 
-  SliceTune{F}(x::Vector, width) where F<:SliceForm =
-    SliceTune{F}(x, width, Nullable{Function}())
+  SliceTune{F}(x::Vector, width) where {F<:SliceForm} =
+    SliceTune{F}(x, width, missing)
 
-  SliceTune{F}(x::Vector, width, logf::Function) where F<:SliceForm =
-    SliceTune{F}(x, width, Nullable{Function}(logf))
+  SliceTune{F}(x::Vector, width, logf::Function) where {F<:SliceForm} =
+    SliceTune{F}(x, width, logf)
 
-  SliceTune{F}(x::Vector, width::Real, logf::Nullable{Function}) where
-    F<:SliceForm = new(logf, Float64(width))
+  SliceTune{F}(x::Vector, width::Real, logf::Union{Function, Missing}) where
+    {F<:SliceForm} = new{F}(logf, Float64(width))
 
-  SliceTune{F}(x::Vector, width::Vector, logf::Nullable{Function}) where
-    F<:SliceForm = new(logf, convert(Vector{Float64}, width))
+  SliceTune{F}(x::Vector, width::Vector, logf::Union{Function, Missing}) where
+    {F<:SliceForm} = new{F}(logf, convert(Vector{Float64}, width))
 end
 
 
 const SliceUnivariate = SamplerVariate{SliceTune{Univariate}}
 const SliceMultivariate = SamplerVariate{SliceTune{Multivariate}}
 
-validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}) =
+validate(v::SamplerVariate{SliceTune{F}}) where {F<:SliceForm} =
   validate(v, v.tune.width)
 
-validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}, width::Float64) = v
+validate(v::SamplerVariate{SliceTune{F}}, width::Float64) where {F<:SliceForm} = v
 
-function validate{F<:SliceForm}(v::SamplerVariate{SliceTune{F}}, width::Vector)
+function validate(v::SamplerVariate{SliceTune{F}}, width::Vector) where {F<:SliceForm}
   n = length(v)
   length(width) == n ||
     throw(ArgumentError("length(width) differs from variate length $n"))
@@ -42,10 +42,10 @@ end
 
 #################### Sampler Constructor ####################
 
-function Slice{T<:Real, F<:SliceForm}(params::ElementOrVector{Symbol},
-                                      width::ElementOrVector{T},
-                                      ::Type{F}=Multivariate;
-                                      transform::Bool=false)
+function Slice(params::ElementOrVector{Symbol},
+                width::ElementOrVector{T},
+                ::Type{F}=Multivariate;
+                transform::Bool=false) where {T<:Real, F<:SliceForm}
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block, transform)
     v = SamplerVariate(block, width)

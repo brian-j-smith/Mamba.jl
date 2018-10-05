@@ -2,8 +2,8 @@
 
 #################### Types ####################
 
-type BHMCTune <: SamplerTune
-  logf::Nullable{Function}
+struct BHMCTune <: SamplerTune
+  logf::Union{Function, Missing}
   traveltime::Float64
   position::Vector{Float64}
   velocity::Vector{Float64}
@@ -12,17 +12,17 @@ type BHMCTune <: SamplerTune
 
   BHMCTune() = new()
 
-  function BHMCTune(x::Vector, traveltime::Real, logf::Nullable{Function})
+  function BHMCTune(x::Vector, traveltime::Real, logf::Union{Function, Missing})
     n = length(x)
     new(logf, traveltime, randn(n), randn(n), 0, 0)
   end
 end
 
 BHMCTune(x::Vector, traveltime::Real) =
-  BHMCTune(x, traveltime, Nullable{Function}())
+  BHMCTune(x, traveltime, missing)
 
 BHMCTune(x::Vector, traveltime::Real, logf::Function) =
-  BHMCTune(x, traveltime, Nullable{Function}(logf))
+  BHMCTune(x, traveltime, logf)
 
 
 const BHMCVariate = SamplerVariate{BHMCTune}

@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-immutable ChainSummary
+struct ChainSummary
   value::Array{Float64, 3}
   rownames::Vector{AbstractString}
   colnames::Vector{AbstractString}
@@ -21,16 +21,14 @@ immutable ChainSummary
   end
 end
 
-function ChainSummary{T<:AbstractString, U<:AbstractString}(
-                     value::Array{Float64, 3}, rownames::Vector{T},
-                     colnames::Vector{U}, header::AbstractString)
+function ChainSummary(value::Array{Float64, 3}, rownames::Vector{T},
+                     colnames::Vector{U}, header::AbstractString) where {T<:AbstractString, U<:AbstractString}
   ChainSummary(copy(value), AbstractString[rownames...],
                AbstractString[colnames...], header)
 end
 
-function ChainSummary{T<:AbstractString, U<:AbstractString}(
-                     value::Matrix{Float64}, rownames::Vector{T},
-                     colnames::Vector{U}, header::AbstractString)
+function ChainSummary(value::Matrix{Float64}, rownames::Vector{T},
+                     colnames::Vector{U}, header::AbstractString) where {T<:AbstractString, U<:AbstractString}
   dim = size(value)
   ChainSummary(reshape(value, dim[1], dim[2], 1), AbstractString[rownames...],
                AbstractString[colnames...], header)
@@ -39,7 +37,7 @@ end
 
 #################### Base Methods ####################
 
-function Base.showall(io::IO, s::ChainSummary)
+function showall(io::IO, s::ChainSummary)
   println(io, s.header)
   show(io, s)
 end

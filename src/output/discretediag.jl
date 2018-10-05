@@ -26,7 +26,7 @@ function hangartner_inner(Y::AbstractMatrix, m::Int)
   return (n * sum(chi_stat), m_tot)
 end
 
-function weiss{U<:Any}(X::AbstractMatrix{U})
+function weiss(X::AbstractMatrix{U}) where {U<:Any}
   ## number of iterations, number of chains
   n, d = size(X)
 
@@ -204,8 +204,8 @@ function simulate_MC(N::Int, P::Matrix{Float64})
   return X
 end
 
-function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol, 
-                           nsim::Int, start_iter::Int, step_size::Int)
+function diag_all(X::AbstractMatrix{U}, method::Symbol, 
+                  nsim::Int, start_iter::Int, step_size::Int) where {U<:Any}
 
   ## number of iterations, number of chains
   n, d = size(X)

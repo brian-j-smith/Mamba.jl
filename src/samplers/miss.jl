@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type MISSTune
+struct MISSTune
   dims::Tuple
   valueinds::Vector{Int}
   distrinds::Vector{Int}

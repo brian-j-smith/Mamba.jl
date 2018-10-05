@@ -2,8 +2,8 @@
 
 #################### Types and Constructors ####################
 
-type HMCTune <: SamplerTune
-  logfgrad::Nullable{Function}
+struct HMCTune <: SamplerTune
+  logfgrad::Union{Function, Missing}
   epsilon::Float64
   L::Int
   SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
@@ -11,19 +11,19 @@ type HMCTune <: SamplerTune
   HMCTune() = new()
 
   HMCTune(x::Vector, epsilon::Real, L::Integer) =
-    new(Nullable{Function}(), epsilon, L, I)
+    new(missing, epsilon, L, I)
 
   HMCTune(x::Vector, epsilon::Real, L::Integer, logfgrad::Function) =
-    new(Nullable{Function}(logfgrad), epsilon, L, I)
+    new(logfgrad, epsilon, L, I)
 
-  function HMCTune{T<:Real}(x::Vector, epsilon::Real, L::Integer,
-                            Sigma::Matrix{T})
-    new(Nullable{Function}(), epsilon, L, cholfact(Sigma)[:L])
+  function HMCTune(x::Vector, epsilon::Real, L::Integer,
+                   Sigma::Matrix{T}) where {T<:Real}
+    new(missing, epsilon, L, cholfact(Sigma)[:L])
   end
 
-  function HMCTune{T<:Real}(x::Vector, epsilon::Real, L::Integer,
-                            Sigma::Matrix{T}, logfgrad::Function)
-    new(Nullable{Function}(logfgrad), epsilon, L, cholfact(Sigma)[:L])
+  function HMCTune(x::Vector, epsilon::Real, L::Integer,
+                   Sigma::Matrix{T}, logfgrad::Function) where {T<:Real}
+    new(logfgrad, epsilon, L, cholfact(Sigma)[:L])
   end
 end
 
@@ -49,8 +49,8 @@ function HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer;
   HMCSampler(params, epsilon, L; args...)
 end
 
-function HMC{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
-                      L::Integer, Sigma::Matrix{T}; args...)
+function HMC(params::ElementOrVector{Symbol}, epsilon::Real,
+              L::Integer, Sigma::Matrix{T}; args...) where {T<:Real}
   HMCSampler(params, epsilon, L, Sigma; args...)
 end
 

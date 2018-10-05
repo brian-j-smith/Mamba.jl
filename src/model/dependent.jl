@@ -12,7 +12,7 @@ function Base.show(io::IO, d::AbstractDependent)
   show(io, d.value)
 end
 
-function Base.showall(io::IO, d::AbstractDependent)
+function showall(io::IO, d::AbstractDependent)
   show(io, d)
   print(io, "\nFunction:\n")
   show(io, "text/plain", first(code_typed(d.eval)))
@@ -121,7 +121,7 @@ end
 
 @promote_scalarvariate ScalarStochastic
 
-function Base.showall(io::IO, s::AbstractStochastic)
+function showall(io::IO, s::AbstractStochastic)
   show(io, s)
   print(io, "\n\nDistribution:\n")
   show(io, s.distr)

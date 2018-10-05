@@ -2,21 +2,21 @@
 
 #################### Types and Constructors ####################
 
-type SliceSimplexTune <: SamplerTune
-  logf::Nullable{Function}
+struct SliceSimplexTune <: SamplerTune
+  logf::Union{Function, Missing}
   scale::Float64
 
   SliceSimplexTune() = new()
 
-  SliceSimplexTune(x::Vector, logf::Nullable{Function}; scale::Real=1.0) =
+  SliceSimplexTune(x::Vector, logf::Union{Function, Missing}; scale::Real=1.0) =
     new(logf, scale)
 end
 
 SliceSimplexTune(x::Vector; args...) =
-  SliceSimplexTune(x, Nullable{Function}(); args...)
+  SliceSimplexTune(x, missing; args...)
 
 SliceSimplexTune(x::Vector, logf::Function; args...) =
-  SliceSimplexTune(x, Nullable{Function}(logf); args...)
+  SliceSimplexTune(x, logf; args...)
 
 
 const SliceSimplexVariate = SamplerVariate{SliceSimplexTune}
@@ -38,13 +38,13 @@ function SliceSimplex(params::ElementOrVector{Symbol}; args...)
       node = model[key]
       x = unlist(node)
 
-      sim = function(inds::Range, logf::Function)
+      sim = function(inds::StepRange, logf::Function)
         v = SamplerVariate(x[inds], s, model.iter; args...)
         sample!(v, logf)
       end
 
       logf = function(d::MultivariateDistribution, v::AbstractVector,
-                      inds::Range)
+                      inds::StepRange)
         x[inds] = v
         relist!(model, x, key)
         logpdf(d, v) + logpdf(model, node.targets)

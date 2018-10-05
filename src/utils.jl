@@ -15,7 +15,7 @@ end
 function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, DataType}})
   m = first(methods(f).ms)
   argnames = Vector{Any}(m.nargs)
-  ccall(:jl_fill_argnames, Void, (Any, Any), m.source, argnames)
+  ccall(:jl_fill_argnames, Nothing, (Any, Any), m.source, argnames)
 
   fkeys = Symbol[argnames[2:end]...]
   ftypes = DataType[m.sig.parameters[2:end]...]
@@ -52,7 +52,7 @@ isprobvec(p::AbstractVector) = isprobvec(convert(Vector{Float64}, p))
 
 cummean(x::AbstractArray) = mapslices(cummean, x, 1)
 
-function cummean{T<:Real}(x::AbstractVector{T})
+function cummean(x::AbstractVector{T}) where {T<:Real}
   y = similar(x, Float64)
   xs = 0.0
   for i in 1:length(x)

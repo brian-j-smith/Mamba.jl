@@ -2,8 +2,8 @@
 
 #################### Types and Constructors ####################
 
-type AMMTune <: SamplerTune
-  logf::Nullable{Function}
+struct AMMTune <: SamplerTune
+  logf::Union{Function, Missing}
   adapt::Bool
   beta::Float64
   m::Int
@@ -15,19 +15,17 @@ type AMMTune <: SamplerTune
 
   AMMTune() = new()
 
-  function AMMTune{T<:Real}(x::Vector, Sigma::Matrix{T},
-                            logf::Nullable{Function}; beta::Real=0.05,
-                            scale::Real=2.38)
+  function AMMTune(x::Vector, Sigma::Matrix{T},
+                  logf::Union{Function, Missing}; beta::Real=0.05,
+                  scale::Real=2.38) where {T<:Real}
     new(logf, false, beta, 0, Vector{Float64}(), Matrix{Float64}(0, 0), scale,
         cholfact(Sigma)[:L], Matrix{Float64}(0, 0))
   end
 end
 
-AMMTune{T<:Real}(x::Vector, Sigma::Matrix{T}; args...) =
-  AMMTune(x, Sigma, Nullable{Function}(); args...)
+AMMTune(x::Vector, Sigma::Matrix{T}; args...) where {T<:Real} = AMMTune(x, Sigma, missing; args...)
 
-AMMTune{T<:Real}(x::Vector, Sigma::Matrix{T}, logf::Function; args...) =
-  AMMTune(x, Sigma, Nullable{Function}(logf); args...)
+AMMTune(x::Vector, Sigma::Matrix{T}, logf::Function; args...) where {T<:Real} = AMMTune(x, Sigma, logf; args...)
 
 
 const AMMVariate = SamplerVariate{AMMTune}
@@ -42,8 +40,8 @@ end
 
 #################### Sampler Constructor ####################
 
-function AMM{T<:Real}(params::ElementOrVector{Symbol}, Sigma::Matrix{T};
-                      adapt::Symbol=:all, args...)
+function AMM(params::ElementOrVector{Symbol}, Sigma::Matrix{T};
+              adapt::Symbol=:all, args...) where {T<:Real}
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 

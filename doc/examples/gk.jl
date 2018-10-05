@@ -5,7 +5,7 @@ using Mamba
   import Distributions: location, scale, skewness, kurtosis, minimum, maximum,
          quantile
 
-  immutable GK <: ContinuousUnivariateDistribution
+  struct GK <: ContinuousUnivariateDistribution
     A::Float64
     B::Float64
     g::Float64

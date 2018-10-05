@@ -1,4 +1,4 @@
-using Mamba
+using Mamba, Random
 
 ## Model and User-Defined Sampler Specifications
 
@@ -74,7 +74,7 @@ line[:xmat] = [ones(5) line[:x]]
 
 
 ## Set Random Number Generator Seed
-srand(123)
+Random.seed!(123)
 
 
 ## Initial Values
@@ -173,7 +173,7 @@ setinputs!(model, line)             # Set input node values
 setinits!(model, inits[1])          # Set initial values
 setsamplers!(model, scheme1)        # Set sampling scheme
 
-showall(model)                      # Show detailed node information
+show(model)                      # Show detailed node information
 
 logpdf(model, 1)                    # Log-density sum for block 1
 logpdf(model, 2)                    # Block 2

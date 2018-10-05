@@ -1,6 +1,8 @@
 using Mamba
 using Base.Test
-srand(123)
+using Random
+
+Random.seed!(123)
 
 function simulate_NDARMA(N::Int, p::Int, q::Int, prob::Vector{Float64}, 
                          phi::Vector{Float64})

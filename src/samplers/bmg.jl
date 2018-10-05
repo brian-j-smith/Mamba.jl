@@ -4,23 +4,23 @@
 
 const BMGForm = Union{Int, Vector{Vector{Int}}}
 
-type BMGTune{F<:BMGForm} <: SamplerTune
-  logf::Nullable{Function}
+struct BMGTune{F<:BMGForm} <: SamplerTune
+  logf::Union{Function, Missing}
   k::F
 
-  BMGTune{F}() where F<:BMGForm = new()
+  BMGTune{F}() where {F<:BMGForm} = new{F}()
 
-  BMGTune{F}(x::Vector, k::F) where F<:BMGForm = new(Nullable{Function}(), k)
+  BMGTune{F}(x::Vector, k::F) where {F<:BMGForm} = new{F}(missing, k)
 
-  BMGTune{F}(x::Vector, k::F, logf::Function) where F<:BMGForm =
-    new(Nullable{Function}(logf), k)
+  BMGTune{F}(x::Vector, k::F, logf::Function) where {F<:BMGForm} =
+    new{F}(logf, k)
 end
 
 
 const BMGIntVariate = SamplerVariate{BMGTune{Int}}
 const BMGVecVariate = SamplerVariate{BMGTune{Vector{Vector{Int}}}}
 
-BMGVariate{F<:BMGForm}(x::Vector, logf::Function; k::F=1) =
+BMGVariate(x::Vector, logf::Function; k::F=1) where {F<:BMGForm} =
   SamplerVariate{BMGTune{F}}(x, k, logf)
 
 
@@ -40,7 +40,7 @@ end
 
 #################### Sampler Constructor ####################
 
-function BMG{F<:BMGForm}(params::ElementOrVector{Symbol}; k::F=1)
+function BMG(params::ElementOrVector{Symbol}; k::F=1) where {F<:BMGForm}
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block)
     v = SamplerVariate(block, k)
@@ -53,9 +53,9 @@ end
 
 #################### Sampling Functions ####################
 
-sample!{F<:BMGForm}(v::SamplerVariate{BMGTune{F}}) = sample!(v, v.tune.logf)
+sample!(v::SamplerVariate{BMGTune{F}}) where {F<:BMGForm} = sample!(v, v.tune.logf)
 
-function sample!{F<:BMGForm}(v::SamplerVariate{BMGTune{F}}, logf::Function)
+function sample!(v::SamplerVariate{BMGTune{F}}, logf::Function) where {F<:BMGForm}
   n = length(v)
   probs = Vector{Float64}(n)
   idx = randind(v)

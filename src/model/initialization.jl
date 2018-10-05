@@ -39,7 +39,7 @@ function setinputs!(m::Model, inputs::Dict{Symbol, Any})
   m
 end
 
-function setsamplers!{T<:Sampler}(m::Model, samplers::Vector{T})
+function setsamplers!(m::Model, samplers::Vector{T}) where {T<:Sampler}
   m.samplers = deepcopy(samplers)
   for sampler in m.samplers
     sampler.targets = keys(m, :target, sampler.params)

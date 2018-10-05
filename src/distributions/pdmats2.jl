@@ -2,34 +2,35 @@
 
 module PDMats2
 
+  using SparseArrays: SparseMatrixCSC
+  using LinearAlgebra: Cholesky, UpperTriangular
+  using PDMats: AbstractPDMat
+
   import Base: +, *, /, \
   import Base: diag, full, inv, logdet, size
-  import Base.LinAlg: Cholesky
-  import PDMats: AbstractPDMat, dim, invquad, invquad!, quad, quad!,
+  import PDMats: dim, invquad, invquad!, quad, quad!,
          whiten, whiten!, unwhiten, unwhiten!
 
   export PBDiagMat
 
-
   #################### Types and Constructors ####################
 
-  type PBDiagMat <: AbstractPDMat{Float64}
+  struct PBDiagMat <: AbstractPDMat{Float64}
     dim::Int
     mat::SparseMatrixCSC{Float64, Int}
     chol::Vector{Cholesky{Float64}}
     scale::Int
   end
 
-  function PBDiagMat{T<:Real}(v::Vector{Matrix{T}}, n::Integer=1)
+  function PBDiagMat(v::Vector{Matrix{T}}, n::Integer=1) where {T<:Real}
     mat = spbdiagm(v, n)
     chol = map(cholfact, v)
     PBDiagMat(size(mat, 1), mat, chol, n)
   end
 
-  function PBDiagMat{T<:Real}(x::Matrix{T}, n::Integer=1)
+  function PBDiagMat(x::Matrix{T}, n::Integer=1) where {T<:Real}
     PBDiagMat(Matrix{T}[x], n)
   end
-
 
   #################### Base Methods ####################
 
@@ -108,9 +109,8 @@ module PDMats2
 
   mapchol(f::Function, a::PBDiagMat) = PBDiagMat(map(f, a.chol), a.scale)
 
-  function spbdiagm{T<:Real}(v::Union{Vector{Matrix{T}},
-                                      Vector{UpperTriangular{T, Matrix{T}}}},
-                             n::Integer=1)
+  const VecOfMatsOrUppers{T} = Union{Vector{Matrix{T}}, Vector{UpperTriangular{T, Matrix{T}}}}
+  function spbdiagm(v::VecOfMatsOrUppers{T}, n::Integer=1) where {T<:Real}
     vn = [fill(v, n)...;]
 
     len = mapreduce(splength, +, vn)
@@ -140,11 +140,11 @@ module PDMats2
   splength(x::Matrix) = length(x)
   isnonzero(x::Matrix, i::Integer, j::Integer) = true
 
-  function splength{T}(x::UpperTriangular{T, Matrix{T}})
+  function splength(x::UpperTriangular{T, Matrix{T}}) where {T}
     m, n = minmax(size(x)...)
     Int(m * (m + 1) / 2) + (n - m) * m
   end
-  isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) =
+  isnonzero(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) where {T} =
     j >= i
 
 end

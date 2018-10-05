@@ -2,17 +2,17 @@
 
 #################### Constructors ####################
 
-function Chains{T<:AbstractString}(iters::Integer, params::Integer;
+function Chains(iters::Integer, params::Integer;
                start::Integer=1, thin::Integer=1, chains::Integer=1,
-               names::Vector{T}=AbstractString[])
+               names::Vector{T}=AbstractString[]) where {T<:AbstractString}
   value = Array{Float64}(length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names)
 end
 
-function Chains{T<:Real, U<:AbstractString, V<:Integer}(value::Array{T, 3};
+function Chains(value::Array{T, 3};
                start::Integer=1, thin::Integer=1,
-               names::Vector{U}=AbstractString[], chains::Vector{V}=Int[])
+               names::Vector{U}=AbstractString[], chains::Vector{V}=Int[]) where {T<:Real, U<:AbstractString, V<:Integer}
   n, p, m = size(value)
 
   if isempty(names)
@@ -28,19 +28,19 @@ function Chains{T<:Real, U<:AbstractString, V<:Integer}(value::Array{T, 3};
   end
 
   v = convert(Array{Float64, 3}, value)
-  Chains(v, range(start, thin, n), AbstractString[names...], Int[chains...])
+  Chains(v, range(start, step=thin, length=n), AbstractString[names...], Int[chains...])
 end
 
-function Chains{T<:Real, U<:AbstractString}(value::Matrix{T};
+function Chains(value::Matrix{T};
                start::Integer=1, thin::Integer=1,
-               names::Vector{U}=AbstractString[], chains::Integer=1)
+               names::Vector{U}=AbstractString[], chains::Integer=1) where {T<:Real, U<:AbstractString}
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
          thin=thin, names=names, chains=Int[chains])
 end
 
-function Chains{T<:Real}(value::Vector{T};
+function Chains(value::Vector{T};
                start::Integer=1, thin::Integer=1,
-               names::AbstractString="Param1", chains::Integer=1)
+               names::AbstractString="Param1", chains::Integer=1) where {T<:Real}
   Chains(reshape(value, length(value), 1, 1), start=start, thin=thin,
          names=AbstractString[names], chains=Int[chains])
 end
@@ -70,7 +70,7 @@ end
 window2inds(c::AbstractChains, window) =
   throw(ArgumentError("$(typeof(window)) iteration indexing is unsupported"))
 window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c, 1))
-window2inds(c::AbstractChains, window::Range) = begin
+window2inds(c::AbstractChains, window::StepRange) = begin
   range = @mapiters(window, c)
   a = max(ceil(Int, first(range)), 1)
   b = step(window)
@@ -80,17 +80,17 @@ end
 
 iters2inds(c::AbstractChains, iters) = iters
 iters2inds(c::AbstractChains, ::Colon) = 1:size(c.value, 1)
-iters2inds(c::AbstractChains, iters::Range) =
+iters2inds(c::AbstractChains, iters::StepRange) =
   convert(StepRange{Int, Int}, @mapiters(iters, c))
 iters2inds(c::AbstractChains, iter::Real) = Int(@mapiters(iter, c))
-iters2inds{T<:Real}(c::AbstractChains, iters::Vector{T}) =
+iters2inds(c::AbstractChains, iters::Vector{T}) where {T<:Real} =
   Int[@mapiters(i, c) for i in iters]
 
 names2inds(c::AbstractChains, names) = names
 names2inds(c::AbstractChains, ::Colon) = 1:size(c.value, 2)
 names2inds(c::AbstractChains, name::Real) = [name]
 names2inds(c::AbstractChains, name::AbstractString) = names2inds(c, [name])
-names2inds{T<:AbstractString}(c::AbstractChains, names::Vector{T}) =
+names2inds(c::AbstractChains, names::Vector{T}) where {T<:AbstractString} =
   indexin(names, c.names)
 
 

@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type ChainProgressFrame
+struct ChainProgressFrame
   verbose::Bool
 
   function ChainProgressFrame(title::AbstractString, verbose::Bool)
@@ -11,7 +11,7 @@ type ChainProgressFrame
   end
 end
 
-type ChainProgress
+struct ChainProgress
   frame::ChainProgressFrame
   chain::Int
   iters::Int
