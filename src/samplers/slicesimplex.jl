@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct SliceSimplexTune <: SamplerTune
+mutable struct SliceSimplexTune <: SamplerTune
   logf::Union{Function, Missing}
   scale::Float64
 
@@ -38,13 +38,13 @@ function SliceSimplex(params::ElementOrVector{Symbol}; args...)
       node = model[key]
       x = unlist(node)
 
-      sim = function(inds::StepRange, logf::Function)
+      sim = function(inds::AbstractRange, logf::Function)
         v = SamplerVariate(x[inds], s, model.iter; args...)
         sample!(v, logf)
       end
 
       logf = function(d::MultivariateDistribution, v::AbstractVector,
-                      inds::StepRange)
+                      inds::AbstractRange)
         x[inds] = v
         relist!(model, x, key)
         logpdf(d, v) + logpdf(model, node.targets)
@@ -104,7 +104,7 @@ end
 
 
 function makefirstsimplex(x::AbstractVector{Float64}, scale::Real)
-  vertices = eye(length(x))
+  vertices = Matrix{Float64}(I, length(x), length(x))
   vertices[:, 2:end] += (1.0 - scale) * (vertices[:, 1] .- vertices[:, 2:end])
   vertices .+ x .- vertices * rand(Dirichlet(ones(x)))
 end

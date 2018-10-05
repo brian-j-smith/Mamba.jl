@@ -7,16 +7,15 @@ end
 function modelfxsrc(literalargs::Vector{Tuple{Symbol, DataType}}, f::Function)
   args = Expr(:tuple, map(arg -> Expr(:(::), arg[1], arg[2]), literalargs)...)
   expr, src = modelexprsrc(f, literalargs)
-  fx = eval(Main, Expr(:function, args, expr))
+  fx = Core.eval(Main, Expr(:function, args, expr))
   (fx, src)
 end
 
 
 function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, DataType}})
   m = first(methods(f).ms)
-  argnames = Vector{Any}(m.nargs)
-  ccall(:jl_fill_argnames, Nothing, (Any, Any), m.source, argnames)
-
+  argnames = Vector{Any}(undef, m.nargs)
+  ccall(:jl_fill_argnames, Cvoid, (Any, Any), m.source, argnames)
   fkeys = Symbol[argnames[2:end]...]
   ftypes = DataType[m.sig.parameters[2:end]...]
   n = length(fkeys)
@@ -24,7 +23,7 @@ function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, DataType}})
   literalinds = Int[]
   for (key, T) in literalargs
     i = findfirst(fkey -> fkey == key, fkeys)
-    if i != 0 && ftypes[i] == T
+    if i != nothing && ftypes[i] == T
       push!(literalinds, i)
     end
   end
@@ -33,7 +32,7 @@ function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, DataType}})
   all(T -> T == Any, ftypes[nodeinds]) ||
     throw(ArgumentError("model node arguments are not all of type Any"))
 
-  modelargs = Array{Any}(n)
+  modelargs = Array{Any}(undef, n)
   for i in nodeinds
     modelargs[i] = Expr(:ref, :model, QuoteNode(fkeys[i]))
   end
@@ -50,7 +49,7 @@ end
 
 isprobvec(p::AbstractVector) = isprobvec(convert(Vector{Float64}, p))
 
-cummean(x::AbstractArray) = mapslices(cummean, x, 1)
+cummean(x::AbstractArray) = mapslices(cummean, x, dims=1)
 
 function cummean(x::AbstractVector{T}) where {T<:Real}
   y = similar(x, Float64)
@@ -96,3 +95,7 @@ function pmap2(f::Function, lsts::AbstractArray)
     map(f, lsts)
   end
 end
+
+ind2sub(dims, ind) = Tuple(CartesianIndices(dims)[ind])
+
+showall(v) = showall(stdout, v)

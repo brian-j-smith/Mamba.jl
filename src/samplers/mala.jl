@@ -2,7 +2,7 @@
 
 #################### Types ####################
 
-struct MALATune <: SamplerTune
+mutable struct MALATune <: SamplerTune
   logfgrad::Union{Function, Missing}
   epsilon::Float64
   SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
@@ -15,11 +15,11 @@ struct MALATune <: SamplerTune
     new(logfgrad, epsilon, I)
 
   MALATune(x::Vector, epsilon::Real, Sigma::Matrix{T}) where {T<:Real} =
-    new(missing, epsilon, cholfact(Sigma)[:L])
+    new(missing, epsilon, cholesky(Sigma).L)
 
   function MALATune(x::Vector, epsilon::Real, Sigma::Matrix{T},
                     logfgrad::Function) where {T<:Real}
-    new(logfgrad, epsilon, cholfact(Sigma)[:L])
+    new(logfgrad, epsilon, cholesky(Sigma).L)
   end
 end
 

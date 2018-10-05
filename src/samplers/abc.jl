@@ -60,9 +60,9 @@ function ABC(params::ElementOrVector{Symbol},
       ## observed data summary statistics
       Tobs = summarizenodes(obsdata)
 
-      tune.Tsim = Array{Vector{Float64}}(nsim)
-      tune.epsilon = Array{Float64}(nsim)
-      tune.epsilonprime = Array{Float64}(nsim)
+      tune.Tsim = Array{Vector{Float64}}(undef, nsim)
+      tune.epsilon = Array{Float64}(undef, nsim)
+      tune.epsilonprime = Array{Float64}(undef, nsim)
       for i in 1:nsim
         ## simulated data summary statistics for current parameter values
         tune.Tsim[i] = summarizenodes(simdata)

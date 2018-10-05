@@ -2,7 +2,7 @@
 
 #################### Types ####################
 
-struct BHMCTune <: SamplerTune
+mutable struct BHMCTune <: SamplerTune
   logf::Union{Function, Missing}
   traveltime::Float64
   position::Vector{Float64}

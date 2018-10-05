@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct BIATune <: SamplerTune
+mutable struct BIATune <: SamplerTune
   logf::Union{Function, Missing}
   A::Vector{Float64}
   D::Vector{Float64}

@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct AMWGTune <: SamplerTune
+mutable struct AMWGTune <: SamplerTune
   logf::Union{Function, Missing}
   adapt::Bool
   accept::Vector{Int}

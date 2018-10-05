@@ -1,4 +1,4 @@
-using Mamba, Random
+using Mamba, Random, Distributions
 
 ## Model and User-Defined Sampler Specifications
 

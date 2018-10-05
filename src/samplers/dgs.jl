@@ -9,7 +9,7 @@ const DGSUnivariateDistribution =
 
 const DSForm = Union{Function, Vector{Float64}}
 
-struct DSTune{F<:DSForm} <: SamplerTune
+mutable struct DSTune{F<:DSForm} <: SamplerTune
   mass::Union{F, Missing}
   support::Matrix{Real}
 

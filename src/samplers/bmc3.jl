@@ -4,7 +4,7 @@
 
 const BMC3Form = Union{Int, Vector{Vector{Int}}}
 
-struct BMC3Tune{F<:BMC3Form} <: SamplerTune
+mutable struct BMC3Tune{F<:BMC3Form} <: SamplerTune
   logf::Union{Function, Missing}
   k::F
 

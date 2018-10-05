@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct AMMTune <: SamplerTune
+mutable struct AMMTune <: SamplerTune
   logf::Union{Function, Missing}
   adapt::Bool
   beta::Float64
@@ -18,15 +18,11 @@ struct AMMTune <: SamplerTune
   function AMMTune(x::Vector, Sigma::Matrix{T},
                   logf::Union{Function, Missing}; beta::Real=0.05,
                   scale::Real=2.38) where {T<:Real}
-    new(logf, false, beta, 0, Vector{Float64}(), Matrix{Float64}(0, 0), scale,
-        cholfact(Sigma)[:L], Matrix{Float64}(0, 0))
+    new(logf, false, beta, 0, Vector{Float64}(undef, 0), Matrix{Float64}(undef, 0, 0), scale, cholesky(Sigma).L, Matrix{Float64}(undef, 0, 0))
   end
 end
 
 AMMTune(x::Vector, Sigma::Matrix{T}; args...) where {T<:Real} = AMMTune(x, Sigma, missing; args...)
-
-AMMTune(x::Vector, Sigma::Matrix{T}, logf::Function; args...) where {T<:Real} = AMMTune(x, Sigma, logf; args...)
-
 
 const AMMVariate = SamplerVariate{AMMTune}
 
@@ -82,9 +78,9 @@ function sample!(v::AMMVariate, logf::Function; adapt::Bool=true)
     tune.Mv = p * tune.Mv + (1.0 - p) * v
     tune.Mvv = p * tune.Mvv + (1.0 - p) * v * v'
     Sigma = (tune.scale^2 / n / p) * (tune.Mvv - tune.Mv * tune.Mv')
-    F = cholfact(Hermitian(Sigma), Val{true})
-    if rank(F) == n
-      tune.SigmaLm = F[:P] * F[:L]
+    F = cholesky(Hermitian(Sigma), Val{true}(), check=false)
+    if rank(F.L, sqrt(eps(Float64))) == n
+      tune.SigmaLm = F.P * F.L
     end
   end
 

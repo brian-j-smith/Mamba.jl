@@ -1,5 +1,6 @@
 using Distributed
 using Random
+using LinearAlgebra
 
 include("utils.jl")
 
@@ -34,16 +35,19 @@ const extensiontests = [
 
 println("Running tests:")
 
+#=
 for t in tutorialtests
   @everywhere Random.seed!(123)
   @runtest "../doc/tutorial/" t
 end
+=#
 
 for t in samplertests
   @everywhere Random.seed!(123)
   @runtest "../doc/samplers/" t
 end
 
+#=
 for t in mcmctests
   @runtest "../doc/mcmc/" t
 end
@@ -52,3 +56,4 @@ for t in extensiontests
   @everywhere Random.seed!(123)
   @runtest "../doc/mcmc/" t
 end
+=#

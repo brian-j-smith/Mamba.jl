@@ -27,7 +27,7 @@ function readcoda(output::AbstractString, index::AbstractString)
 
   names = AbstractString[ind[:, 1]...]
 
-  value = Array{Float64}(length(window), length(names))
+  value = Array{Float64}(undef, length(window), length(names))
   for i in 1:size(value, 2)
     inds = Int(startind[i]):Int(stopind[i])
     value[:, i] = out[inds, 2]

@@ -37,7 +37,7 @@ sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
 sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
 epsilon = 0.1
 L = 50
-Sigma = eye(3)
+Sigma = Matrix{Float64}(I, 3, 3)
 theta1 = HMCVariate([0.0, 0.0, 0.0], epsilon, L, logfgrad)
 theta2 = HMCVariate([0.0, 0.0, 0.0], epsilon, L, Sigma, logfgrad)
 for i in 1:n

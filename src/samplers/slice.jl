@@ -4,7 +4,7 @@
 
 const SliceForm = Union{Univariate, Multivariate}
 
-struct SliceTune{F<:SliceForm} <: SamplerTune
+mutable struct SliceTune{F<:SliceForm} <: SamplerTune
   logf::Union{Function, Missing}
   width::Union{Float64, Vector{Float64}}
 
@@ -95,7 +95,7 @@ function sample!(v::SliceMultivariate, logf::Function)
 
   n = length(v)
   lower = v - v.tune.width .* rand(n)
-  upper = lower + v.tune.width
+  upper = lower .+ v.tune.width
 
   x = v.tune.width .* rand(n) + lower
   while logf(x) < p0

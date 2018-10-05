@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct HMCTune <: SamplerTune
+mutable struct HMCTune <: SamplerTune
   logfgrad::Union{Function, Missing}
   epsilon::Float64
   L::Int
@@ -18,12 +18,12 @@ struct HMCTune <: SamplerTune
 
   function HMCTune(x::Vector, epsilon::Real, L::Integer,
                    Sigma::Matrix{T}) where {T<:Real}
-    new(missing, epsilon, L, cholfact(Sigma)[:L])
+    new(missing, epsilon, L, cholesky(Sigma).L)
   end
 
   function HMCTune(x::Vector, epsilon::Real, L::Integer,
                    Sigma::Matrix{T}, logfgrad::Function) where {T<:Real}
-    new(logfgrad, epsilon, L, cholfact(Sigma)[:L])
+    new(logfgrad, epsilon, L, cholesky(Sigma).L)
   end
 end
 

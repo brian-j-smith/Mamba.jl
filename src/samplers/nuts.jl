@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct NUTSTune <: SamplerTune
+mutable struct NUTSTune <: SamplerTune
   logfgrad::Union{Function, Missing}
   adapt::Bool
   alpha::Float64

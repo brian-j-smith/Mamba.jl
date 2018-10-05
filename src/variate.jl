@@ -6,6 +6,7 @@ Base.convert(::Type{Bool}, v::ScalarVariate) = convert(Bool, v.value)
 Base.convert(::Type{T}, v::ScalarVariate) where {T<:Integer} = convert(T, v.value)
 Base.convert(::Type{T}, v::ScalarVariate) where {T<:AbstractFloat} =
   convert(T, v.value)
+Base.AbstractFloat(v::ScalarVariate) = convert(Float64, v)
 
 Base.convert(::Type{Matrix}, v::MatrixVariate) = v.value
 Base.convert(::Type{Vector}, v::VectorVariate) = v.value

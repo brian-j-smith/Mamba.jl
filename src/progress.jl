@@ -11,7 +11,7 @@ struct ChainProgressFrame
   end
 end
 
-struct ChainProgress
+mutable struct ChainProgress
   frame::ChainProgressFrame
   chain::Int
   iters::Int
@@ -41,7 +41,7 @@ function next!(p::ChainProgress)
   p.counter += 1
   if p.counter / p.iters >= p.threshold && p.counter >= p.runin
     p.threshold += 0.10
-    p.frame.verbose && print(STDOUT, p)
+    p.frame.verbose && print(stdout, p)
   end
   p
 end

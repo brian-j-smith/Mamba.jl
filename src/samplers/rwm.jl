@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct RWMTune <: SamplerTune
+mutable struct RWMTune <: SamplerTune
   logf::Union{Function, Missing}
   scale::Union{Float64, Vector{Float64}}
   proposal::SymDistributionType

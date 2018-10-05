@@ -1,16 +1,20 @@
 __precompile__(false)
 
-using Distributions
-
 module Mamba
 
+  using Reexport
+  @reexport using Distributions
+
   #################### Imports ####################
+  using SpecialFunctions
+  using Serialization
   using Distributed
   using Printf: @sprintf
   using LinearAlgebra
   using Calculus: gradient
   using Showoff: showoff
 
+  import Base: names, Matrix
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
   import LinearAlgebra: dot
   import Statistics: cor
@@ -40,7 +44,8 @@ module Mamba
          ## Methods
          cdf, dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
          minimum, pdf, quantile, rand, sample!, support
-  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS, render, Scale, SVG, Theme
+  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS, 
+         render, Scale, SVG, Theme
   using LightGraphs: DiGraph, add_edge!, outneighbors,
          topological_sort_by_dfs, vertices
   import StatsBase: autocor, autocov, countmap, counts, describe, predict,
@@ -73,7 +78,7 @@ module Mamba
 
   #################### Dependent Types ####################
 
-  struct ScalarLogical <: ScalarVariate
+  mutable struct ScalarLogical <: ScalarVariate
     value::Float64
     symbol::Symbol
     monitor::Vector{Int}
@@ -82,7 +87,7 @@ module Mamba
     targets::Vector{Symbol}
   end
 
-  struct ArrayLogical{N} <: ArrayVariate{N}
+  mutable struct ArrayLogical{N} <: ArrayVariate{N}
     value::Array{Float64, N}
     symbol::Symbol
     monitor::Vector{Int}
@@ -91,7 +96,7 @@ module Mamba
     targets::Vector{Symbol}
   end
 
-  struct ScalarStochastic <: ScalarVariate
+  mutable struct ScalarStochastic <: ScalarVariate
     value::Float64
     symbol::Symbol
     monitor::Vector{Int}
@@ -101,7 +106,7 @@ module Mamba
     distr::UnivariateDistribution
   end
 
-  struct ArrayStochastic{N} <: ArrayVariate{N}
+  mutable struct ArrayStochastic{N} <: ArrayVariate{N}
     value::Array{Float64, N}
     symbol::Symbol
     monitor::Vector{Int}
@@ -118,7 +123,7 @@ module Mamba
 
   #################### Sampler Types ####################
 
-  struct Sampler{T}
+  mutable struct Sampler{T}
     params::Vector{Symbol}
     eval::Function
     tune::T
@@ -133,13 +138,13 @@ module Mamba
     tune::T
 
     function SamplerVariate{T}(x::AbstractVector, tune::T) where T<:SamplerTune
-      v = new(x, tune)
+      v = new{T}(x, tune)
       validate(v)
     end
 
     function SamplerVariate{T}(x::AbstractVector, pargs...; kargs...) where T<:SamplerTune
       value = convert(Vector{Float64}, x)
-      SamplerVariate{T}(value, T(value, pargs...; kargs...))
+      new{T}(value, T(value, pargs...; kargs...))
     end
   end
 
@@ -156,7 +161,7 @@ module Mamba
     tune::Vector{Any}
   end
 
-  struct Model
+  mutable struct Model
     nodes::Dict{Symbol, Any}
     samplers::Vector{Sampler}
     states::Vector{ModelState}

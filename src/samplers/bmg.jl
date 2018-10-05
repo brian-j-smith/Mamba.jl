@@ -4,7 +4,7 @@
 
 const BMGForm = Union{Int, Vector{Vector{Int}}}
 
-struct BMGTune{F<:BMGForm} <: SamplerTune
+mutable struct BMGTune{F<:BMGForm} <: SamplerTune
   logf::Union{Function, Missing}
   k::F
 

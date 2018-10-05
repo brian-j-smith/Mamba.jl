@@ -83,7 +83,7 @@ Logical(f::Function, d::Integer, args...) = Logical(d, f, args...)
 
 function Logical(d::Integer, f::Function,
                  monitor::Union{Bool, Vector{Int}}=true)
-  value = Array{Float64}(fill(0, d)...)
+  value = Array{Float64}(undef, fill(0, d)...)
   fx, src = modelfxsrc(depfxargs, f)
   l = ArrayLogical(value, :nothing, Int[], fx, src, Symbol[])
   setmonitor!(l, monitor)
@@ -148,7 +148,7 @@ Stochastic(f::Function, d::Integer, args...) = Stochastic(d, f, args...)
 
 function Stochastic(d::Integer, f::Function,
                     monitor::Union{Bool, Vector{Int}}=true)
-  value = Array{Float64}(fill(0, d)...)
+  value = Array{Float64}(undef, fill(0, d)...)
   fx, src = modelfxsrc(depfxargs, f)
   s = ArrayStochastic(value, :nothing, Int[], fx, src, Symbol[],
                       NullUnivariateDistribution())

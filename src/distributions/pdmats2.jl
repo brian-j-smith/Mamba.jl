@@ -7,7 +7,7 @@ module PDMats2
   using PDMats: AbstractPDMat
 
   import Base: +, *, /, \, size
-  import LinearAlgebra: diag, inv, full, logdet
+  import LinearAlgebra: diag, inv, logdet
   import PDMats: dim, invquad, invquad!, quad, quad!,
          whiten, whiten!, unwhiten, unwhiten!
 
@@ -24,7 +24,7 @@ module PDMats2
 
   function PBDiagMat(v::Vector{Matrix{T}}, n::Integer=1) where {T<:Real}
     mat = spbdiagm(v, n)
-    chol = map(cholfact, v)
+    chol = map(cholesky, v)
     PBDiagMat(size(mat, 1), mat, chol, n)
   end
 
@@ -37,7 +37,7 @@ module PDMats2
   +(a::PBDiagMat, b::Matrix{Float64}) = a.mat + b
   +(a::Matrix{Float64}, b::PBDiagMat) = b + a
 
-  *(a::PBDiagMat, c::Float64) = mapchol(x -> c * full(x), a)
+  *(a::PBDiagMat, c::Float64) = mapchol(x -> c * Matrix(x), a)
   /(a::PBDiagMat, c::Float64) = a * inv(c)
   *(c::Float64, a::PBDiagMat) = a * c
 
@@ -52,7 +52,7 @@ module PDMats2
   size(a::PBDiagMat, i) = size(a)[i]
 
   diag(a::PBDiagMat) = diag(a.mat)
-  full(a::PBDiagMat) = full(a.mat)
+  Matrix(a::PBDiagMat) = Matrix(a.mat)
   inv(a::PBDiagMat) = mapchol(inv, a)
   logdet(a::PBDiagMat) = a.scale * mapreduce(logdet, +, a.chol)
 
@@ -114,9 +114,9 @@ module PDMats2
     vn = [fill(v, n)...;]
 
     len = mapreduce(splength, +, vn)
-    I = Array{Int}(len)
-    J = Array{Int}(len)
-    V = Array{Float64}(len)
+    I = Array{Int}(undef, len)
+    J = Array{Int}(undef, len)
+    V = Array{Float64}(undef, len)
 
     k = 1
     offset = 0
