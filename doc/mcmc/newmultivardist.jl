@@ -7,7 +7,7 @@
   import Distributions: length, insupport, _logpdf
 
   ## Type declaration
-  type NewMultivarDist <: ContinuousMultivariateDistribution
+  mutable struct NewMultivarDist <: ContinuousMultivariateDistribution
     mu::Vector{Float64}
     sigma::Float64
   end
@@ -18,12 +18,12 @@
   length(d::NewMultivarDist) = length(d.mu)
 
   ## Logical indicating whether x is in the support
-  function insupport{T<:Real}(d::NewMultivarDist, x::AbstractVector{T})
+  function insupport(d::NewMultivarDist, x::AbstractVector{T}) where {T<:Real}
     length(d) == length(x) && all(isfinite.(x))
   end
 
   ## Normalized or unnormalized log-density value
-  function _logpdf{T<:Real}(d::NewMultivarDist, x::AbstractVector{T})
+  function _logpdf(d::NewMultivarDist, x::AbstractVector{T}) where {T<:Real}
     -length(x) * log(d.sigma) - 0.5 * sum(abs2, x - d.mu) / d.sigma^2
   end
 
@@ -31,7 +31,7 @@ end
 
 ## Test the extensions in a temporary module (optional)
 module Testing end
-eval(Testing, extensions)
+Core.eval(Testing, extensions)
 d = Testing.NewMultivarDist([0.0, 0.0], 1.0)
 Testing.insupport(d, [2.0, 3.0])
 Testing.logpdf(d, [2.0, 3.0])

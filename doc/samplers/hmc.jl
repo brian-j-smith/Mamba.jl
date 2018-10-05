@@ -18,7 +18,7 @@ logfgrad = function(x::DenseVector)
   b0 = x[1]
   b1 = x[2]
   logs2 = x[3]
-  r = data[:y] - b0 - b1 * data[:x]
+  r = data[:y] .- b0 .- b1 .* data[:x]
   logf = (-0.5 * length(data[:y]) - 0.001) * logs2 -
            (0.5 * dot(r, r) + 0.001) / exp(logs2) -
            0.5 * b0^2 / 1000 - 0.5 * b1^2 / 1000
@@ -37,7 +37,7 @@ sim1 = Chains(n, 3, names = ["b0", "b1", "s2"])
 sim2 = Chains(n, 3, names = ["b0", "b1", "s2"])
 epsilon = 0.1
 L = 50
-Sigma = eye(3)
+Sigma = Matrix{Float64}(I, 3, 3)
 theta1 = HMCVariate([0.0, 0.0, 0.0], epsilon, L, logfgrad)
 theta2 = HMCVariate([0.0, 0.0, 0.0], epsilon, L, Sigma, logfgrad)
 for i in 1:n

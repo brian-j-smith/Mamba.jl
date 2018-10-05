@@ -2,8 +2,8 @@
 
 #################### Types and Constructors ####################
 
-type AMWGTune <: SamplerTune
-  logf::Nullable{Function}
+mutable struct AMWGTune <: SamplerTune
+  logf::Union{Function, Missing}
   adapt::Bool
   accept::Vector{Int}
   batchsize::Int
@@ -13,22 +13,17 @@ type AMWGTune <: SamplerTune
 
   AMWGTune() = new()
 
-  function AMWGTune{T<:Real}(x::Vector, sigma::Vector{T},
-                             logf::Nullable{Function}; batchsize::Integer=50,
-                             target::Real=0.44)
+  function AMWGTune(x::Vector, sigma::ElementOrVector{T},
+                    logf::Union{Function, Missing}; batchsize::Integer=50,
+                    target::Real=0.44) where {T<:Real}
     new(logf, false, zeros(Int, length(x)), batchsize, 0, copy(sigma), target)
   end
 end
 
-AMWGTune{T<:Real}(x::Vector, sigma::ElementOrVector{T}; args...) =
-  AMWGTune(x, sigma, Nullable{Function}(); args...)
+AMWGTune(x::Vector, sigma::ElementOrVector{T}; args...) where {T<:Real} =
+  AMWGTune(x, sigma, missing; args...)
 
-function AMWGTune{T<:Real}(x::Vector, sigma::ElementOrVector{T}, logf::Function;
-                           args...)
-  AMWGTune(x, sigma, Nullable{Function}(logf); args...)
-end
-
-AMWGTune(x::Vector, sigma::Real, logf::Nullable{Function}; args...) =
+AMWGTune(x::Vector, sigma::Real, logf::Union{Function, Missing}; args...) =
   AMWGTune(x, fill(sigma, length(x)), logf; args...)
 
 
@@ -44,8 +39,8 @@ end
 
 #################### Sampler Constructor ####################
 
-function AMWG{T<:Real}(params::ElementOrVector{Symbol},
-                       sigma::ElementOrVector{T}; adapt::Symbol=:all, args...)
+function AMWG(params::ElementOrVector{Symbol},
+              sigma::ElementOrVector{T}; adapt::Symbol=:all, args...) where {T<:Real}
   adapt in [:all, :burnin, :none] ||
     throw(ArgumentError("adapt must be one of :all, :burnin, or :none"))
 
@@ -88,7 +83,7 @@ end
 function setadapt!(v::AMWGVariate, adapt::Bool)
   tune = v.tune
   if adapt && !tune.adapt
-    tune.accept[:] = 0
+    tune.accept[:] .= 0
     tune.m = 0
   end
   tune.adapt = adapt

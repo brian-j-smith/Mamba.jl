@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type ABCTune
+struct ABCTune
   datakeys::Vector{Symbol}
   Tsim::Vector{Vector{Float64}}
   epsilon::Vector{Float64}
@@ -20,13 +20,13 @@ end
 
 #################### Sampler Constructor ####################
 
-function ABC{T<:Real}(params::ElementOrVector{Symbol},
-                      scale::ElementOrVector{T}, summary::Function,
-                      epsilon::Real; kernel::KernelDensityType=SymUniform,
-                      dist::Function=(Tsim, Tobs) -> sqrt(sum(abs2, Tsim - Tobs)),
-                      proposal::SymDistributionType=Normal, maxdraw::Integer=1,
-                      nsim::Integer=1, decay::Real=1.0, randeps::Bool=false,
-                      args...)
+function ABC(params::ElementOrVector{Symbol},
+              scale::ElementOrVector{T}, summary::Function,
+              epsilon::Real; kernel::KernelDensityType=SymUniform,
+              dist::Function=(Tsim, Tobs) -> sqrt(sum(abs2, Tsim - Tobs)),
+              proposal::SymDistributionType=Normal, maxdraw::Integer=1,
+              nsim::Integer=1, decay::Real=1.0, randeps::Bool=false,
+              args...) where {T<:Real}
   0 <= decay <= 1 || throw(ArgumentError("decay is not in [0, 1]"))
 
   params = asvec(params)
@@ -60,9 +60,9 @@ function ABC{T<:Real}(params::ElementOrVector{Symbol},
       ## observed data summary statistics
       Tobs = summarizenodes(obsdata)
 
-      tune.Tsim = Array{Vector{Float64}}(nsim)
-      tune.epsilon = Array{Float64}(nsim)
-      tune.epsilonprime = Array{Float64}(nsim)
+      tune.Tsim = Array{Vector{Float64}}(undef, nsim)
+      tune.epsilon = Array{Float64}(undef, nsim)
+      tune.epsilonprime = Array{Float64}(undef, nsim)
       for i in 1:nsim
         ## simulated data summary statistics for current parameter values
         tune.Tsim[i] = summarizenodes(simdata)

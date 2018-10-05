@@ -26,7 +26,7 @@ function hangartner_inner(Y::AbstractMatrix, m::Int)
   return (n * sum(chi_stat), m_tot)
 end
 
-function weiss{U<:Any}(X::AbstractMatrix{U})
+function weiss(X::AbstractMatrix{U}) where {U<:Any}
   ## number of iterations, number of chains
   n, d = size(X)
 
@@ -129,27 +129,27 @@ function billingsley_sub(f::Array{Int64,3})
   df = 0.0
   stat = 0.0
 
-  m, d = size(f,2,3)
+  m, d = size(f, 2), size(f, 3)
 
   # marginal transitions, i.e.
   # number of transitions from each category
-  mf = mapslices(sum, f,2)
+  mf = mapslices(sum, f, dims=2)
 
   # For each category, number of chains for which
   # that category was present
-  A = vec(mapslices( (x)-> sum(x.>0), mf, 3))
+  A = vec(mapslices( (x)-> sum(x.>0), mf, dims=3))
 
   # For each category, number of categories it
   # transitioned to
-  B =  vec(mapslices((x)-> sum(x.>0), mapslices(sum,f,3),2))
+  B =  vec(mapslices((x)-> sum(x.>0), mapslices(sum,f,dims=3),dims=2))
 
   # transition probabilities in each chain
   P = f ./ mf
 
   # transition probabilities
-  mP = reshape((mapslices(sum,f,3) ./ mapslices(sum,mf,3)), Val{2})
+  mP = reshape((mapslices(sum,f,dims=3) ./ mapslices(sum,mf,dims=3)), Val(2))
 
-  idx = find(A .* B)
+  idx = findall(x -> x != 0, A .* B)
   for j in idx
     #df for billingsley
     df += (A[j] - 1) * (B[j] - 1)
@@ -204,8 +204,8 @@ function simulate_MC(N::Int, P::Matrix{Float64})
   return X
 end
 
-function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol, 
-                           nsim::Int, start_iter::Int, step_size::Int)
+function diag_all(X::AbstractMatrix{U}, method::Symbol, 
+                  nsim::Int, start_iter::Int, step_size::Int) where {U<:Any}
 
   ## number of iterations, number of chains
   n, d = size(X)
@@ -254,7 +254,7 @@ function diag_all{U<:Any}(X::AbstractMatrix{U}, method::Symbol,
       phia, chi_stat, m_tot = weiss_sub(u, v, t)
       hot_stat, df, mP = billingsley_sub(f)
 
-      phat = mapslices(sum,u,2)[:,1] / sum(mapslices(sum,u,2))
+      phat = mapslices(sum,u,dims=2)[:,1] / sum(mapslices(sum,u,dims=2))
       ca = (1 + phia) / (1 - phia)
       stat = NaN
       pval = NaN
@@ -431,7 +431,7 @@ function discretediag(c::AbstractChains; frac::Real=0.3,
 
   hdr = header(c) * "\nChisq Diagnostic:\nEnd Fractions = $frac\n" *
   "method = $method\n"
-  ChainSummary(round.(vals,3)', c.names[V], 
+  ChainSummary(copy(round.(vals,digits=3)'), c.names[V], 
                convert(Array{AbstractString, 1}, 
                        vcat([["stat", "df", "p-value"] 
                              for k in 1:(num_chains + 1)]...)), hdr)

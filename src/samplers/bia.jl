@@ -2,8 +2,8 @@
 
 #################### Types and Constructors ####################
 
-type BIATune <: SamplerTune
-  logf::Nullable{Function}
+mutable struct BIATune <: SamplerTune
+  logf::Union{Function, Missing}
   A::Vector{Float64}
   D::Vector{Float64}
 
@@ -15,9 +15,9 @@ type BIATune <: SamplerTune
 
   BIATune() = new()
 
-  function BIATune(x::Vector, logf::Nullable{Function};
-                   A::Vector{Float64} = ones(x) / length(x),
-                   D::Vector{Float64} = ones(x) / length(x),
+  function BIATune(x::Vector, logf::Union{Function, Missing};
+                   A::Vector{Float64} = fill(1, size(x)) ./ length(x),
+                   D::Vector{Float64} = fill(1, size(x)) ./ length(x),
                    epsilon::Real = 0.01 / length(x), decay::Real = 0.55,
                    target::Real = 0.45)
     new(logf, A, D, epsilon, decay, target, 0)
@@ -25,11 +25,7 @@ type BIATune <: SamplerTune
 end
 
 BIATune(x::Vector; args...) =
-   BIATune(x, Nullable{Function}(); args...)
-
-BIATune(x::Vector, logf::Function; args...) =
-   BIATune(x, Nullable{Function}(logf); args...)
-
+   BIATune(x, missing; args...)
 
 const BIAVariate = SamplerVariate{BIATune}
 

@@ -36,16 +36,16 @@ function gradlogpdf(m::Model, block::Integer=0, transform::Bool=false;
   value
 end
 
-function gradlogpdf{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer=0,
-                             transform::Bool=false; dtype::Symbol=:forward)
+function gradlogpdf(m::Model, x::AbstractVector{T}, block::Integer=0,
+                    transform::Bool=false; dtype::Symbol=:forward) where {T<:Real}
   x0 = unlist(m, block)
   value = gradlogpdf!(m, x, block, transform, dtype=dtype)
   relist!(m, x0, block)
   value
 end
 
-function gradlogpdf!{T<:Real}(m::Model, x::AbstractVector{T}, block::Integer=0,
-                              transform::Bool=false; dtype::Symbol=:forward)
+function gradlogpdf!(m::Model, x::AbstractVector{T}, block::Integer=0,
+                      transform::Bool=false; dtype::Symbol=:forward) where {T<:Real}
   f = x -> logpdf!(m, x, block, transform)
   gradient(f, convert(Vector{T}, x), dtype)
 end
@@ -66,16 +66,16 @@ function logpdf(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
   lp
 end
 
-function logpdf{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
-                         transform::Bool=false)
+function logpdf(m::Model, x::AbstractArray{T}, block::Integer=0,
+                transform::Bool=false) where {T<:Real}
   x0 = unlist(m, block)
   lp = logpdf!(m, x, block, transform)
   relist!(m, x0, block)
   lp
 end
 
-function logpdf!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
-                          transform::Bool=false)
+function logpdf!(m::Model, x::AbstractArray{T}, block::Integer=0,
+                  transform::Bool=false) where {T<:Real}
   params = keys(m, :block, block)
   targets = keys(m, :target, block)
   m[params] = relist(m, x, params, transform)
@@ -125,13 +125,13 @@ function unlist(m::Model, nodekeys::Vector{Symbol}, transform::Bool=false)
 end
 
 
-function relist{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
-                         transform::Bool=false)
+function relist(m::Model, x::AbstractArray{T}, block::Integer=0,
+                transform::Bool=false) where {T<:Real}
   relist(m, x, keys(m, :block, block), transform)
 end
 
-function relist{T<:Real}(m::Model, x::AbstractArray{T},
-                         nodekeys::Vector{Symbol}, transform::Bool=false)
+function relist(m::Model, x::AbstractArray{T},
+                nodekeys::Vector{Symbol}, transform::Bool=false) where {T<:Real}
   values = Dict{Symbol,Any}()
   N = length(x)
   offset = 0
@@ -145,8 +145,8 @@ function relist{T<:Real}(m::Model, x::AbstractArray{T},
   values
 end
 
-function relist!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
-                 transform::Bool=false)
+function relist!(m::Model, x::AbstractArray{T}, block::Integer=0,
+                 transform::Bool=false) where {T<:Real}
   nodekeys = keys(m, :block, block)
   values = relist(m, x, nodekeys, transform)
   for key in nodekeys
@@ -155,8 +155,8 @@ function relist!{T<:Real}(m::Model, x::AbstractArray{T}, block::Integer=0,
   update!(m, block)
 end
 
-function relist!{T<:Real}(m::Model, x::AbstractArray{T}, nodekey::Symbol,
-                          transform::Bool=false)
+function relist!(m::Model, x::AbstractArray{T}, nodekey::Symbol,
+                  transform::Bool=false) where {T<:Real}
   node = m[nodekey]
   m[nodekey] = relist(node, x, transform)
   update!(m, node.targets)

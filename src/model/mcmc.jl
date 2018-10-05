@@ -6,7 +6,7 @@ function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
     throw(ArgumentError("chain is missing its last iteration"))
 
   mm = deepcopy(mc.model)
-  mc2 = mcmc_master!(mm, mm.iter + (1:iters), last(mc), thin, mc.chains,
+  mc2 = mcmc_master!(mm, mm.iter .+ (1:iters), last(mc), thin, mc.chains,
                      verbose)
   if mc2.names != mc.names
     mc2 = mc2[:, mc.names, :]
@@ -55,7 +55,7 @@ function mcmc_master!(m::Model, window::UnitRange{Int}, burnin::Integer,
   model = results[1][2]
   model.states = ModelState[results[k][3] for k in sortperm(chains)]
 
-  ModelChains(cat(3, sims...), model)
+  ModelChains(cat(sims..., dims=3), model)
 end
 
 

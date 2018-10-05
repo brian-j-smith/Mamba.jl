@@ -66,7 +66,7 @@ inits = [
 
 
 ## Sampling Scheme
-scheme = [AMM([:alpha0, :alpha1, :alpha2, :alpha12], 0.01 * eye(4)),
+scheme = [AMM([:alpha0, :alpha1, :alpha2, :alpha12], 0.01 * Matrix{Float64}(I, 4, 4)),
           AMWG(:b, 0.01),
           AMWG(:s2, 0.1)]
 setsamplers!(model, scheme)

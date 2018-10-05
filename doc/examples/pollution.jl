@@ -66,7 +66,7 @@ data = [
 
 pollution = Dict{Symbol, Any}(
   :y => data[:, end],
-  :X => mapslices(x -> x / sqrt(var(x)), data[:, 1:(end - 1)], 1),
+  :X => mapslices(x -> x / sqrt(var(x)), data[:, 1:(end - 1)], dims=1),
   :p => size(data, 2) - 1
 )
 
@@ -126,7 +126,7 @@ p = size(X, 2)
 
 inits = [
   Dict(:y => y, :alpha => mean(y), :gamma => rand(0:1, p),
-       :beta => inv(X' * X + eye(p)) * X' * y, :sigma2 => var(y)),
+       :beta => inv(X' * X + Matrix{Float64}(I, p, p)) * X' * y, :sigma2 => var(y)),
   Dict(:y => y, :alpha => 1, :gamma => rand(0:1, p),
        :beta => randn(p), :sigma2 => 1),
   Dict(:y => y, :alpha => 17, :gamma => rand(0:1, p),

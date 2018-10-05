@@ -23,7 +23,7 @@ function draw(m::Model; filename::AbstractString="")
   if length(filename) == 0
     print(dot)
   else
-    if search(filename, '.') == 0
+    if something(findfirst(isequal('.'), filename), 0) == 0
       filename = string(filename, ".dot")
     end
     f = open(filename, "w")
@@ -72,7 +72,7 @@ function graph2dot(m::Model)
      end
   end
   write(io, "}\n")
-  String(io)
+  String(take!(copy(io)))
 end
 
 

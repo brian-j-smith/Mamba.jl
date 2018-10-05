@@ -48,7 +48,7 @@ model = Model(
   ),
 
   Sigma = Stochastic(2,
-    M -> InverseWishart(4.0, eye(M))
+    M -> InverseWishart(4.0, Matrix{Float64}(I, M, M))
   )
 
 )
@@ -56,8 +56,8 @@ model = Model(
 
 ## Initial Values
 inits = [
-  Dict(:y => jaws[:y], :beta0 => 40, :beta1 => 1, :Sigma => eye(M)),
-  Dict(:y => jaws[:y], :beta0 => 10, :beta1 => 10, :Sigma => eye(M))
+  Dict(:y => jaws[:y], :beta0 => 40, :beta1 => 1, :Sigma => Matrix{Float64}(I, M, M)),
+  Dict(:y => jaws[:y], :beta0 => 10, :beta1 => 10, :Sigma => Matrix{Float64}(I, M, M))
 ]
 
 

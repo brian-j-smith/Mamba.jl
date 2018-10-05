@@ -7,7 +7,7 @@ function dic(mc::ModelChains)
   D = -2.0 * logpdf(mc, nodekeys).value
   p = [mean(D) - Dhat, 0.5 * var(D)]
 
-  ChainSummary([Dhat + 2.0 * p  p], ["pD", "pV"],
+  ChainSummary([Dhat .+ 2.0 .* p  p], ["pD", "pV"],
                ["DIC", "Effective Parameters"], header(mc))
 end
 
@@ -47,7 +47,7 @@ function logpdf(mc::ModelChains,
   ]
   sims = pmap2(logpdf_modelchains_worker, lsts)
 
-  ModelChains(cat(3, sims...), mc.model)
+  ModelChains(cat(sims..., dims=3), mc.model)
 end
 
 

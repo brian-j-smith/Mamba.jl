@@ -1,6 +1,6 @@
 #################### File I/O ####################
 
-function Base.read{T<:AbstractChains}(name::AbstractString, ::Type{T})
+function Base.read(name::AbstractString, ::Type{T}) where {T<:AbstractChains}
   c = open(deserialize, name, "r")
   isa(c, T) || throw(TypeError(:open, "read(\"$name\", $T)", T, c))
   c
@@ -22,12 +22,12 @@ function readcoda(output::AbstractString, index::AbstractString)
 
   thin = Int((lastiter[1] - firstiter[1]) / (lastind[1] - firstind[1]))
   window = maximum(firstiter):thin:minimum(lastiter)
-  startind = firstind + (first(window) - firstiter) / step(window)
-  stopind = lastind - (lastiter - last(window)) / step(window)
+  startind = firstind .+ (first(window) .- firstiter) ./ step(window)
+  stopind = lastind .- (lastiter .- last(window)) ./ step(window)
 
   names = AbstractString[ind[:, 1]...]
 
-  value = Array{Float64}(length(window), length(names))
+  value = Array{Float64}(undef, length(window), length(names))
   for i in 1:size(value, 2)
     inds = Int(startind[i]):Int(stopind[i])
     value[:, i] = out[inds, 2]

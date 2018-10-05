@@ -2,41 +2,42 @@
 
 module PDMats2
 
-  import Base: +, *, /, \
-  import Base: diag, full, inv, logdet, size
-  import Base.LinAlg: Cholesky
-  import PDMats: AbstractPDMat, dim, invquad, invquad!, quad, quad!,
+  using SparseArrays: SparseMatrixCSC
+  using LinearAlgebra: Cholesky, UpperTriangular
+  using PDMats: AbstractPDMat
+
+  import Base: +, *, /, \, size
+  import LinearAlgebra: diag, inv, logdet
+  import PDMats: dim, invquad, invquad!, quad, quad!,
          whiten, whiten!, unwhiten, unwhiten!
 
   export PBDiagMat
 
-
   #################### Types and Constructors ####################
 
-  type PBDiagMat <: AbstractPDMat{Float64}
+  struct PBDiagMat <: AbstractPDMat{Float64}
     dim::Int
     mat::SparseMatrixCSC{Float64, Int}
     chol::Vector{Cholesky{Float64}}
     scale::Int
   end
 
-  function PBDiagMat{T<:Real}(v::Vector{Matrix{T}}, n::Integer=1)
+  function PBDiagMat(v::Vector{Matrix{T}}, n::Integer=1) where {T<:Real}
     mat = spbdiagm(v, n)
-    chol = map(cholfact, v)
+    chol = map(cholesky, v)
     PBDiagMat(size(mat, 1), mat, chol, n)
   end
 
-  function PBDiagMat{T<:Real}(x::Matrix{T}, n::Integer=1)
+  function PBDiagMat(x::Matrix{T}, n::Integer=1) where {T<:Real}
     PBDiagMat(Matrix{T}[x], n)
   end
-
 
   #################### Base Methods ####################
 
   +(a::PBDiagMat, b::Matrix{Float64}) = a.mat + b
   +(a::Matrix{Float64}, b::PBDiagMat) = b + a
 
-  *(a::PBDiagMat, c::Float64) = mapchol(x -> c * full(x), a)
+  *(a::PBDiagMat, c::Float64) = mapchol(x -> c * Matrix(x), a)
   /(a::PBDiagMat, c::Float64) = a * inv(c)
   *(c::Float64, a::PBDiagMat) = a * c
 
@@ -51,7 +52,7 @@ module PDMats2
   size(a::PBDiagMat, i) = size(a)[i]
 
   diag(a::PBDiagMat) = diag(a.mat)
-  full(a::PBDiagMat) = full(a.mat)
+  Matrix(a::PBDiagMat) = Matrix(a.mat)
   inv(a::PBDiagMat) = mapchol(inv, a)
   logdet(a::PBDiagMat) = a.scale * mapreduce(logdet, +, a.chol)
 
@@ -108,15 +109,14 @@ module PDMats2
 
   mapchol(f::Function, a::PBDiagMat) = PBDiagMat(map(f, a.chol), a.scale)
 
-  function spbdiagm{T<:Real}(v::Union{Vector{Matrix{T}},
-                                      Vector{UpperTriangular{T, Matrix{T}}}},
-                             n::Integer=1)
+  const VecOfMatsOrUppers{T} = Union{Vector{Matrix{T}}, Vector{UpperTriangular{T, Matrix{T}}}}
+  function spbdiagm(v::VecOfMatsOrUppers{T}, n::Integer=1) where {T<:Real}
     vn = [fill(v, n)...;]
 
     len = mapreduce(splength, +, vn)
-    I = Array{Int}(len)
-    J = Array{Int}(len)
-    V = Array{Float64}(len)
+    I = Array{Int}(undef, len)
+    J = Array{Int}(undef, len)
+    V = Array{Float64}(undef, len)
 
     k = 1
     offset = 0
@@ -140,11 +140,11 @@ module PDMats2
   splength(x::Matrix) = length(x)
   isnonzero(x::Matrix, i::Integer, j::Integer) = true
 
-  function splength{T}(x::UpperTriangular{T, Matrix{T}})
+  function splength(x::UpperTriangular{T, Matrix{T}}) where {T}
     m, n = minmax(size(x)...)
     Int(m * (m + 1) / 2) + (n - m) * m
   end
-  isnonzero{T}(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) =
+  isnonzero(x::UpperTriangular{T, Matrix{T}}, i::Integer, j::Integer) where {T} =
     j >= i
 
 end

@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type MISSTune
+struct MISSTune
   dims::Tuple
   valueinds::Vector{Int}
   distrinds::Vector{Int}
@@ -24,7 +24,7 @@ end
 function MISSTune(D::Array{MultivariateDistribution}, v::Array)
   isvalueinds = falses(v)
   isdistrinds = falses(D)
-  for sub in CartesianRange(size(D))
+  for sub in CartesianIndices(size(D))
     n = length(D[sub])
     for i in 1:n
       if isnan(v[sub, i])
@@ -77,7 +77,7 @@ function rand_sub(D::Array{UnivariateDistribution}, miss::MISSTune)
 end
 
 function rand_sub(D::Array{MultivariateDistribution}, miss::MISSTune)
-  X = Array{Float64}(miss.dims)
+  X = Array{Float64}(undef, miss.dims)
   for i in miss.distrinds
     d = D[i]
     X[ind2sub(D, i)..., 1:length(d)] = rand(d)

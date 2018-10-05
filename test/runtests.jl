@@ -1,3 +1,7 @@
+using Distributed
+using Random
+using LinearAlgebra
+
 include("utils.jl")
 
 const tutorialtests = [
@@ -32,12 +36,12 @@ const extensiontests = [
 println("Running tests:")
 
 for t in tutorialtests
-  @everywhere srand(123)
+  @everywhere Random.seed!(123)
   @runtest "../doc/tutorial/" t
 end
 
 for t in samplertests
-  @everywhere srand(123)
+  @everywhere Random.seed!(123)
   @runtest "../doc/samplers/" t
 end
 
@@ -46,6 +50,6 @@ for t in mcmctests
 end
 
 for t in extensiontests
-  @everywhere srand(123)
+  @everywhere Random.seed!(123)
   @runtest "../doc/mcmc/" t
 end

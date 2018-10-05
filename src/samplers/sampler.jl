@@ -5,9 +5,9 @@ const samplerfxargs = [(:model, Mamba.Model), (:block, Integer)]
 
 #################### Types and Constructors ####################
 
-type NullFunction end
+struct NullFunction end
 
-type SamplingBlock
+struct SamplingBlock
   model::Model
   index::Int
   transform::Bool
@@ -24,7 +24,7 @@ function Sampler(params::Vector{Symbol}, f::Function, tune::Any=Dict())
 end
 
 
-function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U}, tune::T)
+function SamplerVariate(x::AbstractVector{U}, tune::T) where {T<:SamplerTune, U<:Real}
   SamplerVariate{T}(x, tune)
 end
 
@@ -34,9 +34,9 @@ function SamplerVariate(block::SamplingBlock, pargs...; kargs...)
                  kargs...)
 end
 
-function SamplerVariate{T<:SamplerTune, U<:Real}(x::AbstractVector{U},
-                                                 s::Sampler{T}, iter::Integer,
-                                                 pargs...; kargs...)
+function SamplerVariate(x::AbstractVector{U},
+                        s::Sampler{T}, iter::Integer,
+                        pargs...; kargs...) where {T<:SamplerTune, U<:Real}
   if iter == 1
     v = SamplerVariate{T}(x, pargs...; kargs...)
     s.tune = v.tune
@@ -58,7 +58,7 @@ function Base.show(io::IO, s::Sampler)
   println(io)
 end
 
-function Base.showall(io::IO, s::Sampler)
+function showall(io::IO, s::Sampler)
   show(io, s)
   print(io, "\nTuning Parameters:\n")
   show(io, s.tune)
@@ -85,26 +85,25 @@ end
 
 #################### sample! Generics ####################
 
-function sample!(v::SamplerVariate, density::Nullable; args...)
-  isnull(density) && error("must specify a target density in $(typeof(v))",
-                           " constructor or sample! method")
-  sample!(v, get(density); args...)
+function sample!(v::SamplerVariate, density; args...)
+  isa(density, Missing) && error("must specify a target density in $(typeof(v))", " constructor or sample! method")
+  sample!(v, density; args...)
 end
 
 
 #################### Simulation Methods ####################
 
-function gradlogpdf!{T<:Real}(block::SamplingBlock, x::AbstractArray{T},
-                              dtype::Symbol=:forward)
+function gradlogpdf!(block::SamplingBlock, x::AbstractArray{T},
+                    dtype::Symbol=:forward) where {T<:Real}
   gradlogpdf!(block.model, x, block.index, block.transform, dtype=dtype)
 end
 
-function logpdf!{T<:Real}(block::SamplingBlock, x::AbstractArray{T})
+function logpdf!(block::SamplingBlock, x::AbstractArray{T}) where {T<:Real}
   logpdf!(block.model, x, block.index, block.transform)
 end
 
-function logpdfgrad!{T<:Real}(block::SamplingBlock, x::AbstractVector{T},
-                              dtype::Symbol)
+function logpdfgrad!(block::SamplingBlock, x::AbstractVector{T},
+                    dtype::Symbol) where {T<:Real}
   grad = gradlogpdf!(block, x, dtype)
   logf = logpdf!(block, x)
   (logf, ifelse.(isfinite.(grad), grad, 0.0))
@@ -114,7 +113,7 @@ function unlist(block::SamplingBlock)
   unlist(block.model, block.index, block.transform)
 end
 
-function relist{T<:Real}(block::SamplingBlock, x::AbstractArray{T})
+function relist(block::SamplingBlock, x::AbstractArray{T}) where {T<:Real}
   relist(block.model, x, block.index, block.transform)
 end
 

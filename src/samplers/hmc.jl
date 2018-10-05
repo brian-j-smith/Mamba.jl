@@ -2,28 +2,28 @@
 
 #################### Types and Constructors ####################
 
-type HMCTune <: SamplerTune
-  logfgrad::Nullable{Function}
+mutable struct HMCTune <: SamplerTune
+  logfgrad::Union{Function, Missing}
   epsilon::Float64
   L::Int
-  SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
+  SigmaL::Union{UniformScaling{Bool}, LowerTriangular{Float64}}
 
   HMCTune() = new()
 
-  HMCTune(x::Vector, epsilon::Real, L::Integer) =
-    new(Nullable{Function}(), epsilon, L, I)
+  HMCTune(x, epsilon::Real, L::Integer) =
+    new(missing, epsilon, L, I)
 
-  HMCTune(x::Vector, epsilon::Real, L::Integer, logfgrad::Function) =
-    new(Nullable{Function}(logfgrad), epsilon, L, I)
+  HMCTune(x, epsilon::Real, L::Integer, logfgrad::Function) =
+    new(logfgrad, epsilon, L, I)
 
-  function HMCTune{T<:Real}(x::Vector, epsilon::Real, L::Integer,
-                            Sigma::Matrix{T})
-    new(Nullable{Function}(), epsilon, L, cholfact(Sigma)[:L])
+  function HMCTune(x, epsilon::Real, L::Integer,
+                   Sigma::Matrix{T}) where {T<:Real}
+    new(missing, epsilon, L, cholesky(Sigma).L)
   end
 
-  function HMCTune{T<:Real}(x::Vector, epsilon::Real, L::Integer,
-                            Sigma::Matrix{T}, logfgrad::Function)
-    new(Nullable{Function}(logfgrad), epsilon, L, cholfact(Sigma)[:L])
+  function HMCTune(x, epsilon::Real, L::Integer,
+                   Sigma::Matrix{T}, logfgrad::Function) where {T<:Real}
+    new(logfgrad, epsilon, L, cholesky(Sigma).L)
   end
 end
 
@@ -43,16 +43,6 @@ end
 
 
 #################### Sampler Constructor ####################
-
-function HMC(params::ElementOrVector{Symbol}, epsilon::Real, L::Integer;
-             args...)
-  HMCSampler(params, epsilon, L; args...)
-end
-
-function HMC{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
-                      L::Integer, Sigma::Matrix{T}; args...)
-  HMCSampler(params, epsilon, L, Sigma; args...)
-end
 
 function HMCSampler(params, pargs...; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)
