@@ -6,6 +6,7 @@ module Mamba
   @reexport using Distributions
 
   #################### Imports ####################
+  using DelimitedFiles
   using SpecialFunctions
   using Serialization
   using Distributed

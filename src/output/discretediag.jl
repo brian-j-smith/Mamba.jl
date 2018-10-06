@@ -129,7 +129,7 @@ function billingsley_sub(f::Array{Int64,3})
   df = 0.0
   stat = 0.0
 
-  m, d = size(f,2,3)
+  m, d = size(f, 2), size(f, 3)
 
   # marginal transitions, i.e.
   # number of transitions from each category
@@ -147,9 +147,9 @@ function billingsley_sub(f::Array{Int64,3})
   P = f ./ mf
 
   # transition probabilities
-  mP = reshape((mapslices(sum,f,dims=3) ./ mapslices(sum,mf,dims=3)), Val{2})
+  mP = reshape((mapslices(sum,f,dims=3) ./ mapslices(sum,mf,dims=3)), Val(2))
 
-  idx = find(A .* B)
+  idx = findall(x -> x != 0, A .* B)
   for j in idx
     #df for billingsley
     df += (A[j] - 1) * (B[j] - 1)
@@ -431,7 +431,7 @@ function discretediag(c::AbstractChains; frac::Real=0.3,
 
   hdr = header(c) * "\nChisq Diagnostic:\nEnd Fractions = $frac\n" *
   "method = $method\n"
-  ChainSummary(round.(vals,digits=3)', c.names[V], 
+  ChainSummary(copy(round.(vals,digits=3)'), c.names[V], 
                convert(Array{AbstractString, 1}, 
                        vcat([["stat", "df", "p-value"] 
                              for k in 1:(num_chains + 1)]...)), hdr)

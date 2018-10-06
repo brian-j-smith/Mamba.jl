@@ -22,8 +22,8 @@ function readcoda(output::AbstractString, index::AbstractString)
 
   thin = Int((lastiter[1] - firstiter[1]) / (lastind[1] - firstind[1]))
   window = maximum(firstiter):thin:minimum(lastiter)
-  startind = firstind + (first(window) - firstiter) / step(window)
-  stopind = lastind - (lastiter - last(window)) / step(window)
+  startind = firstind .+ (first(window) .- firstiter) ./ step(window)
+  stopind = lastind .- (lastiter .- last(window)) ./ step(window)
 
   names = AbstractString[ind[:, 1]...]
 

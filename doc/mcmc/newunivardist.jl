@@ -7,7 +7,7 @@
   import Distributions: minimum, maximum, logpdf
 
   ## Type declaration
-  type NewUnivarDist <: ContinuousUnivariateDistribution
+  mutable struct NewUnivarDist <: ContinuousUnivariateDistribution
     mu::Float64
     sigma::Float64
   end
@@ -27,7 +27,7 @@ end
 
 ## Test the extensions in a temporary module (optional)
 module Testing end
-eval(Testing, extensions)
+Core.eval(Testing, extensions)
 d = Testing.NewUnivarDist(0.0, 1.0)
 Testing.minimum(d)
 Testing.maximum(d)

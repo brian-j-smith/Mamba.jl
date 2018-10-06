@@ -45,7 +45,6 @@ for t in samplertests
   @runtest "../doc/samplers/" t
 end
 
-#=
 for t in mcmctests
   @runtest "../doc/mcmc/" t
 end
@@ -54,4 +53,3 @@ for t in extensiontests
   @everywhere Random.seed!(123)
   @runtest "../doc/mcmc/" t
 end
-=#
