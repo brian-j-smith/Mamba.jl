@@ -13,9 +13,6 @@ mutable struct SliceTune{F<:SliceForm} <: SamplerTune
   SliceTune{F}(x::Vector, width) where {F<:SliceForm} =
     SliceTune{F}(x, width, missing)
 
-  SliceTune{F}(x::Vector, width, logf::Function) where {F<:SliceForm} =
-    SliceTune{F}(x, width, logf)
-
   SliceTune{F}(x::Vector, width::Real, logf::Union{Function, Missing}) where
     {F<:SliceForm} = new{F}(logf, Float64(width))
 

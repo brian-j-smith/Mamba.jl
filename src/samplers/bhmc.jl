@@ -21,10 +21,6 @@ end
 BHMCTune(x::Vector, traveltime::Real) =
   BHMCTune(x, traveltime, missing)
 
-BHMCTune(x::Vector, traveltime::Real, logf::Function) =
-  BHMCTune(x, traveltime, logf)
-
-
 const BHMCVariate = SamplerVariate{BHMCTune}
 
 validate(v::BHMCVariate) = validatebinary(v)
@@ -60,12 +56,12 @@ function sample!(v::BHMCVariate, logf::Function)
   while true
     a = tune.velocity[:]
     b = tune.position[:]
-    phi = atan2.(b, a)
+    phi = atan.(b, a)
 
     ## time to hit or cross wall
     walltime = -phi
-    idx = find(x-> x > 0.0, phi)
-    walltime[idx] = pi - phi[idx]
+    idx = findall(x-> x > 0.0, phi)
+    walltime[idx] .= pi .- phi[idx]
 
     ## if there was a previous reflection (j > 0) and there is a potential
     ## reflection at the sample plane make sure that a new reflection at j

@@ -27,7 +27,7 @@ function draw(p::Array{Plot}; fmt::Symbol=:svg, filename::AbstractString="",
   for page in 1:np
     if ask && page > 1 && !addextension
       println("Press ENTER to draw next plot")
-      readline(STDIN)
+      readline(stdin)
     end
 
     if isexternalfile
@@ -109,7 +109,7 @@ function barplot(c::AbstractChains; legend::Bool=false,
   for i in 1:nvars
     S = unique(c.value[:, i, :])
     n = length(S)
-    x = repmat(S, 1, nchains)
+    x = repeat(S, 1, nchains)
     y = zeros(n, nchains)
     for j in 1:nchains
       m = countmap(c.value[:, i, j])

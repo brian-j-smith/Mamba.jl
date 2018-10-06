@@ -24,11 +24,7 @@ end
 RWMTune(x::Vector, scale::ElementOrVector{T}; args...) where {T<:Real} =
   RWMTune(x, scale, missing; args...)
 
-function RWMTune(x::Vector, scale::ElementOrVector{T}, logf::Function; args...) where {T<:Real}
-  RWMTune(x, scale, logf; args...)
-end
-
-
+  
 const RWMVariate = SamplerVariate{RWMTune}
 
 validate(v::RWMVariate) = validate(v, v.tune.scale)

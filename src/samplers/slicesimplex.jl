@@ -15,10 +15,6 @@ end
 SliceSimplexTune(x::Vector; args...) =
   SliceSimplexTune(x, missing; args...)
 
-SliceSimplexTune(x::Vector, logf::Function; args...) =
-  SliceSimplexTune(x, logf; args...)
-
-
 const SliceSimplexVariate = SamplerVariate{SliceSimplexTune}
 
 function validate(v::SliceSimplexVariate)
@@ -85,7 +81,7 @@ sample!(v::SliceSimplexVariate) = sample!(v, v.tune.logf)
 
 function sample!(v::SliceSimplexVariate, logf::Function)
   p0 = logf(v.value) + log(rand())
-  d = Dirichlet(ones(v))
+  d = Dirichlet(fill!(similar(v), 1))
 
   vertices = makefirstsimplex(v, v.tune.scale)
   vb = vertices \ v
@@ -106,14 +102,14 @@ end
 function makefirstsimplex(x::AbstractVector{Float64}, scale::Real)
   vertices = Matrix{Float64}(I, length(x), length(x))
   vertices[:, 2:end] += (1.0 - scale) * (vertices[:, 1] .- vertices[:, 2:end])
-  vertices .+ x .- vertices * rand(Dirichlet(ones(x)))
+  vertices .+ x .- vertices * rand(Dirichlet(fill!(similar(x), 1)))
 end
 
 
 function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
                        cx::AbstractVector{Float64}, cc::AbstractVector{Float64},
                        vertices::AbstractMatrix{Float64})
-  for i in find(bc .< bx)
+  for i in findall(bc .< bx)
     inds = [1:(i - 1); (i + 1):size(vertices, 2)]
     vertices[:, inds] += bc[i] * (vertices[:, i] .- vertices[:, inds])
     bc = vertices \ cc

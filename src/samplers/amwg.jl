@@ -13,7 +13,7 @@ mutable struct AMWGTune <: SamplerTune
 
   AMWGTune() = new()
 
-  function AMWGTune(x::Vector, sigma::Vector{T},
+  function AMWGTune(x::Vector, sigma::ElementOrVector{T},
                     logf::Union{Function, Missing}; batchsize::Integer=50,
                     target::Real=0.44) where {T<:Real}
     new(logf, false, zeros(Int, length(x)), batchsize, 0, copy(sigma), target)
@@ -22,10 +22,6 @@ end
 
 AMWGTune(x::Vector, sigma::ElementOrVector{T}; args...) where {T<:Real} =
   AMWGTune(x, sigma, missing; args...)
-
-function AMWGTune(x::Vector, sigma::ElementOrVector{T}, logf::Function; args...) where {T<:Real}
-  AMWGTune(x, sigma, logf; args...)
-end
 
 AMWGTune(x::Vector, sigma::Real, logf::Union{Function, Missing}; args...) =
   AMWGTune(x, fill(sigma, length(x)), logf; args...)
@@ -87,7 +83,7 @@ end
 function setadapt!(v::AMWGVariate, adapt::Bool)
   tune = v.tune
   if adapt && !tune.adapt
-    tune.accept[:] = 0
+    tune.accept[:] .= 0
     tune.m = 0
   end
   tune.adapt = adapt

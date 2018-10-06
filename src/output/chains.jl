@@ -49,7 +49,6 @@ end
 #################### Indexing ####################
 
 function Base.getindex(c::Chains, window, names, chains)
-  @show window
   inds1 = window2inds(c, window)
   inds2 = names2inds(c, names)
   Chains(c.value[inds1, inds2, chains],
@@ -71,6 +70,7 @@ end
 window2inds(c::AbstractChains, window) =
   throw(ArgumentError("$(typeof(window)) iteration indexing is unsupported"))
 window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c, 1))
+window2inds(c::AbstractChains, window::Int) = window2inds(c, window:window)
 window2inds(c::AbstractChains, window::AbstractRange) = begin
   range = @mapiters(window, c)
   a = max(ceil(Int, first(range)), 1)

@@ -57,7 +57,7 @@ sample!(v::SamplerVariate{BMGTune{F}}) where {F<:BMGForm} = sample!(v, v.tune.lo
 
 function sample!(v::SamplerVariate{BMGTune{F}}, logf::Function) where {F<:BMGForm}
   n = length(v)
-  probs = Vector{Float64}(n)
+  probs = Vector{Float64}(undef, n)
   idx = randind(v)
 
   pbernoulli! = function(x, probs)

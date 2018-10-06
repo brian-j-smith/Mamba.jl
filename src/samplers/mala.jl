@@ -5,7 +5,7 @@
 mutable struct MALATune <: SamplerTune
   logfgrad::Union{Function, Missing}
   epsilon::Float64
-  SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
+  SigmaL::Union{UniformScaling{Bool}, LowerTriangular{Float64}}
 
   MALATune() = new()
 
@@ -17,7 +17,7 @@ mutable struct MALATune <: SamplerTune
   MALATune(x::Vector, epsilon::Real, Sigma::Matrix{T}) where {T<:Real} =
     new(missing, epsilon, cholesky(Sigma).L)
 
-  function MALATune(x::Vector, epsilon::Real, Sigma::Matrix{T},
+  function MALATune(x::Vector, epsilon::Real, Sigma::AbstractMatrix{T},
                     logfgrad::Function) where {T<:Real}
     new(logfgrad, epsilon, cholesky(Sigma).L)
   end
@@ -39,15 +39,6 @@ end
 
 
 #################### Sampler Constructor ####################
-
-function MALA(params::ElementOrVector{Symbol}, epsilon::Real; args...)
-  MALASampler(params, epsilon; args...)
-end
-
-function MALA(params::ElementOrVector{Symbol}, epsilon::Real,
-               Sigma::Matrix{T}; args...) where {T<:Real}
-  MALASampler(params, epsilon, Sigma; args...)
-end
 
 function MALASampler(params, pargs...; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)

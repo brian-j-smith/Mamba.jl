@@ -35,12 +35,10 @@ const extensiontests = [
 
 println("Running tests:")
 
-#=
 for t in tutorialtests
   @everywhere Random.seed!(123)
   @runtest "../doc/tutorial/" t
 end
-=#
 
 for t in samplertests
   @everywhere Random.seed!(123)

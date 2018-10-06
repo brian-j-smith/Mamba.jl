@@ -58,7 +58,7 @@ sample!(v::SamplerVariate{BMC3Tune{F}}) where {F<:BMC3Form} = sample!(v, v.tune.
 function sample!(v::SamplerVariate{BMC3Tune{F}}, logf::Function) where {F<:BMC3Form}
   x = v[:]
   idx = randind(v)
-  x[idx] = 1.0 - v[idx]
+  x[idx] = 1.0 .- v[idx]
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x
   end

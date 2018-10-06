@@ -35,10 +35,6 @@ NUTSTune(x::Vector{Float64}, logfgrad::Function; args...) =
 NUTSTune(x::Vector, epsilon::Real; args...) =
   NUTSTune(x, epsilon, missing; args...)
 
-NUTSTune(x::Vector, epsilon::Real, logfgrad::Function; args...) =
-  NUTSTune(x, epsilon, logfgrad; args...)
-
-
 const NUTSVariate = SamplerVariate{NUTSTune}
 
 

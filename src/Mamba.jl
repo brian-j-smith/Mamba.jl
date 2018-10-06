@@ -14,6 +14,9 @@ module Mamba
   using Calculus: gradient
   using Showoff: showoff
 
+  @static if VERSION < v"1.0.0"
+    import Base: showall
+  end
   import Base: names, Matrix
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
   import LinearAlgebra: dot
@@ -313,10 +316,13 @@ module Mamba
     setinputs!,
     setmonitor!,
     setsamplers!,
-    showall,
     summarystats,
     unlist,
     update!
+
+  @static if VERSION >= v"1.0.0"
+    export showall
+  end
 
   export
     ABC,

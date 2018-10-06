@@ -16,8 +16,8 @@ mutable struct BIATune <: SamplerTune
   BIATune() = new()
 
   function BIATune(x::Vector, logf::Union{Function, Missing};
-                   A::Vector{Float64} = ones(x) / length(x),
-                   D::Vector{Float64} = ones(x) / length(x),
+                   A::Vector{Float64} = fill(1, size(x)) ./ length(x),
+                   D::Vector{Float64} = fill(1, size(x)) ./ length(x),
                    epsilon::Real = 0.01 / length(x), decay::Real = 0.55,
                    target::Real = 0.45)
     new(logf, A, D, epsilon, decay, target, 0)
@@ -26,10 +26,6 @@ end
 
 BIATune(x::Vector; args...) =
    BIATune(x, missing; args...)
-
-BIATune(x::Vector, logf::Function; args...) =
-   BIATune(x, logf; args...)
-
 
 const BIAVariate = SamplerVariate{BIATune}
 
