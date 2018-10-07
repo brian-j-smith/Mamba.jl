@@ -37,12 +37,12 @@ const contributedtests = [
 println("Running examples:")
 
 for t in openbugstests
-  @everywhere srand(123)
+  @everywhere Random.seed!(123)
   @runtest "../doc/examples/" t
   gelmandiag(sim) |> show
 end
 
 for t in contributedtests
-  @everywhere srand(123)
+  @everywhere Random.seed!(123)
   @runtest "../doc/examples/" t
 end

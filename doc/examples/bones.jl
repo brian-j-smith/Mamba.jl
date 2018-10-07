@@ -56,7 +56,7 @@ model = Model(
   grade = Stochastic(2,
     (ncat, delta, theta, gamma, nChild, nInd) ->
       begin
-        p = Array{Float64}(5)
+        p = Array{Float64}(undef, 5)
         UnivariateDistribution[
           begin
             n = ncat[j]

@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-type ChainProgressFrame
+struct ChainProgressFrame
   verbose::Bool
 
   function ChainProgressFrame(title::AbstractString, verbose::Bool)
@@ -11,7 +11,7 @@ type ChainProgressFrame
   end
 end
 
-type ChainProgress
+mutable struct ChainProgress
   frame::ChainProgressFrame
   chain::Int
   iters::Int
@@ -41,7 +41,7 @@ function next!(p::ChainProgress)
   p.counter += 1
   if p.counter / p.iters >= p.threshold && p.counter >= p.runin
     p.threshold += 0.10
-    p.frame.verbose && print(STDOUT, p)
+    p.frame.verbose && print(stdout, p)
   end
   p
 end

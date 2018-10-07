@@ -1,7 +1,7 @@
 #################### Heidelberger and Welch Diagnostic ####################
 
-function heideldiag{T<:Real}(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
-                             etype=:imse, start::Integer=1, args...)
+function heideldiag(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
+                    etype=:imse, start::Integer=1, args...) where {T<:Real}
   n = length(x)
   delta = trunc(Int, 0.10 * n)
   y = x[trunc(Int, n / 2):end]
@@ -23,16 +23,16 @@ function heideldiag{T<:Real}(x::Vector{T}; alpha::Real=0.05, eps::Real=0.1,
   end
   halfwidth = sqrt(2.0) * erfinv(1.0 - alpha) * mcse(y, etype; args...)
   passed = halfwidth / abs(ybar) <= eps
-  [i + start - 2, converged, round(pvalue, 4), ybar, halfwidth, passed]
+  [i + start - 2, converged, round(pvalue, digits=4), ybar, halfwidth, passed]
 end
 
 function heideldiag(c::AbstractChains; alpha::Real=0.05, eps::Real=0.1,
                     etype=:imse, args...)
   _, p, m = size(c.value)
-  vals = Array{Float64}(p, 6, m)
+  vals = Array{Float64}(undef, p, 6, m)
   for j in 1:p, k in 1:m
     vals[j, :, k] = heideldiag(c.value[:, j, k], alpha=alpha, eps=eps,
-                               etype=etype, start=start(c.range); args...)
+                               etype=etype, start=c.range.start; args...)
   end
   hdr = header(c) * "\nHeidelberger and Welch Diagnostic:\n" *
         "Target Halfwidth Ratio = $eps\nAlpha = $alpha\n"

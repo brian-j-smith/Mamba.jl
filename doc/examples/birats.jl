@@ -87,9 +87,9 @@ model = Model(
 ## Initial Values
 inits = [
   Dict(:Y => birats[:Y], :beta => repmat([100 6], birats[:N], 1),
-       :mu_beta => [0, 0], :Sigma => eye(2), :sigma2C => 1.0),
+       :mu_beta => [0, 0], :Sigma => Matrix{Float64}(I, 2, 2), :sigma2C => 1.0),
   Dict(:Y => birats[:Y], :beta => repmat([50 3], birats[:N], 1),
-       :mu_beta => [10, 10], :Sigma => 0.3 * eye(2), :sigma2C => 10.0)
+       :mu_beta => [10, 10], :Sigma => 0.3 * Matrix{Float64}(I, 2, 2), :sigma2C => 10.0)
 ]
 
 

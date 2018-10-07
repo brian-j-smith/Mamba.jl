@@ -1,16 +1,25 @@
-__precompile__(false)
-
-using Distributions
-
 module Mamba
 
-  #################### Imports ####################
+  using Reexport
+  @reexport using Distributions
 
-  import Base: cor, dot
-  import Base.LinAlg: Cholesky
-  import Calculus: gradient
-  import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm,
-         pt, px
+  #################### Imports ####################
+  using DelimitedFiles
+  using SpecialFunctions
+  using Serialization
+  using Distributed
+  using Printf: @sprintf
+  using LinearAlgebra
+  using Calculus: gradient
+  using Showoff: showoff
+
+  @static if VERSION < v"1.0.0"
+    import Base: showall
+  end
+  import Base: names, Matrix
+  import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
+  import LinearAlgebra: dot
+  import Statistics: cor
   import Distributions:
          ## Generic Types
          Continuous, ContinuousUnivariateDistribution, Distribution,
@@ -37,17 +46,15 @@ module Mamba
          ## Methods
          cdf, dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
          minimum, pdf, quantile, rand, sample!, support
-  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
+  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS, 
          render, Scale, SVG, Theme
-  import LightGraphs: DiGraph, add_edge!, outneighbors,
+  using LightGraphs: DiGraph, add_edge!, outneighbors,
          topological_sort_by_dfs, vertices
-  import Showoff: showoff
   import StatsBase: autocor, autocov, countmap, counts, describe, predict,
          quantile, sample, sem, summarystats
 
   include("distributions/pdmats2.jl")
-  importall .PDMats2
-
+  using .PDMats2
 
   #################### Types ####################
 
@@ -73,7 +80,7 @@ module Mamba
 
   #################### Dependent Types ####################
 
-  type ScalarLogical <: ScalarVariate
+  mutable struct ScalarLogical <: ScalarVariate
     value::Float64
     symbol::Symbol
     monitor::Vector{Int}
@@ -82,7 +89,7 @@ module Mamba
     targets::Vector{Symbol}
   end
 
-  type ArrayLogical{N} <: ArrayVariate{N}
+  mutable struct ArrayLogical{N} <: ArrayVariate{N}
     value::Array{Float64, N}
     symbol::Symbol
     monitor::Vector{Int}
@@ -91,7 +98,7 @@ module Mamba
     targets::Vector{Symbol}
   end
 
-  type ScalarStochastic <: ScalarVariate
+  mutable struct ScalarStochastic <: ScalarVariate
     value::Float64
     symbol::Symbol
     monitor::Vector{Int}
@@ -101,7 +108,7 @@ module Mamba
     distr::UnivariateDistribution
   end
 
-  type ArrayStochastic{N} <: ArrayVariate{N}
+  mutable struct ArrayStochastic{N} <: ArrayVariate{N}
     value::Array{Float64, N}
     symbol::Symbol
     monitor::Vector{Int}
@@ -118,7 +125,7 @@ module Mamba
 
   #################### Sampler Types ####################
 
-  type Sampler{T}
+  mutable struct Sampler{T}
     params::Vector{Symbol}
     eval::Function
     tune::T
@@ -128,35 +135,35 @@ module Mamba
 
   abstract type SamplerTune end
 
-  type SamplerVariate{T<:SamplerTune} <: VectorVariate
+  struct SamplerVariate{T<:SamplerTune} <: VectorVariate
     value::Vector{Float64}
     tune::T
 
     function SamplerVariate{T}(x::AbstractVector, tune::T) where T<:SamplerTune
-      v = new(x, tune)
+      v = new{T}(x, tune)
       validate(v)
     end
 
     function SamplerVariate{T}(x::AbstractVector, pargs...; kargs...) where T<:SamplerTune
       value = convert(Vector{Float64}, x)
-      SamplerVariate{T}(value, T(value, pargs...; kargs...))
+      new{T}(value, T(value, pargs...; kargs...))
     end
   end
 
 
   #################### Model Types ####################
 
-  type ModelGraph
+  struct ModelGraph
     graph::DiGraph
     keys::Vector{Symbol}
   end
 
-  type ModelState
+  struct ModelState
     value::Vector{Float64}
     tune::Vector{Any}
   end
 
-  type Model
+  mutable struct Model
     nodes::Dict{Symbol, Any}
     samplers::Vector{Sampler}
     states::Vector{ModelState}
@@ -171,16 +178,16 @@ module Mamba
 
   abstract type AbstractChains end
 
-  immutable Chains <: AbstractChains
+  struct Chains <: AbstractChains
     value::Array{Float64, 3}
-    range::Range{Int}
+    range::StepRange{Int, Int}
     names::Vector{AbstractString}
     chains::Vector{Int}
   end
 
-  immutable ModelChains <: AbstractChains
+  struct ModelChains <: AbstractChains
     value::Array{Float64, 3}
-    range::Range{Int}
+    range::StepRange{Int, Int}
     names::Vector{AbstractString}
     chains::Vector{Int}
     model::Model
@@ -311,6 +318,10 @@ module Mamba
     summarystats,
     unlist,
     update!
+
+  @static if VERSION >= v"1.0.0"
+    export showall
+  end
 
   export
     ABC,

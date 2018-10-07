@@ -2,22 +2,18 @@
 
 #################### Types and Constructors ####################
 
-type SliceSimplexTune <: SamplerTune
-  logf::Nullable{Function}
+mutable struct SliceSimplexTune <: SamplerTune
+  logf::Union{Function, Missing}
   scale::Float64
 
   SliceSimplexTune() = new()
 
-  SliceSimplexTune(x::Vector, logf::Nullable{Function}; scale::Real=1.0) =
+  SliceSimplexTune(x::Vector, logf::Union{Function, Missing}; scale::Real=1.0) =
     new(logf, scale)
 end
 
 SliceSimplexTune(x::Vector; args...) =
-  SliceSimplexTune(x, Nullable{Function}(); args...)
-
-SliceSimplexTune(x::Vector, logf::Function; args...) =
-  SliceSimplexTune(x, Nullable{Function}(logf); args...)
-
+  SliceSimplexTune(x, missing; args...)
 
 const SliceSimplexVariate = SamplerVariate{SliceSimplexTune}
 
@@ -38,13 +34,13 @@ function SliceSimplex(params::ElementOrVector{Symbol}; args...)
       node = model[key]
       x = unlist(node)
 
-      sim = function(inds::Range, logf::Function)
+      sim = function(inds::AbstractRange, logf::Function)
         v = SamplerVariate(x[inds], s, model.iter; args...)
         sample!(v, logf)
       end
 
       logf = function(d::MultivariateDistribution, v::AbstractVector,
-                      inds::Range)
+                      inds::AbstractRange)
         x[inds] = v
         relist!(model, x, key)
         logpdf(d, v) + logpdf(model, node.targets)
@@ -85,7 +81,7 @@ sample!(v::SliceSimplexVariate) = sample!(v, v.tune.logf)
 
 function sample!(v::SliceSimplexVariate, logf::Function)
   p0 = logf(v.value) + log(rand())
-  d = Dirichlet(ones(v))
+  d = Dirichlet(fill!(similar(v), 1))
 
   vertices = makefirstsimplex(v, v.tune.scale)
   vb = vertices \ v
@@ -104,16 +100,16 @@ end
 
 
 function makefirstsimplex(x::AbstractVector{Float64}, scale::Real)
-  vertices = eye(length(x))
+  vertices = Matrix{Float64}(I, length(x), length(x))
   vertices[:, 2:end] += (1.0 - scale) * (vertices[:, 1] .- vertices[:, 2:end])
-  vertices .+ x .- vertices * rand(Dirichlet(ones(x)))
+  vertices .+ x .- vertices * rand(Dirichlet(fill!(similar(x), 1)))
 end
 
 
 function shrinksimplex(bx::AbstractVector{Float64}, bc::AbstractVector{Float64},
                        cx::AbstractVector{Float64}, cc::AbstractVector{Float64},
                        vertices::AbstractMatrix{Float64})
-  for i in find(bc .< bx)
+  for i in findall(bc .< bx)
     inds = [1:(i - 1); (i + 1):size(vertices, 2)]
     vertices[:, inds] += bc[i] * (vertices[:, i] .- vertices[:, inds])
     bc = vertices \ cc

@@ -1,6 +1,6 @@
 #################### Flat Distribution ####################
 
-immutable Flat <: ContinuousUnivariateDistribution end
+struct Flat <: ContinuousUnivariateDistribution end
 
 minimum(d::Flat) = -Inf
 maximum(d::Flat) = Inf
@@ -35,12 +35,12 @@ BDiagNormal(μ::AbstractVector, Σ::AbstractVector) =
 
 #################### Null Distribution ####################
 
-immutable NullUnivariateDistribution <: UnivariateDistribution{ValueSupport} end
+struct NullUnivariateDistribution <: UnivariateDistribution{ValueSupport} end
 
 
 #################### SymUniform Distribution ####################
 
-type SymUniform <: ContinuousUnivariateDistribution
+struct SymUniform <: ContinuousUnivariateDistribution
   SymUniform() = Uniform(-1.0, 1.0)
   SymUniform(μ::Real, σ::Real) = Uniform(μ - σ, μ + σ)
 end

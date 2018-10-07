@@ -2,8 +2,8 @@
 
 #################### Types ####################
 
-type BHMCTune <: SamplerTune
-  logf::Nullable{Function}
+mutable struct BHMCTune <: SamplerTune
+  logf::Union{Function, Missing}
   traveltime::Float64
   position::Vector{Float64}
   velocity::Vector{Float64}
@@ -12,18 +12,14 @@ type BHMCTune <: SamplerTune
 
   BHMCTune() = new()
 
-  function BHMCTune(x::Vector, traveltime::Real, logf::Nullable{Function})
+  function BHMCTune(x::Vector, traveltime::Real, logf::Union{Function, Missing})
     n = length(x)
     new(logf, traveltime, randn(n), randn(n), 0, 0)
   end
 end
 
 BHMCTune(x::Vector, traveltime::Real) =
-  BHMCTune(x, traveltime, Nullable{Function}())
-
-BHMCTune(x::Vector, traveltime::Real, logf::Function) =
-  BHMCTune(x, traveltime, Nullable{Function}(logf))
-
+  BHMCTune(x, traveltime, missing)
 
 const BHMCVariate = SamplerVariate{BHMCTune}
 
@@ -60,12 +56,12 @@ function sample!(v::BHMCVariate, logf::Function)
   while true
     a = tune.velocity[:]
     b = tune.position[:]
-    phi = atan2.(b, a)
+    phi = atan.(b, a)
 
     ## time to hit or cross wall
     walltime = -phi
-    idx = find(x-> x > 0.0, phi)
-    walltime[idx] = pi - phi[idx]
+    idx = findall(x-> x > 0.0, phi)
+    walltime[idx] .= pi .- phi[idx]
 
     ## if there was a previous reflection (j > 0) and there is a potential
     ## reflection at the sample plane make sure that a new reflection at j

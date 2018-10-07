@@ -2,24 +2,24 @@
 
 #################### Types ####################
 
-type MALATune <: SamplerTune
-  logfgrad::Nullable{Function}
+mutable struct MALATune <: SamplerTune
+  logfgrad::Union{Function, Missing}
   epsilon::Float64
-  SigmaL::Union{UniformScaling{Int}, LowerTriangular{Float64}}
+  SigmaL::Union{UniformScaling{Bool}, LowerTriangular{Float64}}
 
   MALATune() = new()
 
-  MALATune(x::Vector, epsilon::Real) = new(Nullable{Function}(), epsilon, I)
+  MALATune(x::Vector, epsilon::Real) = new(missing, epsilon, I)
 
   MALATune(x::Vector, epsilon::Real, logfgrad::Function) =
-    new(Nullable{Function}(logfgrad), epsilon, I)
+    new(logfgrad, epsilon, I)
 
-  MALATune{T<:Real}(x::Vector, epsilon::Real, Sigma::Matrix{T}) =
-    new(Nullable{Function}(), epsilon, cholfact(Sigma)[:L])
+  MALATune(x::Vector, epsilon::Real, Sigma::Matrix{T}) where {T<:Real} =
+    new(missing, epsilon, cholesky(Sigma).L)
 
-  function MALATune{T<:Real}(x::Vector, epsilon::Real, Sigma::Matrix{T},
-                             logfgrad::Function)
-    new(Nullable{Function}(logfgrad), epsilon, cholfact(Sigma)[:L])
+  function MALATune(x::Vector, epsilon::Real, Sigma::AbstractMatrix{T},
+                    logfgrad::Function) where {T<:Real}
+    new(logfgrad, epsilon, cholesky(Sigma).L)
   end
 end
 
@@ -39,15 +39,6 @@ end
 
 
 #################### Sampler Constructor ####################
-
-function MALA(params::ElementOrVector{Symbol}, epsilon::Real; args...)
-  MALASampler(params, epsilon; args...)
-end
-
-function MALA{T<:Real}(params::ElementOrVector{Symbol}, epsilon::Real,
-                       Sigma::Matrix{T}; args...)
-  MALASampler(params, epsilon, Sigma; args...)
-end
 
 function MALASampler(params, pargs...; dtype::Symbol=:forward)
   samplerfx = function(model::Model, block::Integer)

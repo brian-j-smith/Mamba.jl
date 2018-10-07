@@ -4,23 +4,23 @@
 
 const BMC3Form = Union{Int, Vector{Vector{Int}}}
 
-type BMC3Tune{F<:BMC3Form} <: SamplerTune
-  logf::Nullable{Function}
+mutable struct BMC3Tune{F<:BMC3Form} <: SamplerTune
+  logf::Union{Function, Missing}
   k::F
 
-  BMC3Tune{F}() where F<:BMC3Form = new()
+  BMC3Tune{F}() where {F<:BMC3Form} = new{F}()
 
-  BMC3Tune{F}(x::Vector, k::F) where F<:BMC3Form = new(Nullable{Function}(), k)
+  BMC3Tune{F}(x::Vector, k::F) where {F<:BMC3Form} = new{F}(missing, k)
 
-  BMC3Tune{F}(x::Vector, k::F, logf::Function) where F<:BMC3Form =
-    new(Nullable{Function}(logf), k)
+  BMC3Tune{F}(x::Vector, k::F, logf::Function) where {F<:BMC3Form} =
+    new{F}(logf, k)
 end
 
 
 const BMC3IntVariate = SamplerVariate{BMC3Tune{Int}}
 const BMC3VecVariate = SamplerVariate{BMC3Tune{Vector{Vector{Int}}}}
 
-BMC3Variate{F<:BMC3Form}(x::Vector, logf::Function; k::F=1) =
+BMC3Variate(x::Vector, logf::Function; k::F=1) where {F<:BMC3Form} =
   SamplerVariate{BMC3Tune{F}}(x, k, logf)
 
 
@@ -40,7 +40,7 @@ end
 
 #################### Sampler Constructor ####################
 
-function BMC3{F<:BMC3Form}(params::ElementOrVector{Symbol}; k::F=1)
+function BMC3(params::ElementOrVector{Symbol}; k::F=1) where {F<:BMC3Form}
   samplerfx = function(model::Model, block::Integer)
     block = SamplingBlock(model, block)
     v = SamplerVariate(block, k)
@@ -53,12 +53,12 @@ end
 
 #################### Sampling Functions ####################
 
-sample!{F<:BMC3Form}(v::SamplerVariate{BMC3Tune{F}}) = sample!(v, v.tune.logf)
+sample!(v::SamplerVariate{BMC3Tune{F}}) where {F<:BMC3Form} = sample!(v, v.tune.logf)
 
-function sample!{F<:BMC3Form}(v::SamplerVariate{BMC3Tune{F}}, logf::Function)
+function sample!(v::SamplerVariate{BMC3Tune{F}}, logf::Function) where {F<:BMC3Form}
   x = v[:]
   idx = randind(v)
-  x[idx] = 1.0 - v[idx]
+  x[idx] = 1.0 .- v[idx]
   if rand() < exp(logf(x) - logf(v.value))
     v[:] = x
   end

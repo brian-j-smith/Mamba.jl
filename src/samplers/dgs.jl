@@ -9,17 +9,16 @@ const DGSUnivariateDistribution =
 
 const DSForm = Union{Function, Vector{Float64}}
 
-type DSTune{F<:DSForm} <: SamplerTune
-  mass::Nullable{F}
+mutable struct DSTune{F<:DSForm} <: SamplerTune
+  mass::Union{F, Missing}
   support::Matrix{Real}
 
-  DSTune{F}() where F<:DSForm = new()
+  DSTune{F}() where {F<:DSForm} = new{F}()
 
-  DSTune{F}(x::Vector, support::AbstractMatrix) where F<:DSForm =
-    new(Nullable{Function}(), support)
+  DSTune{F}(x::Vector, support::AbstractMatrix) where {F<:DSForm} =
+    new{F}(missing, support)
 
-  DSTune{F}(x::Vector, support::AbstractMatrix, mass::Function) where
-    F<:DSForm = new(Nullable{F}(mass), support)
+  DSTune{F}(x::Vector, support::AbstractMatrix, mass::Function) where {F<:DSForm} = new{F}(mass, support)
 end
 
 
@@ -33,15 +32,15 @@ function validate(v::DiscreteVariate)
   validate(v, v.tune.support, v.tune.mass)
 end
 
-function validate{F<:DSForm}(v::SamplerVariate{DSTune{F}}, support::Matrix)
+function validate(v::SamplerVariate{DSTune{F}}, support::Matrix) where {F<:DSForm}
   n = length(v)
   size(support, 1) == n ||
     throw(ArgumentError("size(support, 1) differs from variate length $n"))
   v
 end
 
-validate(v::DiscreteVariate, support::Matrix, mass::Nullable{Vector{Float64}}) =
-  isnull(mass) ? v : validate(v, support, get(mass))
+validate(v::DiscreteVariate, support::Matrix, mass::Union{Vector{Float64}, Missing}) =
+  isa(mass, Missing) ? v : validate(v, support, mass)
 
 function validate(v::DiscreteVariate, support::Matrix, mass::Vector{Float64})
   n = length(mass)
@@ -103,7 +102,7 @@ end
 
 #################### Sampling Functions ####################
 
-sample!{F<:DSForm}(v::SamplerVariate{DSTune{F}}) = sample!(v, v.tune.mass)
+sample!(v::SamplerVariate{DSTune{F}}) where {F<:DSForm} = sample!(v, v.tune.mass)
 
 
 function sample!(v::DGSVariate, mass::Function)

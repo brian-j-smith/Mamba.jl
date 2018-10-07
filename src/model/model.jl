@@ -211,7 +211,7 @@ function Base.show(io::IO, m::Model)
   showf(io, m, Base.show)
 end
 
-function Base.showall(io::IO, m::Model)
+function showall(io::IO, m::Model)
   showf(io, m, Base.showall)
 end
 

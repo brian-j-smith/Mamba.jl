@@ -59,11 +59,11 @@ scheme = [NUTS([:mu, :theta]),
           Slice([:s2_within, :s2_between], 1000.0)]
 
 scheme2 = [MALA(:theta, 50.0),
-           MALA(:mu, 50.0, eye(dyes[:batches])),
+           MALA(:mu, 50.0, Matrix{Float64}(I, dyes[:batches], dyes[:batches])),
            Slice([:s2_within, :s2_between], 1000.0)]
 
 scheme3 = [HMC(:theta, 10.0, 5),
-           HMC(:mu, 10.0, 5, eye(dyes[:batches])),
+           HMC(:mu, 10.0, 5, Matrix{Float64}(I, dyes[:batches], dyes[:batches])),
            Slice([:s2_within, :s2_between], 1000.0)]
 
 scheme4 = [RWM(:theta, 50.0, proposal=Cosine),

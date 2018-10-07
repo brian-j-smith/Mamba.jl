@@ -2,8 +2,8 @@
 
 #################### Types and Constructors ####################
 
-type NUTSTune <: SamplerTune
-  logfgrad::Nullable{Function}
+mutable struct NUTSTune <: SamplerTune
+  logfgrad::Union{Function, Missing}
   adapt::Bool
   alpha::Float64
   epsilon::Float64
@@ -19,7 +19,7 @@ type NUTSTune <: SamplerTune
 
   NUTSTune() = new()
 
-  function NUTSTune(x::Vector, epsilon::Real, logfgrad::Nullable{Function};
+  function NUTSTune(x::Vector, epsilon::Real, logfgrad::Union{Function, Missing};
                     target::Real=0.6)
     new(logfgrad, false, 0.0, epsilon, 1.0, 0.05, 0.0, 0.75, 0, NaN, 0, 10.0,
         target)
@@ -33,11 +33,7 @@ NUTSTune(x::Vector{Float64}, logfgrad::Function; args...) =
   NUTSTune(x, nutsepsilon(x, logfgrad), logfgrad; args...)
 
 NUTSTune(x::Vector, epsilon::Real; args...) =
-  NUTSTune(x, epsilon, Nullable{Function}(); args...)
-
-NUTSTune(x::Vector, epsilon::Real, logfgrad::Function; args...) =
-  NUTSTune(x, epsilon, Nullable{Function}(logfgrad); args...)
-
+  NUTSTune(x, epsilon, missing; args...)
 
 const NUTSVariate = SamplerVariate{NUTSTune}
 

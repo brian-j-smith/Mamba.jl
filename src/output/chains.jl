@@ -2,17 +2,17 @@
 
 #################### Constructors ####################
 
-function Chains{T<:AbstractString}(iters::Integer, params::Integer;
+function Chains(iters::Integer, params::Integer;
                start::Integer=1, thin::Integer=1, chains::Integer=1,
-               names::Vector{T}=AbstractString[])
-  value = Array{Float64}(length(start:thin:iters), params, chains)
+               names::Vector{T}=AbstractString[]) where {T<:AbstractString}
+  value = Array{Float64}(undef, length(start:thin:iters), params, chains)
   fill!(value, NaN)
   Chains(value, start=start, thin=thin, names=names)
 end
 
-function Chains{T<:Real, U<:AbstractString, V<:Integer}(value::Array{T, 3};
+function Chains(value::Array{T, 3};
                start::Integer=1, thin::Integer=1,
-               names::Vector{U}=AbstractString[], chains::Vector{V}=Int[])
+               names::Vector{U}=AbstractString[], chains::Vector{V}=Int[]) where {T<:Real, U<:AbstractString, V<:Integer}
   n, p, m = size(value)
 
   if isempty(names)
@@ -28,19 +28,19 @@ function Chains{T<:Real, U<:AbstractString, V<:Integer}(value::Array{T, 3};
   end
 
   v = convert(Array{Float64, 3}, value)
-  Chains(v, range(start, thin, n), AbstractString[names...], Int[chains...])
+  Chains(v, range(start, step=thin, length=n), AbstractString[names...], Int[chains...])
 end
 
-function Chains{T<:Real, U<:AbstractString}(value::Matrix{T};
+function Chains(value::Matrix{T};
                start::Integer=1, thin::Integer=1,
-               names::Vector{U}=AbstractString[], chains::Integer=1)
+               names::Vector{U}=AbstractString[], chains::Integer=1) where {T<:Real, U<:AbstractString}
   Chains(reshape(value, size(value, 1), size(value, 2), 1), start=start,
          thin=thin, names=names, chains=Int[chains])
 end
 
-function Chains{T<:Real}(value::Vector{T};
+function Chains(value::Vector{T};
                start::Integer=1, thin::Integer=1,
-               names::AbstractString="Param1", chains::Integer=1)
+               names::AbstractString="Param1", chains::Integer=1) where {T<:Real}
   Chains(reshape(value, length(value), 1, 1), start=start, thin=thin,
          names=AbstractString[names], chains=Int[chains])
 end
@@ -57,20 +57,23 @@ function Base.getindex(c::Chains, window, names, chains)
          chains = c.chains[chains])
 end
 
+Base.lastindex(c::AbstractChains, i) = size(c, i)
+
 function Base.setindex!(c::AbstractChains, value, iters, names, chains)
   setindex!(c.value, value, iters2inds(c, iters), names2inds(c, names), chains)
 end
 
 macro mapiters(iters, c)
-  quote
-    ($(esc(iters)) - first($(esc(c)))) / step($(esc(c))) + 1.0
-  end
+  return esc(quote
+    ($iters .- first($c)) ./ step($c) .+ 1.0
+  end)
 end
 
 window2inds(c::AbstractChains, window) =
   throw(ArgumentError("$(typeof(window)) iteration indexing is unsupported"))
 window2inds(c::AbstractChains, ::Colon) = window2inds(c, 1:size(c, 1))
-window2inds(c::AbstractChains, window::Range) = begin
+window2inds(c::AbstractChains, window::Int) = window2inds(c, window:window)
+window2inds(c::AbstractChains, window::AbstractRange) = begin
   range = @mapiters(window, c)
   a = max(ceil(Int, first(range)), 1)
   b = step(window)
@@ -80,26 +83,26 @@ end
 
 iters2inds(c::AbstractChains, iters) = iters
 iters2inds(c::AbstractChains, ::Colon) = 1:size(c.value, 1)
-iters2inds(c::AbstractChains, iters::Range) =
+iters2inds(c::AbstractChains, iters::AbstractRange) =
   convert(StepRange{Int, Int}, @mapiters(iters, c))
 iters2inds(c::AbstractChains, iter::Real) = Int(@mapiters(iter, c))
-iters2inds{T<:Real}(c::AbstractChains, iters::Vector{T}) =
+iters2inds(c::AbstractChains, iters::Vector{T}) where {T<:Real} =
   Int[@mapiters(i, c) for i in iters]
 
 names2inds(c::AbstractChains, names) = names
 names2inds(c::AbstractChains, ::Colon) = 1:size(c.value, 2)
 names2inds(c::AbstractChains, name::Real) = [name]
 names2inds(c::AbstractChains, name::AbstractString) = names2inds(c, [name])
-names2inds{T<:AbstractString}(c::AbstractChains, names::Vector{T}) =
+names2inds(c::AbstractChains, names::Vector{T}) where {T<:AbstractString} =
   indexin(names, c.names)
 
 
 #################### Concatenation ####################
 
-function Base.cat(dim::Integer, c1::AbstractChains, args::AbstractChains...)
-  dim == 1 ? cat1(c1, args...) :
-  dim == 2 ? cat2(c1, args...) :
-  dim == 3 ? cat3(c1, args...) :
+function Base.cat(c1::AbstractChains, args::AbstractChains...; dims::Integer)
+  dims == 1 ? cat1(c1, args...) :
+  dims == 2 ? cat2(c1, args...) :
+  dims == 3 ? cat3(c1, args...) :
     throw(ArgumentError("cannot concatenate along dimension $dim"))
 end
 
@@ -121,7 +124,7 @@ function cat1(c1::AbstractChains, args::AbstractChains...)
   all(c -> c.chains == chains, args) ||
     throw(ArgumentError("sets of chains differ"))
 
-  value = cat(1, c1.value, map(c -> c.value, args)...)
+  value = cat(c1.value, map(c -> c.value, args)..., dims=1)
   Chains(value, start=first(range), thin=step(range), names=names,
          chains=chains)
 end
@@ -144,7 +147,7 @@ function cat2(c1::AbstractChains, args::AbstractChains...)
   all(c -> c.chains == chains, args) ||
     throw(ArgumentError("sets of chains differ"))
 
-  value = cat(2, c1.value, map(c -> c.value, args)...)
+  value = cat(c1.value, map(c -> c.value, args)..., dims=2)
   Chains(value, start=first(range), thin=step(range), names=names,
          chains=chains)
 end
@@ -158,13 +161,13 @@ function cat3(c1::AbstractChains, args::AbstractChains...)
   all(c -> c.names == names, args) ||
     throw(ArgumentError("chain names differ"))
 
-  value = cat(3, c1.value, map(c -> c.value, args)...)
+  value = cat(c1.value, map(c -> c.value, args)..., dims=3)
   Chains(value, start=first(range), thin=step(range), names=names)
 end
 
-Base.hcat(c1::AbstractChains, args::AbstractChains...) = cat(2, c1, args...)
+Base.hcat(c1::AbstractChains, args::AbstractChains...) = cat(c1, args..., dims=2)
 
-Base.vcat(c1::AbstractChains, args::AbstractChains...) = cat(1, c1, args...)
+Base.vcat(c1::AbstractChains, args::AbstractChains...) = cat(c1, args..., dims=1)
 
 
 #################### Base Methods ####################
@@ -197,7 +200,7 @@ Base.last(c::AbstractChains) = last(c.range)
 
 function combine(c::AbstractChains)
   n, p, m = size(c.value)
-  value = Array{Float64}(n * m, p)
+  value = Array{Float64}(undef, n * m, p)
   for j in 1:p
     idx = 1
     for i in 1:n, k in 1:m
@@ -220,7 +223,7 @@ end
 function indiscretesupport(c::AbstractChains,
                            bounds::Tuple{Real, Real}=(0, Inf))
   nrows, nvars, nchains = size(c.value)
-  result = Array{Bool}(nvars * (nrows > 0))
+  result = Array{Bool}(undef, nvars * (nrows > 0))
   for i in 1:nvars
     result[i] = true
     for j in 1:nrows, k in 1:nchains

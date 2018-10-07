@@ -16,8 +16,8 @@ Declarations
 .. code-block:: julia
 
     abstract type AbstractChains
-    immutable Chains <: AbstractChains
-    immutable ModelChains <: AbstractChains
+    struct Chains <: AbstractChains
+    struct ModelChains <: AbstractChains
 
 Fields
 ^^^^^^
@@ -276,7 +276,7 @@ Gelman, Rubin, and Brooks Diagnostics
 
         .. code-block:: julia
 
-            immutable ChainSummary
+            struct ChainSummary
               value::Array{Float64, 3}
               rownames::Vector{AbstractString}
               colnames::Vector{AbstractString}
