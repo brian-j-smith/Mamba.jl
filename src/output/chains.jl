@@ -57,6 +57,8 @@ function Base.getindex(c::Chains, window, names, chains)
          chains = c.chains[chains])
 end
 
+Base.lastindex(c::AbstractChains, i) = size(c, i)
+
 function Base.setindex!(c::AbstractChains, value, iters, names, chains)
   setindex!(c.value, value, iters2inds(c, iters), names2inds(c, names), chains)
 end
