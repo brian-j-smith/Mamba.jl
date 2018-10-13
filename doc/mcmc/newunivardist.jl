@@ -1,3 +1,5 @@
+using Distributed
+
 ## Define a new univariate Distribution type for Mamba.
 ## The definition must be placed within an unevaluated quote block.
 @everywhere extensions = quote
@@ -35,7 +37,7 @@ Testing.insupport(d, 2.0)
 Testing.logpdf(d, 2.0)
 
 ## Add the extensions
-using Mamba
+@everywhere using Mamba
 @everywhere eval(extensions)
 
 ## Implement a Mamba model using the new distribution

@@ -1,10 +1,8 @@
-using Mamba
-using Test
-using Random
+using Mamba, Random, Test
 
 Random.seed!(123)
 
-function simulate_NDARMA(N::Int, p::Int, q::Int, prob::Vector{Float64}, 
+function simulate_NDARMA(N::Int, p::Int, q::Int, prob::Vector{Float64},
                          phi::Vector{Float64})
   X = zeros(Int64, N)
   X[1:p] = rand(Categorical(prob), p)

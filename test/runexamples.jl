@@ -1,4 +1,5 @@
-using Mamba
+using Mamba, Distributed
+@everywhere using Random
 
 include("utils.jl")
 

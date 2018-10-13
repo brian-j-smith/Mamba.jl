@@ -1,6 +1,5 @@
 using Distributed
-using Random
-using LinearAlgebra
+@everywhere using Random
 
 include("utils.jl")
 

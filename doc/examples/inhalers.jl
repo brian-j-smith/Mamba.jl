@@ -1,4 +1,5 @@
-using Mamba
+using Distributed
+@everywhere using Mamba
 
 ## Data
 inhalers = Dict{Symbol, Any}(

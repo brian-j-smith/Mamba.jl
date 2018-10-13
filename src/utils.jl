@@ -89,7 +89,6 @@ end
 
 function pmap2(f::Function, lsts::AbstractArray)
   if (nprocs() > 1)
-    @everywhere importall Mamba
     pmap(f, lsts)
   else
     map(f, lsts)

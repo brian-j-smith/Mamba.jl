@@ -1,4 +1,5 @@
-using Mamba, Random, Distributions
+using Distributed, Random
+@everywhere using Mamba, LinearAlgebra
 
 ## Model and User-Defined Sampler Specifications
 
