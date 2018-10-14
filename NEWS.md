@@ -3,7 +3,7 @@
 ## Version Updates
 
 ### 0.12.0
-* Initial release for julia 0.7.
+* Initial release for julia 1.0.
 * Branched off of *Mamba* 0.11.2.
 
 ## 0.11.2

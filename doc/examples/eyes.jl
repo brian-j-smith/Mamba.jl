@@ -21,12 +21,9 @@ model = Model(
     (lambda, T, s2, N) ->
       begin
         sigma = sqrt(s2)
-        UnivariateDistribution[
-          begin
-            mu = lambda[Int(T[i])]
-            Normal(mu, sigma)
-          end
-          for i in 1:N
+        UnivariateDistribution[(
+          mu = lambda[Int(T[i])];
+          Normal(mu, sigma)) for i in 1:N
         ]
       end,
     false

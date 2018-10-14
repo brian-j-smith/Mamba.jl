@@ -63,7 +63,7 @@ function sample!(v::SliceUnivariate, logf::Function)
 
   n = length(v)
   lower = v - v.tune.width .* rand(n)
-  upper = lower + v.tune.width
+  upper = lower .+ v.tune.width
 
   for i in 1:n
     p0 = logf0 + log(rand())

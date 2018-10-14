@@ -65,7 +65,7 @@ function SliceSimplex_sub!(D::Array{MultivariateDistribution}, sim::Function,
   inds = 0:0
   for i in 1:length(D)
     d = D[i]
-    inds = last(inds) + (1:length(d))
+    inds = last(inds) .+ (1:length(d))
     sim(inds, v -> logf(d, v, inds))
   end
 end

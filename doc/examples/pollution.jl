@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using Mamba
+@everywhere using Mamba, LinearAlgebra, SparseArrays
 
 ## Data
 data = [
@@ -77,7 +77,7 @@ model = Model(
 
   y = Stochastic(1, (mu, sigma2) -> MvNormal(mu, sqrt(sigma2)), false),
 
-  mu = Logical(1, (alpha, X, theta) -> alpha + X * theta, false),
+  mu = Logical(1, (alpha, X, theta) -> alpha .+ X * theta, false),
 
   alpha = Stochastic(() -> Normal(0, 1000)),
 
@@ -101,8 +101,8 @@ Gibbs_alphabeta = Sampler([:alpha, :beta],
     begin
       alphabeta_distr = [alpha.distr; beta.distr]
       alphabeta_mean = map(mean, alphabeta_distr)
-      alphabeta_invcov = spdiagm(map(d -> 1 / var(d), alphabeta_distr))
-      M = [ones(y)  X * spdiagm(gamma)]
+      alphabeta_invcov = spdiagm(0 => map(d -> 1 / var(d), alphabeta_distr))
+      M = [ones(length(y))  X * spdiagm(0 => gamma)]
       Sigma = inv(Symmetric(M' * M / sigma2 + alphabeta_invcov))
       mu = Sigma * (M' * y / sigma2 + alphabeta_invcov * alphabeta_mean)
       alphabeta_rand = rand(MvNormal(mu, Sigma))

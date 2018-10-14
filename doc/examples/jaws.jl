@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using Mamba
+@everywhere using Mamba, LinearAlgebra
 
 ## Data
 jaws = Dict{Symbol, Any}(
@@ -28,7 +28,7 @@ jaws = Dict{Symbol, Any}(
 )
 M = jaws[:M] = size(jaws[:Y], 2)
 N = jaws[:N] = size(jaws[:Y], 1)
-jaws[:y] = vec(jaws[:Y]')
+jaws[:y] = vec(jaws[:Y])
 jaws[:x] = kron(ones(jaws[:N]), jaws[:age])
 
 
@@ -36,7 +36,7 @@ jaws[:x] = kron(ones(jaws[:N]), jaws[:age])
 model = Model(
 
   y = Stochastic(1,
-    (beta0, beta1, x, Sigma) -> BDiagNormal(beta0 + beta1 * x, Sigma),
+    (beta0, beta1, x, Sigma) -> BDiagNormal(beta0 .+ beta1 * x, Sigma),
     false
   ),
 

@@ -23,14 +23,11 @@ model = Model(
 
   t = Stochastic(2,
     (r, beta, tcensor, M, N) ->
-      UnivariateDistribution[
-        begin
-          lambda = exp(-beta[i] / r)
-          0 < lambda < Inf ?
-            Truncated(Weibull(r, lambda), tcensor[i, j], Inf) :
-            Uniform(0, Inf)
-        end
-        for i in 1:M, j in 1:N
+      UnivariateDistribution[(
+        lambda = exp(-beta[i] / r);
+        0 < lambda < Inf ?
+          Truncated(Weibull(r, lambda), tcensor[i, j], Inf) :
+          Uniform(0, Inf)) for i in 1:M, j in 1:N
       ],
     false
   ),

@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using Mamba
+@everywhere using Mamba, LinearAlgebra
 
 ## Data
 birats = Dict{Symbol, Any}(
@@ -87,15 +87,15 @@ model = Model(
 
 ## Initial Values
 inits = [
-  Dict(:Y => birats[:Y], :beta => repmat([100 6], birats[:N], 1),
+  Dict(:Y => birats[:Y], :beta => repeat([100 6], birats[:N], 1),
        :mu_beta => [0, 0], :Sigma => Matrix{Float64}(I, 2, 2), :sigma2C => 1.0),
-  Dict(:Y => birats[:Y], :beta => repmat([50 3], birats[:N], 1),
+  Dict(:Y => birats[:Y], :beta => repeat([50 3], birats[:N], 1),
        :mu_beta => [10, 10], :Sigma => 0.3 * Matrix{Float64}(I, 2, 2), :sigma2C => 10.0)
 ]
 
 
 ## Sampling Scheme
-scheme = [AMWG([:beta, :mu_beta], repmat([10.0, 1.0], birats[:N] + 1)),
+scheme = [AMWG([:beta, :mu_beta], repeat([10.0, 1.0], birats[:N] + 1)),
           AMWG(:Sigma, 1.0),
           Slice(:sigma2C, 10.0)]
 setsamplers!(model, scheme)

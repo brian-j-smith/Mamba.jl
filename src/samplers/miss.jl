@@ -4,8 +4,8 @@
 
 struct MISSTune
   dims::Tuple
-  valueinds::Vector{Int}
-  distrinds::Vector{Int}
+  valueinds::Array
+  distrinds::Array
 end
 
 function MISSTune(s::AbstractStochastic)
@@ -13,17 +13,17 @@ function MISSTune(s::AbstractStochastic)
 end
 
 function MISSTune(d::Distribution, v)
-  MISSTune((), find(isnan(v)), Int[])
+  MISSTune((), findall(isnan.(v)), Int[])
 end
 
 function MISSTune(D::Array{UnivariateDistribution}, v::Array)
-  inds = find(isnan.(v))
+  inds = findall(isnan.(v))
   MISSTune(dims(D), inds, inds)
 end
 
 function MISSTune(D::Array{MultivariateDistribution}, v::Array)
-  isvalueinds = falses(v)
-  isdistrinds = falses(D)
+  isvalueinds = falses(size(v))
+  isdistrinds = falses(size(D))
   for sub in CartesianIndices(size(D))
     n = length(D[sub])
     for i in 1:n
@@ -32,7 +32,7 @@ function MISSTune(D::Array{MultivariateDistribution}, v::Array)
       end
     end
   end
-  MISSTune(dims(D), find(isvalueinds), find(isdistrinds))
+  MISSTune(dims(D), findall(isvalueinds), findall(isdistrinds))
 end
 
 

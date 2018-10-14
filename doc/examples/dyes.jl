@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using Mamba
+@everywhere using Mamba, LinearAlgebra
 
 ## Data
 dyes = Dict{Symbol, Any}(

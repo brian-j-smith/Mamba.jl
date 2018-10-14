@@ -31,7 +31,7 @@ bones = Dict{Symbol, Any}(
    :ncat =>
      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
       3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5, 5, 5],
-   :grade => reshape(
+   :grade => permutedims(reshape(
      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,
       2,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,3,1,1,2,1,1,
       2,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,4,3,3,3,1,1,
@@ -45,7 +45,7 @@ bones = Dict{Symbol, Any}(
       2,1,NaN,2,2,2,NaN,2,2,1,NaN,NaN,2,2,NaN,NaN,2,1,2,3,3,NaN,1,NaN,1,1,3,1,5,5,5,5,5,5,
       2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,1,NaN,2,1,3,2,5,5,5,5,5,5,
       2,2,2,2,2,2,2,2,2,2,NaN,2,2,2,2,2,2,2,2,3,3,3,NaN,2,NaN,2,3,4,5,5,5,5,5,5],
-     34, 13)',
+     34, 13)),
   :nChild => 13,
   :nInd => 34
 )
@@ -58,18 +58,15 @@ model = Model(
     (ncat, delta, theta, gamma, nChild, nInd) ->
       begin
         p = Array{Float64}(undef, 5)
-        UnivariateDistribution[
-          begin
-            n = ncat[j]
-            p[1] = 1.0
-            for k in 1:(n - 1)
-              Q = invlogit(delta[j] * (theta[i] - gamma[j, k]))
-              p[k] -= Q
-              p[k + 1] = Q
-            end
-            Categorical(p[1:n])
-          end
-          for i in 1:nChild, j in 1:nInd
+        UnivariateDistribution[(
+          n = ncat[j];
+          p[1] = 1.0;
+          for k in 1:(n - 1)
+            Q = invlogit(delta[j] * (theta[i] - gamma[j, k]))
+            p[k] -= Q
+            p[k + 1] = Q
+          end;
+          Categorical(p[1:n])) for i in 1:nChild, j in 1:nInd
         ]
       end,
     false

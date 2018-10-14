@@ -4,6 +4,7 @@ module Mamba
   @reexport using Distributions
 
   #################### Imports ####################
+
   using DelimitedFiles
   using SpecialFunctions
   using Serialization
@@ -13,12 +14,9 @@ module Mamba
   using Calculus: gradient
   using Showoff: showoff
 
-  @static if VERSION < v"1.0.0"
-    import Base: showall
-  end
-  import Base: names, Matrix
+  import Base: Matrix, names
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
-  import LinearAlgebra: dot
+  import LinearAlgebra: cholesky, dot
   import Statistics: cor
   import Distributions:
          ## Generic Types
@@ -46,7 +44,7 @@ module Mamba
          ## Methods
          cdf, dim, gradlogpdf, insupport, isprobvec, logpdf, logpdf!, maximum,
          minimum, pdf, quantile, rand, sample!, support
-  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS, 
+  import Gadfly: draw, Geom, Guide, Layer, layer, PDF, PGF, Plot, plot, PNG, PS,
          render, Scale, SVG, Theme
   using LightGraphs: DiGraph, add_edge!, outneighbors,
          topological_sort_by_dfs, vertices

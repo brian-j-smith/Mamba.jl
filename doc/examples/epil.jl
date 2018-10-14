@@ -96,16 +96,13 @@ model = Model(
     (a0, alpha_Base, logBase4, logBase4bar, alpha_Trt, Trt, Trtbar,
      alpha_BT, BT, BTbar, alpha_Age, logAge, logAgebar, alpha_V4, V4,
      V4bar, b1, b, N, T) ->
-      UnivariateDistribution[
-        begin
-          mu = exp(a0 + alpha_Base * (logBase4[i] - logBase4bar) +
-                   alpha_Trt * (Trt[i] - Trtbar) + alpha_BT * (BT[i] - BTbar) +
-                   alpha_Age * (logAge[i] - logAgebar) +
-                   alpha_V4 * (V4[j] - V4bar) + b1[i] +
-                   b[i, j])
-          Poisson(mu)
-        end
-        for i in 1:N, j in 1:T
+      UnivariateDistribution[(
+        mu = exp(a0 + alpha_Base * (logBase4[i] - logBase4bar) +
+                 alpha_Trt * (Trt[i] - Trtbar) + alpha_BT * (BT[i] - BTbar) +
+                 alpha_Age * (logAge[i] - logAgebar) +
+                 alpha_V4 * (V4[j] - V4bar) + b1[i] +
+                 b[i, j]);
+        Poisson(mu)) for i in 1:N, j in 1:T
       ],
     false
   ),

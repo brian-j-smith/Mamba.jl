@@ -3,21 +3,24 @@
 #################### Conversions ####################
 
 Base.convert(::Type{Bool}, v::ScalarVariate) = convert(Bool, v.value)
-Base.convert(::Type{T}, v::ScalarVariate) where {T<:Integer} = convert(T, v.value)
-Base.convert(::Type{T}, v::ScalarVariate) where {T<:AbstractFloat} =
+Base.convert(::Type{T}, v::ScalarVariate) where T<:Integer = convert(T, v.value)
+Base.convert(::Type{T}, v::ScalarVariate) where T<:AbstractFloat =
   convert(T, v.value)
 Base.AbstractFloat(v::ScalarVariate) = convert(Float64, v)
+Base.Float64(v::ScalarVariate) = convert(Float64, v)
 
 Base.convert(::Type{Matrix}, v::MatrixVariate) = v.value
 Base.convert(::Type{Vector}, v::VectorVariate) = v.value
-Base.convert(::Union{Type{Array{T}}, Type{Array{T, N}}}, v::ArrayVariate{N}) where {T<:Real, N} = convert(Array{T, N}, v.value)
+Base.convert(::Union{Type{Array{T}}, Type{Array{T, N}}},
+             v::ArrayVariate{N}) where {T<:Real, N} =
+  convert(Array{T, N}, v.value)
 
 Base.unsafe_convert(::Type{Ptr{Float64}}, v::ArrayVariate) = pointer(v.value)
 
 
 macro promote_scalarvariate(V)
   quote
-    Base.promote_rule(::Type{$(esc(V))}, ::Type{T}) where {T<:Real} = Float64
+    Base.promote_rule(::Type{$(esc(V))}, ::Type{T}) where T<:Real = Float64
   end
 end
 
@@ -41,7 +44,9 @@ Base.getindex(v::ArrayVariate, inds::Int...) = getindex(v.value, inds...)
 
 Base.setindex!(v::ScalarVariate, x::Real, ind::Int) = (v.value = x[ind])
 
-function Base.setindex!(v::ScalarVariate, x::Vector{T}, inds::Union{StepRange{Int, Int}, Vector{Int}}) where {T<:Real}
+function Base.setindex!(v::ScalarVariate, x::Vector{T},
+                        inds::Union{StepRange{Int, Int},
+                        Vector{Int}}) where T<:Real
   nx = length(x)
   ninds = length(inds)
   nx == ninds ||

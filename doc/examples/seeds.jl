@@ -18,13 +18,10 @@ model = Model(
 
   r = Stochastic(1,
     (alpha0, alpha1, x1, alpha2, x2, alpha12, b, n, N) ->
-      UnivariateDistribution[
-        begin
-          p = invlogit(alpha0 + alpha1 * x1[i] + alpha2 * x2[i] +
-                       alpha12 * x1[i] * x2[i] + b[i])
-          Binomial(n[i], p)
-        end
-        for i in 1:N
+      UnivariateDistribution[(
+        p = invlogit(alpha0 + alpha1 * x1[i] + alpha2 * x2[i] +
+                     alpha12 * x1[i] * x2[i] + b[i]);
+        Binomial(n[i], p)) for i in 1:N
       ],
     false
   ),

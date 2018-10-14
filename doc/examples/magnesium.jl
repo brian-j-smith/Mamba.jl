@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using Mamba
+@everywhere using Mamba, SpecialFunctions
 
 ## Data
 magnesium = Dict{Symbol, Any}(
@@ -9,12 +9,12 @@ magnesium = Dict{Symbol, Any}(
   :nc => [36, 135, 200, 46, 148, 56, 23, 1157]
 )
 
-magnesium[:rtx] = hcat([magnesium[:rt] for i in 1:6]...)'
-magnesium[:rcx] = hcat([magnesium[:rc] for i in 1:6]...)'
-magnesium[:s2] = 1 ./ (magnesium[:rt] + 0.5) +
-                 1 ./ (magnesium[:nt] - magnesium[:rt] + 0.5) +
-                 1 ./ (magnesium[:rc] + 0.5) +
-                 1 ./ (magnesium[:nc] - magnesium[:rc] + 0.5)
+magnesium[:rtx] = permutedims(hcat([magnesium[:rt] for i in 1:6]...))
+magnesium[:rcx] = permutedims(hcat([magnesium[:rc] for i in 1:6]...))
+magnesium[:s2] = 1 ./ (magnesium[:rt] .+ 0.5) +
+                 1 ./ (magnesium[:nt] .- magnesium[:rt] .+ 0.5) +
+                 1 ./ (magnesium[:rc] .+ 0.5) +
+                 1 ./ (magnesium[:nc] .- magnesium[:rc] .+ 0.5)
 magnesium[:s2_0] = 1 / mean(1 ./ magnesium[:s2])
 
 
@@ -34,13 +34,10 @@ model = Model(
 
   rtx = Stochastic(2,
     (nt, pc, theta) ->
-      UnivariateDistribution[
-        begin
-          phi = logit(pc[i, j])
-          pt = invlogit(theta[i, j] + phi)
-          Binomial(nt[j], pt)
-        end
-        for i in 1:6, j in 1:8
+      UnivariateDistribution[(
+        phi = logit(pc[i, j]);
+        pt = invlogit(theta[i, j] + phi);
+        Binomial(nt[j], pt)) for i in 1:6, j in 1:8
       ],
     false
   ),

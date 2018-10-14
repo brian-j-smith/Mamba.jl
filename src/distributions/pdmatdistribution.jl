@@ -27,7 +27,7 @@ end
 function link(d::PDMatDistribution, X::DenseMatrix)
   n = dim(d)
   Y = zeros(n, n)
-  U = chol(X)
+  U = cholesky(X).U
   for i in 1:n
     Y[i, i] = log(U[i, i])
   end
@@ -46,13 +46,13 @@ function invlink(d::PDMatDistribution, X::DenseMatrix)
   for i in 1:n, j in (i + 1):n
     U[i, j] = X[i, j]
   end
-  At_mul_B(U, U)
+  transpose(U) * U
 end
 
 function logpdf(d::PDMatDistribution, X::DenseMatrix, transform::Bool)
   lp = logpdf(d, X)
   if transform && isfinite(lp)
-    U = chol(X)
+    U = cholesky(X).U
     n = dim(d)
     for i in 1:n
       lp += (n - i + 2) * log(U[i, i])

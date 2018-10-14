@@ -59,7 +59,7 @@ model = Model(
   ),
 
   mu = Logical(1,
-    (beta0, z, beta) -> beta0 + z * beta,
+    (beta0, z, beta) -> beta0 .+ z * beta,
     false
   ),
 

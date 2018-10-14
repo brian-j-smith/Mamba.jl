@@ -14,12 +14,9 @@ model = Model(
 
   y = Stochastic(1,
     (theta, t, N) ->
-      UnivariateDistribution[
-        begin
-          lambda = theta[i] * t[i]
-          Poisson(lambda)
-        end
-        for i in 1:N
+      UnivariateDistribution[(
+        lambda = theta[i] * t[i];
+        Poisson(lambda)) for i in 1:N
       ],
     false
   ),

@@ -30,6 +30,7 @@ inhalers[:response] = Array{Int}(undef, inhalers[:N], inhalers[:T])
 
 i = 1
 for k in 1:inhalers[:Npattern], g in 1:inhalers[:G]
+  global i
   while i <= inhalers[:Ncum][k, g]
     inhalers[:group][i] = g
     for t in 1:inhalers[:T]
@@ -47,18 +48,15 @@ model = Model(
     (a1, a2, a3, mu, group, b, N, T) ->
       begin
         a = Float64[a1, a2, a3]
-        UnivariateDistribution[
-          begin
-            eta = mu[group[i], t] + b[i]
-            p = ones(4)
-            for j in 1:3
-              Q = invlogit(-(a[j] + eta))
-              p[j] -= Q
-              p[j + 1] = Q
-            end
-            Categorical(p)
-          end
-          for i in 1:N, t in 1:T
+        UnivariateDistribution[(
+          eta = mu[group[i], t] + b[i];
+          p = ones(4);
+          for j in 1:3
+            Q = invlogit(-(a[j] + eta))
+            p[j] -= Q
+            p[j + 1] = Q
+          end;
+          Categorical(p)) for i in 1:N, t in 1:T
         ]
       end,
     false

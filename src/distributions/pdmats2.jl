@@ -7,9 +7,10 @@ module PDMats2
   using PDMats: AbstractPDMat
 
   import Base: +, *, /, \, size
-  import LinearAlgebra: diag, inv, logdet
+  import LinearAlgebra: diag, cholesky, inv, logdet
   import PDMats: dim, invquad, invquad!, quad, quad!,
          whiten, whiten!, unwhiten, unwhiten!
+  import SparseArrays: sparse
 
   export PBDiagMat
 
@@ -60,8 +61,8 @@ module PDMats2
   #################### Whiten and Unwhiten ####################
 
   function whiten(a::PBDiagMat, x::DenseVecOrMat{Float64})
-    au_inv = map(ac -> inv(ac[:U]), a.chol)
-    At_mul_B(spbdiagm(au_inv, a.scale), x)
+    au_inv = map(ac -> inv(ac.U), a.chol)
+    transpose(spbdiagm(au_inv, a.scale)) * x
   end
 
   function whiten!(a::PBDiagMat, x::DenseVecOrMat{Float64})

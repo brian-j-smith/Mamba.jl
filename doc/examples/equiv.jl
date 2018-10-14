@@ -19,7 +19,7 @@ equiv = Dict{Symbol, Any}(
 equiv[:N] = size(equiv[:y], 1)
 equiv[:P] = size(equiv[:y], 2)
 
-equiv[:T] = [equiv[:group] 3 - equiv[:group]]
+equiv[:T] = [equiv[:group] 3 .- equiv[:group]]
 
 
 ## Model Specification
@@ -29,13 +29,10 @@ model = Model(
     (delta, mu, phi, pi, s2_1, T) ->
       begin
         sigma = sqrt(s2_1)
-        UnivariateDistribution[
-          begin
-            m = mu + (-1)^(T[i, j] - 1) * phi / 2 + (-1)^(j - 1) * pi / 2 +
-                delta[i, j]
-            Normal(m, sigma)
-          end
-          for i in 1:10, j in 1:2
+        UnivariateDistribution[(
+          m = mu + (-1)^(T[i, j] - 1) * phi / 2 + (-1)^(j - 1) * pi / 2 +
+              delta[i, j];
+          Normal(m, sigma)) for i in 1:10, j in 1:2
         ]
       end,
     false

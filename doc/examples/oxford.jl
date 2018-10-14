@@ -58,13 +58,10 @@ model = Model(
 
   r1 = Stochastic(1,
     (mu, alpha, beta1, beta2, year, b, n1, K) ->
-      UnivariateDistribution[
-        begin
-          p = invlogit(mu[i] + alpha + beta1 * year[i] +
-                       beta2 * (year[i]^2 - 22.0) + b[i])
-          Binomial(n1[i], p)
-        end
-        for i in 1:K
+      UnivariateDistribution[(
+        p = invlogit(mu[i] + alpha + beta1 * year[i] +
+                     beta2 * (year[i]^2 - 22.0) + b[i]);
+        Binomial(n1[i], p)) for i in 1:K
       ],
     false
   ),

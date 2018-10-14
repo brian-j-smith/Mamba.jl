@@ -25,7 +25,7 @@ function unlist_sub(D::Array{MultivariateDistribution}, X::AbstractArray)
   for sub in CartesianIndices(size(D))
     n = length(D[sub])
     inds = 1:n
-    y[offset + inds] = X[sub, inds]
+    y[offset .+ inds] = X[sub, inds]
     offset += n
   end
   resize!(y, offset)
@@ -72,7 +72,7 @@ function relistlength_sub(D::Array{MultivariateDistribution},
   for sub in CartesianIndices(size(D))
     n = length(D[sub])
     inds = 1:n
-    Y[sub, inds] = X[offset + inds]
+    Y[sub, inds] = X[offset .+ inds]
     offset += n
   end
   (Y, offset)

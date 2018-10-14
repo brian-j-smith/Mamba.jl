@@ -2,7 +2,7 @@
 
 #################### Types and Constructors ####################
 
-struct ABCTune
+mutable struct ABCTune
   datakeys::Vector{Symbol}
   Tsim::Vector{Vector{Float64}}
   epsilon::Vector{Float64}

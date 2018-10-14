@@ -72,7 +72,7 @@ inits = [
                     :g => 1.0, :k => 1.0),
   Dict{Symbol, Any}(:x => x, :A => median(x),
                     :B => diff(quantile(x, [0.25, 0.75]))[1],
-                    :g => mean((x - mean(x)).^3) / (var(x)^(3 / 2)),
+                    :g => mean((x .- mean(x)).^3) / (var(x)^(3 / 2)),
                     :k => rand())
 ]
 

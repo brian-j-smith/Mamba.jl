@@ -16,7 +16,8 @@ function mcmc(mc::ModelChains, iters::Integer; verbose::Bool=true)
 end
 
 
-function mcmc(m::Model, inputs::Dict{Symbol}, inits::Vector{Dict{Symbol, Any}},
+function mcmc(m::Model, inputs::Dict{Symbol},
+              inits::Vector{V} where V<:Dict{Symbol},
               iters::Integer; burnin::Integer=0, thin::Integer=1,
               chains::Integer=1, verbose::Bool=true)
   iters > burnin ||

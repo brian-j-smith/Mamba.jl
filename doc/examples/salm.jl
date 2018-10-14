@@ -17,12 +17,9 @@ model = Model(
 
   y = Stochastic(2,
     (alpha, beta, gamma, x, lambda) ->
-      UnivariateDistribution[
-        begin
-          mu = exp(alpha + beta * log(x[j] + 10) + gamma * x[j] + lambda[i, j])
-          Poisson(mu)
-        end
-        for i in 1:3, j in 1:6
+      UnivariateDistribution[(
+        mu = exp(alpha + beta * log(x[j] + 10) + gamma * x[j] + lambda[i, j]);
+        Poisson(mu)) for i in 1:3, j in 1:6
       ],
     false
   ),

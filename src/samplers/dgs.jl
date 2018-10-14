@@ -108,7 +108,7 @@ sample!(v::SamplerVariate{DSTune{F}}) where {F<:DSForm} = sample!(v, v.tune.mass
 function sample!(v::DGSVariate, mass::Function)
   tune = v.tune
   n = size(tune.support, 2)
-  probs = Vector{Float64}(n)
+  probs = Vector{Float64}(undef, n)
   psum = 0.0
   for i in 1:n
     value = mass(tune.support[:, i])
@@ -118,7 +118,7 @@ function sample!(v::DGSVariate, mass::Function)
   if psum > 0
     probs /= psum
   else
-    probs[:] = 1 / n
+    probs[:] .= 1 / n
   end
   v[:] = tune.support[:, rand(Categorical(probs))]
   v

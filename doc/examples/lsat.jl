@@ -55,12 +55,9 @@ model = Model(
 
   r = Stochastic(2,
     (beta, theta, alpha, N, T) ->
-      UnivariateDistribution[
-        begin
-          p = invlogit(beta * theta[i] - alpha[j])
-          Bernoulli(p)
-        end
-        for i in 1:N, j in 1:T
+      UnivariateDistribution[(
+        p = invlogit(beta * theta[i] - alpha[j]);
+        Bernoulli(p)) for i in 1:N, j in 1:T
       ],
     false
   ),
@@ -76,7 +73,7 @@ model = Model(
   ),
 
   a = Logical(1,
-    alpha -> alpha - mean(alpha)
+    alpha -> alpha .- mean(alpha)
   ),
 
   beta = Stochastic(

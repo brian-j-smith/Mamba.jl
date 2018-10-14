@@ -39,8 +39,8 @@ dogs[:Dogs] = size(dogs[:Y], 1)
 dogs[:Trials] = size(dogs[:Y], 2)
 
 dogs[:xa] = mapslices(cumsum, dogs[:Y], dims=2)
-dogs[:xs] = mapslices(x -> collect(1:25) - x, dogs[:xa], dims=2)
-dogs[:y] = 1 - dogs[:Y][:, 2:25]
+dogs[:xs] = mapslices(x -> collect(1:25) .- x, dogs[:xa], dims=2)
+dogs[:y] = 1 .- dogs[:Y][:, 2:25]
 
 
 ## Model Specification
@@ -48,12 +48,9 @@ model = Model(
 
   y = Stochastic(2,
     (Dogs, Trials, alpha, xa, beta, xs) ->
-      UnivariateDistribution[
-        begin
-          p = exp(alpha * xa[i, j] + beta * xs[i, j])
-          Bernoulli(p)
-        end
-        for i in 1:Dogs, j in 1:Trials-1
+      UnivariateDistribution[(
+        p = exp(alpha * xa[i, j] + beta * xs[i, j]);
+        Bernoulli(p)) for i in 1:Dogs, j in 1:Trials-1
       ],
     false
   ),
