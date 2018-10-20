@@ -9,4 +9,4 @@ notifications:
 sudo: false
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.clone(pwd()); Pkg.build("Mamba"); Pkg.test("Mamba")'
+  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("Mamba"); Pkg.test("Mamba")'
