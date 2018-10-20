@@ -71,7 +71,7 @@ Model implementation begins by instantiating stochastic and logical nodes using 
 
 .. code-block:: julia
 
-    using Mamba
+    using Mamba, LinearAlgebra
 
     ## Model Specification
 

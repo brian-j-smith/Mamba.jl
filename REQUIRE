@@ -3,7 +3,7 @@ Cairo 0.2.31
 Calculus 0.1.13
 Compose 0.3.18
 Distributions 0.10.0
-Gadfly 0.3.18
+Gadfly 1.0.0
 LightGraphs 0.7.0
 PDMats 0.3.6
 Reexport
