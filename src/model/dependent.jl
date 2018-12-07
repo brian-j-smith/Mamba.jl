@@ -89,6 +89,8 @@ function Logical(d::Integer, f::Function,
   setmonitor!(l, monitor)
 end
 
+ScalarLogical(x::T) where T <: Real = x
+
 
 #################### Updating ####################
 
@@ -154,6 +156,8 @@ function Stochastic(d::Integer, f::Function,
                       NullUnivariateDistribution())
   setmonitor!(s, monitor)
 end
+
+ScalarStochastic(x::T) where T <: Real = x
 
 
 #################### Updating ####################
