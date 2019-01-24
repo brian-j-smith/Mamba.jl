@@ -7,7 +7,7 @@ function rafterydiag(x::Vector{T}; q::Real=0.025, r::Real=0.005,
   phi = sqrt(2.0) * erfinv(s)
   nmin = ceil(Int, q * (1.0 - q) * (phi / r)^2)
   if nmin > nx
-    warn("At least $nmin samples are needed for specified q, r, and s")
+    @warn("At least $nmin samples are needed for specified q, r, and s")
     kthin = burnin = total = NaN
   else
     dichot = Int[(x .<= quantile(x, q))...]
