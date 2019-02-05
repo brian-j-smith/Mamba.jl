@@ -27,7 +27,7 @@ function names2inds(mc::ModelChains, nodekeys::Vector{Symbol})
   missing = Symbol[]
   for key in nodekeys
     keyinds = indexin(names(mc.model, key), mc.names)
-    0 in keyinds ? push!(missing, key) : append!(inds, keyinds)
+    nothing in keyinds ? push!(missing, key) : append!(inds, keyinds)
   end
   if !isempty(missing)
     throw(ArgumentError(string(
