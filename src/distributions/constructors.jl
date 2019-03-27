@@ -37,9 +37,6 @@ MvNormalCanon(h::AbstractVector{T}, J::U) where {T<:Real, U<:AbstractMatrix} =
 MvNormalCanon(h::AbstractVector{T}, prec::U) where {T<:Real, U<:AbstractVector} =
   MvNormalCanon(convert(Vector{Float64}, h), convert(Vector{Float64}, prec))
 
-MvNormalCanon(h::AbstractVector{T}, prec::U) where {T<:Real, U<:Real} =
-  MvNormalCanon(convert(Vector{Float64}, h), convert(Float64, prec))
-
 MvNormalCanon(J::AbstractMatrix{T}) where {T<:Real} =
   MvNormalCanon(convert(Matrix{Float64}, J))
 
