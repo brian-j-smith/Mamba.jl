@@ -2,7 +2,7 @@ julia 1.0.0
 Cairo 0.2.31
 Calculus 0.1.13
 Compose 0.3.18
-Distributions 0.10.0
+Distributions 0.17.0
 Gadfly 1.0.0
 LightGraphs 0.7.0
 PDMats 0.3.6
