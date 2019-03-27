@@ -1,14 +1,4 @@
 ######################################################################
-# Distributions Package UnivariateDistribution
-######################################################################
-
-#################### Categorical ####################
-
-Categorical(p::AbstractVector{T}) where {T<:Real} =
-  Categorical(convert(Vector{Float64}, p))
-
-
-######################################################################
 # Distributions Package MultivariateDistribution
 ######################################################################
 
