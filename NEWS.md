@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+### 0.12.1
+* Distributions compatibility fixes for Categorical, MvNormal, and MvNormalCanon constructors.
+* Julia 1.1 compatibility fixes for warn and indexin.
+
 ### 0.12.0
 * Initial release for julia 1.0.
 * Branched off of *Mamba* 0.11.2.
