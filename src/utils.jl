@@ -14,8 +14,7 @@ end
 
 function modelexprsrc(f::Function, literalargs::Vector{Tuple{Symbol, DataType}})
   m = first(methods(f).ms)
-  argnames = Vector{Any}(undef, m.nargs)
-  ccall(:jl_fill_argnames, Cvoid, (Any, Any), m.source, argnames)
+  argnames = Base.method_argnames(m)
   fkeys = Symbol[argnames[2:end]...]
   ftypes = DataType[m.sig.parameters[2:end]...]
   n = length(fkeys)
