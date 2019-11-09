@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+## 0.12.2
+* Fix jl_fill_argnames not found error.
+
 ### 0.12.1
 * Distributions compatibility fixes for Categorical, MvNormal, and MvNormalCanon constructors.
 * Julia 1.1 compatibility fixes for warn and indexin.
