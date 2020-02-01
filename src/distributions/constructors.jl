@@ -16,12 +16,6 @@ Multinomial(n::Real, p::AbstractVector{T}) where {T<:Real} =
 
 #################### MvNormal ####################
 
-MvNormal(μ::AbstractVector{T}, Σ::AbstractMatrix{U}) where {T<:Real, U<:Real} =
-  MvNormal(convert(Vector{Float64}, μ), convert(Matrix{Float64}, Σ))
-
-MvNormal(μ::AbstractVector{T}, σ::AbstractVector{U}) where {T<:Real, U<:Real} =
-  MvNormal(convert(Vector{Float64}, μ), convert(Vector{Float64}, σ))
-
 MvNormal(Σ::AbstractMatrix{T}) where {T<:Real} =
   MvNormal(convert(Matrix{Float64}, Σ))
 
