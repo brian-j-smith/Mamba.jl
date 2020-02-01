@@ -286,6 +286,7 @@ function diag_all(X::AbstractMatrix{U}, method::Symbol,
         df0 = mean(bstats[idx])
         pval = sum(stat .<= bstats[idx])/length(idx)
       elseif method == :MCBOOT
+        stat = t * sum(chi_stat)
         bstats = zeros(Float64, nsim)
         for b in 1:nsim
           Y = hcat([simulate_MC(t, mP) for j in 1:d]...)
