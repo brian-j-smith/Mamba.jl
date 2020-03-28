@@ -2,6 +2,10 @@
 
 ## Version Updates
 
+## 0.12.3
+* Fix :DARBoot method of discretediag.
+* Fix overwritten MvNormal methods.
+
 ## 0.12.2
 * Fix jl_fill_argnames not found error.
 
