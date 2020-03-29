@@ -1,4 +1,14 @@
 ######################################################################
+# Distributions Package UnivariateDistribution
+######################################################################
+
+#################### Categorical ####################
+
+Categorical(p::ArrayStochastic{1}; check_args = true) =
+  Categorical(convert(Vector{Float64}, p), check_args = check_args)
+
+
+######################################################################
 # Distributions Package MultivariateDistribution
 ######################################################################
 
