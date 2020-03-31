@@ -4,7 +4,7 @@
 
 #################### Categorical ####################
 
-Categorical(p::ArrayStochastic{1}; check_args = true) =
+Categorical(p::T; check_args = true) where {T <: ArrayVariate{1}} =
   Categorical(convert(Vector{Float64}, p), check_args = check_args)
 
 
