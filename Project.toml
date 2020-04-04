@@ -1,7 +1,7 @@
 name = "Mamba"
 uuid = "5424a776-8be3-5c5b-a13f-3551f69ba0e6"
 author = ["Brian J Smith <brian-j-smith@uiowa.edu>"]
-version = "0.12.3"
+version = "0.12.4"
 
 [deps]
 Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"

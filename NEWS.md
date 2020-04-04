@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+## 0.12.4
+* Issue #168: Add `Categorical()` method to convert `ArrayVariate{1}` to `Vector{Float64}`.
+
 ## 0.12.3
 * Fix :DARBoot method of discretediag.
 * Fix overwritten MvNormal methods.
