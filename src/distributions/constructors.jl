@@ -26,10 +26,10 @@ Multinomial(n::Real, p::AbstractVector{T}) where {T<:Real} =
 
 #################### MvNormal ####################
 
-MvNormal(Σ::AbstractMatrix{T}) where {T<:Real} =
+MvNormal(Σ::T) where {T<:ArrayVariate{2}} =
   MvNormal(convert(Matrix{Float64}, Σ))
 
-MvNormal(σ::AbstractVector{T}) where {T<:Real} =
+MvNormal(σ::T) where {T<:ArrayVariate{1}} =
   MvNormal(convert(Vector{Float64}, σ))
 
 
