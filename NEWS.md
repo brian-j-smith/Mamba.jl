@@ -2,6 +2,9 @@
 
 ## Version Updates
 
+## 0.12.5
+* Issue #166: fix StackOverflowError with `MvNormal()`.
+
 ## 0.12.4
 * Issue #168: Add `Categorical()` method to convert `ArrayVariate{1}` to `Vector{Float64}`.
 
