@@ -23,6 +23,7 @@ Listed below are the sampling methods for which functions are provided to simula
     samplers/rwm.rst
     samplers/slice.rst
     samplers/slicesimplex.rst
+    samplers/smmala.rst
 
 The following table summarizes the (*d*-dimensional) sample spaces over which each method simulates draws, whether draws are generated univariately or multivariately, and whether transformations are applied to map parameters to the sample spaces.
 
@@ -62,4 +63,6 @@ The following table summarizes the (*d*-dimensional) sample spaces over which ea
     | :ref:`Slice <section-Slice>`               | :math:`S \subseteq \mathbb{R}^d`      | Yes        | Yes          | Optional        | Yes        | Yes          |
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
     | :ref:`SliceSimplex <section-SliceSimplex>` | *d*-simplex                           | No         | Yes          | No              | No         | Yes          |
+    +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+
+    | :ref:`SMMALA <section-SMMALA>`             | :math:`\mathbb{R}^d`                  | No         | Yes          | Yes             | No         | Yes          |
     +--------------------------------------------+---------------------------------------+------------+--------------+-----------------+------------+--------------+

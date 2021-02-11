@@ -242,6 +242,7 @@ module Mamba
   include("samplers/rwm.jl")
   include("samplers/slice.jl")
   include("samplers/slicesimplex.jl")
+  include("samplers/smmala.jl")
 
 
   #################### Exports ####################
@@ -337,7 +338,8 @@ module Mamba
     NUTS, NUTSVariate,
     RWM, RWMVariate,
     Slice, SliceMultivariate, SliceUnivariate,
-    SliceSimplex, SliceSimplexVariate
+    SliceSimplex, SliceSimplexVariate,
+    SMMALA, SMMALAVariate
 
   export
     cm,
