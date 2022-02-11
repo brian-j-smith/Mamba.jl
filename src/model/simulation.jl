@@ -97,7 +97,7 @@ function sample!(m::Model, block::Integer=0)
   for b in blocks
     sampler = m.samplers[b]
     value = sampler.eval(m, b)
-    if value != nothing
+    if !isnothing(value)
       m[sampler.params] = value
       update!(m, b)
     end
