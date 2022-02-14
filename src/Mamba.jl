@@ -14,7 +14,7 @@ module Mamba
   using Calculus: gradient
   using Showoff: showoff
 
-  import Base: Matrix, names
+  import Base: elsize, Matrix, names
   import Compose: Context, context, cm, gridstack, inch, MeasureOrNumber, mm, pt, px
   import LinearAlgebra: cholesky, dot
   import Statistics: cor

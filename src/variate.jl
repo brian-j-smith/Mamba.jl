@@ -27,6 +27,8 @@ end
 
 #################### Base Functions ####################
 
+Base.elsize(v::ArrayVariate) = elsize(v.value)
+
 Base.size(v::AbstractVariate) = size(v.value)
 
 Base.stride(v::ArrayVariate, k::Int) = stride(v.value, k)
