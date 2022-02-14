@@ -1,6 +1,6 @@
 ################################################################################
 ## Linear Regression
-##   y ~ MvNormal(X * (beta0 .* gamma), 1)
+##   y ~ MvNormal(X * (beta0 .* gamma), I)
 ##   gamma ~ DiscreteUniform(0, 1)
 ################################################################################
 
@@ -15,7 +15,7 @@ y = X * (beta0 .* gamma0) + randn(n)
 
 ## Log-transformed Posterior(gamma) + Constant
 logf = function(gamma::DenseVector)
-  logpdf(MvNormal(X * (beta0 .* gamma), 1.0), y)
+  logpdf(MvNormal(X * (beta0 .* gamma), I), y)
 end
 
 ## MCMC Simulation with Binary Metropolised Gibbs

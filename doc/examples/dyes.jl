@@ -23,7 +23,7 @@ dyes[:sample] = vcat(fill(collect(1:dyes[:samples]), dyes[:batches])...)
 model = Model(
 
   y = Stochastic(1,
-    (mu, batch, s2_within) -> MvNormal(mu[batch], sqrt(s2_within)),
+    (mu, batch, s2_within) -> MvNormal(mu[batch], sqrt(s2_within) * I),
     false
   ),
 

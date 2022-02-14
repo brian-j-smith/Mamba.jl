@@ -61,7 +61,7 @@ model = Model(
   ),
 
   beta = Stochastic(1,
-    () -> MvNormal(2, sqrt(1000))
+    () -> MvNormal(Matrix(sqrt(1000) * I, 2, 2))
   ),
 
   s2 = Stochastic(

@@ -6,7 +6,7 @@ using Distributed, Random
 model = Model(
 
   y = Stochastic(1,
-    (mu, s2) ->  MvNormal(mu, sqrt(s2)),
+    (mu, s2) -> MvNormal(mu, sqrt(s2) * I),
     false
   ),
 
@@ -16,7 +16,7 @@ model = Model(
   ),
 
   beta = Stochastic(1,
-    () -> MvNormal(2, sqrt(1000))
+    () -> MvNormal(Matrix(sqrt(1000) * I, 2, 2))
   ),
 
   s2 = Stochastic(

@@ -13,10 +13,10 @@ line[:xmat] = [ones(5) line[:x]]
 ## Model Specification
 model = Model(
   y = Stochastic(1,
-    (xmat, beta, s2) -> MvNormal(xmat * beta, sqrt(s2)),
+    (xmat, beta, s2) -> MvNormal(xmat * beta, sqrt(s2) * I),
     false
   ),
-  beta = Stochastic(1, () -> MvNormal(2, sqrt(100))),
+  beta = Stochastic(1, () -> MvNormal(Matrix(sqrt(100) * I, 2, 2))),
   s2 = Stochastic(() -> InverseGamma(0.01, 0.01))
 )
 

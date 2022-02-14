@@ -53,7 +53,7 @@ model = Model(
     (alpha, beta, rat, Xm, s2_c) ->
       begin
         mu = alpha[rat] + beta[rat] .* Xm
-        MvNormal(mu, sqrt(s2_c))
+        MvNormal(mu, sqrt(s2_c) * I)
       end,
     false
   ),

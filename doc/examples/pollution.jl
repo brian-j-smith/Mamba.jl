@@ -75,7 +75,7 @@ pollution = Dict{Symbol, Any}(
 ## Model Specification
 model = Model(
 
-  y = Stochastic(1, (mu, sigma2) -> MvNormal(mu, sqrt(sigma2)), false),
+  y = Stochastic(1, (mu, sigma2) -> MvNormal(mu, sqrt(sigma2) * I), false),
 
   mu = Logical(1, (alpha, X, theta) -> alpha .+ X * theta, false),
 
