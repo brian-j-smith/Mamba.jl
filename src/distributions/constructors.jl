@@ -32,6 +32,8 @@ MvNormal(Σ::T) where {T<:ArrayVariate{2}} =
 MvNormal(σ::T) where {T<:ArrayVariate{1}} =
   MvNormal(convert(Vector{Float64}, σ))
 
+PDMat(mat::ArrayStochastic{2}) = PDMat(convert(Matrix{Float64}, mat))
+
 
 #################### MvNormalCanon ####################
 
