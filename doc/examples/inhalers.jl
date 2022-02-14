@@ -75,15 +75,15 @@ model = Model(
   ),
 
   a1 = Stochastic(
-    a2 -> Truncated(Flat(), -1000, a2)
+    a2 -> Uniform(-1000, a2)
   ),
 
   a2 = Stochastic(
-    a3 -> Truncated(Flat(), -1000, a3)
+    a3 -> Uniform(-1000, a3)
   ),
 
   a3 = Stochastic(
-    () -> Truncated(Flat(), -1000, 1000)
+    () -> Uniform(-1000, 1000)
   ),
 
   beta = Stochastic(
